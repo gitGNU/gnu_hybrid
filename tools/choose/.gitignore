@@ -6,9 +6,11 @@
 *.a
 TAGS
 
+lkc/zconf-parser.output
+
 build
 
-Makefile.inc
+Makefile.sub
 Makefile.in
 Makefile
 aclocal.m4
@@ -18,45 +20,10 @@ ChangeLog
 VERSION
 
 configure
-configure.ac
 config.log
 config.status
 
-src/kernel
-
-src/config/rules.usr
-src/config/autoconfig.h.in
-src/config/autoconfig.h
-src/config/stamp-h1
-src/config/version.h
-src/config/Makefile.cfg
-
-src/config/rules.all
-src/config/rules.out
-src/config/userconfig.h
-src/core/syscalls.h
-src/rules.pkg
-
-src/core/arch
-src/core/build.h
-
 site/site.stamp
-
-docs/hybrid.info
-
-tools/bdf2def/bdf2def-parser.c
-tools/bdf2def/bdf2def-parser.h
-tools/bdf2def/bdf2def-parser.output
-tools/bdf2def/bdf2def-scanner.c
-tools/idl2def/idl2def-parser.c
-tools/idl2def/idl2def-parser.h
-tools/idl2def/idl2def-parser.output
-tools/idl2def/idl2def-scanner.c
-tools/ids2def/ieee13942def-scanner.c
-tools/ids2def/pci2def-scanner.c
-tools/ids2def/usb2def-scanner.c
-
-tools/moddep/moddep-scanner.c
 
 tools/autotools/compile
 tools/autotools/config.guess
@@ -72,10 +39,6 @@ tools/autotools/ylwrap
 tools/libs/awk/lib.awk
 tools/libs/sh/lib.sh
 tools/libs/perl/lib.pl
-
-tools/autogen/all.scm
-tools/fsmgen/fsmgen-parser.cxx
-tools/fsmgen/fsmgen-scanner.cxx
 
 tools/scripts/NEWS-query
 tools/scripts/fetch
