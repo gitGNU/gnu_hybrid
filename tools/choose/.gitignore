@@ -10,7 +10,7 @@ lkc/zconf-parser.output
 
 build
 
-Makefile.sub
+#Makefile.sub
 Makefile.in
 Makefile
 aclocal.m4
