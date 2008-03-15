@@ -1,0 +1,156 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+BEGIN {
+	PROGNAME = "mkbuild";
+
+	lib_init();
+
+	guard   = "";
+	infile  = "";
+	outfile = "";
+	fatal   = 0;
+
+	opts   = "g:F:fvdh";
+	h_desc = "Generate build header while incrementing build number";
+	h_note = "";
+
+	opt_desc["g"] = "set the guard";
+	opt_desc["F"] = "set the input/output file";
+	opt_desc["f"] = "warnings are fatal";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";	
+	opt_desc["h"] = "display this help and exit";
+
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+		if (c == "F") {
+			infile  = optarg;
+			outfile = optarg;
+		} else if (c == "g") {
+			guard = optarg;
+		} else if (c == "f") {
+			fatal = 1;
+		} else if (c == "d") {
+			_debug = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "h") {
+			help(1, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+
+	if (guard == "") {
+		hint("Missing guard");
+		exit(1);
+	}
+	if (infile == "") {
+		hint("Missing input file");
+		exit(1);
+	}
+	if (infile == "") {
+		hint("Missing output file");
+		exit(1);
+	}
+
+	debug("guard       = " guard   "\n");
+	debug("input file  = " infile  "\n");
+	debug("output file = " outfile "\n");
+
+	count = 0;
+
+	debug("PASS 1: Reading input file ...\n");
+	if (readable(infile)) {
+		debug("Parsing old count value\n");
+
+		matches = 0;
+
+		while (getline line < infile) {
+			line = strcleanspc(line);
+
+			if (match(line,/^[ ]*#[ ]*define BUILD_NUMBER [0-9]+[ ]*/) != 0) {
+				debug("Got it !\n");
+				matches++;
+
+				value = line;
+				debug("Value is now: " value "\n");
+
+				sub(/^[ ]*#[ ]*define BUILD_NUMBER /,"",value);
+				debug("Value is now: " value "\n");
+
+				sub(/[ ]*$/,"",value);
+				debug("Value is now: " value "\n");
+
+				debug("Current value should be " value "\n");
+				
+				count = value + 0;
+				break;
+			}
+		}
+		
+		close(infile);
+
+		if (matches != 1) {
+			error("Cannot parse old input file ...\n");
+			exit(1);
+		}
+
+		debug("Fetched value is " count "\n");
+
+	} else {
+		debug("Starting from scratch ...\n");
+	}
+
+	assert(count >= 0);
+
+	count++;
+
+	debug("PASS 2: Writing output file ...\n");
+	if (!writable(outfile)) {
+		error("Cannot write on file " outfile "\n");
+		exit(1);
+	}
+
+	c_header(outfile);
+	c_guard_header(outfile, guard);
+
+	printf("#define BUILD_NUMBER %d\n",	\
+	       count) > outfile;
+	printf("#define BUILD_DATE   \"%s\"\n",		\
+	       strftime("%c", systime())) > outfile;
+
+	c_guard_footer(outfile, guard);
+	#c_footer(outfile, "");
+
+	close(outfile);
+
+	exit(0);
+}
+
+END {
+	lib_fini();
+}

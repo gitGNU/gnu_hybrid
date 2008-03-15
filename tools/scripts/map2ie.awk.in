@@ -1,0 +1,186 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+BEGIN {
+	PROGNAME = "map2ie";
+
+	lib_init();
+
+	outfile = "/dev/stdout";
+	infile  = "";
+	fatal   = 0;
+
+	opts   = "o:i:fvdh";
+	h_desc = "Transforms a .map file into .ie file";
+	h_note = "";
+
+	opt_desc["i"] = "set the input file";
+	opt_desc["o"] = "set the output file";
+	opt_desc["f"] = "warnings are fatal";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";
+	opt_desc["h"] = "display this help and exit";
+
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+		if (c == "o") {
+			outfile = optarg;
+		} else if (c == "i") {
+			infile = optarg;
+		} else if (c == "f") {
+			fatal = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "d") {
+			_debug = 1;
+		} else if (c == "h") {
+			help(1, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+
+	if (infile == "") {
+		hint("Missing input file name");
+		exit(1);
+	}
+	if (!readable(infile)) {
+		error(infile " is not readable!\n");
+		exit(1);
+	}
+	debug("infile  = " infile "\n");
+
+	if (outfile == "") {
+		hint("Missing output file name");
+		exit(1);
+	}
+	if (!writable(outfile)) {
+		error(outfile " is not writable!\n");
+		exit(1);
+	}
+	debug("outfile = " outfile "\n");
+
+	module         = "";
+	import         = "";
+	imports_count  = 0;
+	export         = "";
+	exports_count  = 0;
+	while ((getline string < infile) > 0) {
+		delete line;
+
+		string = strcleanspc(string);
+		if (match(string, /^.*[ ]*:[ ]*$/) != 0) {
+			sub(/[ ]*:[ ]*$/, "", string);
+			module = string;
+			
+			assert(module != "");
+
+			debug("Got module `" module "`\n");
+		} else if (match(string, /^.* GU .*$/) != 0) {
+			split(string, line, " ");
+			import = line[3];
+			export = "";
+			
+			assert(import != "");
+
+			debug("Got import `" import "`\n");
+
+		} else if (match(string, /^.* GT .*$/) != 0) {
+			split(string, line, " ");
+			import = "";
+			export = line[3];
+			
+			assert(export != "");
+
+			debug("Got export `" export "`\n");
+
+		} else if (match(string, /^.* .. .*$/) != 0) {
+			# Skip unhandled type
+			import = "";
+			export = "";
+
+			debug("Skipping unhandled type\n");
+		} else if (match(string, /^[ ]*$/) != 0) {
+			# Skip empty lines
+			import = "";
+			export = "";
+
+			debug("Skipping empty line\n");
+		} else {
+			error("Unhandled input from file\n");
+			close(infile);
+			close(outfile);
+			exit(1);
+		}
+
+		if (module != "") {
+			if (import != "") {
+				assert(export == "");
+
+				printf("OBJECT %s IMPORTS %s\n",
+				       module, import) > outfile;
+				imports_count++;
+
+				debug("Object `" module	"` "		\
+				      " imports `" import "`\n");
+
+				import = "";
+			} else if (export != "") {
+				assert(import == "");
+
+				printf("OBJECT %s EXPORTS %s\n",
+				       module, export) > outfile;
+				exports_count++;
+
+				debug("Object `" module "` "		\
+				      "exports `" export "`\n");
+
+				export = "";
+			} else {
+				debug("Nothing to do yet for "	\
+				      "module `" module "`\n");
+			}
+		}
+	}
+	
+	close(infile);
+
+	verbose("Got "				\
+		imports_count " imports "	\
+		"and "				\
+		exports_count " exports "	\
+		"\n");
+
+	# Close the output file if something has been thrown inside
+	if ((imports_count + exports_count) != 0) {
+		close(outfile);
+	}
+
+	exit(0);
+}
+
+END {
+	lib_fini();
+}

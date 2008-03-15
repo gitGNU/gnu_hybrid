@@ -1,0 +1,48 @@
+##
+## Input file for automake
+##
+## Copyright (C) 2008 Francesco Salvestrini
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License along
+## with this program; if not, write to the Free Software Foundation, Inc.,
+## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+##
+
+include @reldir@/ia32/Makefile.inc
+include @reldir@/ppc32/Makefile.inc
+include @reldir@/common/Makefile.inc
+
+EXTRA_DIST +=					\
+	@reldir@/Makefile.inc.in
+
+arch_SRCS           =
+arch_multiboot_SRCS =
+
+if SUPPORT_ARCH_IA32
+arch_SRCS           += $(arch_ia32_SRCS)
+arch_multiboot_SRCS += $(arch_ia32_multiboot_SRCS)
+endif
+
+if SUPPORT_ARCH_PPC32
+arch_SRCS           += $(arch_ppc32_SRCS)
+arch_multiboot_SRCS += $(arch_ppc32_multiboot_SRCS)
+endif
+
+##
+## NOTE:
+##   Multiboot compliance force us to have the multiboot header first ...
+##
+arch_SRCS +=					\
+	$(arch_common_SRCS)			\
+	@reldir@/arch.h				\
+	@reldir@/linker.h

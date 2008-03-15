@@ -1,0 +1,218 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+BEGIN {
+	PROGNAME = "mksyscalls";
+
+	lib_init();
+
+	guard   = "";
+	outfile = "/dev/stdout";
+	fatal   = 0;
+
+	delete paths;
+	paths["./"] = 1;
+	paths["/"]  = 1;
+
+	opts   = "g:o:p:fvdh";
+	h_desc = "Generate syscalls table";
+	h_note = "Place input files at last, using -- as separator";
+
+	opt_desc["g"] = "set the guard";
+	opt_desc["p"] = "specify a search path for input files";
+	opt_desc["o"] = "set the output file";
+	opt_desc["f"] = "warnings are fatal";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";	
+	opt_desc["h"] = "display this help and exit";
+
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+		if (c == "o") {
+			outfile = optarg;
+		} else if (c == "p") {
+			paths[optarg] = 1;
+		} else if (c == "g") {
+			guard = optarg;
+		} else if (c == "f") {
+			fatal = 1;
+		} else if (c == "d") {
+			_debug = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "h") {
+			help(1, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+
+	if (guard == "") {
+		hint("Missing guard");
+		exit(1);
+	}
+
+	debug("guard   = " guard "\n");
+	debug("outfile = " outfile "\n");
+
+	debug("PASS 1: Checking input files existance ...\n");
+
+        for (i = 0; optind < ARGC; optind++) {
+
+			infile = ARGV[optind];
+			wrong  = 1;
+			for (p in paths) {
+
+				if (readable(p "/" infile)) {
+					infiles[i] = p "/" infile;
+					wrong = 0;
+					break;
+				}
+			}
+			if (wrong) {
+				error("File " infile " is not readable\n");
+				exit(1);
+			}
+
+			debug("Adding " infile "\n");
+			i++;
+	}
+	infiles_cnt = i;
+
+	debug(infiles_cnt " files to check\n");
+
+	if (infiles_cnt <= 0) {
+		hint("Missing input file(s)");
+		exit(1);
+	}
+
+	debug("PASS 2: Checking output file ...\n");
+	if (outfile !~ "/dev/stdout" && exist(outfile)) {
+		warning("Outfile " outfile " is present\n");
+		if (fatal) {
+			exit(1);
+		}
+	}
+	if (!writable(outfile)) {
+		error("Cannot write on file " outfile "\n");
+		exit(1);
+	}
+
+	debug("PASS 3: Start processing ...\n");
+
+	delete syscalls;
+	count      = 0;
+	min_number = +1024; # Sane default value
+	max_number = -1024; # Sane default value
+	for (i in infiles) {
+		# debug("Scanning file " infiles[i] "\n");
+		if (not_empty(infiles[i])) {
+
+			while ((getline string < infiles[i]) > 0) {
+				string = strcleanspc(string);
+
+				# No duplicated whites due to strcleanspc !!!
+				if (match(string, /^[ ]*SYSCALL[ ]*(.*\,.*)[ ]*;[ ]*$/) != 0) {
+					# Remove header
+					sub(/^SYSCALL[ ]*\([ ]*/, "", string);
+					# Remove trailer
+					sub(/[ ]*\)[ ]*;[ ]*$/,   "", string);
+
+					# Split name & number
+					if (split(string, temp, ",") != 2) {
+						not_reachable();
+					}
+					
+					number = 0 + strcleanspc(temp[1]);
+					name   = strcleanspc(temp[2]);
+					delete temp;
+
+					verbose("Got syscall " name " "	\
+						"(" number ") "		\
+						"from " infiles[i] " "	\
+						"file\n");
+
+					syscalls[number] = name;
+
+					# Fix min and max indexes
+					if (number >= max_number) {
+						max_number = number;
+					}
+					if (number <= min_number) {
+						min_number = number;
+					}
+
+					count++;
+				}
+			}
+
+			close(infiles[i]);
+		} else {
+			verbose("Skipping empty file " infiles[i] "\n")
+		}
+	}
+
+	assert(min_number <= max_number);
+
+	# Sort the syscalls
+	debug("PASS 3: Sorting (missing) ...\n");
+	
+	for (i = min_number; i <= max_number; i++) {
+		syscalls_type[i] = "unused";
+		syscalls_name[i] = "unused";
+	}
+	for (i in syscalls) {
+		syscalls_type[i] = "used";
+		syscalls_name[i] = syscalls[i];
+	}
+
+	# Write output file
+	debug("PASS 4: Writing output file ...\n");
+	c_header(outfile);
+	c_guard_header(outfile, guard);
+
+	for (i = min_number; i <= max_number; i++) {
+		if (syscalls_type[i] == "unused") {
+			printf("/* #define SYSCALL_%s_%d %d */\n",
+			       syscalls_name[i], i, i) > outfile;
+		} else if (syscalls_type[i] == "used") {
+			printf("#define SYSCALL_%s %d\n",
+			       syscalls_name[i], i) > outfile;
+		} else {
+			not_reachable();
+		}
+	}
+
+	c_guard_footer(outfile, guard);
+	c_footer(outfile, count " syscalls produced from " infiles_cnt " files");
+
+	close(outfile);
+
+	exit(0);
+}
+
+END {
+	lib_fini();
+}

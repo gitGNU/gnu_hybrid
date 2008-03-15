@@ -1,0 +1,212 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+function readfile(name)
+{
+	if (!readable(name)) {
+		error(name " is not readable!\n");
+		exit(1);
+	}
+
+	read_defs   = 0;
+	line_number = 0;
+	while ((getline line < name) > 0) {
+		line_number++;
+
+		delete data;
+
+		line = strcleanspc(line);
+
+		if (match(line, /^#.*$/) != 0) {
+			#debug("Line `" line "` is a comment\n");
+		} else if (match(line, 
+				 /^[A-Z][A-Z0-9_]*[ ]*=[ ]*.*$/) != 0) {
+			split(line, data, "=");
+			sub(/[ ]*$/, "", data[1]);
+			sub(/^[ ]*/, "", data[2]);
+			defs[data[1]] = data[2];
+			read_defs++;
+
+		} else if (match(line, /^[A-Z][A-Z0-9_]*$/) != 0) {
+			defs[line] = 0;
+			read_defs++;
+
+		} else if (match(line, /^[ ]*$/) != 0) {
+			#debug("Line `" line "` is empty\n");
+		} else {
+			error("Unhandled " name ":" line_number \
+			      " `" line "`\n");
+			close(name);
+			exit(1);
+		}
+	}
+	
+	close(name);
+	return read_defs;
+}
+
+BEGIN {
+	PROGNAME  = "mergesyms";
+
+	lib_init();
+
+	in1_defs  = 0;
+	in2_defs  = 0;
+	infn1     = "";
+	infn2     = "";
+	outfn     = "/dev/stdout";
+
+	opts   = "i:j:o:vdh";
+	h_desc = "Merge two symbols file";
+	h_note = "";
+
+	opt_desc["i"] = "set the first input file";
+	opt_desc["j"] = "set the second input file";
+	opt_desc["o"] = "set the output file";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";	
+	opt_desc["h"] = "display this help and exit";
+
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+		if (c == "i") {
+			infn1 = optarg;
+		} else if (c == "j") {
+			infn2 = optarg;
+		} else if (c == "o") {
+			outfn = optarg;
+		} else if (c == "d") {
+			_debug = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "h") {
+			help(0, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+
+	verbose("Checking input files ...\n");
+
+	if (infn1 == "") {
+		hint("Missing first input file");
+		exit(1);
+	}
+	debug("infile1 = " infn1 "\n");
+	if (!readable(infn1)) {
+		error(infn1 " is not readable!\n");
+		exit(1);
+	}
+
+	if (infn2 == "") {
+		hint("Missing second input file");
+		exit(1);
+	}
+	debug("infile2 = " infn2 "\n");
+	if (!readable(infn2)) {
+		error(infn2 " is not readable!\n");
+		exit(1);
+	}
+
+	verbose("Checking output file ...\n");
+
+	debug("outfile = " outfn "\n");
+	if (outfn !~ "/dev/stdout" && exist(outfn)) {
+		warning("Outfile " outfn " is present\n");
+	}
+	if (!writable(outfn)) {
+		error("Cannot write on file " outfn "\n");
+		exit(1);
+	}
+
+	in1_defs = readfile(infn1);
+	if (!in1_defs) {
+		error("Problems reading definitions from file " infn1 "\n");
+		exit(1);
+	}
+	debug("Definitions in file " infn1 " = " in1_defs "\n");
+
+	in2_defs = readfile(infn2);
+	if (!in2_defs) {
+		error("Problems reading definitions from file " infn2 "\n");
+		exit(1);
+	}
+	debug("Definitions in file " infn2 " = " in2_defs "\n");
+
+	if (in1_defs < in2_defs) {
+		error("Input files definitions does not match "	\
+		      "("					\
+		      in1_defs " from " infn1 			\
+		      ", "					\
+		      in2_defs " from " infn2			\
+		      ")\n");
+		exit(1);
+	}
+
+	max_sym_length = 0;
+	for (sym in defs) {
+		max_sym_length = max(max_sym_length, length(sym));
+	}
+	
+	# sh_header(outfn);
+
+	#
+	# XXX FIXME:
+	#     We cannot rely on for (x in y) ... because the order is
+	#     implementation dependant ...
+	#
+	out_defs = 0;
+	for (sym in defs) {
+		printf("%-" max_sym_length"s %s\n", sym, defs[sym]) > outfn;
+		out_defs++;
+	}
+
+	# sh_footer(outfn,
+	#           "Inputs " in1_defs "/" in2_defs ", outputs " out_defs);
+
+	close(outfn);
+
+	debug("Definitions in file " outfn " = " out_defs "\n");
+
+	if (in1_defs > out_defs) {
+		error("Input file `" infn1 "` reports more symbols than " \
+		      "output file `" outfn "` "			  \
+		      "(" in1_defs " > " out_defs ")\n");
+		exit(1);
+	}
+
+	if (in2_defs > out_defs) {
+		error("Input file `" infn2 "` reports more symbols than " \
+		      "output file `" outfn "` "			  \
+		      "(" in2_defs " > " out_defs ")\n");
+		exit(1);
+	}
+
+	exit(0);
+}
+
+END {
+	lib_fini();
+}

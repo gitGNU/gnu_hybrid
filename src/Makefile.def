@@ -1,0 +1,176 @@
+##
+## Input file for automake
+##
+## Copyright (C) 2008 Francesco Salvestrini
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License along
+## with this program; if not, write to the Free Software Foundation, Inc.,
+## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+##
+
+# Definitions
+CLEANFILES           =
+DISTCLEANFILES       =
+MAINTAINERCLEANFILES =
+EXTRA_DIST           =
+BUILT_SOURCES        =
+
+MODULES_BUILTIN      =
+MODULES_PRELOAD      =
+MODULES_AUTOLOAD     =
+
+
+# Base directories
+TOOLSDIR_BUILD  = $(top_builddir)/tools
+TOOLSDIR_SOURCE = $(top_srcdir)/tools
+
+SCRIPTSDIR = $(TOOLSDIR_BUILD)/scripts
+CHOOSEDIR  = $(TOOLSDIR_BUILD)/choose
+
+TOOL_FLAGS = $(AX_TOOL_FLAGS)
+
+# Useful scripts
+BIN2SOURCE          = $(SCRIPTSDIR)/bin2source
+BIN2SOURCE_FLAGS    = $(TOOL_FLAGS)
+STACKCHECK          = $(SCRIPTSDIR)/stackcheck
+STACKCHECK_FLAGS    = $(TOOL_FLAGS)
+ELF2SYMSTAB         = $(SCRIPTSDIR)/elf2symstab
+ELF2SYMSTAB_FLAGS   = $(TOOL_FLAGS)
+SYMSTAB2MAP         = $(SCRIPTSDIR)/symstab2map
+SYMSTAB2MAP_FLAGS   = $(TOOL_FLAGS)
+MAP2IE              = $(SCRIPTSDIR)/map2ie
+MAP2IE_FLAGS        = $(TOOL_FLAGS)
+GETDEFINE           = $(SCRIPTSDIR)/getdefine
+GETDEFINE_FLAGS     = $(TOOL_FLAGS)
+BOOTCHECK           = $(SCRIPTSDIR)/bootcheck
+BOOTCHECK_FLAGS     = $(TOOL_FLAGS)
+SH2H                = $(SCRIPTSDIR)/sh2h
+SH2H_FLAGS          = $(TOOL_FLAGS)
+RULES2SYMS          = $(SCRIPTSDIR)/rules2syms
+RULES2SYMS_FLAGS    = $(TOOL_FLAGS)
+MERGESYMS           = $(SCRIPTSDIR)/mergesyms
+MERGESYMS_FLAGS     = $(TOOL_FLAGS)
+INCLUDESCHECK       = $(SCRIPTSDIR)/includescheck
+INCLUDESCHECK_FLAGS = $(TOOL_FLAGS)
+IFDEFSCHECK         = $(SCRIPTSDIR)/ifdefscheck
+IFDEFSCHECK_FLAGS   = $(TOOL_FLAGS)
+GUARDSCHECK         = $(SCRIPTSDIR)/guardscheck
+GUARDSCHECK_FLAGS   = $(TOOL_FLAGS)
+SECTIONS            = $(SCRIPTSDIR)/sections
+SECTIONS_FLAGS      = $(TOOL_FLAGS)
+MKSYSCALLS          = $(SCRIPTSDIR)/mksyscalls
+MKSYSCALLS_FLAGS    = $(TOOL_FLAGS)
+MKBUILD             = $(SCRIPTSDIR)/mkbuild
+MKBUILD_FLAGS       = $(TOOL_FLAGS)
+CLHANDLER           = $(SCRIPTSDIR)/clhandler
+CLHANDLER_FLAGS     = $(TOOL_FLAGS)
+
+# Useful binaries
+CHOOSE             = $(CHOOSEDIR)/choose
+CHOOSE_FLAGS       = $(TOOL_FLAGS)
+PACKRULES          = $(CHOOSEDIR)/packrules/packrules
+PACKRULES_FLAGS    = $(TOOL_FLAGS)
+
+# Directories
+SYSTEMdir    = ${exec_prefix}/sys
+MODULESdir   = ${exec_prefix}/sys/modules-$(VERSION)
+
+# Files
+USERCONFIG   = $(top_builddir)/src/config/rules.usr
+
+##
+## Common flags
+##
+
+##
+## NOTE:
+##     -Wunused combines all the following switches:
+##
+##         -Wshadow -Wuninitialized -Wunused-parameter -Wunused-label
+##         -Wunused-value
+##
+
+## NOTE:
+##     The following switches cannot be added ... compilation problems
+##
+##         -Wunreachable-code
+##	   -Wsequence-point
+##
+##     This is a list of per-compiler unsupported options
+##
+##         gcc-3.3.4: -Wextra
+##
+COMMONLDSCRIPT =						\
+        $(top_srcdir)/src/core/archs/$(architecture)/kernel.ld
+
+#COMMONLDFLAGS =					\
+#	-XCClinker -nostartfiles		\
+#	-XCClinker -nostdlib			\
+#	-XCClinker -nodefaultlibs		\
+#	-XCClinker -T $(COMMONLDSCRIPT)		\
+#	-XCClinker --warn-common		\
+#	-XCClinker --warn-section-align		\
+#	-XCClinker --no-gc-sections		\
+#	-XCClinker --fatal-warnings		\
+#	-Wl,--as-needed
+
+COMMONLDFLAGS =					\
+	-nostartfiles				\
+	-nostdlib				\
+	-nodefaultlibs				\
+	-T $(COMMONLDSCRIPT)			\
+	--warn-common				\
+	--warn-section-align			\
+	--warn-constructors			\
+	--no-gc-sections			\
+	--fatal-warnings			\
+	-Wl,--as-needed
+
+COMMONCCASFLAGS =				\
+	-I$(top_srcdir)/src			\
+	-I$(top_builddir)/src
+
+COMMONCPPFLAGS =				\
+	$(AX_CONFIG_CPPFLAGS)			\
+	$(ELKLIB_CPPFLAGS)			\
+	-DKERNEL=1				\
+	-I$(top_srcdir)/src			\
+	-I$(top_builddir)/src
+
+COMMONCFLAGS =					\
+	$(AX_CONFIG_CFLAGS)			\
+	$(ELKLIB_CFLAGS)			\
+	-nostdinc
+
+COMMONCXXFLAGS =				\
+	$(AX_CONFIG_CXXFLAGS)			\
+	$(ELKLIB_CXXFLAGS)			\
+	-nostdinc -nostdinc++
+
+##
+## Kernel related flags
+##
+KERNELCCASFLAGS    = $(COMMONCCASFLAGS)
+KERNELCPPFLAGS     = $(COMMONCPPFLAGS)
+KERNELCFLAGS       = $(COMMONCFLAGS)
+KERNELCXXFLAGS     = $(COMMONCXXFLAGS)
+KERNELLDFLAGS      = $(COMMONLDFLAGS) -static
+
+##
+## Modules related flags
+##
+MODULESCCASFLAGS    = $(COMMONCCASFLAGS)
+MODULESCPPFLAGS     = $(COMMONCPPFLAGS)
+MODULESCFLAGS       = $(COMMONCFLAGS)
+MODULESCXXFLAGS     = $(COMMONCXXFLAGS)
+MODULESLDFLAGS      = $(COMMONLDFLAGS) -shared

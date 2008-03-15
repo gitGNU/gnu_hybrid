@@ -1,0 +1,197 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+function get_name(string)
+{
+	count = split(string, temp, " ");
+	if (count != 2) {
+		error("Wrong input format while looking for option name\n");
+		exit(1);
+	}
+
+	return temp[1];
+}
+
+function get_value(string)
+{
+	count = split(string, temp, " ");
+	if (count != 2) {
+		error("Wrong input format while looking for option value\n");
+		exit(1);
+	}
+
+	return temp[2];
+}
+
+BEGIN {
+	PROGNAME = "sh2h";
+
+	lib_init();
+
+	fatal    = 0;
+	guard    = "";
+	prefix   = "";
+	infile   = "/dev/stdin";
+	outfile  = "/dev/stdout";
+
+	opts   = "g:p:i:o:fvdh";
+	h_desc = "Transform a symbol file into a C header file";
+	h_note = "";
+
+	opt_desc["g"] = "set the guard";
+	opt_desc["p"] = "set the prefix";
+	opt_desc["i"] = "set the input file";
+	opt_desc["o"] = "set the output file";
+        opt_desc["f"] = "warnings are fatal";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";	
+	opt_desc["h"] = "display this help and exit";
+	
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+		if (c == "p") {
+			prefix = optarg;
+		} else if (c == "g") {
+			guard = optarg;
+		} else if (c == "i") {
+			infile = optarg;
+		} else if (c == "o") {
+			outfile = optarg;
+		} else if (c == "d") {
+			_debug = 1;
+                } else if (c == "f") {
+                        fatal = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "h") {
+			help(0, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+	
+	if (guard == "") {
+		hint("Missing guard");
+		exit(1);
+	}
+	if (prefix == "") {
+		hint("Missing prefix");
+		exit(1);
+	}
+	
+	debug("guard   = " guard   "\n");
+	debug("prefix  = " prefix  "\n");
+	debug("infile  = " infile  "\n");
+	debug("outfile = " outfile "\n");
+	
+	verbose("Checking input files ...\n");
+	if (!readable(infile)) {
+		error(infile " is not readable!\n");
+		exit(1);
+	}
+	
+	verbose("Checking output file ...\n");
+	if (outfile !~ "/dev/stdout" && exist(outfile)) {
+		warning("Outfile " outfile " is already present\n");
+		if (fatal) {
+			exit(1);
+		}
+	}
+	if (!writable(outfile)) {
+		error("Cannot write on file " outfile "\n");
+		exit(1);
+	}
+	
+	verbose("Start processing ...\n");
+	
+	while ((getline line < infile) > 0) {
+		line = strcleanspc(line);
+		
+		sym = "";
+		if (match(line,			\
+			  /^#.*$/)		\
+			  != 0) {
+			if (line ~ /^.* is not set$/) {            # Not set
+				sym = line;
+				
+				sub(/^\#[ ]*/,"",sym);
+				sub(/[ ]*is not set$/,"",sym);
+				
+				defs[sym] = "0 /* Deduced */";
+			} else {                                   # Comment
+				continue;
+			}
+		} else if (match(line, /^.* y$/) != 0) {           # Bool true
+			defs[get_name(line)] = 1;
+		} else if (match(line, /^.* n$/) != 0) {           # Bool false
+			defs[get_name(line)] = 0;
+		} else if (match(line, /^.* m$/) != 0) {           # Tristate
+			error("Tristates are not allowed\n");
+			exit(1);
+		} else if (match(line,                             # Dec \
+				 /^.* [0-9][0-9]*$/)			 \
+			   != 0) {
+			defs[get_name(line)] = get_value(line);
+		} else if (match(line,                             # Hex \
+				 /^.* 0[xX][0-9a-fA-F][0-9a-fA-F]*$/)	 \
+			   != 0) { 
+			defs[get_name(line)] = get_value(line);
+		} else if (match(line, /^[ ]*$/) != 0) {           # Empty line
+		} else {
+			error("Unrecognized input line\n");
+			exit(1);
+		}
+	}
+	close(infile);
+
+	assert(outfile);
+	assert(guard);
+
+	c_header(outfile);
+	c_guard_header(outfile,guard);
+	
+	maxlength = 0;
+	for (sym in defs) {
+		maxlength = max(maxlength, length(sym));
+	}
+	
+	defscount = 0;
+	for (sym in defs) {
+		printf("#define %s%-" maxlength "s %s\n",
+		       prefix, sym, defs[sym]) > outfile;
+		defscount++;
+	}
+	
+	c_guard_footer(outfile, guard);
+	c_footer(outfile, defscount " definitions processed");
+	
+	close(outfile);
+	
+	exit(0);
+}
+
+END {
+	lib_fini();
+}

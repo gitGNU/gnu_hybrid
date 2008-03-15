@@ -1,0 +1,483 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+function guard_report(guard_lst, guard_ref)
+{
+	max_length  = 0;
+
+	verbose("Producing guards report\n");
+
+	debug("Estimate maximum guard length\n");
+	for (i in guard_lst) {
+
+		if (length(i) > max_length) {
+			max_length = length(i);
+		}
+	}
+	debug("Maximum guard length: " max_length "\n");
+
+	for (guard in guard_lst) {
+		message(guard);
+
+		for (i = 0; i < (max_length - length(guard)); i++) {
+			message(" ");
+		}
+
+		for (file in guard_ref) {
+			split(guard_ref[file], guard_tmp, " ");
+			
+			for (item in guard_tmp) {
+
+				if (guard_tmp[item] == guard) {
+					message(" "path_clean(file));
+				}
+			}
+		}
+		message("\n");
+	}
+	return 1;
+}
+
+function guard_check(guard_lst, guard_ref)
+{
+	files = "";
+
+	for (i in guard_lst) {
+		files = "";
+
+		verbose("Checking guard: `" i "`\n");
+		debug("Guard `" i "` is used " guard_lst[i] " times\n");
+
+ 		if (guard_lst[i] > 1) {
+
+			for (j in guard_ref) {
+
+				if (guard_ref[j] == i) {
+					files = files " " j;
+				}
+			}
+
+			warning("Guard `" i "` is already define in " \
+				":" files "\n");
+			
+			if (fatal) {
+				return 0;
+			}
+ 		}
+	}
+	return 1;
+}
+
+function clean_comment(string)
+{
+	debug("Cleaning string: `" string "`\n");
+
+	if (match(string, "^[ \t]*(/)(*).*(*)(/)[ \t]*.*$") != 0) {
+		sub("[ \t]*(/)(*).*(*)(/)[ \t]*", "", string);
+	} else if (match(string, ".*(/)(*).*(*)(/)[ \t]*$") != 0) {
+		sub("[ \t]*(/)(*).*(*)(/)[ \t]*", "", string);
+	} else if (match(string, "^.*[ \t]*(/)(*).*(*)(/)[ \t]*.*$") != 0) {
+		sub("[ \t]*(/)(*).*(*)(/)[ \t]*", " ", string);
+	} else if (match(string, "(/)(/)[ \t]*.*$") != 0) {
+		sub("[ \t]*(/)(/)[ \t]*.*", "", string);
+	} else if (match(string, "(/)(*)[ \t]*.*$") != 0) {
+		sub("[ \t]*(/)(*)[ \t]*.*", "", string);
+	} else if (match(string, "(*)(/).*$") != 0) {
+		sub(".*(*)(/)[ \t]*", "", string);
+	}
+	debug("Cleaned string: `" string "`\n");
+
+	return string;
+}
+
+function guard_count(filename)
+{
+	guard_curr = "";
+	guard_cond = 0;
+	guard_def  = 0;
+	skip       = 0;
+	ret_code   = 1;
+
+	assert(filename != "");
+
+	verbose("Counting guards in file `" filename "`\n");
+	
+	while (((getline string < filename) > 0) &&
+	       (guard_def  == 0)) {
+
+		debug("Parsing string: `" string "`\n");
+
+		if (match(string, "^[ \t]*$") != 0) {
+			continue;
+		}
+
+		if ((guard_cond == 1) && 
+		    (match(string, "#[ \t]*define[ \t]+" guard_curr) != 0)) {
+			debug("Found guard define entry `" \
+			      string "`\n");
+			
+			guard_def = 1;
+			guard_lst[guard_curr]++;
+
+			if (guard_ref[filename] != "") {
+				guard_ref[filename] = guard_curr " " \
+					guard_ref[filename];
+			} else {
+				guard_ref[filename] = guard_curr;
+			}
+			break;
+		}
+
+		if ((guard_cond == 1) && (skip == 0)) {
+
+			if (match(string, 
+				  "[ \t]*(/)(*).*(*)(/)[ \t]*") != 0) {
+				debug("Found inline C comment\n");
+			} else if (match(string, 
+				  "[ \t]*(/)(/).*[ \t]*") != 0) {
+				debug("Found inline C++ comment\n");
+			} else if (match(string,
+				  "[ \t]*(/)(*).*") != 0) {
+				debug("Found multiline comment start\n");
+
+				skip = 1;
+			}
+			string = clean_comment(string);
+
+			if (string == "") {
+				continue;
+			}
+		}
+		
+		if ((skip == 1) && (guard_cond == 1)) {
+
+			if (match(string,
+				  "[^((/)(*))]*(*)(/)[ \t]*") != 0) {
+				debug("Found multiline comment end\n");
+
+				string = clean_comment(string);
+				skip   = 0;
+
+				if (string == "") {
+					continue;
+				}
+			}
+		}
+
+		if ((guard_cond == 0) &&
+		    (match(string, 
+			   "#[ \t]*ifndef[ \t]+[A-Z0-9_]+") != 0)) {
+			debug("Found first guard conditional " \
+			      "entry: `" string "`\n");
+
+			sub("#[ \t]*ifndef[ \t]+", "", string);
+
+			if (match(string,
+				  "[A-Z0-9_]+[ \t]*(/)(*).*(*)(/)[ \t]*") \
+			    != 0) {
+				debug("Found inline comment\n");
+
+				string = clean_comment(string);
+
+			} else if (match(string,
+				  "^[A-Z0-9_]+[ \t]*(/)(*).*") != 0) {
+				debug("Found multiline comment start\n");
+
+				string = clean_comment(string);
+				skip = 1;
+			}
+
+			guard_curr = string;
+			guard_cond = 1;
+				
+			continue;
+		}
+
+		if ((guard_cond == 1) && (skip == 0)) {
+			debug("Invalid guard `"	guard_curr "`" \
+			      ", skipping\n");
+
+			break;
+		}
+	}
+	return ret_code;
+}
+
+function guard_retrieve(filename)
+{
+	guard_curr = "";
+	guard_cond = 0;
+	guard_def  = 0;
+	skip       = 0;
+
+	assert(filename != "");
+
+	verbose("Retrieving from file `" filename "`\n");
+
+	while (((getline string < filename) > 0) &&
+	       (guard_def == 0)) {
+
+		debug("Parsing string: `" string "`\n");
+
+		if (match(string, "^[ \t]*$") != 0) {
+			continue;
+		}
+
+		if ((guard_cond == 1) && (skip == 0)) {
+
+			if (match(string, 
+				  "[ \t]*(/)(*).*(*)(/)[ \t]*") != 0) {
+				debug("Found inline C comment\n");
+			} else if (match(string, 
+				  "[ \t]*(/)(/).*[ \t]*") != 0) {
+				debug("Found inline C++ comment\n");
+			} else if (match(string,
+				  "[ \t]*(/)(*).*") != 0) {
+				debug("Found multiline comment start\n");
+
+				skip = 1;
+			}
+			string = clean_comment(string);
+
+			if (string == "") {
+				continue;
+			}
+		}
+
+		if ((skip == 1) && (guard_cond == 1)) {
+
+			if (match(string,
+				  "[^((/)(*))]*(*)(/)[ \t]*") != 0) {
+				debug("Found multiline comment end\n");
+
+				skip   = 0;
+				string = clean_comment(string);
+
+				if (string == "") {
+					continue;
+				}
+			}
+		}
+
+		if ((guard_cond == 0) &&
+		    (match(string, 
+			   "#[ \t]*ifndef[ \t]+[A-Z0-9_]+") \
+		     != 0)) {
+			debug("Found first guard conditional " \
+			      "entry: `" string "`\n");
+
+			sub("^[ \t]*#[ \t]*ifndef[ \t]+", "", string);
+
+			if (match(string,
+				  "[A-Z0-9_]+[ \t]*(/)(*).*(*)(/)[ \t]*") \
+			    != 0) {
+				debug("Found inline comment\n");
+
+				string = clean_comment(string);
+
+			} else if (match(string,
+				  "^[A-Z0-9_]+[ \t]*(/)(*).*") != 0) {
+				debug("Found multiline comment start\n");
+
+				string = clean_comment(string);
+				skip = 1;
+			}	
+			guard_curr = string;
+			guard_cond = 1;
+				
+			continue;
+		}
+
+		if ((guard_cond == 1) && 
+		    (match(string, "#[ \t]*define[ \t]+" guard_curr) != 0)) {
+			debug("Found guard define entry `" \
+			      string "`\n");
+			
+			guard_def = 1;
+			break;
+		}
+
+		if ((guard_cond == 1) && (skip == 0)) {
+
+			debug("Invalid guard `"	guard_curr "`" \
+			      ", skipping\n");
+
+			break;
+		}
+	}
+
+	if (guard_curr == "") {
+		warning("Missing guard for file `" filename "`\n");
+
+		if (fatal) {
+			return 0;
+		}
+	} else {
+
+		if (guard_cond && !guard_def) {
+			warning("Missing guard (" guard_curr      \
+				") definition in file `" filename \
+				"`\n");
+
+			if (fatal) {
+				return 0;
+			}
+		} else {
+			guard_cnt++;
+		}
+		guard_lst[guard_curr] = 0;
+		guard_ref[filename] = "";
+	}
+	return 1;
+}
+
+BEGIN {
+	PROGNAME = "guardscheck";
+
+	lib_init();
+
+        delete paths;
+        paths["./"]  = 1;
+        paths["/"]   = 1;
+	fatal        = 0;
+
+	opts   = "p:rfvdh";
+	h_desc = "Check headers guard correctness";
+	h_note = "Place input files at last, using -- as separator";
+
+	opt_desc["p"] = "specify a search path for input files";
+	opt_desc["r"] = "print a summary report (guard based)"
+	opt_desc["f"] = "all warnings become fatal";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";
+	opt_desc["h"] = "display this help and exit";
+
+	infiles_cnt = 0;
+
+	guard_cnt = 0;
+	guard_rep = 0;
+        delete guard_lst;
+	delete guard_ref;
+
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+                if (c == "p") {
+                        paths[optarg] = 1;
+		} else if (c == "r") {
+			guard_rep = 1;
+		} else if (c == "f") {
+			fatal = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "d") {
+			_debug = 1;
+		} else if (c == "h") {
+			help(1, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+
+	debug("PASS 1: Checking input files existance\n");
+
+        for (i = 0; optind < ARGC; optind++) {
+		infile = ARGV[optind];
+		wrong  = 1;
+
+		for (p in paths) {
+
+			if (readable(p "/" infile)) {
+				infiles[i] = p "/" infile;
+				wrong = 0;
+				break;
+			}
+		}
+
+		if (wrong) {
+			error("File " infile " is not readable\n");
+			exit(1);
+		}
+		debug("Adding " infile "\n");
+		i++;
+	}
+	infiles_cnt = i;
+
+	debug(infiles_cnt " files to check\n");
+
+	if (infiles_cnt <= 0) {
+		hint("Missing input file(s)");
+		exit(1);
+	}
+
+	debug("PASS 2: Retrieving guard and reference list from input " \
+	      "files\n");
+
+	for (fn = 0; fn < infiles_cnt; fn++) {
+
+		if (!guard_retrieve(infiles[fn])) {
+			close(infiles[fn]);
+			exit(1);
+		}
+		close(infiles[fn]);
+	}
+
+	if (guard_cnt == 0) {
+		debug("No guard found in input files\n");
+		exit(0);
+	}
+
+	debug("PASS 3: Counting guards from input files\n");
+
+	for (fn = 0; fn < infiles_cnt; fn++) {
+
+		if (!guard_count(infiles[fn])) {
+			close(infiles[fn]);
+			exit(1);
+		}
+		close(infiles[fn]);
+	}
+
+	debug("PASS 4: Checking guard uniqueness\n");
+
+	if (!guard_check(guard_lst, guard_ref)) {
+		exit(1);
+	}
+
+  	if (guard_rep == 1) {
+		debug("PASS 5: Produce summary report\n");
+
+ 		if (!guard_report(guard_lst, guard_ref)) {
+			exit(1);
+
+		}
+ 	}
+
+	verbose("All done\n");
+	exit(0);
+}
+
+END {
+	lib_fini();
+}

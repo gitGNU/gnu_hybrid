@@ -1,0 +1,276 @@
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan <ff0000.it@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+BEGIN {
+	PROGNAME = "ifdefscheck";
+
+	lib_init();
+
+	fatal        = 0;
+	check        = 0;
+	prefix       = "";
+	config       = "";
+
+	delete paths;
+	paths["./"] = 1;
+	paths["/"]  = 1;
+
+	opts   = "D:P:p:Cfvdh";
+	h_desc = "Check ifdefs correctness";
+	h_note = "Place input files at last, using -- as separator";
+
+	opt_desc["P"] = "specify a prefix for all the defines";
+	opt_desc["D"] = "specify a config file";
+	opt_desc["p"] = "specify a search path for input files";
+	opt_desc["C"] = "optional check for unused defines in config file";
+	opt_desc["f"] = "all warnings become fatal";
+	opt_desc["v"] = "enable verbose output";
+	opt_desc["d"] = "enable debugging";
+	opt_desc["h"] = "display this help and exit";
+
+	configs_cnt  = 0;
+	tmp_conf_cnt = 0;
+	infiles_cnt  = 0;
+
+	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
+		if (c == "P") {
+			prefix = optarg;
+		} else if (c == "p") {
+			paths[optarg] = 1;
+		} else if (c == "D") {
+			config = optarg;
+		} else if (c == "C") {
+			check = 1;
+		} else if (c == "f") {
+			fatal = 1;
+		} else if (c == "v") {
+			_verbose = 1;
+		} else if (c == "d") {
+			_debug = 1;
+		} else if (c == "h") {
+			help(1, h_desc, h_note, opts, opt_desc);
+			exit(0);
+		} else if (c == ":") {
+			hint("");
+			exit(1);
+		} else if (c == "?") {
+			hint("");
+			exit(1);
+		} else {
+			not_reachable();
+		}
+	}
+
+	debug("PASS 1: Checking input files existance\n");
+
+        for (i = 0; optind < ARGC; optind++) {
+
+			infile = ARGV[optind];
+			wrong  = 1;
+			for (p in paths) {
+				if (readable(p "/" infile)) {
+					infiles[i] = p "/" infile;
+					wrong = 0;
+					break;
+				}
+			}
+			if (wrong) {
+				error("File " infile " is not readable\n");
+				exit(1);
+			}
+
+			debug("Adding " infile "\n");
+			i++;
+	}
+	infiles_cnt = i;
+
+	debug(infiles_cnt " files to check\n");
+
+	if (infiles_cnt <= 0) {
+		hint("Missing input file(s)");
+		exit(1);
+	}
+
+	debug("PASS 2: Checking input files data\n");
+	
+	if (config != "") {
+		if (!process_config(config)) {
+			error("Wrong config file `" config "`\n");
+			exit(1);
+		}
+	}
+
+	if (check) {
+		# XXX FIXME:
+		#     Do not use global variables this way, use a 
+		#     variable and pass it with function call instead
+		tmp_conf_cnt = 0;
+	}
+
+	count  = 0;
+	for (fn = 0; fn < infiles_cnt; fn++) {
+		count = count + check_file(infiles[fn]);
+
+		if ((count > 0) && fatal) {
+			warning("Got " count " wrong defines on "	\
+				"`" infiles[fn] "`"			\
+				"\n");
+			exit(1); 
+		}
+	}
+	if (count > 0) {
+		warning("Got " count " wrong defines\n");
+		
+	}
+
+	count = 0;
+	if (check) {
+		for (i = 1; i <= tmp_conf_cnt; i++) {
+			if (tmp_conf[i] != "") {
+				count++;
+
+				verbose("Unused definition of "	\
+					"`" tmp_conf[i] "` "	\
+					"found \n");
+				if (fatal) {
+					warning("There are " count " "	\
+						"unused defines\n");
+					exit(1);
+				}
+			}
+		}
+	}
+	if (count > 0) {
+		warning("Got " count " unused defines\n");
+	}
+
+	exit(0);
+}
+
+function process_config(filename) 
+{
+	assert(filename);
+
+	debug("Checking config file (" filename ")\n");
+
+	if (!readable(filename)) {
+		error("Filename file `" filename "` is not readable\n");
+		exit(1);
+	}
+
+	while ((getline line < filename) > 0) {
+		line = strcleanspc(line);
+
+		if (match(line, /^[a-zA-Z0-9][a-zA-Z0-9_]*$/) != 0) {
+			assert(line);
+
+			debug("Found define entry (" line ")\n");
+
+			configs[++configs_cnt] = line;
+
+			if (check) {
+				tmp_conf[++tmp_conf_cnt] = line;
+			}
+		}
+	}
+	close(filename);
+
+	if (configs_cnt == 0) {
+		error("No valid definitions found\n");
+		return 0;
+	}
+
+	debug("Got " configs_cnt " valid definitions\n");
+	return 1;
+}
+
+function check_define(def)
+{
+	assert(def);
+
+	debug("Checking define (" def ")\n");
+
+	for (i = 1; i <= configs_cnt; i++) {
+		if (def == configs[i]) {
+			debug("Define `" def "` matched\n");
+
+			if (check) {
+				tmp_conf[i] = "";
+			}
+
+			return 1;
+		}
+	}
+
+	verbose("Define `" def"` not matched\n");
+	return 0;
+}
+
+function check_file(filename)
+{
+	lineno = 0;
+	nook   = 0;
+
+	debug("Checking file (" filename ")\n");
+
+	while ((getline line < filename) > 0) {
+		lineno++;
+
+		debug("Checking line (" line ")\n");
+
+		line = strcleanspc(line);
+
+		if (match(line, "^#[ ]*if[ ]*" prefix		\
+			  "[a-zA-Z0-9][a-zA-Z0-9_]*$") != 0) {
+
+			sub(/^#[ ]*if /, "", line);
+		} else if (match(line, "^#[ ]*elif[ ]*" prefix		\
+				 "[a-zA-Z0-9][a-zA-Z0-9_]*$") != 0) {
+
+			sub(/^#[ ]*elif /, "", line);
+		} else {
+		       line = "";
+		}
+
+		if (line) {
+
+			if (prefix) {
+				sub(prefix, "", line);
+			}
+			result_string =			\
+				filename ":" lineno " "	\
+				"(" prefix line ")"	\
+				"... ";
+
+			if (!check_define(line)) {
+				verbose(result_string "Fail\n");
+				nook++;
+			} else {
+				verbose(result_string "Ok\n");
+			}
+		}
+
+	}
+	close(filename);
+	return nook;
+}
+
+END {
+	lib_fini();
+}
