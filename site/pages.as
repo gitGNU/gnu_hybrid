@@ -8,7 +8,7 @@ pages = {
 			footer = "footer";
 		};
 		vars = {
-			title = "Sitetool";
+			title = "Hybrid";
 			css   = "site.css";
 		};
 	};
