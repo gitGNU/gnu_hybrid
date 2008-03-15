@@ -1,0 +1,6 @@
+0.0.1:
+2007-08-18 Francesco Salvestrini <salvestrini@users.sourceforge.net>
+	* configure.ac: Rearranged and updated.
+	* *: Fixed directory structure.
+	* THANKS: Updated.
+	* choose.sh.in: Added missing variables and missing hint() function.

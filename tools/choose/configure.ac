@@ -1,0 +1,127 @@
+#
+# configure.ac for Hybrid kernel
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+AC_INIT([Choice-tool],[0.0.1],[salvestrini@gmail.com],[choicetool])
+
+# Check for a recent version of autoconf
+AC_PREREQ(2.61)
+
+AC_CONFIG_SRCDIR([choose.sh.in])
+AC_CONFIG_AUX_DIR([tools/autotools])
+AC_CONFIG_MACRO_DIR([tools/autotools/m4])
+
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+# Options applied globally to all processed Makefile.am
+AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
+
+#
+# Checks for needed programs
+#
+
+AC_PROG_GREP
+AS_IF([test -z "$GREP"],[
+   AX_MISSING_PACKAGE([grep],[http://www.gnu.org/software/grep/grep.html])
+])
+
+AC_PROG_SED
+AS_IF([test -z "$SED"],[
+   AX_MISSING_PACKAGE([sed],[http://www.gnu.org/software/sed/sed.html])
+])
+
+AC_PROG_INSTALL
+AC_PROG_MKDIR_P
+AX_PATH_MISSING([PERL], [perl])
+AX_PATH_MISSING([WGET], [wget])
+
+# C Preprocessor
+AC_PROG_CPP
+
+# C compiler
+AC_PROG_CC
+AM_PROG_CC_C_O
+AC_PROG_CXX
+AC_PROG_CXX_C_O
+AC_PROG_CXXCPP
+
+AC_PROG_RANLIB
+#AC_PROG_LIBTOOL
+
+#
+# Lex (Flex) is needed in the tools directory
+#
+AM_PROG_LEX
+LEX_FLAGS=""
+# Use short options for compatibility (-v=--verbose, -d=--debug)
+AX_PROG_FLEX([
+  LEX_FLAGS="$LEX_FLAGS -v"
+  AS_IF([test "x$enable_build_tools_debug" = "xyes"],[
+    LEX_FLAGS="$LEX_FLAGS -d"
+  ])
+])
+AC_SUBST(LEX_FLAGS)
+
+#
+# Yacc (Bison) is needed in the tools directory
+#
+AC_PROG_YACC
+YACC_FLAGS=""
+# Use short options for compatibility (-v=--verbose, -t=--debug)
+AX_PROG_BISON([
+  YACC_FLAGS="$YACC_FLAGS -v"
+  AS_IF([test "x$enable_build_tools_debug" = "xyes"],[
+    YACC_FLAGS="$YACC_FLAGS -t"
+  ])
+])
+AC_SUBST(YACC_FLAGS)
+
+
+#
+# Autoheader support
+#
+AC_CONFIG_HEADERS([include/config.h])
+
+
+#
+# LKC support
+#
+#with_curses=yes
+#MP_WITH_CURSES
+AX_CHECK_CURSES
+AC_SUBST(CURSES_LIBS)
+AC_SUBST(CURSES_CFLAGS)
+
+#
+# Finally output the configuration
+#
+AC_CONFIG_FILES([
+	Makefile
+	docs/Makefile
+	lkc/Makefile
+	packrules/Makefile
+	tools/Makefile
+	tools/scripts/Makefile
+	tools/autotools/Makefile
+	tools/autotools/m4/Makefile
+])
+
+AC_OUTPUT
