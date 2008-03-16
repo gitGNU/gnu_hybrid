@@ -83,23 +83,14 @@ help:
 CHANGELOGS =					\
 	ChangeLog
 
-#CHANGELOGS =					\
-#	ChangeLog				\
-#	docs/ChangeLog-2007.0			\
-#	docs/ChangeLog-2006			\
-#	docs/ChangeLog-2005			\
-#	docs/ChangeLog-2004			\
-#	docs/ChangeLog-2003			\
-#	docs/ChangeLog-2002
-
 ##
 ## NOTE:
-##     Do not distribute 'utils' and 'attic' directory!
+##     Makefile.sub is automatically distributed by automake rules
 ##
-EXTRA_DIST +=						\
-	TODO README NEWS COPYING AUTHORS INSTALL THANKS	\
-	$(CHANGELOGS)					\
-	configure.ac.in					\
+EXTRA_DIST +=							\
+	BUGS TODO README NEWS COPYING AUTHORS INSTALL THANKS	\
+	$(CHANGELOGS)						\
+	configure.ac.in						\
 	bootstrap
 
 ##
