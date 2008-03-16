@@ -15,6 +15,7 @@ lkc/zconf-parser.output
 lkc/zconf-parser.c
 lkc/zconf-parser.h
 lkc/zconf-scanner.c
+lkc/lkc_defs.h
 
 packrules/packrules
 
