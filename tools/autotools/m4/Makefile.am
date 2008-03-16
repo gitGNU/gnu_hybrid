@@ -84,12 +84,12 @@ DOWNLOAD =						\
 	ax_check_awk_xor.m4				\
 	ax_try_awk_anyout.m4				\
 	ax_try_awk_expout.m4				\
-	ax_gcc_option.m4				\
-	ax_gcc_version.m4				\
-	ax_gxx_version.m4
+	ax_gcc_option.m4
 
 MACROS =					\
 	$(DOWNLOAD)				\
+	ax_gcc_version.m4			\
+	ax_gxx_version.m4			\
 	ax_awk_functionality.m4			\
 	ax_arg_with.m4				\
 	ax_asm_uscore.m4			\
