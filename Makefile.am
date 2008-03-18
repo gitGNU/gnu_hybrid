@@ -129,4 +129,8 @@ update:
 site: all
 	(cd site && $(MAKE) $(AM_MAKEFLAGS) site)
 
-DISTCLEANFILES =
+##
+## NOTE:
+##     DISTCLEANFILES already defined in Makefile.def
+##
+#DISTCLEANFILES =
