@@ -36,18 +36,32 @@ for tool in autoheader autoconf libtool libtoolize aclocal automake; do
 done
 
 #
-# VERSION
+# Remove files left from the previous run
 #
-echo "$PROGNAME: Building VERSION ..."
-if test ! -r ChangeLog ; then
-    echo "$PROGNAME: Cannot read ChangeLog file"
-    exit 1
-fi
-head -n 1 ChangeLog | sed -e 's/:.*//' > VERSION || {
-    echo "$PROGNAME: Cannot build VERSION file"
-    rm -f VERSION
-    exit 1
-}
+echo "$PROGNAME: Removing autotools related files and directories ..."
+rm -f  `find ./ -name "Makefile.in"`                 || exit 1
+rm -f  config.cache aclocal.m4 config.h.in configure || exit 1
+rm -f  config.guess config.sub ltmain.sh             || exit 1
+rm -rf autom4te.cache                                || exit 1
+
+#
+# configure.ac
+#
+echo "$PROGNAME: Building configure.ac from configure.ac.in"
+#if test ! -r ChangeLog ; then
+#    echo "$PROGNAME: Cannot read ChangeLog file"
+#    exit 1
+#fi
+#head -n 1 ChangeLog | sed -e 's/:.*//' > VERSION || {
+#    echo "$PROGNAME: Cannot build VERSION file"
+#    rm -f VERSION
+#    exit 1
+#}
+rm -f configure.ac
+VERSION=`git tag -l | sort -s -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1`
+cat configure.ac.in | sed -e 's,[@]VERSION[@],'$VERSION',' > configure.ac || \
+{ rm -f configure.ac ; exit 1 ; }
+chmod a-w configure.ac
 
 #
 # autoreconf
