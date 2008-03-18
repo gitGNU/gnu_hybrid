@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-AC_INIT([Choice-tool],[0.0.1],[salvestrini@gmail.com],[choicetool])
+AC_INIT([Choice-tool],[@VERSION@],[salvestrini@gmail.com],[choicetool])
 
 # Check for a recent version of autoconf
 AC_PREREQ(2.61)
