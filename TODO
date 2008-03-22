@@ -14,6 +14,9 @@ NOTE:
 	when that TODO has been declared completed ...
 
 TO-BE-DONE:
+* We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have
+  This approach should handle cross-compilation cases.
+
 * tools/scripts/test-*: Remove test files (test-*.txt) when the test runs
   smoothly (XFAIL case).
 
