@@ -766,7 +766,7 @@ cat <<EOF
 
    ${PACKAGE_NAME} ${PACKAGE_VERSION} configured.
 
-   Copyright (C) 2002-2006 Francesco Salvestrini
+   Copyright (C) 2007, 2008 Francesco Salvestrini
    All Rights Reserved.
 
    The ${PACKAGE_NAME}; you can redistribute it and/or
@@ -779,9 +779,7 @@ cat <<EOF
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   Francesco Salvestrini
-   <salvestrini@users.sourceforge.net>
-   http://www.hybrid.org/
+   Francesco Salvestrini <salvestrini@gmail.com>
 
 
 Type \`make help' in order to get some extra targets infos
