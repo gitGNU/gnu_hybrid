@@ -245,7 +245,7 @@ static char* raw_alloc(unsigned int size,
 	return retval;
 }
 
-void* heap_alloc(unsigned int size)
+void* arch_heap_alloc(unsigned int size)
 {
 	void*             address;
 	size_t            indx;
@@ -312,7 +312,7 @@ void* heap_alloc(unsigned int size)
 	return address;
 }
 
-void heap_free(void *address)
+void arch_heap_free(void *address)
 {
 	struct heap_page* page;
 	struct heap_bin*  bin;
