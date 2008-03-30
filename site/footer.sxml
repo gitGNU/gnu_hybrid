@@ -29,10 +29,10 @@
 	      (src "http://www.w3.org/Icons/valid-xhtml10.png")))
     )
    "Powered by "
-   (a (@ (href "http://savannah.nongnu.org/projects/hybrid"))
+   (a (@ (href "http://www.nongnu.org/sitetool"))
       ,as_site_variable_PROGRAMNAME)
    ", hosted at "
-   (a (@ (href "http://savannah.gnu.org"))
+   (a (@ (href "http://savannah.nongnu.org/projects/hybrid"))
       "Savannah")
    (br)
    "Please send broken links and other web page suggestions to "
