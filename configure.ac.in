@@ -359,7 +359,7 @@ AX_CXXCPP_CHECK_FLAG([-Wchar-subscripts],[],[],[
 # TEMP_CPPCXXFLAGS variable values
 AX_STRING_INTERSECT(AX_CONFIG_CPPFLAGS,$TEMP_CPPFLAGS,$TEMP_CXXCPPFLAGS)
 
-# Substitute gathered flags (clean them first) 
+# Substitute gathered flags (clean them first)
 AX_STRING_CLEAN(AX_CONFIG_CPPFLAGS)
 AC_SUBST(AX_CONFIG_CPPFLAGS)
 AX_STRING_CLEAN(AX_CONFIG_CFLAGS)
@@ -379,7 +379,7 @@ AX_CHECK_VPATH_BUILD([
 ])
 
 #
-# Libraries 
+# Libraries
 #
 AC_PATH_PROG(ELKLIB,elklib-config-$target_cpu)
 AS_IF([test "$ELKLIB" = ""],[
@@ -698,6 +698,7 @@ AC_CONFIG_SUBDIRS([
 #
 AC_CONFIG_FILES([
 	Makefile
+
 	tools/Makefile
 	tools/libs/Makefile
 	tools/libs/c/Makefile
@@ -707,8 +708,12 @@ AC_CONFIG_FILES([
 	tools/scripts/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile
+
 	site/Makefile
+	site/in/Makefile
+
 	docs/Makefile
+
 	src/Makefile
 	src/config/version.h
 ])

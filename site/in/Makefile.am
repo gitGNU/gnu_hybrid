@@ -20,16 +20,29 @@
 
 include $(top_srcdir)/Makefile.sub
 
-SUBDIRS =					\
-	in
+EXTRA_DIST =					\
+	contents.as				\
+	files.as				\
+	footer.sxml				\
+	header.sxml				\
+	index.scm				\
+	layout.sxml				\
+	map.as					\
+	pages.as				\
+	site.as					\
+	site.css
 
-site-build:
-	(cd in && $(MAKE) $(AM_MAKEFLAGS) site)
+site:
+	$(SITETOOL) -v --mode initialize && \
+	$(SITETOOL) -v --mode build && \
+	touch site.stamp || { \
+		$(SITETOOL) -v --mode clean ; \
+		rm -f site.stamp ; \
+		exit 1 ; \
+	}
 
-site-copy:
-	if test ! -d out ; then \
-		mkdir out ; \
+maintainer-clean-local:
+	if test -e site.stamp ; then \
+		$(SITETOOL) --mode clean || exit 1 ; \
+		rm -f site.stamp ; \
 	fi
-	cp -R in/.sitetool/site.out/* out
-
-site: all site-build site-copy

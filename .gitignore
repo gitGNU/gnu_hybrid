@@ -40,8 +40,6 @@ src/rules.pkg
 src/core/arch
 src/core/build.h
 
-site/site.stamp
-
 docs/hybrid.info
 
 tools/autotools/compile
@@ -146,3 +144,6 @@ tools/choose/tools/scripts/NEWS-query
 tools/choose/tools/scripts/fetch
 tools/choose/tools/scripts/gitlog2ChangeLog
 
+site/in/.sitetool
+site/in/site.stamp
+site/out/*
