@@ -53,9 +53,16 @@ tools/autotools/mkinstalldirs
 tools/autotools/texinfo.tex
 tools/autotools/ylwrap
 
+tools/libs/c/test-fio
+tools/libs/c/test-misc
+
 tools/libs/awk/lib.awk
 tools/libs/sh/lib.sh
 tools/libs/perl/lib.pl
+
+tools/scripts/test-exp.txt
+tools/scripts/test-in.txt
+tools/scripts/test-out.txt
 
 tools/scripts/NEWS-query
 tools/scripts/fetch
