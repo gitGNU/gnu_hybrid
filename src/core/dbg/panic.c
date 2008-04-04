@@ -37,14 +37,17 @@ static int panic_timeout = PANIC_TIMEOUT;
 
 void arch_panic(const char* message)
 {
-	static int   panic_in_progress = 0;
+	static int panic_in_progress = 0;
 
 	irqs_disable();
 
 	/* Remember that a panic is in progress */
 	panic_in_progress++;
 
-	/* Print the assert message */
+	/* Print the message (if any) */
+	if (!message) {
+		message = "EMPTY ???";
+	}
 	printf("Kernel panic: %s\n", message);
 
 	backtrace_save();
