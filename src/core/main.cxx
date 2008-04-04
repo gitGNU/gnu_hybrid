@@ -25,9 +25,6 @@
 #include "core/scheduler/scheduler.h"
 #include "core/boot/option.h"
 #include "core/build.h"
-//#include "modules/vty/vty.hxx"
-//#include "modules/video/console/console.hxx"
-//#include "modules/video/framebuffer/vesa.hxx"
 
 OPTION_DECLARE(test1,"this is a test1");
 OPTION_DECLARE(test2,"this is a test2");
