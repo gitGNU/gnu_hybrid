@@ -164,14 +164,14 @@ static int option_config(option_t** start,
 		assert((*tmp)->name);
 
 		dprintf("  Name = '%s'\n", (*tmp)->name);
-		
+
 		(*tmp)->next = old;
-		
+
 		old = (*tmp);
 
 		tmp++;
 	}
-	
+
 	/* Fix the head pointer last */
 	options = old;
 
@@ -208,7 +208,7 @@ static int option_unconfig(option_t** start,
 					free(tmp2->value);
 				}
 				tmp2 = tmp2->next;
-				
+
 				break;
 			}
 		}
@@ -299,7 +299,7 @@ static dbg_result_t command_options_on_execute(FILE* stream,
 	assert(argc >= 0);
 
 	if (argc != 0) {
-		return 	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
 
 	unused_argument(argv);
