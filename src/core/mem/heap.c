@@ -152,7 +152,7 @@ int heap_init(addr_t base,
 	      size_t size)
 {
 	size_t       i;
-	uint_t       max_grow;          
+	uint_t       max_grow;
 	unsigned int page_entries;
 
 	/* Inizialize the bins */
@@ -238,10 +238,10 @@ static char* raw_alloc(unsigned int size,
 			page->free_count = 1;
 		}
 	}
-	
+
 	retval        = (char *)heap_base_ptr;
 	heap_base_ptr = new_heap_ptr;
-	
+
 	return retval;
 }
 
@@ -280,12 +280,12 @@ void* arch_heap_alloc(unsigned int size)
 			bins[indx].raw_count = (bins[indx].grow_size /
 						 bins[indx].element_size);
 		}
-		
+
 		bins[indx].raw_count--;
 		address = bins[indx].raw_list;
 		bins[indx].raw_list += bins[indx].element_size;
 	}
-	
+
 	bins[indx].alloc_count++;
 	page = (&heap_alloc_table[((unsigned int) address - heap_base) /
 				  CONFIG_PAGE_SIZE]);
@@ -352,7 +352,7 @@ void arch_heap_free(void *address)
 		      "it is supposed to be in bin for esize 0x%x",
 		      address, bin->element_size);
 	}
-	
+
 	for (i = 0; i < bin->element_size / CONFIG_PAGE_SIZE; i++) {
 		if (page[i].bin_index != page[0].bin_index) {
 			panic("Not all pages in allocation match bin_index");
@@ -427,11 +427,11 @@ static int heap_foreach(int (* callback)(uint_t bin_index,
 					 uint_t bin_raw_count))
 {
 	size_t i;
-	
+
 	assert(callback);
 
 	for (i = 0; i < bin_count; i++) {
-		if (!callback(i, 
+		if (!callback(i,
 			      bins[i].element_size,
 			      bins[i].grow_size,
 			      bins[i].alloc_count,
@@ -440,7 +440,7 @@ static int heap_foreach(int (* callback)(uint_t bin_index,
 			return 0;
 		}
 	}
-	
+
 	return 1;
 }
 
@@ -461,7 +461,7 @@ static dbg_result_t command_heap_on_execute(FILE* stream,
 
 	fprintf(stream, "Heap infos:\n");
 	fprintf(stream, "\n");
-	fprintf(stream, 
+	fprintf(stream,
 		"Index  Elemt-size Grow-size  Alloc      Free       Raw\n");
 
 	heap_foreach(heap_iterator);
