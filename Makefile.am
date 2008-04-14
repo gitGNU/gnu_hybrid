@@ -123,7 +123,34 @@ ChangeLog: $(srcdir)/NEWS
 #		exit 1 ;			\
 #	}
 
-update:
+HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f=doc"
+
+DOWNLOAD =					\
+	INSTALL					\
+	COPYINGv2
+
+FETCH = $(top_builddir)/tools/scripts/fetch
+
+update-fixups:
+	mv -f COPYINGv2 COPYING
+
+update-download:
+	rm -r -f fetch-dir && \
+	mkdir fetch-dir && \
+	for i in $(DOWNLOAD) ; do \
+		$(FETCH) $(HOST)/$$i fetch-dir/$$i || { \
+			rm -f fetch-dir/$$i ; \
+			exit 1 ; \
+		} \
+	done && \
+	for i in $(DOWNLOAD) ; do \
+		mv -f fetch-dir/$$i $$i || { \
+			exit 1 ; \
+		} \
+	done && \
+	rm -r -f fetch-dir
+
+update: update-download update-fixups
 	(cd tools && $(MAKE) $(AM_MAKEFLAGS) update)
 
 site: all
