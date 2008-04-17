@@ -24,7 +24,5 @@ EXTRA_DIST +=					\
 
 libs_SRCS =					\
 	@reldir@/list.h				\
-	@reldir@/list.c				\
 	@reldir@/bcd.h				\
-	@reldir@/bcd.c				\
 	@reldir@/delay.h

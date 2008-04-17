@@ -24,8 +24,8 @@
 
 __BEGIN_DECLS
 
-int bcd_to_int(int value);
-int int_to_bcd(int value);
+#define BCD2INT(V) ((V >> 4) & 0x0F) * 10 + (V & 0x0F)
+#define INT2BCD(V) (((V / 10) << 4) | (V % 10))
 
 __END_DECLS
 
