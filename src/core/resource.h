@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#ifndef CORE_RESOURCE_H
+#define CORE_RESOURCE_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -57,7 +57,7 @@ resource_t RESOURCE_VAR(VAR) UNUSED = {				\
 	NULL,							\
 };								\
 								\
-resource_t* RESOURCE_PTR(VAR) SECTION(".rsrcs") UNUSED = 	\
+resource_t* RESOURCE_PTR(VAR) SECTION(".rsrcs") UNUSED =	\
 	& RESOURCE_VAR(VAR)
 
 /* Do not use this macro !!! */
@@ -103,4 +103,4 @@ void        resource_fini(void);
 
 __END_DECLS
 
-#endif /* RESOURCE_H */
+#endif /* CORE_RESOURCE_H */

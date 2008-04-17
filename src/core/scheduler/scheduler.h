@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
+#ifndef CORE_SCHEDULER_SCHEDULER_H
+#define CORE_SCHEDULER_SCHEDULER_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -31,4 +31,4 @@ void scheduler_fini(void);
 
 __END_DECLS
 
-#endif /* SCHEDULER_H */
+#endif /* CORE_SCHEDULER_SCHEDULER_H */

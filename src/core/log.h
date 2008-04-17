@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef LOG_H
-#define LOG_H
+#ifndef CORE_LOG_H
+#define CORE_LOG_H
 
 #include "config/config.h"
 #include "libc/stdio.h"
@@ -41,4 +41,4 @@ void log_fini(void);
 
 __END_DECLS
 
-#endif /* LOG_H */
+#endif /* CORE_LOG_H */

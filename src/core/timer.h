@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef CORE_TIMER_H
+#define CORE_TIMER_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -27,4 +27,4 @@ __BEGIN_DECLS
 
 __END_DECLS
 
-#endif /* TIMER_H */
+#endif /* CORE_TIMER_H */

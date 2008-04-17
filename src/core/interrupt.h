@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef INTERRUPT_H
-#define INTERRUPT_H
+#ifndef CORE_INTERRUPT_H
+#define CORE_INTERRUPT_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -46,4 +46,4 @@ void  irq_fini(void);
 
 __END_DECLS
 
-#endif /* INTERRUPT_H */
+#endif /* CORE_INTERRUPT_H */

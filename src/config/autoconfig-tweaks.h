@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef AUTOCONFIG_TWEAKS_H
-#define AUTOCONFIG_TWEAKS_H
+#ifndef CONFIG_AUTOCONFIG_TWEAKS_H
+#define CONFIG_AUTOCONFIG_TWEAKS_H
 
 /*
  * NOTE:
@@ -26,8 +26,8 @@
  *     autoconfig.h before they get included by other include files.
  */
 
-#ifndef AUTOCONFIG_H
-#error This file must be included after autoconfig.h
+#ifndef CONFIG_AUTOCONFIG_H
+#error This file must be included after config/autoconfig.h
 #endif
 
 #ifdef USERCONFIG_H
@@ -41,4 +41,4 @@
  *     source tree only ...
  */
 
-#endif /* AUTOCONFIG_TWEAKS_H */
+#endif /* CONFIG_AUTOCONFIG_TWEAKS_H */

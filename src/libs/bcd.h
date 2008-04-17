@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef BCD_H
-#define BCD_H
+#ifndef LIBS_BCD_H
+#define LIBS_BCD_H
 
 #include "config/config.h"
 
@@ -29,4 +29,4 @@ int int_to_bcd(int value);
 
 __END_DECLS
 
-#endif /* BCD_H */
+#endif /* LIBS_BCD_H */

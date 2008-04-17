@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CONFIG_CONFIG_H
+#define CONFIG_CONFIG_H
 
 /* Other configurations could depend on the version */
 #include "config/version.h"
@@ -45,4 +45,4 @@
 
 #endif /* ASM */
 
-#endif /* CONFIG_H */
+#endif /* CONFIG_CONFIG_H */

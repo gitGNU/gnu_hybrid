@@ -672,11 +672,11 @@ AC_CONFIG_HEADERS([src/config/autoconfig.h])
 
 # Place header guard (C style)
 AH_TOP([
-#ifndef AUTOCONFIG_H
-#define AUTOCONFIG_H
+#ifndef CONFIG_AUTOCONFIG_H
+#define CONFIG_AUTOCONFIG_H
 ])
 AH_BOTTOM([
-#endif /* AUTOCONFIG_H */
+#endif /* CONFIG_AUTOCONFIG_H */
 ])
 
 # Check for getopt_long support

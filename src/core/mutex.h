@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef MUTEX_H
-#define MUTEX_H
+#ifndef CORE_MUTEX_H
+#define CORE_MUTEX_H
 
 #include "config/config.h"
 #include "core/semaphore.h"
@@ -47,4 +47,4 @@ int      mutex_trylock(mutex_t* mutex);
 
 __END_DECLS
 
-#endif /* MUTEX_H */
+#endif /* CORE_MUTEX_H */

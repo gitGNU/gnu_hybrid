@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef POWER_H
-#define POWER_H
+#ifndef CORE_POWER_H
+#define CORE_POWER_H
 
 #include "config/config.h"
 
@@ -30,4 +30,4 @@ int reboot(void);
 
 __END_DECLS
 
-#endif /* POWER_H */
+#endif /* CORE_POWER_H */

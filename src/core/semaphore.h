@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef SEMAPHORE_H
-#define SEMAPHORE_H
+#ifndef CORE_SEMAPHORE_H
+#define CORE_SEMAPHORE_H
 
 #include "config/config.h"
 
@@ -44,4 +44,4 @@ void         semaphore_release(semaphore_t* semaphore);
 
 __END_DECLS
 
-#endif /* SEMAPHORE_H */
+#endif /* CORE_SEMAPHORE_H */
