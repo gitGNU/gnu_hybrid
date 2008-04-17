@@ -17,30 +17,33 @@
  *
  */
 
-#ifndef LIST_H
-#define LIST_H
+#ifndef LIBS_LIST_H
+#define LIBS_LIST_H
 
 #include "config/config.h"
 
 __BEGIN_DECLS
 
-struct list_head {
-	struct list_head *next, *prev;
+struct list_entry {
+	struct list_entry *next, *prev;
 };
 
-#define LIST_HEAD_INIT(N) { &(N), &(N)}
-#define LIST_HEAD(N) \
-	struct list_head N = LIST_HEAD_INIT(N)
+#define list_head list_entry
 
-static inline void INIT_LIST_HEAD(struct list_head *list)
-{
-	list->next = list;
-	list->prev = list;
-}
+#define LIST_INITIALIZER(N) { &(N), &(N) }
+#define LIST_HEAD(N)        struct list_head N = LIST_INITIALIZER(N)
 
-void list_add(struct list_head *head, struct list_head *new);
-void list_add_tail(struct list_head *head, struct list_head *new);
+void list_init(struct list_head *list);
+void list_insert_before(struct list_head *elem, struct list_entry *entry);
+void list_insert_after(struct list_head *elem, struct list_entry *entry);
+void list_insert_head(struct list_head *head, struct list_entry *entry);
+void list_insert_tail(struct list_head *head, struct list_entry *entry);
+void list_remove(struct list_head* entry);
+int  list_empty(struct list_entry* entry);
+
+#define LIST_FOREACH(POS, HEAD) \
+	for (POS = HEAD; POS != HEAD; POS = (POS)->next)
 
 __END_DECLS
 
-#endif /* LIST_H */
+#endif /* LIBS_LIST_H */

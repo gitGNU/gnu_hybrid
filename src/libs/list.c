@@ -18,4 +18,19 @@
  */
 
 #include "config/config.h"
+#include "core/dbg/debug.h"
+#include "libs/list.h"
 
+void list_init(struct list_head *head)
+{
+	assert(head);
+
+	head->next = head->prev = head;
+}
+
+int  list_empty(struct list_entry* entry)
+{
+	assert(entry);
+
+	return (entry->next == entry->prev);
+}
