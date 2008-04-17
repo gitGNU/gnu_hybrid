@@ -23,9 +23,13 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "core/timer.h"
+#include "core/mutex.h"
+#include "libs/list.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
+
+static LIST_HEAD(timers);
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_timers_on_execute(FILE* stream,

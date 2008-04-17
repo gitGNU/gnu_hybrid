@@ -83,7 +83,10 @@ int arch_init(void)
 
 void arch_fini(void)
 {
-	timer_fini();
+	if (!timer_fini()) {
+		panic("Cannot finalize timer");
+	}
+
 	i8259_fini();
 	idt_fini();
 	tss_fini();

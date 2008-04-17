@@ -21,7 +21,7 @@
 #define LIBS_LIST_H
 
 #include "config/config.h"
-#include "src/core/dbg/debug.h"
+#include "core/dbg/debug.h"
 
 __BEGIN_DECLS
 

@@ -39,11 +39,13 @@ int mutex_init(mutex_t* mutex)
 	return 1;
 }
 
-void mutex_fini(mutex_t* mutex)
+int mutex_fini(mutex_t* mutex)
 {
 	assert(mutex);
-	
+
 	semaphore_fini(&mutex->semaphore);
+
+	return 1;
 }
 
 mutex_t* mutex_new(void)
@@ -90,7 +92,7 @@ int mutex_locked(mutex_t* mutex)
 	assert(mutex);
 
 	missing();
-	
+
 	return 1;
 }
 
@@ -112,7 +114,7 @@ static dbg_result_t command_mutexes_on_execute(FILE* stream,
 	assert(argc >= 0);
 
 	if (argc != 0) {
-		return 	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
 
 	unused_argument(argv);

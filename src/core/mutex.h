@@ -34,7 +34,7 @@ typedef struct {
 
 /* Statically allocated mutexes */
 int      mutex_init(mutex_t* mutex);
-void     mutex_fini(mutex_t* mutex);
+int      mutex_fini(mutex_t* mutex);
 
 /* Dinamically allocated mutexes */
 mutex_t* mutex_new(void);
