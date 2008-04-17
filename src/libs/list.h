@@ -24,39 +24,22 @@
 
 __BEGIN_DECLS
 
-#if 0
+struct list_head {
+	struct list_head *next, *prev;
+};
 
-typedef struct list_link {
-	struct list_link* next;
-	struct list_link* prev;
-} list_link_t;
+#define LIST_HEAD_INIT(N) { &(N), &(N)}
+#define LIST_HEAD(N) \
+	struct list_head N = LIST_HEAD_INIT(N)
 
-typedef struct list {
-	list_link_t link;
-	uint_t      offset;
-} list_t;
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	list->next = list;
+	list->prev = list;
+}
 
-void  list_init(list_t* list);
-void  list_fini(list_t* list);
-
-void  list_init_etc(list_t* list, int offset);
-
-void  list_add_link_to_head(list_t* list, void* link);
-void  list_add_link_to_tail(list_t* list, void* link);
-void  list_remove_link(void* _link);
-void* list_get_next_item(list_t* list, void* item);
-void* list_get_prev_item(list_t* list, void* item);
-void* list_get_last_item(list_t* list);
-void  list_add_item(list_t* list, void* item);
-void  list_remove_item(list_t* list, void* item);
-void  list_insert_item_before(list_t* list, void* before, void* item);
-void* list_remove_head_item(list_t* list);
-void* list_remove_tail_item(list_t* list);
-void  list_move_to_list(list_t* sourceList, list_t* targetList);
-bool  list_is_empty(list_t* list);
-void* list_get_first_item(list_t* list);
-
-#endif
+void list_add(struct list_head *head, struct list_head *new);
+void list_add_tail(struct list_head *head, struct list_head *new);
 
 __END_DECLS
 
