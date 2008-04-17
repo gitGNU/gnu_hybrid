@@ -21,6 +21,7 @@
 #define LIBS_LIST_H
 
 #include "config/config.h"
+#include "src/core/dbg/debug.h"
 
 __BEGIN_DECLS
 
@@ -30,23 +31,54 @@ typedef struct list_entry {
 
 typedef list_entry_t list_head_t;
 
-#define LIST_INITIALIZER(N) { &(N), &(N) }
-#define LIST_HEAD(N)        list_head_t N = LIST_INITIALIZER(N)
+#define LIST_INITIALIZER(N)        { &(N), &(N) }
+#define LIST_HEAD(N)               list_head_t N = LIST_INITIALIZER(N)
+#define LIST_OFFSETOF(TYPE,MEMBER) (unsigned int)(&(((TYPE *) 0)->(MEMBER)))
 
-void list_init(list_head_t *list);
-int  list_empty(list_entry_t *entry);
-void list_insert_before(list_entry_t *entry,
-			list_entry_t *new);
-void list_insert_after(list_entry_t *entry,
-		       list_entry_t *new);
-void list_insert_head(list_head_t *head,
-		      list_head_t *new);
-void list_insert_tail(list_head_t *head,
-		      list_head_t *new);
-void list_remove(list_entry_t *entry);
+/* Pointers arithmetics */
+#define LIST_ENTRY(PTR,TYPE,MEMEBER)					\
+	((TYPE *)(((char *) POINTER) - LIST_OFFSETOF(TYPE,MEMBER)))
 
-#define LIST_FOREACH(POS, HEAD) \
-	for (POS = HEAD; POS != HEAD; POS = (POS)->next)
+#define LIST_INIT(ENTRY)			\
+	__BEGIN_MACRO				\
+	(ENTRY).next = (ENTRY).prev = &(ENTRY);	\
+	__END_MACRO
+
+#define LIST_ISEMPTY(ENTRY) ((ENTRY).prev == (ENTRY).next)
+
+/*
+ * XXX FIXME: Really crappy, initial work to be fixed ASAP
+ */
+
+#define LIST_INSERT_BEFORE(ENTRY,NEW)		\
+	__BEGIN_MACRO				\
+	(NEW).prev         = (ENTRY).prev;	\
+	(NEW).next         = (ENTRY);		\
+	(ENTRY).prev.next  = (NEW);		\
+	(ENTRY).prev       = (NEW);		\
+	__END_MACRO
+
+#define LIST_INSERT_AFTER(ENTRY,NEW)		\
+	__BEGIN_MACRO				\
+	(NEW).next        = (ENTRY).next;	\
+	(NEW).prev        = (ENTRY);		\
+	(ENTRY).next.prev = (NEW);		\
+	(ENTRY).next      = (NEW);		\
+	__END_MACRO
+
+#define LIST_REMOVE(ENTRY)			\
+	__BEGIN_MACRO				\
+	(ENTRY).prev->next = (ENTRY).next;	\
+	(ENTRY).next->prev = (ENTRY).prev;	\
+	__END_MACRO
+
+#define LIST_FOREACH_FORWARD(POS,ENTRY)
+	for (POS = ENTRY; POS != ENTRY; ENTRY = (ENTRY)->next)
+
+#define LIST_FOREACH_BACKWARD(POS,ENTRY)
+	for (POS = ENTRY; POS != ENTRY; ENTRY = (ENTRY)->prev)
+
+#define LIST_FOREACH(POS,HEAD) LIST_FOREACH_FORWARD(POS,HEAD)
 
 __END_DECLS
 
