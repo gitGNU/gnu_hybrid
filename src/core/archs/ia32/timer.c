@@ -199,6 +199,7 @@ int timer_init(void)
 	return 1;
 }
 
-void timer_fini(void)
+int timer_fini(void)
 {
+	return 1;
 }
