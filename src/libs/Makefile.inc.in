@@ -23,14 +23,8 @@ EXTRA_DIST +=					\
 	@reldir@/rules.cfg
 
 libs_SRCS =					\
-	@reldir@/hash.h				\
-	@reldir@/hash.c				\
 	@reldir@/list.h				\
 	@reldir@/list.c				\
-	@reldir@/bitmap.h			\
-	@reldir@/bitmap.c			\
-	@reldir@/queue.h			\
-	@reldir@/queue.c			\
 	@reldir@/bcd.h				\
 	@reldir@/bcd.c				\
 	@reldir@/delay.h

@@ -46,17 +46,17 @@ syscalls_SRCS = 				\
 	@reldir@/thread.c			\
 	@reldir@/semaphore.h			\
 	@reldir@/semaphore.c			\
-	@reldir@/spinlock.h			\
-	@reldir@/spinlock.c			\
 	@reldir@/mutex.h			\
 	@reldir@/mutex.c			\
 	@reldir@/interrupt.h			\
 	@reldir@/interrupt.c			\
+	@reldir@/timer.h			\
+	@reldir@/timer.c			\
 	@reldir@/log.h				\
 	@reldir@/log.c				\
 	@reldir@/module.h			\
 	@reldir@/module.c			\
-	@reldir@/main.cxx
+	@reldir@/main.c
 
 @reldir@/syscalls.h: Makefile $(syscall_SRCS) $(MKSYSCALLS)
 	$(MKSYSCALLS) $(MKSYSCALLS_FLAGS) -p $(top_srcdir)/src -g SYSCALLS_H -o @reldir@/syscalls.h -- $(syscalls_SRCS) || { rm -f @reldir@/syscalls.h ; exit 1 ; }
@@ -79,14 +79,14 @@ core_SRCS =					\
 	@reldir@/thread.c			\
 	@reldir@/semaphore.h			\
 	@reldir@/semaphore.c			\
-	@reldir@/spinlock.h			\
-	@reldir@/spinlock.c			\
 	@reldir@/mutex.h			\
 	@reldir@/mutex.c			\
 	@reldir@/interrupt.h			\
 	@reldir@/interrupt.c			\
+	@reldir@/timer.h			\
+	@reldir@/timer.c			\
 	@reldir@/log.h				\
 	@reldir@/log.c				\
 	@reldir@/module.h			\
 	@reldir@/module.c			\
-	@reldir@/main.cxx
+	@reldir@/main.c
