@@ -24,22 +24,26 @@
 
 __BEGIN_DECLS
 
-struct list_entry {
+typedef struct list_entry {
 	struct list_entry *next, *prev;
-};
+} list_entry_t;
 
-#define list_head list_entry
+typedef list_entry_t list_head_t;
 
 #define LIST_INITIALIZER(N) { &(N), &(N) }
-#define LIST_HEAD(N)        struct list_head N = LIST_INITIALIZER(N)
+#define LIST_HEAD(N)        list_head_t N = LIST_INITIALIZER(N)
 
-void list_init(struct list_head *list);
-void list_insert_before(struct list_head *elem, struct list_entry *entry);
-void list_insert_after(struct list_head *elem, struct list_entry *entry);
-void list_insert_head(struct list_head *head, struct list_entry *entry);
-void list_insert_tail(struct list_head *head, struct list_entry *entry);
-void list_remove(struct list_head* entry);
-int  list_empty(struct list_entry* entry);
+void list_init(list_head_t *list);
+int  list_empty(list_entry_t *entry);
+void list_insert_before(list_entry_t *entry,
+			list_entry_t *new);
+void list_insert_after(list_entry_t *entry,
+		       list_entry_t *new);
+void list_insert_head(list_head_t *head,
+		      list_head_t *new);
+void list_insert_tail(list_head_t *head,
+		      list_head_t *new);
+void list_remove(list_entry_t *entry);
 
 #define LIST_FOREACH(POS, HEAD) \
 	for (POS = HEAD; POS != HEAD; POS = (POS)->next)
