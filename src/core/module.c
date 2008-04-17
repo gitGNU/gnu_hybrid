@@ -87,8 +87,8 @@ void moddb_fini(void)
 	_moddb_stop  = NULL;
 	_moddb_curr  = NULL;
 #endif
-	
-	FILE_set(&_moddb, NULL, NULL, NULL, NULL);	
+
+	FILE_set(&_moddb, NULL, NULL, NULL, NULL);
 }
 
 struct module {
@@ -108,7 +108,7 @@ int module_init(bootinfo_t* bootinfo)
 
 	dprintf("Initializing modules\n");
 	modules = NULL;
-	
+
 	return 1;
 }
 
@@ -134,7 +134,7 @@ int module_load(const char* name)
 
 	/* Link with the others */
 	tmp->next = modules;
-	modules   = tmp; 
+	modules   = tmp;
 
 	return 1;
 }
@@ -177,7 +177,7 @@ void module_fini(void)
 	tmp = modules;
 	while (tmp) {
 		assert(tmp->name);
-		
+
 		if (!module_unload(tmp->name)) {
 			dprintf("Cannot unload module '%s'\n", tmp->name);
 		}

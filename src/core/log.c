@@ -81,7 +81,7 @@ static int log_getchar(void)
 
 	character = buffer[position];
 	position  = (position + 1) % CONFIG_LOG_SIZE;
-	
+
 	CHECK_POSITION(position);
 
 	return (char) character;
@@ -101,7 +101,7 @@ static int log_fseek(long offset, int whence)
 		case SEEK_SET: new_position = position - length; break;
 		case SEEK_CUR:                                   break;
 		case SEEK_END:                                   break;
-		default:       bug();                 	         break;
+		default:       bug();			         break;
 	}
 	/* Adjust new origin with offset */
 	new_position = new_position + offset;
@@ -111,11 +111,11 @@ static int log_fseek(long offset, int whence)
 		/* Out of bounds */
 		return EOF;
 	}
- 
+
 	position = new_position % CONFIG_LOG_SIZE;
 
 	CHECK_POSITION(position);
-	
+
 	return 0;
 }
 
@@ -143,7 +143,7 @@ void log_dump(FILE* stream)
 	/* Dump all the log buffer to the passed stream */
 	for (i = 0; (i < length) && (i < CONFIG_LOG_SIZE) ; i++) {
 		char c;
-		
+
 		c = buffer[(position + i) % CONFIG_LOG_SIZE];
 
 		/* We shouldn't get non printable chars ... */
@@ -154,7 +154,7 @@ void log_dump(FILE* stream)
 			break;
 		}
 	}
-	
+
 	/* Restore the saved position */
 	position = old_position;
 	CHECK_POSITION(position);
@@ -219,7 +219,7 @@ static dbg_result_t command_log_on_execute(FILE* stream,
 	assert(argc >= 0);
 
 	if (argc != 0) {
-		return 	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
 
 	unused_argument(argv);
