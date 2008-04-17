@@ -66,16 +66,20 @@ typedef list_entry_t list_head_t;
 	(ENTRY).next      = (NEW);		\
 	__END_MACRO
 
-#define LIST_REMOVE(ENTRY)			\
-	__BEGIN_MACRO				\
-	(ENTRY).prev->next = (ENTRY).next;	\
-	(ENTRY).next->prev = (ENTRY).prev;	\
+#define LIST_REMOVE(ENTRY)				\
+	__BEGIN_MACRO					\
+	if (!LIST_ISEMPTY(ENTRY)) {			\
+		(ENTRY).prev->next = (ENTRY).next;	\
+		(ENTRY).next->prev = (ENTRY).prev;	\
+	} else {					\
+		LIST_INIT(ENTRY);			\
+	}						\
 	__END_MACRO
 
-#define LIST_FOREACH_FORWARD(POS,ENTRY)
+#define LIST_FOREACH_FORWARD(POS,ENTRY)				\
 	for (POS = ENTRY; POS != ENTRY; ENTRY = (ENTRY)->next)
 
-#define LIST_FOREACH_BACKWARD(POS,ENTRY)
+#define LIST_FOREACH_BACKWARD(POS,ENTRY)			\
 	for (POS = ENTRY; POS != ENTRY; ENTRY = (ENTRY)->prev)
 
 #define LIST_FOREACH(POS,HEAD) LIST_FOREACH_FORWARD(POS,HEAD)
