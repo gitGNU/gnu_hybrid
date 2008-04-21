@@ -21,7 +21,7 @@
 AC_INIT([Hybrid kernel],[@VERSION@],[salvestrini@gmail.com],[hybrid-kernel])
 
 # Check for a recent version of autoconf
-AC_PREREQ(2.61)
+AC_PREREQ([2.61])
 
 AC_CONFIG_SRCDIR([src/core/main.c])
 AC_CONFIG_AUX_DIR([tools/autotools])
@@ -785,7 +785,6 @@ cat <<EOF
    GNU General Public License for more details.
 
    Francesco Salvestrini <salvestrini@gmail.com>
-
 
 Type \`make help' in order to get some extra targets infos
 Type \`make' to build the software. Type \`make install' to install it
