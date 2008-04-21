@@ -700,11 +700,12 @@ AC_CONFIG_FILES([
 	Makefile
 
 	tools/Makefile
+
 	tools/libs/Makefile
-	tools/libs/c/Makefile
 	tools/libs/sh/Makefile
 	tools/libs/awk/Makefile
 	tools/libs/perl/Makefile
+
 	tools/scripts/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile

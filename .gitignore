@@ -53,9 +53,6 @@ tools/autotools/mkinstalldirs
 tools/autotools/texinfo.tex
 tools/autotools/ylwrap
 
-tools/libs/c/test-fio
-tools/libs/c/test-misc
-
 tools/libs/awk/lib.awk
 tools/libs/sh/lib.sh
 tools/libs/perl/lib.pl

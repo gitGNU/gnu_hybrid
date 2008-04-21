@@ -19,7 +19,6 @@
 ##
 
 SUBDIRS =					\
-	c					\
 	sh					\
 	awk					\
 	perl
