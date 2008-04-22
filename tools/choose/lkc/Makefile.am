@@ -18,6 +18,8 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
+include $(top_srcdir)/Makefile.sub
+
 AUTOMAKE_OPTIONS = subdir-objects
 
 COMMONCFLAGS   = 
