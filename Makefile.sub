@@ -50,4 +50,17 @@ do_subst = sed \
   -e 's,[@]pkgvlibsdir[@],$(pkgvlibsdir),g' \
   -e 's,[@]pkgvdatadir[@],$(pkgvdatadir),g' \
   -e 's,[@]libdir[@],$(libdir),g' \
-  -e 's,[@]includedir[@],$(includedir),g'
+  -e 's,[@]includedir[@],$(includedir),g' \
+  -e 's,[@]AWK[@],$(AWK),g' \
+  -e 's,[@]MBCHK[@],$(MBCHK),g' \
+  -e 's,[@]GREP[@],$(GREP),g' \
+  -e 's,[@]SED[@],$(SED),g' \
+  -e 's,[@]OBJDUMP[@],$(OBJDUMP),g' \
+  -e 's,[@]NM[@],$(NM),g' \
+  -e 's,[@]CXXFILT[@],$(CXXFILT),g' \
+  -e 's,[@]SIZE[@],$(SIZE),g' \
+  -e 's,[@]TEST_S[@],$(TEST_S),g' \
+  -e 's,[@]TEST_E[@],$(TEST_E),g' \
+  -e 's,[@]TEST_R[@],$(TEST_R),g' \
+  -e 's,[@]TEST_W[@],$(TEST_W),g' \
+  -e 's,[@]TEST_X[@],$(TEST_X),g'
