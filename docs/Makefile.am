@@ -18,5 +18,7 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
+include $(top_srcdir)/Makefile.sub
+
 info_TEXINFOS   = hybrid.texi
 hybrid_TEXINFOS = fdl.texi
