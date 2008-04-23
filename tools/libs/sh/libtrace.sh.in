@@ -23,8 +23,8 @@ libtrace_init ()
     WARNING=1
 
     if test x"$PROGNAME" = x""; then
-        echo "Missing program name !!!" >&2
-        exit 1
+	echo "Missing program name !!!" >&2
+	exit 1
     fi
 }
 
