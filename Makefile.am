@@ -157,6 +157,23 @@ site: all
 	(cd site && $(MAKE) $(AM_MAKEFLAGS) site)
 
 ##
+## XXX FIXME: The "iso" rule is temporary and for debugging purposes only.
+##            Please remove ASAP
+##
+image.iso: all
+	mkdir -p iso/boot || exit 1 ; \
+	cp -f `$(top_builddir)/tools/scripts/grub-config -D`/stage2_eltorito iso/boot/ && \
+	cp -f src/kernel iso/boot && \
+	echo -e "default 0\ntimeout 1\n\ntitle Hybrid\nkernel (cd)/boot/kernel" > iso/boot/menu.lst && \
+	$(MKISOFS) -R -b boot/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o image.iso iso || { \
+	        rm -r -f iso ; \
+		rm -f image.iso ; \
+	        exit 1 ; \
+	} ; \
+	rm -r -f iso
+CLEANFILES = image.iso
+
+##
 ## NOTE:
 ##     DISTCLEANFILES already defined in Makefile.def
 ##
