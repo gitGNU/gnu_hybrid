@@ -42,7 +42,8 @@ scripts =					\
 	guardscheck				\
 	gitlog2ChangeLog			\
 	NEWS-query				\
-	fetch
+	fetch					\
+	grub-config
 
 all-local: $(scripts)
 
@@ -76,7 +77,8 @@ pl_scripts_SRCS =
 noinst_SCRIPTS =				\
 	fetch					\
 	gitlog2ChangeLog			\
-	NEWS-query
+	NEWS-query				\
+	grub-config
 
 EXTRA_DIST =
 
@@ -88,7 +90,8 @@ EXTRA_DIST +=					\
 EXTRA_DIST +=					\
 	fetch.in				\
 	gitlog2ChangeLog.in			\
-	NEWS-query.in
+	NEWS-query.in				\
+	grub-config.sh.in
 
 
 #
@@ -180,6 +183,20 @@ fetch: fetch.in Makefile
 		rm -f $@ $@.tmp ; \
 		exit 1 ; \
 	}
+
+grub-config.sh: Makefile $(sh_lib_SRC) grub-config.sh.in
+	INFILE=grub-config.sh.in ;		\
+	OUTFILE=grub-config.sh ;		\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += grub-config.sh
+
+grub-config: Makefile grub-config.sh
+	INFILE=grub-config.sh ;			\
+	OUTFILE=grub-config ;			\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += grub-config
 
 
 ## bin2source
