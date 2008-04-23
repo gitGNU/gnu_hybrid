@@ -161,15 +161,15 @@ site: all
 ##            Please remove ASAP
 ##
 image.iso: all
-	mkdir -p iso/boot || exit 1 ; \
-	cp -f `$(top_builddir)/tools/scripts/grub-config -D`/stage2_eltorito iso/boot/ && \
+	mkdir -p iso/boot/grub && \
+	cp -f `$(top_builddir)/tools/scripts/grub-config -D`/stage2_eltorito iso/boot/grub && \
 	cp -f src/kernel iso/boot && \
-	echo -e "default 0\ntimeout 1\n\ntitle Hybrid\nkernel (cd)/boot/kernel" > iso/boot/menu.lst && \
-	$(MKISOFS) -R -b boot/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o image.iso iso || { \
+	echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/kernel" > iso/boot/grub/menu.lst && \
+	$(MKISOFS) -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o image.iso iso || { \
 	        rm -r -f iso ; \
 		rm -f image.iso ; \
 	        exit 1 ; \
-	} ; \
+	}
 	rm -r -f iso
 CLEANFILES = image.iso
 
