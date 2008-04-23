@@ -22,6 +22,12 @@ configure.ac
 config.log
 config.status
 
+# XXX FIXME: To be removed ASAP
+image.iso
+tools/scripts/grub-config
+tools/scripts/grub-config.sh
+# XXX FIXME: To be removed ASAP
+
 src/kernel
 
 src/config/rules.usr
