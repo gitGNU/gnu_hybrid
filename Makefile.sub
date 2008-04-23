@@ -63,4 +63,6 @@ do_subst = sed \
   -e 's,[@]TEST_E[@],$(TEST_E),g' \
   -e 's,[@]TEST_R[@],$(TEST_R),g' \
   -e 's,[@]TEST_W[@],$(TEST_W),g' \
-  -e 's,[@]TEST_X[@],$(TEST_X),g'
+  -e 's,[@]TEST_X[@],$(TEST_X),g' \
+  -e 's,[@]GRUB_INSTALL[@],$(GRUB_INSTALL),g' \
+  -e 's,[@]MKISOFS[@],$(MKISOFS),g'
