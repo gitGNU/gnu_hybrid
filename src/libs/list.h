@@ -21,50 +21,47 @@
 #define LIBS_LIST_H
 
 #include "config/config.h"
-#include "core/dbg/debug.h"
 
 __BEGIN_DECLS
 
-typedef struct list_entry {
-	struct list_entry *next, *prev;
-} list_entry_t;
+struct list_entry {
+	struct list_entry * next, * prev;
+};
+typedef struct list_entry list_entry_t;
 
-typedef list_entry_t list_head_t;
+#define LIST_INITIALIZER(NAME)     { & NAME, & NAME }
+#define LIST_HEAD(NAME)            list_entry_t NAME = LIST_INITIALIZER(NAME)
 
-#define LIST_INITIALIZER(N)        { &(N), &(N) }
-#define LIST_HEAD(N)               list_head_t N = LIST_INITIALIZER(N)
-#define LIST_OFFSETOF(TYPE,MEMBER) (unsigned int)(&(((TYPE *) 0)->(MEMBER)))
-
-/* Pointers arithmetics */
-#define LIST_ENTRY(PTR,TYPE,MEMEBER)					\
-	((TYPE *)(((char *) POINTER) - LIST_OFFSETOF(TYPE,MEMBER)))
-
-#define LIST_INIT(ENTRY)			\
+#define LIST_INIT(HEAD)				\
 	__BEGIN_MACRO				\
-	(ENTRY).next = (ENTRY).prev = &(ENTRY);	\
+	(HEAD).next = (HEAD).prev = &(HEAD);	\
 	__END_MACRO
 
-#define LIST_ISEMPTY(ENTRY) ((ENTRY).prev == (ENTRY).next)
+#define LIST_ISEMPTY(HEAD) ((HEAD).prev == (HEAD).next)
 
-/*
- * XXX FIXME: Really crappy, initial work to be fixed ASAP
- */
+#define LIST_OFFSETOF(TYPE,MEMBER) ((unsigned int) (&(((TYPE *) 0)->MEMBER)))
+#define LIST_ENTRY(POINTER,TYPE,MEMBER)					\
+	((TYPE *) (((char *) POINTER) - LIST_OFFSETOF(TYPE,MEMBER)))
 
 #define LIST_INSERT_BEFORE(ENTRY,NEW)		\
 	__BEGIN_MACRO				\
 	(NEW).prev         = (ENTRY).prev;	\
 	(NEW).next         = (ENTRY);		\
-	(ENTRY).prev.next  = (NEW);		\
+	(ENTRY).prev->next = (NEW);		\
 	(ENTRY).prev       = (NEW);		\
 	__END_MACRO
 
 #define LIST_INSERT_AFTER(ENTRY,NEW)		\
 	__BEGIN_MACRO				\
-	(NEW).next        = (ENTRY).next;	\
-	(NEW).prev        = (ENTRY);		\
-	(ENTRY).next.prev = (NEW);		\
-	(ENTRY).next      = (NEW);		\
+	(NEW).next         = (ENTRY).next;	\
+	(NEW).prev         = (ENTRY);		\
+	(ENTRY).next->prev = (NEW);		\
+	(ENTRY).next       = (NEW);		\
 	__END_MACRO
+
+#define LIST_INSERT(ENTRY,NEW) LIST_INSERT_AFTER(ENTRY,NEW)
+
+#define LIST_INSERT_TAIL(HEAD,NEW) LIST_INSERT_BEFORE(HEAD,NEW)
 
 #define LIST_REMOVE(ENTRY)				\
 	__BEGIN_MACRO					\
@@ -76,13 +73,11 @@ typedef list_entry_t list_head_t;
 	}						\
 	__END_MACRO
 
-#define LIST_FOREACH_FORWARD(POS,ENTRY)				\
-	for (POS = ENTRY; POS != ENTRY; ENTRY = (ENTRY)->next)
+#define LIST_FOREACH_FORWARD(ENTRY,CURRENT)				\
+	for (CURRENT = ENTRY; CURRENT != ENTRY; CURRENT = (CURRENT)->next)
 
-#define LIST_FOREACH_BACKWARD(POS,ENTRY)			\
-	for (POS = ENTRY; POS != ENTRY; ENTRY = (ENTRY)->prev)
-
-#define LIST_FOREACH(POS,HEAD) LIST_FOREACH_FORWARD(POS,HEAD)
+#define LIST_FOREACH_BACKWARD(ENTRY,CURRENT)				\
+	for (CURRENT = ENTRY; CURRENT != ENTRY; CURRENT = (CURRENT)->prev)
 
 __END_DECLS
 
