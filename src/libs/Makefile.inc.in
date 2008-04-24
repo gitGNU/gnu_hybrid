@@ -25,5 +25,4 @@ EXTRA_DIST +=					\
 libs_SRCS =					\
 	@reldir@/list.h				\
 	@reldir@/bitmap.h			\
-	@reldir@/bcd.h				\
-	@reldir@/delay.h
+	@reldir@/bcd.h

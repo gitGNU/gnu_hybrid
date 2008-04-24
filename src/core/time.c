@@ -17,16 +17,4 @@
  *
  */
 
-#ifndef LIBS_DELAY_H
-#define LIBS_DELAY_H
-
 #include "config/config.h"
-#include "core/arch/timer.h"
-
-__BEGIN_DECLS
-
-#define delay_ms(X) arch_delay_ms(X)
-
-__END_DECLS
-
-#endif /* LIBS_DELAY_H */
