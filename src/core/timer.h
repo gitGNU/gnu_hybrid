@@ -22,8 +22,32 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
+#include "libs/list.h"
 
 __BEGIN_DECLS
+
+struct timer {
+	void         (* callback)(void * data);
+	void *       data;
+	int          expiration;
+	list_entry_t list;
+};
+typedef struct timer timer_t;
+
+#define TIMER_EXPIRED(TIMER) (((TIMER)->expiration <= 0) ? 1 : 0)
+#define TIMER_INIT(TIMER,CALLBACK,DATA,DELAY)	\
+	__BEGIN_MACRO				\
+	assert(TIMER);				\
+	assert((DELAY) >= 0);			\
+	(TIMER)->callback   = CALLBACK;		\
+	(TIMER)->data       = DATA;		\
+	(TIMER)->expiration = DELAY;		\
+	__END_MACRO
+
+int timers_init(void);
+int timers_fini(void);
+int timer_add(timer_t * timer);
+int timer_remove(timer_t * timer);
 
 __END_DECLS
 
