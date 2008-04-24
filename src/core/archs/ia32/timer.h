@@ -28,10 +28,6 @@ __BEGIN_DECLS
 int  timer_init(void);
 int  timer_fini(void);
 
-void arch_delay_ms(uint32_t ms);
-void arch_delay_us(uint32_t us);
-void arch_delay_ns(uint32_t ns);
-
 __END_DECLS
 
 #endif /* TIMER_H */

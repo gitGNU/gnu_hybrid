@@ -84,36 +84,40 @@ int	     arch_init(void);
 
 int          arch_vm_pagesize(void);
 
-void         arch_cpu_icache_flush(cpu_t* cpu);
-void         arch_cpu_icache_sync(cpu_t* cpu);
-void         arch_cpu_dcache_flush(cpu_t* cpu);
-void         arch_cpu_dcache_sync(cpu_t* cpu);
+void         arch_cpu_icache_flush(cpu_t * cpu);
+void         arch_cpu_icache_sync(cpu_t * cpu);
+void         arch_cpu_dcache_flush(cpu_t * cpu);
+void         arch_cpu_dcache_sync(cpu_t * cpu);
 
-int          arch_atomic_set(int* pointer, int value);
-int          arch_atomic_add(int* pointer, int delta);
-int          arch_atomic_sub(int* pointer, int delta);
-int          arch_atomic_exchange(int* pointer, int new_value);
-int          arch_atomic_test_and_set(int* pointer);
+int          arch_atomic_set(int * pointer, int value);
+int          arch_atomic_add(int * pointer, int delta);
+int          arch_atomic_sub(int * pointer, int delta);
+int          arch_atomic_exchange(int * pointer, int new_value);
+int          arch_atomic_test_and_set(int * pointer);
 
 /* XXX FIXME: Fix the uint_t* ... they should e addr_t* */
-void         arch_context_switch(uint_t* old_stack,
-				 uint_t* new_stack,
-				 uint_t* new_mm);
+void         arch_context_switch(uint_t * old_stack,
+				 uint_t * new_stack,
+				 uint_t * new_mm);
 
 void	     arch_halt(void);
 void	     arch_poweroff(void);
 void	     arch_reboot(void);
 
-uint_t       arch_backtrace_store(uint_t* backtrace,
-				  uint_t  max_len);
+uint_t       arch_backtrace_store(uint_t * backtrace,
+				  uint_t   max_len);
 
 void	     arch_irqs_enable(void);
 int	     arch_irqs_enabled(void);
 void	     arch_irqs_disable(void);
-void	     arch_irqs_save(irq_flags_t* flags);
-void	     arch_irqs_restore(const irq_flags_t* flags);
+void	     arch_irqs_save(irq_flags_t * flags);
+void	     arch_irqs_restore(const irq_flags_t * flags);
 
-//clock_t	     arch_clock(void);
+void         arch_delay_ms(uint32_t ms);
+void         arch_delay_us(uint32_t us);
+void         arch_delay_ns(uint32_t ns);
+
+size_t       arch_timer_granularity(void);
 
 void	     arch_fini(void);
 

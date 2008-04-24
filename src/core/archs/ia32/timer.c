@@ -203,3 +203,8 @@ int timer_fini(void)
 {
 	return 1;
 }
+
+size_t arch_timer_granularity(void)
+{
+	return HZ;
+}
