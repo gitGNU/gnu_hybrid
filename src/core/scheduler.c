@@ -33,7 +33,9 @@ void scheduler_schedule(void)
 {
 }
 
-void scheduler_fini(void)
+int scheduler_fini(void)
 {
+	return 1;
 }
+
 #endif /* CONFIG_MULTIPROCESSING */
