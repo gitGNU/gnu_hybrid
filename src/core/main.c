@@ -23,7 +23,8 @@
 #include "libc/string.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/dbg/debug.h"
-#include "core/scheduler/scheduler.h"
+#include "core/timer.h"
+#include "core/scheduler.h"
 #include "core/boot/option.h"
 #include "core/build.h"
 
@@ -55,11 +56,16 @@ int main(int argc, char* argv[])
 	dbg_enter();
 #endif
 
+	if (!timers_init()) {
+		panic("Cannot initialize timers");
+	}
+
 	if (!scheduler_init()) {
 		panic("Cannot initialize scheduler");
 	}
 
-	scheduler_fini();
+	(void) scheduler_fini();
+	(void) timers_fini();
 
 	panic("This is a panic test ...");
 
