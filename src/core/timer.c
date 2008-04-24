@@ -29,7 +29,6 @@
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
 
-#if 0
 static LIST_HEAD(timers);
 static size_t granularity;
 
@@ -46,22 +45,20 @@ static void timers_update(void)
 
 	timer->expiration -= granularity;
 	if (TIMER_EXPIRED(timer)) {
-		LIST_REMOVE(timer->list);
+		LIST_REMOVE(&timer->list);
 		timer->callback(timer->data);
 	}
 }
-#endif
 
 int timers_init(void)
 {
-#if 0
 	LIST_INIT(timers);
 
 	granularity = arch_timer_granularity();
 	assert(granularity > 0);
 
 	timers_update();
-#endif
+
 	return 1;
 }
 
@@ -70,29 +67,27 @@ int timers_fini(void)
 	return 1;
 }
 
-#if 0
 int timer_add(timer_t * timer)
 {
 	assert(timer);
-	if ((timer->callback == NULL) ||
-	    (timer->expiration < 0)){
+
+	if ((timer->callback == NULL) || (timer->expiration < 0)){
 		return 0;
 	}
 
 	if (LIST_ISEMPTY(timers)) {
-		LIST_INSERT_AFTER(timers, timer->list);
+		LIST_INSERT_AFTER(&timers, &timer->list);
 	} else {
-		timer_t * curr1, * curr2;
+		timer_t * curr1;
 
-		LIST_FOREACH_FORWARD(&timers, curr1->list) {
-			curr2 = curr1->list.next;
+		LIST_FOREACH_FORWARD(&timers, curr1, timer_t, list) {
 			if (curr1->expiration > timer->expiration) {
 				timer->expiration -=
 					LIST_ENTRY(&curr1->list.prev,
 						   timer_t,
 						   list)->expiration;
 				curr1->expiration -= timer->expiration;
-				LIST_INSERT_BEFORE(timers, timer->list);
+				LIST_INSERT_BEFORE(&timers, &timer->list);
 				return 1;
 			}
 		}
@@ -100,9 +95,10 @@ int timer_add(timer_t * timer)
 		if (curr1->list.prev != &timers) {
 			timer->expiration -= LIST_ENTRY(&curr1->list.prev,
 							timer_t,
-							list);
+							list)->expiration;
 		}
-		LIST_INSERT_TAIL(timers, timer->list);
+
+		LIST_INSERT_BEFORE(&timers, &timer->list);
 	}
 
 	return 1;
@@ -119,7 +115,7 @@ int timer_remove(timer_t * timer)
 	} else {
 		timer_t * curr1;
 
-		LIST_FOREACH_FORWARD(&timers, &curr1->list) {
+		LIST_FOREACH_FORWARD(&timers, curr1, timer_t, list) {
 			if (curr1 == timer) {
 				if (timer->expiration > 0) {
 					LIST_ENTRY(&curr1->list.prev,
@@ -128,7 +124,7 @@ int timer_remove(timer_t * timer)
 						timer->expiration;
 				}
 
-				LIST_REMOVE(curr1->list);
+				LIST_REMOVE(&curr1->list);
 
 				return 1;
 			}
@@ -137,7 +133,6 @@ int timer_remove(timer_t * timer)
 
 	return err;
 }
-#endif
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_timers_on_execute(FILE * stream,
