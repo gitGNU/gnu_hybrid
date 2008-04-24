@@ -30,7 +30,6 @@
 #include "core/arch/bios.h"
 #include "core/arch/cmos.h"
 #include "core/arch/i8259.h"
-#include "core/arch/tss.h"
 
 #if CONFIG_ARCH_DEBUG
 #define dprintf(F,A...) printf("arch: " F,##A)
@@ -59,10 +58,6 @@ int arch_init(void)
 		panic("Cannot initialize GDT");
 	}
 
-	if (!tss_init()) {
-		panic("Cannot initialize TSS");
-	}
-
 	if (!idt_init()) {
 		panic("Cannot initialize IDT");
 	}
@@ -89,7 +84,6 @@ void arch_fini(void)
 
 	i8259_fini();
 	idt_fini();
-	tss_fini();
 	gdt_fini();
 	cpus_fini();
 	cmos_fini();
