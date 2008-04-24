@@ -25,11 +25,12 @@
 
 __BEGIN_DECLS
 
-typedef struct {
+struct mutex {
 	semaphore_t semaphore;
 #if CONFIG_MUTEX_DEBUG
 #endif
-} mutex_t;
+};
+typedef struct mutex mutex_t;
 
 
 /* Statically allocated mutexes */
