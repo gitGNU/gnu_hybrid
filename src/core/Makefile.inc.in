@@ -23,7 +23,6 @@ include @reldir@/bfd/Makefile.inc
 include @reldir@/boot/Makefile.inc
 include @reldir@/dbg/Makefile.inc
 include @reldir@/mem/Makefile.inc
-include @reldir@/scheduler/Makefile.inc
 
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
@@ -32,34 +31,8 @@ EXTRA_DIST +=					\
 BUILT_SOURCES += 				\
 	@reldir@/syscalls.h
 
-syscalls_SRCS = 				\
-	$(core_mem_SRCS)			\
-	$(core_scheduler_SRCS)			\
-	@reldir@/syscall.h			\
-	@reldir@/power.h			\
-	@reldir@/power.c			\
-	@reldir@/resource.h			\
-	@reldir@/resource.c			\
-	@reldir@/process.h			\
-	@reldir@/process.c			\
-	@reldir@/thread.h			\
-	@reldir@/thread.c			\
-	@reldir@/semaphore.h			\
-	@reldir@/semaphore.c			\
-	@reldir@/mutex.h			\
-	@reldir@/mutex.c			\
-	@reldir@/interrupt.h			\
-	@reldir@/interrupt.c			\
-	@reldir@/timer.h			\
-	@reldir@/timer.c			\
-	@reldir@/log.h				\
-	@reldir@/log.c				\
-	@reldir@/module.h			\
-	@reldir@/module.c			\
-	@reldir@/main.c
-
 @reldir@/syscalls.h: Makefile $(syscall_SRCS) $(MKSYSCALLS)
-	$(MKSYSCALLS) $(MKSYSCALLS_FLAGS) -p $(top_srcdir)/src -g SYSCALLS_H -o @reldir@/syscalls.h -- $(syscalls_SRCS) || { rm -f @reldir@/syscalls.h ; exit 1 ; }
+	$(MKSYSCALLS) $(MKSYSCALLS_FLAGS) -p $(top_srcdir)/src -g SYSCALLS_H -o @reldir@/syscalls.h -- $(core_SRCS) || { rm -f @reldir@/syscalls.h ; exit 1 ; }
 CLEANFILES += @reldir@/syscalls.h
 
 core_SRCS =					\
@@ -85,8 +58,12 @@ core_SRCS =					\
 	@reldir@/interrupt.c			\
 	@reldir@/timer.h			\
 	@reldir@/timer.c			\
+	@reldir@/time.h				\
+	@reldir@/time.c				\
 	@reldir@/log.h				\
 	@reldir@/log.c				\
+	@reldir@/scheduler.h			\
+	@reldir@/scheduler.c			\
 	@reldir@/module.h			\
 	@reldir@/module.c			\
 	@reldir@/main.c
