@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "libs/delay.h"
+#include "core/time.h"
 #include "libc/ctype.h"
 #include "libc/unistd.h"
 #include "core/archs/arch.h"
@@ -29,7 +29,7 @@
 
 /*
  * These functions transmit a dot, a dash, a letter space, and a word space.
- * 
+ *
  * NOTE:
  *     A single unit space is automatically transmitted after each dot or
  *     dash, so the letter_space() function produces only a two-unit pause.
@@ -129,17 +129,17 @@ static unsigned int codes[64] = {
  * This function transmits the string pointed to by the 'message' argument in
  * Morse code using the architecture specific functions. The speed is set by
  * the UNIT_TIME constant.
- * 
+ *
  * A static table translates from ASCII to Morse code. Each entry is an
  * unsigned integer, where a zero represents a dot and a one represents a dash.
  * No more than 14 bits may be used. Setting bit 15 produces a word space
  * regardless of any other pattern.
- * 
+ *
  * The Morse code pattern is taken from bit 0, and is shifted right each time
  * an element is sent. A special "marker bit" follows the complete Morse
  * pattern. This marker bit is tested before transmitting each bit; if there
  * are no 1's in bits 1..15, the complete character has been sent.
- * 
+ *
  * For example, an "L" would be 0000000000010010, with bit zero containing the
  * first dot, bit one the dash, etc. The marker bit is in bit 4.
  */
@@ -204,7 +204,7 @@ static dbg_result_t command_morse_on_execute(FILE* stream,
 
 		morse(argv[0]);
 	} else {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;		
+		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
 
 	return DBG_RESULT_OK;
