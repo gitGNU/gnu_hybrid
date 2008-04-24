@@ -171,7 +171,7 @@ image.iso: all
 	        exit 1 ; \
 	}
 	rm -r -f iso
-CLEANFILES = image.iso
+CLEANFILES += image.iso
 
 ##
 ## NOTE:
