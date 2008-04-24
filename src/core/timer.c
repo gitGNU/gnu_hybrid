@@ -139,9 +139,7 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 					      int    argc,
 					      char * argv[])
 {
-#if 0
-	list_entry_t * temp_l;
-#endif
+	timer_t * temp;
 
 	assert(stream);
 	assert(argc >= 0);
@@ -153,14 +151,11 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 	unused_argument(argv);
 
 	fprintf(stream, "Timers:\n");
-#if 0
-	LIST_FOREACH_FORWARD(&timers, temp_l) {
-		timer_t * temp_t;
-		temp_t = LIST_ENTRY(temp_l, timer_t, list);
+	LIST_FOREACH_FORWARD(&timers, temp, timer_t, list) {
 		fprintf(stream, "  0x%p %d\n",
-			temp_t->callback, temp_t->expiration);
+			temp->callback, temp->expiration);
 	}
-#endif
+
 	return DBG_RESULT_OK;
 }
 
