@@ -30,7 +30,8 @@ struct list_entry {
 typedef struct list_entry list_entry_t;
 
 #define LIST_INITIALIZER(NAME)     { & NAME, & NAME }
-#define LIST_HEAD(NAME)            list_entry_t NAME = LIST_INITIALIZER(NAME)
+#define LIST_HEAD(NAME)					\
+	list_entry_t NAME = LIST_INITIALIZER(NAME)
 
 #define LIST_INIT(HEAD)				\
 	__BEGIN_MACRO				\
@@ -43,41 +44,49 @@ typedef struct list_entry list_entry_t;
 #define LIST_ENTRY(POINTER,TYPE,MEMBER)					\
 	((TYPE *) (((char *) POINTER) - LIST_OFFSETOF(TYPE,MEMBER)))
 
-#define LIST_INSERT_BEFORE(ENTRY,NEW)		\
-	__BEGIN_MACRO				\
-	(NEW).prev         = (ENTRY).prev;	\
-	(NEW).next         = (ENTRY);		\
-	(ENTRY).prev->next = (NEW);		\
-	(ENTRY).prev       = (NEW);		\
-	__END_MACRO
+static inline void __list_insert(list_entry_t * new,
+				 list_entry_t * prev,
+				 list_entry_t * next)
+{
+	next->prev = new;
+	new->next  = next;
+	new->prev  = prev;
+	prev->next = new;
+}
 
-#define LIST_INSERT_AFTER(ENTRY,NEW)		\
-	__BEGIN_MACRO				\
-	(NEW).next         = (ENTRY).next;	\
-	(NEW).prev         = (ENTRY);		\
-	(ENTRY).next->prev = (NEW);		\
-	(ENTRY).next       = (NEW);		\
-	__END_MACRO
+static inline void __list_insert_before(list_entry_t * entry,
+					list_entry_t * new)
+{
+	__list_insert(new, entry, entry->next);
+}
 
-#define LIST_INSERT(ENTRY,NEW) LIST_INSERT_AFTER(ENTRY,NEW)
+static inline void __list_insert_after(list_entry_t * entry,
+				       list_entry_t * new)
+{
+	__list_insert(new, entry, entry->prev);
+}
 
-#define LIST_INSERT_TAIL(HEAD,NEW) LIST_INSERT_BEFORE(HEAD,NEW)
+#define LIST_INSERT_BEFORE(ENTRY, NEW) __list_insert_before(ENTRY,NEW)
+#define LIST_INSERT_AFTER(ENTRY, NEW)  __list_insert_after(ENTRY,NEW)
 
-#define LIST_REMOVE(ENTRY)				\
-	__BEGIN_MACRO					\
-	if (!LIST_ISEMPTY(ENTRY)) {			\
-		(ENTRY).prev->next = (ENTRY).next;	\
-		(ENTRY).next->prev = (ENTRY).prev;	\
-	} else {					\
-		LIST_INIT(ENTRY);			\
-	}						\
-	__END_MACRO
+static inline void __list_remove(list_entry_t * prev,
+				 list_entry_t * next)
+{
+	next->prev = prev;
+	prev->next = next;
+}
 
-#define LIST_FOREACH_FORWARD(ENTRY,CURRENT)				\
-	for (CURRENT = ENTRY; CURRENT != ENTRY; CURRENT = (CURRENT)->next)
+#define LIST_REMOVE(ENTRY) __list_remove((ENTRY)->prev, (ENTRY)->next)
 
-#define LIST_FOREACH_BACKWARD(ENTRY,CURRENT)				\
-	for (CURRENT = ENTRY; CURRENT != ENTRY; CURRENT = (CURRENT)->prev)
+#define LIST_FOREACH_FORWARD(ENTRY,CURRENT,TYPE,MEMBER)			\
+	for (CURRENT = LIST_ENTRY((ENTRY)->next,TYPE,MEMBER);		\
+	     &(CURRENT->MEMBER) != ENTRY;				\
+	     CURRENT = LIST_ENTRY((CURRENT)->MEMBER.next,TYPE,MEMBER))
+
+#define LIST_FOREACH_BACKWARD(ENTRY,CURRENT,TYPE,MEMBER)		\
+	for (CURRENT = LIST_ENTRY((ENTRY)->prev,TYPE,MEMBER);		\
+	     &(CURRENT->MEMBER) != ENTRY;				\
+	     CURRENT = LIST_ENTRY((CURRENT)->MEMBER.prev,TYPE,MEMBER))
 
 __END_DECLS
 
