@@ -37,6 +37,12 @@ SUBDIRS =					\
 AUTOMAKE_OPTIONS = check-news
 
 ##
+## Maintainer related targets
+##
+maintainer-check:
+	$(MAKE) maintainer-check -C src
+
+##
 ## Configuration related targets
 ##
 default-config-load:

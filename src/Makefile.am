@@ -216,7 +216,17 @@ HDRS = `$(CLHANDLER) $(CLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
 check-guards: Makefile
 	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
 
+WHITESPACE_DETECT = $(top_builddir)/tools/scripts/whitespace-detect
+
 check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards check-boot
+
+##
+## Maintainer related targets
+##
+maintainer-check-whitespaces: Makefile
+	$(WHITESPACE_DETECT) $(SOURCES)
+
+maintainer-check: Makefile maintainer-check-whitespaces
 
 ##
 ## install target related
