@@ -106,3 +106,10 @@ lkc_defs.h: Makefile $(srcdir)/lkc_proto.h
 	$(SED) < $(srcdir)/lkc_proto.h > lkc_defs.h 's/P(\([^,]*\),.*/#define \1 (\*\1_p)/'
 
 CLEANFILES += lkc_defs.h
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

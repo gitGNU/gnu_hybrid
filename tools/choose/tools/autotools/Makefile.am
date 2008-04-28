@@ -23,5 +23,9 @@ include $(top_srcdir)/Makefile.sub
 SUBDIRS =					\
 	m4
 
-update:
-	(cd m4 && $(MAKE) $(AM_MAKEFLAGS) update)
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

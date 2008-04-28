@@ -24,3 +24,10 @@ SUBDIRS =					\
 	sh					\
 	awk					\
 	perl
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

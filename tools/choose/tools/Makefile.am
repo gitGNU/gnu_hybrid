@@ -32,10 +32,8 @@ SUBDIRS =					\
 ##      autotools
 
 ##
-## NOTE:
-##     update target needs the fetch script, which could be re-built in the
-##     scripts by the update target itself
+## Maintainer related targets
 ##
-update:
-	(cd scripts   && $(MAKE) $(AM_MAKEFLAGS) update)
-	(cd autotools && $(MAKE) $(AM_MAKEFLAGS) update)
+update-local: Makefile
+
+maintainer-check-local: Makefile

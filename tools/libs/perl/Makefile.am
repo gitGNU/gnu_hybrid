@@ -36,3 +36,10 @@ CLEANFILES += lib.pl
 
 EXTRA_DIST =					\
 	$(perl_libs_SRCS)
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

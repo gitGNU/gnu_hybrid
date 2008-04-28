@@ -60,3 +60,10 @@ EXTRA_DIST = $(TESTS)
 clean-local:
 
 MAINTAINERCLEANFILES =
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

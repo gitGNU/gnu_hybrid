@@ -70,5 +70,9 @@ choose: Makefile choose.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 
-update:
-	(cd tools && $(MAKE) $(AM_MAKEFLAGS) update)
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

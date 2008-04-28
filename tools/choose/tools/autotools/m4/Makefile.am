@@ -20,6 +20,9 @@
 
 include $(top_srcdir)/Makefile.sub
 
+##
+## Maintainer related targets
+##
 HOST = "http://autoconf-archive.cryp.to"
 
 DOWNLOAD =					\
@@ -32,9 +35,7 @@ DOWNLOAD =					\
 MACROS =					\
 	$(DOWNLOAD)
 
-FETCH = $(top_builddir)/tools/scripts/fetch
-
-update:
+update-local: Makefile
 	rm -r -f fetch-dir && \
 	mkdir fetch-dir && \
 	for i in $(DOWNLOAD) ; do \
@@ -49,3 +50,6 @@ update:
 		} \
 	done && \
 	rm -r -f fetch-dir
+
+
+maintainer-check-local: Makefile

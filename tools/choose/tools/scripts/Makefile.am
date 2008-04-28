@@ -23,12 +23,14 @@ include $(top_srcdir)/Makefile.sub
 EXTRA_DIST =                                    \
 	fetch.in                                \
 	gitlog2ChangeLog.in                     \
-	NEWS-query.in
+	NEWS-query.in				\
+	whitespace-detect.in
 
 noinst_SCRIPTS =                                \
 	fetch                                   \
 	gitlog2ChangeLog                        \
-	NEWS-query
+	NEWS-query				\
+	whitespace-detect
 
 CLEANFILES = $(noinst_SCRIPTS)
 
@@ -62,4 +64,19 @@ fetch: fetch.in Makefile
 	        exit 1 ; \
 	}
 
-update: fetch
+whitespace-detect: whitespace-detect.in Makefile
+	( rm -f $@ $@.tmp && \
+	  $(do_subst) < $(srcdir)/whitespace-detect.in > $@.tmp && \
+	  chmod +x $@.tmp && \
+	  chmod a-w $@.tmp && \
+	  mv -f $@.tmp $@ ) || { \
+	        rm -f $@ $@.tmp ; \
+	        exit 1 ; \
+	}
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

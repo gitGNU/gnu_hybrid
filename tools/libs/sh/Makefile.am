@@ -39,3 +39,10 @@ CLEANFILES += lib.sh
 
 EXTRA_DIST =					\
 	$(sh_libs_SRCS)
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

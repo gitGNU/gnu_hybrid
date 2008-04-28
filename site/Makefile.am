@@ -33,3 +33,10 @@ site-copy:
 	cp -R in/.sitetool/site.out/* out
 
 site: all site-build site-copy
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

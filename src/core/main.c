@@ -32,7 +32,7 @@ OPTION_DECLARE(test1,"this is a test1");
 OPTION_DECLARE(test2,"this is a test2");
 OPTION_DECLARE(test3,"this is a test3");
 
-// We reach this point from init()
+/* We reach this point from init() */
 int main(int argc, char* argv[])
 {
 	printf("Entering main(argc = %d, argv = %p)\n", argc, argv);

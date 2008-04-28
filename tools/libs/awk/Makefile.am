@@ -104,3 +104,10 @@ check-init-fini-functions: Makefile $(awk_libs_SRCS)
 	done
 
 check-local: check-whitespaces check-init-fini-functions check-unallowed-function
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

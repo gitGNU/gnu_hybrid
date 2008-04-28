@@ -18,6 +18,7 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
+include $(top_srcdir)/Makefile.sub
 include $(srcdir)/src/Makefile.def
 
 ACLOCAL_AMFLAGS = -I tools/autotools/m4
@@ -35,12 +36,6 @@ SUBDIRS =					\
 ##     per-`Makefile' basis.
 ##
 AUTOMAKE_OPTIONS = check-news
-
-##
-## Maintainer related targets
-##
-maintainer-check:
-	$(MAKE) maintainer-check -C src
 
 ##
 ## Configuration related targets
@@ -129,36 +124,6 @@ ChangeLog: $(srcdir)/NEWS
 #		exit 1 ;			\
 #	}
 
-HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f=doc"
-
-DOWNLOAD =					\
-	INSTALL					\
-	COPYINGv2
-
-FETCH = $(top_builddir)/tools/scripts/fetch
-
-update-fixups:
-	mv -f COPYINGv2 COPYING
-
-update-download:
-	rm -r -f fetch-dir && \
-	mkdir fetch-dir && \
-	for i in $(DOWNLOAD) ; do \
-		$(FETCH) $(HOST)/$$i fetch-dir/$$i || { \
-			rm -f fetch-dir/$$i ; \
-			exit 1 ; \
-		} \
-	done && \
-	for i in $(DOWNLOAD) ; do \
-		mv -f fetch-dir/$$i $$i || { \
-			exit 1 ; \
-		} \
-	done && \
-	rm -r -f fetch-dir
-
-update: update-download update-fixups
-	(cd tools && $(MAKE) $(AM_MAKEFLAGS) update)
-
 site: all
 	(cd site && $(MAKE) $(AM_MAKEFLAGS) site)
 
@@ -184,3 +149,35 @@ CLEANFILES += image.iso
 ##     DISTCLEANFILES already defined in Makefile.def
 ##
 #DISTCLEANFILES =
+
+##
+## Maintainer related targets
+##
+HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f=doc"
+
+DOWNLOAD =					\
+	INSTALL					\
+	COPYINGv2
+
+update-fixups:
+	mv -f COPYINGv2 COPYING
+
+update-download:
+	rm -r -f fetch-dir && \
+	mkdir fetch-dir && \
+	for i in $(DOWNLOAD) ; do \
+		$(FETCH) $(HOST)/$$i fetch-dir/$$i || { \
+			rm -f fetch-dir/$$i ; \
+			exit 1 ; \
+		} \
+	done && \
+	for i in $(DOWNLOAD) ; do \
+		mv -f fetch-dir/$$i $$i || { \
+			exit 1 ; \
+		} \
+	done && \
+	rm -r -f fetch-dir
+
+update-local: Makefile update-download update-fixups
+
+maintainer-check-local: Makefile

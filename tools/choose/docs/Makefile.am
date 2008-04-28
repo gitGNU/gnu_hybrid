@@ -18,6 +18,8 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
+include $(top_srcdir)/Makefile.sub
+
 ##
 ## NOTE:
 ##     ChangeLog-* included in EXTRA_DIST variable in top Makefile.am file.
@@ -26,3 +28,10 @@
 # No documentation yet
 #info_TEXINFOS = choicetool.texi
 #choicetool_TEXINFOS = gpl.texi standards.texi
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-local: Makefile

@@ -18,6 +18,8 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
+include $(top_srcdir)/Makefile.sub
+
 AUTOMAKE_OPTIONS = subdir-objects
 
 include $(srcdir)/Makefile.def
@@ -216,17 +218,7 @@ HDRS = `$(CLHANDLER) $(CLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
 check-guards: Makefile
 	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
 
-WHITESPACE_DETECT = $(top_builddir)/tools/scripts/whitespace-detect
-
 check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards check-boot
-
-##
-## Maintainer related targets
-##
-maintainer-check-whitespaces: Makefile
-	$(WHITESPACE_DETECT) $(SOURCES)
-
-maintainer-check: Makefile maintainer-check-whitespaces
 
 ##
 ## install target related
@@ -275,3 +267,13 @@ maintainer-clean-local:
 dist-hook:
 	rm -f $(distdir)/core/arch
 	rm -f $(BUILD_FILE)
+
+##
+## Maintainer related targets
+##
+update-local: Makefile
+
+maintainer-check-whitespaces: Makefile
+	$(WHITESPACE_DETECT) $(SOURCES)
+
+maintainer-check-local: Makefile maintainer-check-whitespaces

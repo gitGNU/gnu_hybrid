@@ -42,7 +42,7 @@ static int reprogram(uint16_t master,
 		     uint16_t slave)
 {
 	dprintf("Reprogramming master 0x%x / slave 0x%x\n");
-	
+
 	port_out8(ICU0,     ICU_RESET);
 	port_out8(ICU1,     ICU_RESET);
 	port_out8(ICU0 + 1, master);
@@ -53,7 +53,7 @@ static int reprogram(uint16_t master,
 	port_out8(ICU1 + 1, 0x01);
 	port_out8(ICU0 + 1, 0xFF);
 	port_out8(ICU1 + 1, 0xFF);
-	
+
 	irq_mask = 0xFFFF;
 
 	return 1;
@@ -83,14 +83,14 @@ void i8259_irq_enable(int irq)
 	if (enabled) {
 		return;
 	}
-	
+
 	dprintf("Enabling irq %d\n", irq);
-		
+
 	irq_mask = irq_mask & ~(1 << irq);
 	if (irq >= 8) {
 		irq_mask = irq_mask & (1 << 2);
 	}
-	
+
 	port_out8(ICU0 + 1, irq_mask & 0xFF);
 	port_out8(ICU1 + 1, (irq_mask >> 8) & 0xFF);
 }
@@ -112,7 +112,7 @@ void i8259_irq_disable(int irq)
 	if ((irq_mask & 0xFF00) == 0xFF00) {
 		irq_mask = irq_mask | (1 << 2);
 	}
-	
+
 	port_out8(ICU0 + 1, irq_mask & 0xFF);
 	port_out8(ICU1 + 1, (irq_mask >> 8) & 0xFF);
 }
@@ -125,7 +125,7 @@ uint16_t i8259_irq_mask_get(void)
 void i8259_irq_mask_set(uint16_t mask)
 {
 	dprintf("Setting irq mask to 0x%x\n", mask);
-	
+
 	irq_mask = mask;
 
 	port_out8(ICU0 + 1, irq_mask & 0xFF);
