@@ -154,6 +154,7 @@ tools/choose/tools/autotools/ylwrap
 tools/choose/tools/scripts/NEWS-query
 tools/choose/tools/scripts/fetch
 tools/choose/tools/scripts/gitlog2ChangeLog
+tools/choose/tools/scripts/whitespace-detect
 
 site/in/.sitetool
 site/in/site.stamp
