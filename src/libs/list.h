@@ -50,7 +50,9 @@ typedef struct list_entry list_entry_t;
 static inline void __list_init(list_entry_t * entry)
 {
 	LIST_ASSERT(entry);
-	entry->prev = entry->next = entry;
+
+	entry->prev = entry;
+	entry->next = entry;
 }
 
 #define LIST_INIT(HEAD)	__list_init(HEAD)
@@ -75,7 +77,7 @@ static inline void __list_insert_before(list_entry_t * entry,
 	LIST_ASSERT(entry);
 	LIST_ASSERT(new);
 
-	__list_insert(new, entry, entry->prev);
+	__list_insert(new, entry->prev, entry);
 }
 
 static inline void __list_insert_after(list_entry_t * entry,
