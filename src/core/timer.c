@@ -45,6 +45,8 @@ static void timers_update(void)
 {
 	timer_t * timer;
 
+	dprintf("Updating timers\n");
+
 	if (LIST_ISEMPTY(&timers)) {
 		return;
 	}
@@ -57,10 +59,14 @@ static void timers_update(void)
 		LIST_REMOVE(&timer->list);
 		timer->callback(timer->data);
 	}
+
+	dprintf("Updated completed\n");
 }
 
 int timers_init(void)
 {
+	dprintf("Initializing timers\n");
+
 	LIST_INIT(&timers);
 
 	granularity = arch_timer_granularity();
@@ -68,17 +74,23 @@ int timers_init(void)
 
 	timers_update();
 
+	dprintf("Initialized\n");
+
 	return 1;
 }
 
 int timers_fini(void)
 {
+	dprintf("Finalizing timers\n");
+
 	return 1;
 }
 
 int timer_add(timer_t * timer)
 {
 	assert(timer);
+
+	dprintf("Adding timer %p\n", timer);
 
 	if ((timer->callback == NULL) || (timer->expiration < 0)){
 		dprintf("Rejecting timer, no useful infos\n");
@@ -112,7 +124,7 @@ int timer_add(timer_t * timer)
 		assert(curr2 != NULL);
 
 		if (curr2->list.prev != &timers) {
-			dprintf("Fixing expiration time");
+			dprintf("Fixing expiration time\n");
 			timer->expiration -= curr2->expiration;
 		}
 
@@ -124,7 +136,11 @@ int timer_add(timer_t * timer)
 
 int timer_remove(timer_t * timer)
 {
-	int err = 0;
+	int err;
+
+	dprintf("Removing timer %p\n", timer);
+
+	err = 0;
 
 	assert(timer);
 
