@@ -56,4 +56,5 @@ for my $i (0 .. $#ARGV) {
     close($filehandle);
 }
 
-exit $found;
+#exit $found;
+exit 0;
