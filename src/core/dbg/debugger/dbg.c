@@ -104,7 +104,7 @@ static ssize_t getline(char*  buffer,
 
 	sensitiveness = 1;
 	(void) dbg_variable_get("case", &sensitiveness);
-	
+
 	complete      = 0;
 	for (i = 0; i < length && !complete;) {
 		char c;
@@ -160,7 +160,7 @@ static ssize_t getline(char*  buffer,
 
 	/* Always place the terminator */
 	buffer[i] = 0;
-	
+
 	fputc('\n', stream_out); /* New line :-) */
 
 	return i;
@@ -253,7 +253,7 @@ static int tokenize(char* buffer, int* argc, char** argv, int max)
 		}
 
 		/* Set argv */
-		argv[i] = &buffer[j]; 
+		argv[i] = &buffer[j];
 
 		/* Skip non-blanks until the first blank or End-Of-Line */
 		for (; j < l; j++) {
@@ -338,7 +338,7 @@ static dbg_result_t execute(FILE* stream, char* string)
 
 	assert(stream);
 	assert(string);
-	
+
 	purify(string);
 
 	if (empty(string)) {
@@ -352,7 +352,7 @@ static dbg_result_t execute(FILE* stream, char* string)
 		fprintf(stream, "Cannot add new line into the history\n");
 	}
 #endif
-	
+
 	/* Tokenize it */
 	if (!tokenize(string, &argc, argv, DBG_ARGC_MAX)) {
 		fprintf(stream, "Wrong string format\n");
@@ -360,11 +360,11 @@ static dbg_result_t execute(FILE* stream, char* string)
 	}
 
 	assert(argc >= 0);
-	
+
 #if CONFIG_DEBUG
 	{
 		int i;
-		
+
 		dprintf("Tokenization completed\n");
 		for (i = 0; i < argc; i++) {
 			dprintf("  argv[%02d]='%s'\n", i, argv[i]);
@@ -389,25 +389,25 @@ static dbg_result_t execute(FILE* stream, char* string)
 	/* Then ... we've to execute it */
 	dprintf("Trying to execute command\n");
 	retval = command->actions.on_execute(stream, argc - 1, argv + 1);
-	
+
 	/* Fail if someone wrecked the command (name) */
 	assert(command->name);
-	
+
 	switch (retval) {
 	case DBG_RESULT_ERROR:
 		fprintf(stream,
 			"Error executing command '%s'\n",
 			command->name);
 		break;
-		
+
 	case DBG_RESULT_ERROR_VALUE_TOOLOW:
 		fprintf(stream,	"Value is too low\n");
 		break;
-		
+
 	case DBG_RESULT_ERROR_VALUE_TOOHIGH:
 		fprintf(stream,	"Value is too high\n");
 		break;
-		
+
 	case DBG_RESULT_ERROR_MISSING_PARAMETERS:
 		/*
 		 * Even if we checked it before ... we could get this
@@ -418,31 +418,31 @@ static dbg_result_t execute(FILE* stream, char* string)
 			"Missing parameter(s) for command '%s'\n",
 			command->name);
 		break;
-		
+
 	case DBG_RESULT_ERROR_TOOMANY_PARAMETERS:
 		/* Same remark as the previous case ... */
 		fprintf(stream,
 			"Too many parameter(s) for command '%s'\n",
 			command->name);
 		break;
-		
+
 	case DBG_RESULT_ERROR_WRONG_PARAMETERS:
 		fprintf(stream,
 			"Wrong parameter(s) for command '%s'\n",
 			command->name);
 		break;
-		
+
 	case DBG_RESULT_ERROR_LINE_TOOLONG:
 		fprintf(stream,
 			"Line too long!\n",
 			command->name);
 		break;
-		
+
 	case DBG_RESULT_OK:
 	case DBG_RESULT_EXIT:
 		/* Ok */
 		break;
-		
+
 	default:
 		/* Huh unhandled error message, fix it! */
 		bug();
@@ -477,11 +477,11 @@ int dbg_execute(const char* string)
 	 */
 	if ((strlen(string) + 1) > CONFIG_DEBUGGER_LINE_LENGTH) {
 		fprintf(stddbg_out, "Line is too long ...\n");
-		return DBG_RESULT_ERROR_LINE_TOOLONG;		
+		return DBG_RESULT_ERROR_LINE_TOOLONG;
 	}
 	strncpy(dbg_buffer, string, CONFIG_DEBUGGER_LINE_LENGTH);
 
-	result = execute(stddbg_out, dbg_buffer);	
+	result = execute(stddbg_out, dbg_buffer);
 	if (result == DBG_RESULT_OK || result == DBG_RESULT_EXIT) {
 		retval = 1;
 	} else {
@@ -500,7 +500,7 @@ int dbg_enter(void)
 	dbg_command_t*  temp_cmd;
 	dbg_variable_t* temp_var;
 	int             complete;
-	
+
 	if (!initialized) {
 		fprintf(stddbg_out,
 			"Cannot enter debugger, it's not yet initialized\n");
