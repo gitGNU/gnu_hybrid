@@ -51,3 +51,23 @@ do_subst = sed \
   -e 's,[@]pkgvdatadir[@],$(pkgvdatadir),g' \
   -e 's,[@]libdir[@],$(libdir),g' \
   -e 's,[@]includedir[@],$(includedir),g'
+
+WHITESPACE_DETECT = $(top_builddir)/tools/scripts/whitespace-detect
+FETCH             = $(top_builddir)/tools/scripts/fetch
+
+##
+## Maintainer related targets
+##
+maintainer-check: Makefile maintainer-check-local maintainer-check-recursive
+
+maintainer-check-recursive: Makefile
+	@list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) maintainer-check); \
+	done
+
+update: Makefile update-local update-recursive
+
+update-recursive: Makefile
+	@list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) update); \
+	done
