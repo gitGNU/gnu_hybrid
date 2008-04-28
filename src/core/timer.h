@@ -42,6 +42,7 @@ typedef struct timer timer_t;
 	(TIMER)->callback   = CALLBACK;		\
 	(TIMER)->data       = DATA;		\
 	(TIMER)->expiration = DELAY;		\
+	LIST_INIT(&(TIMER->list));              \
 	__END_MACRO
 
 int timers_init(void);

@@ -41,6 +41,7 @@
 static LIST_HEAD(timers);
 static size_t granularity;
 
+#if 0
 static void timers_update(void)
 {
 	timer_t * timer;
@@ -48,20 +49,31 @@ static void timers_update(void)
 	dprintf("Updating timers\n");
 
 	if (LIST_ISEMPTY(&timers)) {
+		dprintf("List is empty, quitting update\n");
 		return;
 	}
 
-	timer = LIST_ENTRY(timers.next, timer_t, list);
+	timer = LIST_ENTRY(&timers, timer_t, list);
 	assert(timer);
+
+	dprintf("Updating timer %p\n", timer);
 
 	timer->expiration -= granularity;
 	if (TIMER_EXPIRED(timer)) {
+		dprintf("Timer %p is expired\n", timer);
+
 		LIST_REMOVE(&timer->list);
+		if (!timer->callback) {
+			dprintf("Timer %p callback is empty\n", timer);
+			return;
+		}
+
 		timer->callback(timer->data);
 	}
 
 	dprintf("Updated completed\n");
 }
+#endif
 
 int timers_init(void)
 {
@@ -72,7 +84,7 @@ int timers_init(void)
 	granularity = arch_timer_granularity();
 	assert(granularity > 0);
 
-	timers_update();
+	dprintf("Timers granularity %d\n", granularity);
 
 	dprintf("Initialized\n");
 
@@ -86,50 +98,63 @@ int timers_fini(void)
 	return 1;
 }
 
-int timer_add(timer_t * timer)
+static int timer_check(timer_t * timer)
 {
 	assert(timer);
-
-	dprintf("Adding timer %p\n", timer);
 
 	if ((timer->callback == NULL) || (timer->expiration < 0)){
 		dprintf("Rejecting timer, no useful infos\n");
 		return 0;
 	}
 
+	return 1;
+}
+
+int timer_add(timer_t * timer)
+{
+	list_entry_t * curr1;
+	timer_t *      curr2;
+
+	assert(timer);
+
+	if (!timer_check(timer)) {
+		dprintf("Cannot add timer, no useful infos\n");
+		return 0;
+	}
+
+	dprintf("Adding timer %p\n", timer);
+
 	if (LIST_ISEMPTY(&timers)) {
 		dprintf("Timers list is empty, adding timer at the head\n");
-		LIST_INSERT_AFTER(&timers, &timer->list);
-	} else {
-		list_entry_t * curr1;
-		timer_t *      curr2;
-
-		dprintf("Timers list not empty, adding timer somewhere\n");
-
-		curr2 = NULL;
-
-		LIST_FOREACH_FORWARD(&timers, curr1) {
-			curr2 = LIST_ENTRY(curr1, timer_t, list);
-			if (curr2->expiration > timer->expiration) {
-				timer->expiration -=
-					LIST_ENTRY(&curr2->list.prev,
-						   timer_t,
-						   list)->expiration;
-				curr2->expiration -= timer->expiration;
-				LIST_INSERT_BEFORE(&timers, &timer->list);
-				return 1;
-			}
-		}
-
-		assert(curr2 != NULL);
-
-		if (curr2->list.prev != &timers) {
-			dprintf("Fixing expiration time\n");
-			timer->expiration -= curr2->expiration;
-		}
-
 		LIST_INSERT_BEFORE(&timers, &timer->list);
+		return 1;
 	}
+
+	dprintf("Timers list not empty, adding timer somewhere\n");
+
+	curr2 = NULL;
+
+	LIST_FOREACH_FORWARD(&timers, curr1) {
+		dprintf("Walking timer %p\n", curr1);
+
+		curr2 = LIST_ENTRY(curr1, timer_t, list);
+
+		dprintf("Current timer expiration is %d\n", curr2->expiration);
+
+		if (curr2->expiration <= timer->expiration) {
+			timer->expiration -= curr2->expiration;
+			dprintf("Decrementing timer expiration (now %d)\n",
+				timer->expiration);
+			continue;
+		}
+
+		dprintf("Next timer should be bigger than this\n");
+		break;
+	}
+
+	assert(curr2 != NULL);
+
+	LIST_INSERT_BEFORE(&curr2->list, &timer->list);
 
 	return 1;
 }

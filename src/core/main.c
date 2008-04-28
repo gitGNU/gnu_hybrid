@@ -35,6 +35,7 @@ OPTION_DECLARE(test3,"this is a test3");
 timer_t t1;
 timer_t t2;
 timer_t t3;
+timer_t t4;
 
 /* We reach this point from init() */
 int main(int argc, char* argv[])
@@ -72,8 +73,20 @@ int main(int argc, char* argv[])
 	t3.expiration = 30;
 	LIST_INIT(&t3.list);
 
-	if (!timer_add(&t1) || !timer_add(&t2) || !timer_add(&t3)) {
-		panic("Cannot add timer");
+	t4.callback   = (void (*)(void *)) 4;
+	t4.expiration = 200;
+	LIST_INIT(&t4.list);
+
+	// 1
+	// 3
+	// 2
+	// 4
+
+	if (!timer_add(&t1) ||
+	    !timer_add(&t2) ||
+	    !timer_add(&t3) ||
+	    !timer_add(&t4)) {
+		panic("Cannot add a timer");
 	}
 
 #if CONFIG_DEBUGGER
