@@ -199,10 +199,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	}
 	assert(fit_initialized());
 
-	if (!dbg_enter()) {
-		panic("Cannot enter debugger");
-	}
-
 	fit_fini();
 
 	/* Initialize virtual memory */
@@ -217,12 +213,12 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	if (heap_base == ((uint_t) -1)) {
 		panic("Cannot allocate memory for the heap");
 	}
-	
+
 	dprintf("Heap base 0x%x, size 0x%x\n", heap_base, heap_size);
 	if (!heap_init(heap_base, heap_size)) {
 		panic("Cannot initialize heap");
 	}
-	
+
 	/* From this point on we can issue malloc() and free() ... */
 	assert(heap_initialized());
 

@@ -32,6 +32,10 @@ OPTION_DECLARE(test1,"this is a test1");
 OPTION_DECLARE(test2,"this is a test2");
 OPTION_DECLARE(test3,"this is a test3");
 
+timer_t t1;
+timer_t t2;
+timer_t t3;
+
 /* We reach this point from init() */
 int main(int argc, char* argv[])
 {
@@ -52,13 +56,29 @@ int main(int argc, char* argv[])
 	printf("Option '%s' has value '%s'\n",
 	       "test3", OPTION_VAR(test3));
 
-#if CONFIG_DEBUGGER
-	dbg_enter();
-#endif
-
 	if (!timers_init()) {
 		panic("Cannot initialize timers");
 	}
+
+	t1.callback   = (void (*)(void *)) 1;
+	t1.expiration = 1;
+	LIST_INIT(&t1.list);
+
+	t2.callback   = (void (*)(void *)) 2;
+	t2.expiration = 110;
+	LIST_INIT(&t2.list);
+
+	t3.callback   = (void (*)(void *)) 3;
+	t3.expiration = 30;
+	LIST_INIT(&t3.list);
+
+	if (!timer_add(&t1) || !timer_add(&t2) || !timer_add(&t3)) {
+		panic("Cannot add timer");
+	}
+
+#if CONFIG_DEBUGGER
+	dbg_enter();
+#endif
 
 	if (!scheduler_init()) {
 		panic("Cannot initialize scheduler");
