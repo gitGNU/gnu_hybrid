@@ -82,12 +82,46 @@ int main(int argc, char* argv[])
 	// 2
 	// 4
 
-	if (!timer_add(&t1) ||
-	    !timer_add(&t2) ||
-	    !timer_add(&t3) ||
-	    !timer_add(&t4)) {
+#define TEST_TIMERS 1
+
+#if TEST_TIMERS
+	if (!timer_add(&t1)) {
 		panic("Cannot add a timer");
 	}
+#if CONFIG_DEBUGGER
+	dbg_enter();
+#endif
+
+	if (!timer_add(&t2)) {
+		panic("Cannot add a timer");
+	}
+#if CONFIG_DEBUGGER
+	dbg_enter();
+#endif
+
+	if (!timer_add(&t3)) {
+		panic("Cannot add a timer");
+	}
+#if CONFIG_DEBUGGER
+	dbg_enter();
+#endif
+
+	if (!timer_add(&t4)) {
+		panic("Cannot add a timer");
+	}
+#if CONFIG_DEBUGGER
+	dbg_enter();
+#endif
+
+	timer_remove(&t1);
+	timer_remove(&t4);
+	timer_remove(&t2);
+	timer_remove(&t3);
+#if CONFIG_DEBUGGER
+	dbg_enter();
+#endif
+
+#endif /* TEST_TIMERS */
 
 #if CONFIG_DEBUGGER
 	dbg_enter();
