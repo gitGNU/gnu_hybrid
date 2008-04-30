@@ -81,6 +81,8 @@ int timers_init(void)
 
 	LIST_INIT(&timers);
 
+	assert(LIST_ISEMPTY(&timers));
+
 	granularity = arch_timer_granularity();
 	assert(granularity > 0);
 
@@ -98,18 +100,6 @@ int timers_fini(void)
 	return 1;
 }
 
-static int timer_check(timer_t * timer)
-{
-	assert(timer);
-
-	if ((timer->callback == NULL) || (timer->expiration < 0)){
-		dprintf("Rejecting timer, no useful infos\n");
-		return 0;
-	}
-
-	return 1;
-}
-
 int timer_add(timer_t * timer)
 {
 	list_entry_t * curr1;
@@ -117,44 +107,59 @@ int timer_add(timer_t * timer)
 
 	assert(timer);
 
-	if (!timer_check(timer)) {
+	if (!TIMER_GOOD(timer)) {
 		dprintf("Cannot add timer, no useful infos\n");
 		return 0;
 	}
 
-	dprintf("Adding timer %p\n", timer);
+	dprintf("Adding timer %p (expiration %d)\n", timer, timer->expiration);
 
 	if (LIST_ISEMPTY(&timers)) {
 		dprintf("Timers list is empty, adding timer at the head\n");
-		LIST_INSERT_BEFORE(&timers, &timer->list);
+
+		LIST_INSERT_AFTER(&timers, &timer->list);
+
+		assert(!LIST_ISEMPTY(&timers));
+
 		return 1;
 	}
 
-	dprintf("Timers list not empty, adding timer somewhere\n");
+	dprintf("Timers list not empty, adding somewhere\n");
 
 	curr2 = NULL;
 
 	LIST_FOREACH_FORWARD(&timers, curr1) {
-		dprintf("Walking timer %p\n", curr1);
-
 		curr2 = LIST_ENTRY(curr1, timer_t, list);
 
-		dprintf("Current timer expiration is %d\n", curr2->expiration);
+		dprintf("Cursor %p expiration time is %d\n",
+			curr2, curr2->expiration);
 
-		if (curr2->expiration <= timer->expiration) {
-			timer->expiration -= curr2->expiration;
-			dprintf("Decrementing timer expiration (now %d)\n",
-				timer->expiration);
-			continue;
+		if (curr2->expiration > timer->expiration) {
+			dprintf("Cursor expiration time is bigger\n");
+			break;
 		}
 
-		dprintf("Next timer should be bigger than this\n");
-		break;
+		timer->expiration -= curr2->expiration;
+
+		dprintf("Decrementing timer expiration (now %d)\n",
+			timer->expiration);
+
+		if (timer->expiration < 0) {
+			dprintf("Timer expiration underflow while walking\n");
+			timer->expiration = 0;
+			break;
+		}
 	}
 
 	assert(curr2 != NULL);
 
-	LIST_INSERT_BEFORE(&curr2->list, &timer->list);
+	if (LIST_ISLAST(&curr2->list)) {
+		dprintf("Inserting timer %p before %p\n", timer, curr2);
+		LIST_INSERT_BEFORE(&curr2->list, &timer->list);
+	} else {
+		dprintf("Inserting timer %p after %p\n", timer, curr2);
+		LIST_INSERT_AFTER(&curr2->list, &timer->list);
+	}
 
 	return 1;
 }
@@ -170,6 +175,7 @@ int timer_remove(timer_t * timer)
 	assert(timer);
 
 	if (LIST_ISEMPTY(&timers)) {
+		dprintf("Timers list is empty, cannot remove\n");
 		return err;
 	} else {
 		list_entry_t * curr1;
@@ -178,8 +184,14 @@ int timer_remove(timer_t * timer)
 		LIST_FOREACH_FORWARD(&timers, curr1) {
 			curr2 = LIST_ENTRY(curr1, timer_t, list);
 			if (curr2 == timer) {
-				if (timer->expiration > 0) {
-					curr2->expiration += timer->expiration;
+				dprintf("Timer found\n");
+				if (curr2->list.next != &timers) {
+					if (curr2->expiration > 0) {
+						LIST_ENTRY(curr2->list.prev,
+							   timer_t,
+							   list)->expiration +=
+							curr2->expiration;
+					}
 				}
 
 				LIST_REMOVE(&curr2->list);

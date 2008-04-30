@@ -44,6 +44,10 @@ typedef struct timer timer_t;
 	(TIMER)->expiration = DELAY;		\
 	LIST_INIT(&(TIMER->list));              \
 	__END_MACRO
+#define TIMER_GOOD(TIMER)			\
+	((TIMER) &&				\
+	 ((TIMER)->callback != NULL) &&		\
+	 ((TIMER)->expiration >= 0))
 
 int timers_init(void);
 int timers_fini(void);
