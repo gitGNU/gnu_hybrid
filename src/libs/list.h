@@ -41,11 +41,18 @@ typedef struct list_entry list_entry_t;
 #define LIST_HEAD(NAME)					\
 	list_entry_t NAME = LIST_INITIALIZER(NAME)
 
-#define LIST_ISEMPTY(HEAD) ((HEAD)->prev == (HEAD)->next)
+#define LIST_ISEMPTY(HEAD) ((HEAD)->next == (HEAD))
+#define LIST_ISLAST(ENTRY) ((ENTRY)->next == (ENTRY))
 
 #define LIST_OFFSETOF(TYPE,MEMBER) ((unsigned int) (&(((TYPE *) 0)->MEMBER)))
 #define LIST_ENTRY(POINTER,TYPE,MEMBER)					\
 	((TYPE *) (((char *) POINTER) - LIST_OFFSETOF(TYPE,MEMBER)))
+
+#define LIST_ENTRY_DUMP(ENTRY)				\
+	__BEGIN_MACRO					\
+	dprintf("Entry %p: prev 0x%x, next 0x%x\n",	\
+		ENTRY, (ENTRY)->prev, (ENTRY)->next);	\
+	__END_MACRO
 
 static inline void __list_init(list_entry_t * entry)
 {
@@ -67,6 +74,7 @@ static inline void __list_insert(list_entry_t * new,
 
 	next->prev = new;
 	new->next  = next;
+
 	new->prev  = prev;
 	prev->next = new;
 }
