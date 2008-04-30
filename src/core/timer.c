@@ -230,11 +230,11 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 
 		curr = LIST_ENTRY(temp, timer_t, list);
 #if CONFIG_TIMERS_DEBUG
-		fprintf(stream, "  0x%p %d\n",
-			curr->callback, curr->expiration);
-#else
 		fprintf(stream, "  0x%p %d (%d)\n",
 			curr->callback, curr->expiration, curr->absolute);
+#else
+		fprintf(stream, "  0x%p %d\n",
+			curr->callback, curr->expiration);
 #endif
 	}
 
