@@ -41,8 +41,9 @@ typedef struct list_entry list_entry_t;
 #define LIST_HEAD(NAME)					\
 	list_entry_t NAME = LIST_INITIALIZER(NAME)
 
-#define LIST_ISEMPTY(HEAD) ((HEAD)->next == (HEAD))
-#define LIST_ISLAST(ENTRY) ((ENTRY)->next == (ENTRY))
+#define LIST_ISEMPTY(HEAD)       ((HEAD)->next  == (HEAD))
+#define LIST_ISLAST(HEAD,ENTRY)  ((ENTRY)->next == (HEAD))
+#define LIST_ISFIRST(HEAD,ENTRY) ((HEAD)->next  == (ENTRY))
 
 #define LIST_OFFSETOF(TYPE,MEMBER) ((unsigned int) (&(((TYPE *) 0)->MEMBER)))
 #define LIST_ENTRY(POINTER,TYPE,MEMBER)					\
