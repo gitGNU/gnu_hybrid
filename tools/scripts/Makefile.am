@@ -716,7 +716,6 @@ clean-local:
 	for i in $(check_SCRIPTS) ; do										\
 		rm -f `$(GREP) TEST_FILENAME $(srcdir)/$$i | $(GREP) = | $(SED) -e 's,^.*=\(.*\),\1,'` ;	\
 	done
-	rm -f `$(GREP) TEST_FILENAME $(top_srcdir)/tools/libs/c/test.h | $(SED) -e 's,^.*"\(.*\)".*,\1,'`
 
 ##
 ## Maintainer related targets
