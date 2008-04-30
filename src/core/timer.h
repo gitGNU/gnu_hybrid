@@ -29,7 +29,12 @@ __BEGIN_DECLS
 struct timer {
 	void         (* callback)(void * data);
 	void *       data;
-	int          expiration;
+	int          expiration; /* Relative expiration time */
+
+#if CONFIG_TIMERS_DEBUG
+	int          absolute;   /* Absolute expiration time */
+#endif
+
 	list_entry_t list;
 };
 typedef struct timer timer_t;

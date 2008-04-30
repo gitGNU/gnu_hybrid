@@ -62,7 +62,7 @@ static void timers_update(void)
 	if (TIMER_EXPIRED(timer)) {
 		dprintf("Timer %p is expired\n", timer);
 
-		LIST_REMOVE(&timer->list);
+		LIST_REMOVE(&(timer->list));
 		if (!timer->callback) {
 			dprintf("Timer %p callback is empty\n", timer);
 			return;
@@ -107,6 +107,10 @@ int timer_add(timer_t * timer)
 
 	assert(timer);
 
+#if CONFIG_TIMERS_DEBUG
+	timer->absolute = timer->expiration;
+#endif
+
 	if (!TIMER_GOOD(timer)) {
 		dprintf("Cannot add timer, no useful infos\n");
 		return 0;
@@ -117,7 +121,7 @@ int timer_add(timer_t * timer)
 	if (LIST_ISEMPTY(&timers)) {
 		dprintf("Timers list is empty, adding timer at the head\n");
 
-		LIST_INSERT_AFTER(&timers, &timer->list);
+		LIST_INSERT_AFTER(&timers, &(timer->list));
 
 		assert(!LIST_ISEMPTY(&timers));
 
@@ -151,14 +155,16 @@ int timer_add(timer_t * timer)
 		}
 	}
 
+	curr2 = LIST_ENTRY(curr1, timer_t, list);
+
 	assert(curr2 != NULL);
 
-	if (LIST_ISLAST(&curr2->list)) {
-		dprintf("Inserting timer %p before %p\n", timer, curr2);
-		LIST_INSERT_BEFORE(&curr2->list, &timer->list);
+	if (LIST_ISFIRST(&timers, &(curr2->list))) {
+		dprintf("Inserting timer %p after head\n", timer);
+		LIST_INSERT_AFTER(&timers, &(timer->list));
 	} else {
-		dprintf("Inserting timer %p after %p\n", timer, curr2);
-		LIST_INSERT_AFTER(&curr2->list, &timer->list);
+		dprintf("Inserting timer %p before %p\n", timer, curr2);
+		LIST_INSERT_BEFORE(&(curr2->list), &(timer->list));
 	}
 
 	return 1;
@@ -166,17 +172,13 @@ int timer_add(timer_t * timer)
 
 int timer_remove(timer_t * timer)
 {
-	int err;
-
 	dprintf("Removing timer %p\n", timer);
-
-	err = 0;
 
 	assert(timer);
 
 	if (LIST_ISEMPTY(&timers)) {
 		dprintf("Timers list is empty, cannot remove\n");
-		return err;
+		return 0;
 	} else {
 		list_entry_t * curr1;
 		timer_t *      curr2;
@@ -184,10 +186,10 @@ int timer_remove(timer_t * timer)
 		LIST_FOREACH_FORWARD(&timers, curr1) {
 			curr2 = LIST_ENTRY(curr1, timer_t, list);
 			if (curr2 == timer) {
-				dprintf("Timer found\n");
-				if (curr2->list.next != &timers) {
+				dprintf("Timer %p found\n", timer);
+				if (!LIST_ISLAST(&timers, &(curr2->list))) {
 					if (curr2->expiration > 0) {
-						LIST_ENTRY(curr2->list.prev,
+						LIST_ENTRY(curr2->list.next,
 							   timer_t,
 							   list)->expiration +=
 							curr2->expiration;
@@ -201,7 +203,9 @@ int timer_remove(timer_t * timer)
 		}
 	}
 
-	return err;
+	dprintf("Timer %p not found\n", timer);
+
+	return 0;
 }
 
 #if CONFIG_DEBUGGER
@@ -225,8 +229,13 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 		timer_t * curr;
 
 		curr = LIST_ENTRY(temp, timer_t, list);
+#if CONFIG_TIMERS_DEBUG
 		fprintf(stream, "  0x%p %d\n",
 			curr->callback, curr->expiration);
+#else
+		fprintf(stream, "  0x%p %d (%d)\n",
+			curr->callback, curr->expiration, curr->absolute);
+#endif
 	}
 
 	return DBG_RESULT_OK;
