@@ -32,10 +32,16 @@ OPTION_DECLARE(test1,"this is a test1");
 OPTION_DECLARE(test2,"this is a test2");
 OPTION_DECLARE(test3,"this is a test3");
 
+#define TEST_TIMERS 1
+
+#if TEST_TIMERS
 timer_t t1;
 timer_t t2;
 timer_t t3;
 timer_t t4;
+timer_t t5;
+timer_t t6;
+#endif
 
 /* We reach this point from init() */
 int main(int argc, char* argv[])
@@ -61,54 +67,50 @@ int main(int argc, char* argv[])
 		panic("Cannot initialize timers");
 	}
 
+#if TEST_TIMERS
 	t1.callback   = (void (*)(void *)) 1;
 	t1.expiration = 1;
 	LIST_INIT(&t1.list);
 
 	t2.callback   = (void (*)(void *)) 2;
-	t2.expiration = 110;
+	t2.expiration = 20;
 	LIST_INIT(&t2.list);
 
 	t3.callback   = (void (*)(void *)) 3;
-	t3.expiration = 30;
+	t3.expiration = 300;
 	LIST_INIT(&t3.list);
 
 	t4.callback   = (void (*)(void *)) 4;
-	t4.expiration = 200;
+	t4.expiration = 4000;
 	LIST_INIT(&t4.list);
 
-	// 1
-	// 3
-	// 2
-	// 4
+	t5.callback   = (void (*)(void *)) 5;
+	t5.expiration = 50000;
+	LIST_INIT(&t4.list);
 
-#define TEST_TIMERS 1
+	t6.callback   = (void (*)(void *)) 6;
+	t6.expiration = 600000;
+	LIST_INIT(&t4.list);
 
-#if TEST_TIMERS
+	if (!timer_add(&t6)) {
+		panic("Cannot add a timer");
+	}
+	if (!timer_add(&t5)) {
+		panic("Cannot add a timer");
+	}
 	if (!timer_add(&t1)) {
 		panic("Cannot add a timer");
 	}
-#if CONFIG_DEBUGGER
-	dbg_enter();
-#endif
-
 	if (!timer_add(&t2)) {
 		panic("Cannot add a timer");
 	}
-#if CONFIG_DEBUGGER
-	dbg_enter();
-#endif
-
 	if (!timer_add(&t3)) {
 		panic("Cannot add a timer");
 	}
-#if CONFIG_DEBUGGER
-	dbg_enter();
-#endif
-
 	if (!timer_add(&t4)) {
 		panic("Cannot add a timer");
 	}
+
 #if CONFIG_DEBUGGER
 	dbg_enter();
 #endif
@@ -117,6 +119,9 @@ int main(int argc, char* argv[])
 	timer_remove(&t4);
 	timer_remove(&t2);
 	timer_remove(&t3);
+	timer_remove(&t5);
+	timer_remove(&t6);
+
 #if CONFIG_DEBUGGER
 	dbg_enter();
 #endif
