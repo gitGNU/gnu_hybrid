@@ -65,37 +65,37 @@ static inline void __list_init(list_entry_t * entry)
 
 #define LIST_INIT(HEAD)	__list_init(HEAD)
 
-static inline void __list_insert(list_entry_t * new,
+static inline void __list_insert(list_entry_t * new_entry,
 				 list_entry_t * prev,
 				 list_entry_t * next)
 {
-	LIST_ASSERT(new);
+	LIST_ASSERT(new_entry);
 	LIST_ASSERT(prev);
 	LIST_ASSERT(next);
 
-	next->prev = new;
-	new->next  = next;
+	next->prev       = new_entry;
+	new_entry->next  = next;
 
-	new->prev  = prev;
-	prev->next = new;
+	new_entry->prev  = prev;
+	prev->next       = new_entry;
 }
 
-static inline void __list_insert_before(list_entry_t * entry,
-					list_entry_t * new)
+static inline void __list_insert_before(list_entry_t * old_entry,
+					list_entry_t * new_entry)
 {
-	LIST_ASSERT(entry);
-	LIST_ASSERT(new);
+	LIST_ASSERT(old_entry);
+	LIST_ASSERT(new_entry);
 
-	__list_insert(new, entry->prev, entry);
+	__list_insert(new_entry, old_entry->prev, old_entry);
 }
 
-static inline void __list_insert_after(list_entry_t * entry,
-				       list_entry_t * new)
+static inline void __list_insert_after(list_entry_t * old_entry,
+				       list_entry_t * new_entry)
 {
-	LIST_ASSERT(entry);
-	LIST_ASSERT(new);
+	LIST_ASSERT(old_entry);
+	LIST_ASSERT(new_entry);
 
-	__list_insert(new, entry, entry->next);
+	__list_insert(new_entry, old_entry, old_entry->next);
 }
 
 #define LIST_INSERT_BEFORE(ENTRY, NEW) __list_insert_before(ENTRY,NEW)
