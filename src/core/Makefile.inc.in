@@ -66,4 +66,4 @@ core_SRCS =					\
 	@reldir@/scheduler.c			\
 	@reldir@/module.h			\
 	@reldir@/module.c			\
-	@reldir@/main.c
+	@reldir@/main.cxx

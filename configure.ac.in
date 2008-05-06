@@ -23,7 +23,7 @@ AC_INIT([Hybrid kernel],[@VERSION@],[salvestrini@gmail.com],[hybrid-kernel])
 # Check for a recent version of autoconf
 AC_PREREQ([2.61])
 
-AC_CONFIG_SRCDIR([src/core/main.c])
+AC_CONFIG_SRCDIR([src/core/main.cxx])
 AC_CONFIG_AUX_DIR([tools/autotools])
 AC_CONFIG_MACRO_DIR([tools/autotools/m4])
 
