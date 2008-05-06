@@ -120,8 +120,8 @@ AC_ARG_VAR(MBCHK, [Full path to the 'mbchk' executable])
 AX_PATH_MISSING([MBCHK],[mbchk],[mbchk seems missing ...])
 
 # XXX FIXME: To be removed ASAP
-AC_PATH_PROG([GRUB_INSTALL],[grub-install],[/sbin/grub-install],[$PATH:/sbin])
-AX_PATH_MISSING([MKISOFS],[mkisofs],[mbchk seems missing ...])
+AX_WITH_PROG([GRUB_INSTALL],[grub-install],[/sbin/grub-install],[$PATH:/sbin])
+AX_WITH_PROG([MKISOFS],[mkisofs])
 
 #
 # Check for programs that MUST be available
