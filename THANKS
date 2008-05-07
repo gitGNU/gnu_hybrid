@@ -2,7 +2,7 @@ Mike Sharov:
 	For its ustl library
 
 Todd Veldhuizen and Luc Maisonobe:
-      For their autoconf macros
+	For their autoconf macros
 
 Heiner Steven:
 	For his testawk script (at http://www.shelldorado.com)
@@ -16,10 +16,10 @@ Markus F.X.J. Oberhumer:
 	For the LZO library
 
 Niels Kristian Bech Jensen:
-      For his checkincludes.pl
+	For his checkincludes.pl
 
 Arnold Robbins:
-      For his awk-scripts (getopt(), ord() etc.).
+	For his awk-scripts (getopt(), ord() etc.).
 
 Julian Seward:
 	For his libbzip2
@@ -59,7 +59,7 @@ Alexander Blessing:
 All peoples involved in ChaOS kernel
 
 David H. Hovemeyer:
-   	 For his GeekOS
+	For his GeekOS
 
 fiasco and pistachio peoples
 
@@ -73,7 +73,7 @@ Larry Wall & the Perl developers:
 	For Perl ...
 
 David J. MacKenzie and Paul Eggbert:
-      For their 'ifnames' script that inspired the 'scanconditional.pl'
+	For their 'ifnames' script that inspired the 'scanconditional.pl'
 	script.
 
 David J. MacKenzie and Akim Demaille:
@@ -105,7 +105,7 @@ Durand John Miller:
 	(http://www.djm.co.za/spoon/grub/floppy.php)
 
 Emanuele Bassi:
-         author of gitlog2ChangeLog script
+	author of gitlog2ChangeLog script
 
 	Thank you all,
 		Francesco
