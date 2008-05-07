@@ -22,7 +22,6 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "libs/list.h"
 
 __BEGIN_DECLS
 
@@ -34,8 +33,6 @@ struct timer {
 #if CONFIG_TIMERS_DEBUG
 	int          absolute;   /* Absolute expiration time */
 #endif
-
-	list_entry_t list;
 };
 typedef struct timer timer_t;
 
@@ -47,7 +44,6 @@ typedef struct timer timer_t;
 	(TIMER)->callback   = CALLBACK;		\
 	(TIMER)->data       = DATA;		\
 	(TIMER)->expiration = DELAY;		\
-	LIST_INIT(&(TIMER->list));              \
 	__END_MACRO
 #define TIMER_GOOD(TIMER)			\
 	((TIMER) &&				\
