@@ -93,27 +93,28 @@ static struct heap_bin bins[] = {
 static void dump_bin(size_t indx)
 {
 	struct heap_bin* bin;
+#if 0
 	unsigned int*    temp;
-
+#endif
 	assert(indx < bin_count);
 
 	bin = &bins[indx];
 
 	dprintf("%d: "
 		"esize %d, "
-		"grow_size %d, "
-		"alloc_count %d, "
-		"free_count %d, "
-		"raw_count %d, "
-		"raw_list %p\n",
-		indx, 
+		"gsize %d, "
+		"allocs %d, "
+		"frees %d, "
+		"raws %d, "
+		"rawl %p\n",
+		indx,
 		bin->element_size,
 		bin->grow_size,
 		bin->alloc_count,
 		bin->free_count,
 		bin->raw_count,
 		bin->raw_list);
-
+#if 0
 	dprintf("free_list: ");
 	for (temp = bin->free_list;
 	     temp != NULL;
@@ -122,6 +123,7 @@ static void dump_bin(size_t indx)
 	}
 
 	dprintf("NULL\n");
+#endif
 }
 
 /* NOTE: This function is needed only for debugging purposes */
@@ -245,15 +247,15 @@ static char* raw_alloc(unsigned int size,
 	return retval;
 }
 
-void* arch_heap_alloc(unsigned int size)
+void * arch_heap_alloc(unsigned int size)
 {
-	void*             address;
-	size_t            indx;
-	unsigned int      i;
-	struct heap_page* page;
+	void *             address;
+	size_t             indx;
+	unsigned int       i;
+	struct heap_page * page;
 
 #if CONFIG_DEBUG_HEAP_NOISY
-	dprintf("Asked to allocate size %d\n", size);
+	dprintf("Allocate a memory block (size %d)\n", size);
 #endif
 
 	address = NULL;
@@ -265,7 +267,7 @@ void* arch_heap_alloc(unsigned int size)
 	}
 
 	if (indx == bin_count) {
-		panic("Asked to allocate too much for now!");
+		panic("No bin free for a memory block of size %d\n");
 	}
 
 	if (bins[indx].free_list != NULL) {
@@ -292,14 +294,14 @@ void* arch_heap_alloc(unsigned int size)
 	page[0].free_count--;
 
 #if CONFIG_DEBUG_HEAP_NOISY
-	dprintf("healp_malloc: "
+	dprintf("arch_heap_alloc: "
 		"(1) page %p/bin_index %d/free_count %d\n",
 		page, page->bin_index, page->free_count);
 #endif
-	for(i = 1; i < bins[indx].element_size / CONFIG_PAGE_SIZE; i++) {
+	for (i = 1; i < bins[indx].element_size / CONFIG_PAGE_SIZE; i++) {
 		page[i].free_count--;
 #if CONFIG_DEBUG_HEAP_NOISY
-		dprintf("heap_malloc: "
+		dprintf("arch_heap_alloc: "
 			"(2) page %p/bin_index %d/free_count %d\n",
 			&page[i], page[i].bin_index, page[i].free_count);
 #endif
@@ -312,31 +314,31 @@ void* arch_heap_alloc(unsigned int size)
 	return address;
 }
 
-void arch_heap_free(void *address)
+void arch_heap_free(void * address)
 {
-	struct heap_page* page;
-	struct heap_bin*  bin;
-	unsigned int      i;
+	struct heap_page * page;
+	struct heap_bin *  bin;
+	unsigned int       i;
 
 	if (address == NULL) {
-		dprintf("heap_free on a NULL pointer!\n");
+		dprintf("Passed pointer is NULL, cannot free!\n");
 		return;
 	}
 
 	if (((addr_t) address < heap_base) ||
 	    ((addr_t) address >= (heap_base + heap_size))) {
-		panic("Asked to free invalid address %p", address);
+		panic("Freeing invalid address %p", address);
 	}
 
 #if CONFIG_DEBUG_HEAP_NOISY
-	dprintf("heap_free: asked to free at ptr = %p\n", address);
+	dprintf("arch_heap_free: freeing at address %p\n", address);
 #endif
 
-	page = &heap_alloc_table[((unsigned)address - heap_base) /
+	page = &heap_alloc_table[((unsigned) address - heap_base) /
 				 CONFIG_PAGE_SIZE];
 
 #if CONFIG_DEBUG_HEAP_NOISY
-	dprintf("heap_free: page %p: bin_index %d, free_count %d\n",
+	dprintf("arch_heap_free: page %p: bin_index %d, free_count %d\n",
 		page, page->bin_index, page->free_count);
 #endif
 
@@ -346,12 +348,14 @@ void arch_heap_free(void *address)
 	}
 
 	bin = &bins[page[0].bin_index];
-	if (bin->element_size <= CONFIG_PAGE_SIZE &&
-	    (addr_t) address % bin->element_size != 0) {
+#if 0
+	if ((bin->element_size <= CONFIG_PAGE_SIZE) &&
+	    ((addr_t) address % bin->element_size != 0)) {
 		panic("Passed invalid pointer %p to heap_free, "
-		      "it is supposed to be in bin for esize 0x%x",
+		      "it is supposed to be in bin for esize %d",
 		      address, bin->element_size);
 	}
+#endif
 
 	for (i = 0; i < bin->element_size / CONFIG_PAGE_SIZE; i++) {
 		if (page[i].bin_index != page[0].bin_index) {
@@ -369,7 +373,7 @@ void arch_heap_free(void *address)
 	{
 		unsigned int *temp;
 		for (temp = bin->free_list;
-		     temp != NULL; 
+		     temp != NULL;
 		     temp = (unsigned int *) *temp) {
 			if (temp == (unsigned int *) address) {
 				panic("Address %p already exists in bin "
