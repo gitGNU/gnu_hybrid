@@ -41,7 +41,7 @@ fi
 
 echo "$me: Fetching $URL"
 rm -f $FILE
-$WGET --no-verbose -r -q -O $FILE -- $URL || {
+$WGET --no-verbose -q -O $FILE -- $URL || {
     echo "$me: Cannot fetch $URL"
     rm -f $FILE
     exit 1
