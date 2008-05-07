@@ -27,6 +27,7 @@
 #include "core/scheduler.h"
 #include "core/boot/option.h"
 #include "core/build.h"
+#include "libc++/cstdlib"
 
 OPTION_DECLARE(test1,"this is a test1");
 OPTION_DECLARE(test2,"this is a test2");
@@ -46,6 +47,39 @@ timer_t t6;
 /* We reach this point from init() */
 int main(int argc, char* argv[])
 {
+	timer_t * p;
+
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+	p = (timer_t *) malloc(sizeof(timer_t));
+	free(p);
+
+	p = new timer_t;
+	delete p;
+	p = new timer_t;
+	delete p;
+	p = new timer_t;
+	delete p;
+	p = new timer_t;
+	delete p;
+	p = new timer_t;
+	delete p;
+	p = new timer_t;
+	delete p;
+	p = new timer_t;
+	delete p;
+
+
 	printf("Entering main(argc = %d, argv = %p)\n", argc, argv);
 
 	printf("Welcome to Hybrid kernel "
@@ -70,27 +104,21 @@ int main(int argc, char* argv[])
 #if TEST_TIMERS
 	t1.callback   = (void (*)(void *)) 1;
 	t1.expiration = 1;
-	LIST_INIT(&t1.list);
 
 	t2.callback   = (void (*)(void *)) 2;
 	t2.expiration = 20;
-	LIST_INIT(&t2.list);
 
 	t3.callback   = (void (*)(void *)) 3;
 	t3.expiration = 300;
-	LIST_INIT(&t3.list);
 
 	t4.callback   = (void (*)(void *)) 4;
 	t4.expiration = 4000;
-	LIST_INIT(&t4.list);
 
 	t5.callback   = (void (*)(void *)) 5;
 	t5.expiration = 50000;
-	LIST_INIT(&t4.list);
 
 	t6.callback   = (void (*)(void *)) 6;
 	t6.expiration = 600000;
-	LIST_INIT(&t4.list);
 
 	if (!timer_add(&t6)) {
 		panic("Cannot add a timer");
@@ -115,12 +143,12 @@ int main(int argc, char* argv[])
 	dbg_enter();
 #endif
 
+	timer_remove(&t6);
 	timer_remove(&t1);
-	timer_remove(&t4);
 	timer_remove(&t2);
+	timer_remove(&t4);
 	timer_remove(&t3);
 	timer_remove(&t5);
-	timer_remove(&t6);
 
 #if CONFIG_DEBUGGER
 	dbg_enter();
