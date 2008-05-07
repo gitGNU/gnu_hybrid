@@ -23,6 +23,4 @@ EXTRA_DIST +=					\
 	@reldir@/rules.cfg
 
 libs_SRCS =					\
-	@reldir@/list.h				\
-	@reldir@/bitmap.h			\
 	@reldir@/bcd.h

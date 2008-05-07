@@ -57,7 +57,7 @@ core_SRCS =					\
 	@reldir@/interrupt.h			\
 	@reldir@/interrupt.c			\
 	@reldir@/timer.h			\
-	@reldir@/timer.c			\
+	@reldir@/timer.cxx			\
 	@reldir@/time.h				\
 	@reldir@/time.c				\
 	@reldir@/log.h				\
