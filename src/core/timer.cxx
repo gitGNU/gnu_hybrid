@@ -1,21 +1,21 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
+//
 
 #include "config/config.h"
 #include "core/archs/arch.h"
@@ -24,10 +24,11 @@
 #include "libc/stddef.h"
 #include "core/timer.h"
 #include "core/mutex.h"
-#include "libs/list.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
+
+#include "libc++/list"
 
 #define BANNER          "timer: "
 
@@ -37,34 +38,32 @@
 #define dprintf(F,A...)
 #endif
 
-
-static LIST_HEAD(timers);
-static size_t granularity;
+static ktl::list<timer_t *> timers;
+static size_t               granularity;
 
 #if 0
 static void timers_update(void)
 {
-	timer_t * timer;
-
 	dprintf("Updating timers\n");
 
-	if (LIST_ISEMPTY(&timers)) {
+	if (timers.empty()) {
 		dprintf("List is empty, quitting update\n");
 		return;
 	}
 
-	timer = LIST_ENTRY(&timers, timer_t, list);
+	timer_t * & timer = timers.front();
 	assert(timer);
 
-	dprintf("Updating timer %p\n", timer);
+	dprintf("Updating timer 0x%p\n", timer);
 
 	timer->expiration -= granularity;
 	if (TIMER_EXPIRED(timer)) {
-		dprintf("Timer %p is expired\n", timer);
+		dprintf("Timer 0x%p is expired\n", timer);
 
-		LIST_REMOVE(&(timer->list));
+		timers.pop_front();
+
 		if (!timer->callback) {
-			dprintf("Timer %p callback is empty\n", timer);
+			dprintf("Timer 0x%p callback is empty\n", timer);
 			return;
 		}
 
@@ -79,9 +78,7 @@ int timers_init(void)
 {
 	dprintf("Initializing timers\n");
 
-	LIST_INIT(&timers);
-
-	assert(LIST_ISEMPTY(&timers));
+	timers.clear();
 
 	granularity = arch_timer_granularity();
 	assert(granularity > 0);
@@ -97,14 +94,16 @@ int timers_fini(void)
 {
 	dprintf("Finalizing timers\n");
 
+	if (!timers.empty()) {
+		dprintf("Timers list not empty\n");
+		return 0;
+	}
+
 	return 1;
 }
 
 int timer_add(timer_t * timer)
 {
-	list_entry_t * curr1;
-	timer_t *      curr2;
-
 	assert(timer);
 
 #if CONFIG_TIMERS_DEBUG
@@ -116,34 +115,27 @@ int timer_add(timer_t * timer)
 		return 0;
 	}
 
-	dprintf("Adding timer %p (expiration %d)\n", timer, timer->expiration);
+	dprintf("Adding timer 0x%p (expiration %d)\n", timer, timer->expiration);
 
-	if (LIST_ISEMPTY(&timers)) {
+	if (timers.empty()) {
 		dprintf("Timers list is empty, adding timer at the head\n");
 
-		LIST_INSERT_AFTER(&timers, &(timer->list));
-
-		assert(!LIST_ISEMPTY(&timers));
+		timers.push_front(timer);
+		assert(!timers.empty());
 
 		return 1;
 	}
 
 	dprintf("Timers list not empty, adding somewhere\n");
 
-	curr2 = NULL;
-
-	LIST_FOREACH_FORWARD(&timers, curr1) {
-		curr2 = LIST_ENTRY(curr1, timer_t, list);
-
-		dprintf("Cursor %p expiration time is %d\n",
-			curr2, curr2->expiration);
-
-		if (curr2->expiration > timer->expiration) {
+	ktl::list<timer_t *>::iterator iter;
+	for (iter = timers.begin(); iter != timers.end(); iter++) {
+		if ((*iter)->expiration > timer->expiration) {
 			dprintf("Cursor expiration time is bigger\n");
 			break;
 		}
 
-		timer->expiration -= curr2->expiration;
+		timer->expiration -= (*iter)->expiration;
 
 		dprintf("Decrementing timer expiration (now %d)\n",
 			timer->expiration);
@@ -155,55 +147,54 @@ int timer_add(timer_t * timer)
 		}
 	}
 
-	curr2 = LIST_ENTRY(curr1, timer_t, list);
-
-	assert(curr2 != NULL);
-
-	if (LIST_ISFIRST(&timers, &(curr2->list))) {
-		dprintf("Inserting timer %p after head\n", timer);
-		LIST_INSERT_AFTER(&timers, &(timer->list));
-	} else {
-		dprintf("Inserting timer %p before %p\n", timer, curr2);
-		LIST_INSERT_BEFORE(&(curr2->list), &(timer->list));
-	}
+	timers.insert(iter, timer);
 
 	return 1;
 }
 
 int timer_remove(timer_t * timer)
 {
-	dprintf("Removing timer %p\n", timer);
+	dprintf("Removing timer 0x%p\n", timer);
 
 	assert(timer);
 
-	if (LIST_ISEMPTY(&timers)) {
+	if (timers.empty()) {
 		dprintf("Timers list is empty, cannot remove\n");
 		return 0;
-	} else {
-		list_entry_t * curr1;
-		timer_t *      curr2;
+	}
 
-		LIST_FOREACH_FORWARD(&timers, curr1) {
-			curr2 = LIST_ENTRY(curr1, timer_t, list);
-			if (curr2 == timer) {
-				dprintf("Timer %p found\n", timer);
-				if (!LIST_ISLAST(&timers, &(curr2->list))) {
-					if (curr2->expiration > 0) {
-						LIST_ENTRY(curr2->list.next,
-							   timer_t,
-							   list)->expiration +=
-							curr2->expiration;
-					}
+	ktl::list<timer_t *>::iterator iter1;
+
+	for (iter1 = timers.begin(); iter1 != timers.end(); iter1++) {
+		dprintf("Walking timer 0x%p\n", (*iter1));
+		if ((*iter1) == timer) {
+			dprintf("Got timer!\n");
+
+			ktl::list<timer_t *>::iterator iter2;
+
+			iter2 = iter1;
+			iter2++;
+
+			if (iter2 != timers.end()) {
+				dprintf("Next timer is 0x%p\n", (*iter2));
+
+				if ((*iter1)->expiration > 0) {
+					dprintf("Timer 0x%p is not expired, "
+						"fixing\n", (*iter1));
+					(*iter2)->expiration +=
+						(*iter1)->expiration;
 				}
-
-				LIST_REMOVE(&curr2->list);
-
-				return 1;
 			}
+
+			dprintf("Removing timer 0x%p from list\n", (*iter1));
+			timers.erase(iter1);
+
+			dprintf("Timer 0x%p removed successfully\n", timer);
+			return 1;
 		}
 	}
 
-	dprintf("Timer %p not found\n", timer);
+	dprintf("Timer 0x%p not found\n", timer);
 
 	return 0;
 }
@@ -213,8 +204,6 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 					      int    argc,
 					      char * argv[])
 {
-	list_entry_t * temp;
-
 	assert(stream);
 	assert(argc >= 0);
 
@@ -225,16 +214,20 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 	unused_argument(argv);
 
 	fprintf(stream, "Timers:\n");
-	LIST_FOREACH_FORWARD(&timers, temp) {
-		timer_t * curr;
 
-		curr = LIST_ENTRY(temp, timer_t, list);
+	ktl::list<timer_t *>::iterator iter;
+	for (iter = timers.begin(); iter != timers.end(); iter++) {
 #if CONFIG_TIMERS_DEBUG
-		fprintf(stream, "  0x%p %d (%d)\n",
-			curr->callback, curr->expiration, curr->absolute);
+		fprintf(stream, "  0x%p 0x%p %d (%d)\n",
+			(*iter),
+			(*iter)->callback,
+			(*iter)->expiration,
+			(*iter)->absolute);
 #else
-		fprintf(stream, "  0x%p %d\n",
-			curr->callback, curr->expiration);
+		fprintf(stream, "  0x%p 0x%p %d\n",
+			(*iter),
+			(*iter)->callback,
+			(*iter)->expiration);
 #endif
 	}
 
