@@ -21,11 +21,6 @@
 #define IRQ_H
 
 #include "config/config.h"
-
-__BEGIN_DECLS
-
-typedef long irq_flags_t;
-
-__END_DECLS
+#include "core/archs/ia32/i8259.h"
 
 #endif /* IRQ_H */
