@@ -17,250 +17,204 @@
  *
  */
 
+#include "config/config.h"
+
+#include "debug.h"
+#include "libc/stdio.h"
+//#include "libc/time.h"
+#include "libc/string.h"
+#include "libc/stdint.h"
+
+#include "core/arch/cpu.h"
+#include "core/arch/port.h"
+#include "core/archs/common/cpu.h"
+
+#if CONFIG_I8253_DEBUG
+#define dprintf(F,A...) printf("i8253: " F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
+#define __this_cpu      (&cpus[0])
+
+#define PIT_SECOND	1193180
+#define HZ		100
+//#define LATCH		((PIT_SECOND + HZ / 2) / HZ)
+
+/* I/O port for 8254 commands */
+#define TMR_PORT	0x43
+
+/* I/O for individual counters */
+#define COUNTER_0	0x40
+#define COUNTER_1	0x41
+#define COUNTER_2	0x42
+
+/* Channel selection */
+#define CHANNEL_0	0x00
+#define CHANNEL_1	0x40
+#define CHANNEL_2	0x80
+
+/* Which bytes are set */
+#define PIT_LOW		0x10
+#define PIT_HIGH	0x20
+#define PIT_BOTH	0x30
+
+/* Modes */
+#define PIT_MODE_0	0x0	/* One shot */
+#define PIT_MODE_1	0x2	/* No worky */
+#define PIT_MODE_2	0x4	/* forever */
+#define PIT_MODE_3	0x6	/* forever */
+#define PIT_MODE_4	0x8	/* No worky */
+#define PIT_MODE_5	0xA	/* No worky */
+
+#define PIT_LATCH	0x00
+#define PIT_BCD		0x01
+#define PIT_CH0		0x02
+#define PIT_CH1		0x04
+#define PIT_CH2		0x08
+#define PIT_STAT	0x10
+#define PIT_CNT		0x20
+#define PIT_READ	0xF0
+
+/* Delay loop  */
+static inline void delay_loops(uint32_t loops)
+{
+	int d0;
+
+	__asm__ volatile ("	     jmp 1f  \n"
+			  ".align 16	     \n"
+			  "1:     jmp 2f  \n"
+			  ".align 16	     \n"
+			  "2:     decl %0 \n"
+			  "	     jns 2b  \n"
+			  :"=&a" (d0)
+			  :"0" (loops));
+}
+
+/* Generic PIT routines */
+static void set_timer_chan_oneshot(uint16_t h, uint8_t chan)
+{
+	port_out8(TMR_PORT,      (chan * 0x40) | PIT_BOTH | PIT_MODE_0);
+	port_out8((0x40 + chan), (uint8_t)(h & 0xFF));
+	port_out8((0x40 + chan), (uint8_t)(h >> 8));
+}
+
+static uint32_t get_timer_chan(uint8_t chan, int reset)
+{
+	uint32_t x;
+
+	port_out8(TMR_PORT, (chan * 0x40) | (reset)? 0x0 : PIT_LATCH);
+	x  = port_in8(0x40 + chan);
+	x += (port_in8(0x40 + chan) << 8);
+
+	return x;
+}
+
+static void calibrate_delay_loop(void)
+{
+	uint32_t lb, lp = 8;
+
+	printf("Calibrating delay loop\n");
+
+	/* Coarse calibration */
+	__this_cpu->arch.loops_ms = (1 << 12);
+	while (__this_cpu->arch.loops_ms <<= 1) {
+		set_timer_chan_oneshot(0xFFFF, 0);
+		delay_loops(__this_cpu->arch.loops_ms);
+		if (get_timer_chan(0,1) < 64000) {
+			break;
+		}
+	}
+
+	__this_cpu->arch.loops_ms >>= 1;
+	lb = __this_cpu->arch.loops_ms;
+
+	/* Precision calculation */
+	while (lp-- && (lb >>= 1)) {
+		__this_cpu->arch.loops_ms |= lb;
+		set_timer_chan_oneshot(0xFFFF, 0);
+		delay_loops(__this_cpu->arch.loops_ms);
+		if (get_timer_chan(0,1) < 64000) {
+			__this_cpu->arch.loops_ms &= ~lb;
+		}
+
+	}
+
+	/* Normalise the results */
+	__this_cpu->arch.loops_ms *= PIT_SECOND / (65535 - 64000);
+	__this_cpu->arch.loops_ms /= 1000;
+	printf("Loops per ms %d\n", __this_cpu->arch.loops_ms);
+
+	/* Dump the ferequency infos */
+	printf("Frequency %u.%uMHz\n",
+	       ((__this_cpu->arch.loops_ms * 10) / 5000),
+	       ((__this_cpu->arch.loops_ms * 10) / 50) % 100);
+}
+
+static void set_timer_chan(uint16_t hz, uint8_t chan)
+{
+	int divisor;
+
+	divisor = PIT_SECOND / hz;
+
+	port_out8(TMR_PORT,	 (chan * 0x40) | PIT_BOTH | PIT_MODE_3);
+	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
+	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
+}
+
 #if 0
+static uint32_t ticks;
 
-typedef struct {
-        Lock;
-        ulong   period;         /* current clock period */
-        int     enabled;
-        uvlong  hz;
-
-        ushort  last;           /* last value of clock 1 */
-        uvlong  ticks;          /* cumulative ticks of counter 1 */
-
-        ulong   periodset;
-} i8253_t;
-
-static i8253_t i8253;
-
-void i8253_init(void)
+static void isr(registers_t regs)
 {
-        int loops, x;
+	(void) regs;
 
-        ioalloc(T0cntr, 4, 0, "i8253");
-        ioalloc(T2ctl, 1, 0, "i8253.cntr2ctl");
+	ticks++;
+	printf("Ticks %d\n", ticks);
+}
+#endif
 
-        i8253.period = Freq/HZ;
-
-        /*
-         *  enable a 1/HZ interrupt for providing scheduling interrupts
-         */
-        outb(Tmode, Load0|Square);
-        outb(T0cntr, (Freq/HZ));        /* low byte */
-        outb(T0cntr, (Freq/HZ)>>8);     /* high byte */
-
-        /*
-         *  enable a longer period counter to use as a clock
-         */
-        outb(Tmode, Load2|Square);
-        outb(T2cntr, 0);                /* low byte */
-        outb(T2cntr, 0);                /* high byte */
-        x = inb(T2ctl);
-        x |= T2gate;
-        outb(T2ctl, x);
-
-        /*
-         * Introduce a little delay to make sure the count is
-         * latched and the timer is counting down; with a fast
-         * enough processor this may not be the case.
-         * The i8254 (which this probably is) has a read-back
-         * command which can be used to make sure the counting
-         * register has been written into the counting element.
-         */
-        x = (Freq/HZ);
-        for(loops = 0; loops < 100000 && x >= (Freq/HZ); loops++) {
-                outb(Tmode, Latch0);
-                x = inb(T0cntr);
-                x |= inb(T0cntr) << 8;
-        }
+void pit_start_timer1(void)
+{
+	//	set_irq_handler(0, pit_isr);
+	set_timer_chan(HZ, 0);
 }
 
-void
-guesscpuhz(int aalcycles)
+/* millisecond delay */
+void arch_delay_ms(uint32_t ms)
 {
-        int loops, incr, x, y;
-        uvlong a, b, cpufreq;
-
-        /* find biggest loop that doesn't wrap */
-        incr = 16000000/(aalcycles*HZ*2);
-        x = 2000;
-        for(loops = incr; loops < 64*1024; loops += incr) {
-
-                /*
-                 *  measure time for the loop
-                 *
-                 *                      MOVL    loops,CX
-                 *      aaml1:          AAM
-                 *                      LOOP    aaml1
-                 *
-                 *  the time for the loop should be independent of external
-                 *  cache and memory system since it fits in the execution
-                 *  prefetch buffer.
-                 *
-                 */
-                outb(Tmode, Latch0);
-                cycles(&a);
-                x = inb(T0cntr);
-                x |= inb(T0cntr) << 8;
-                aamloop(loops);
-                outb(Tmode, Latch0);
-                cycles(&b);
-                y = inb(T0cntr);
-                y |= inb(T0cntr) << 8;
-                x -= y;
-
-                if(x < 0)
-                        x += Freq/HZ;
-
-                if(x > Freq/(3*HZ))
-                        break;
-        }
-
-        /*
-         *  figure out clock frequency and a loop multiplier for delay().
-         *  n.b. counter goes up by 2*Freq
-         */
-        cpufreq = (vlong)loops*((aalcycles*2*Freq)/x);
-
-        /* AAM+LOOP's for 1 ms */
-        m->loopconst = (cpufreq/1000)/aalcycles;
-	
-	if(m->havetsc) {
-		/* counter goes up by 2*Freq */
-		b = (b-a) << 1;
-		b *= Freq;
-		b /= x;
-		
-		/*
-		 *  round to the nearest megahz
-		 */
-		m->cpumhz = (b+500000)/1000000L;
-		m->cpuhz = b;
-		m->cyclefreq = b;
-	} else {
-		/*
-		 *  add in possible 0.5% error and convert to MHz
-		 */
-		m->cpumhz = (cpufreq + cpufreq/200)/1000000;
-		m->cpuhz = cpufreq;
-	}
-	
-	i8253.hz = Freq << Tickshift;
+	delay_loops(ms * __this_cpu->arch.loops_ms);
 }
 
-void
-i8253timerset(uvlong next)
+/* microsecond delay */
+void arch_delay_us(uint32_t us)
 {
-	long period;
-	ulong want;
-	ulong now;
-
-	period = MaxPeriod;
-	if(next != 0) {
-		want = next>>Tickshift;
-		now = i8253.ticks;      /* assuming whomever called us just did
-					   fastticks() */
-
-		period = want - now;
-		if(period < MinPeriod)
-			period = MinPeriod;
-		else if(period > MaxPeriod)
-			period = MaxPeriod;
-	}
-
-	/* hysteresis */
-	if(i8253.period != period) {
-		ilock(&i8253);
-		/* load new value */
-		outb(Tmode, Load0|Square);
-		outb(T0cntr, period);           /* low byte */
-		outb(T0cntr, period >> 8);              /* high byte */
-
-		/* remember period */
-		i8253.period = period;
-		i8253.periodset++;
-		iunlock(&i8253);
-	}
+	delay_loops((us * __this_cpu->arch.loops_ms) / 1024);
 }
 
-static void
-i8253clock(Ureg* ureg, void*)
+/* nanosecond delay */
+void arch_delay_ns(uint32_t ms)
 {
-        timerintr(ureg, 0);
+	delay_loops((ms * __this_cpu->arch.loops_ms) / (1024 * 1024));
 }
 
-void
-i8253enable(void)
+static uint32_t frequency;
+
+size_t arch_timer_granularity(void)
 {
-        i8253.enabled = 1;
-        i8253.period = Freq/HZ;
-        intrenable(IrqCLOCK, i8253clock, 0, BUSUNKNOWN, "clock");
+	return frequency;
 }
 
-void
-i8253link(void)
+int i8253_init(void)
 {
+	frequency = HZ;
+
+	calibrate_delay_loop();
+
+	return 1;
 }
 
-/*
- *  return the total ticks of counter 2.  We shift by
- *  8 to give timesync more wriggle room for interpretation
- *  of the frequency
- */
-uvlong
-i8253read(uvlong *hz)
+int i8253_fini(void)
 {
-        ushort y, x;
-        uvlong ticks;
-
-        if(hz)
-                *hz = i8253.hz;
-
-        ilock(&i8253);
-        outb(Tmode, Latch2);
-        y = inb(T2cntr);
-        y |= inb(T2cntr) << 8;
-
-        if(y < i8253.last)
-                x = i8253.last - y;
-        else {
-                x = i8253.last + (0x10000 - y);
-                if (x > 3*MaxPeriod) {
-                        outb(Tmode, Load2|Square);
-                        outb(T2cntr, 0);                /* low byte */
-                        outb(T2cntr, 0);                /* high byte */
-                        y = 0xFFFF;
-                        x = i8253.period;
-                }
-        }
-        i8253.last = y;
-        i8253.ticks += x>>1;
-        ticks = i8253.ticks;
-        iunlock(&i8253);
-
-        return ticks << Tickshift;
+	return 1;
 }
-
-void
-delay(int millisecs)
-{
-        millisecs *= m->loopconst;
-        if(millisecs <= 0)
-                millisecs = 1;
-        aamloop(millisecs);
-}
-
-void
-microdelay(int microsecs)
-{
-        microsecs *= m->loopconst;
-        microsecs /= 1000;
-        if(microsecs <= 0)
-                microsecs = 1;
-        aamloop(microsecs);
-}
-
-void i8253_fini(void)
-{
-}
-#endif /* 0 */
