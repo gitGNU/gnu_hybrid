@@ -15,7 +15,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-//
 
 #include "config/config.h"
 #include "core/archs/arch.h"
@@ -40,8 +39,7 @@
 static ktl::list<timer_t *> timers;
 static size_t               granularity;
 
-#if 0
-static void timers_update(void)
+void timers_update(void)
 {
 	dprintf("Updating timers\n");
 
@@ -71,7 +69,6 @@ static void timers_update(void)
 
 	dprintf("Updated completed\n");
 }
-#endif
 
 int timers_init(void)
 {
