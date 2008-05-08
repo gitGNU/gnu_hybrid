@@ -25,12 +25,13 @@
 
 __BEGIN_DECLS
 
+typedef long irq_flags_t;
+
 int      i8259_init(void);
 void     i8259_fini(void);
 uint16_t i8259_irq_mask_get(void);
 void     i8259_irq_mask_set(uint16_t mask);
 void     i8259_irq_enable(int irq);
-int      i8259_irq_enabled(void);
 void     i8259_irq_disable(int irq);
 
 __END_DECLS

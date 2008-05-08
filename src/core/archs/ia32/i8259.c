@@ -22,6 +22,7 @@
 #include "libc/stdio.h"
 #include "core/arch/port.h"
 #include "core/arch/asm.h"
+#include "core/arch/i8259.h"
 
 #if CONFIG_I8259_DEBUG
 #define dprintf(F,A...) printf("i8259: " F,##A)
@@ -36,21 +37,29 @@
 #define ICU_RESET    0x11
 
 static uint16_t irq_mask;
-static int      enabled;
 
-static int reprogram(uint16_t master,
-		     uint16_t slave)
+static int remap(uint8_t master,
+		 uint8_t slave)
 {
 	dprintf("Reprogramming master 0x%x / slave 0x%x\n");
 
+	/* Send ICW1 */
 	port_out8(ICU0,     ICU_RESET);
 	port_out8(ICU1,     ICU_RESET);
+
+	/* ICW2: Send the PIC indices in the IDT */
 	port_out8(ICU0 + 1, master);
 	port_out8(ICU1 + 1, slave);
+
+	/* ICW3: Sets which PIC is the master */
 	port_out8(ICU0 + 1, 0x04);
 	port_out8(ICU1 + 1, 0x02);
+
+	/* If the lowest bit is set then the PIC is working in the x86 arch */
 	port_out8(ICU0 + 1, 0x01);
 	port_out8(ICU1 + 1, 0x01);
+
+	/* Disable all IRQs */
 	port_out8(ICU0 + 1, 0xFF);
 	port_out8(ICU1 + 1, 0xFF);
 
@@ -66,9 +75,8 @@ int i8259_init(void)
 	cli();
 
 	irq_mask = 0;
-	enabled  = 0;
 
-	return reprogram(0x20, 0x28);
+	return remap(0x20, 0x28);
 }
 
 void i8259_fini(void)
@@ -80,10 +88,6 @@ void i8259_fini(void)
 
 void i8259_irq_enable(int irq)
 {
-	if (enabled) {
-		return;
-	}
-
 	dprintf("Enabling irq %d\n", irq);
 
 	irq_mask = irq_mask & ~(1 << irq);
@@ -95,17 +99,8 @@ void i8259_irq_enable(int irq)
 	port_out8(ICU1 + 1, (irq_mask >> 8) & 0xFF);
 }
 
-int i8259_irq_enabled(void)
-{
-	return enabled;
-}
-
 void i8259_irq_disable(int irq)
 {
-	if (!enabled) {
-		return;
-	}
-
 	dprintf("Disabling irq %d\n", irq);
 
 	irq_mask = irq_mask | (1 << irq);
@@ -130,4 +125,39 @@ void i8259_irq_mask_set(uint16_t mask)
 
 	port_out8(ICU0 + 1, irq_mask & 0xFF);
 	port_out8(ICU1 + 1, (irq_mask >> 8) & 0xFF);
+}
+
+static int irqs_enabled;
+
+void arch_irqs_enable(void)
+{
+	i8259_irq_enable(0);
+	irqs_enabled = 1;
+}
+
+int arch_irqs_enabled(void)
+{
+	return irqs_enabled;
+}
+
+void arch_irqs_disable(void)
+{
+	i8259_irq_disable(0);
+	irqs_enabled = 0;
+}
+
+void arch_irqs_save(irq_flags_t* flags)
+{
+	uint16_t mask;
+
+	unused_argument(flags);
+
+	mask = i8259_irq_mask_get();
+}
+
+void arch_irqs_restore(const irq_flags_t* flags)
+{
+	unused_argument(flags);
+
+	i8259_irq_mask_set(0);
 }
