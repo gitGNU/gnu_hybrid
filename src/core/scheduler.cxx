@@ -15,7 +15,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-//
 
 #include "config/config.h"
 #include "core/scheduler.h"
@@ -48,6 +47,12 @@ int scheduler_init(void)
 
 void scheduler_run(void)
 {
+	process_t * & process = processes.front();
+	assert(process);
+
+	processes.pop_front();
+
+	dprintf("Scheduling process $d\n", process->id);
 }
 
 int scheduler_fini(void)
@@ -57,7 +62,6 @@ int scheduler_fini(void)
 	if (!processes.empty()) {
 		dprintf("Processess list not empty\n");
 		return 0;
-
 	}
 
 	return 1;
