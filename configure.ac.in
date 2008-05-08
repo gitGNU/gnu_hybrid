@@ -230,10 +230,6 @@ AS_IF([test x"$gcc_available" = x"1"],[
     AC_MSG_FAILURE([Sorry, your compiler is blacklisted.])
   ],[])
 
-  AX_GCC_INSTALL_DIR(GCC_INSTALL_PATH)
-  GCC_INCLUDE_PATH=$GCC_INSTALL_PATH/include
-  AC_SUBST(GCC_INCLUDE_PATH)
-
   AX_C_CHECK_FLAG([-fno-builtin],[],[],[
     AX_CONFIG_CFLAGS="$AX_CONFIG_CFLAGS -fno-builtin"
   ],[

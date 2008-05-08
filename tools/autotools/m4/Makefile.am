@@ -33,7 +33,6 @@ DOWNLOAD =						\
 	ax_cflags_gcc_option.m4				\
 	ax_missing_prog.m4				\
 	ax_path_missing.m4				\
-	ax_gcc_install_dir.m4				\
 	ax_check_awk__v.m4				\
 	ax_check_awk__x_escapes.m4			\
 	ax_check_awk_and.m4				\
