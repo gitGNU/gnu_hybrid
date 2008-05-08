@@ -77,21 +77,21 @@ static void gate_set(uint32_t index,
 void idt_interrupt_set(uint32_t index,
 		       void*    addr)
 {
-        gate_set(index, KERNEL_CS, (unsigned int) addr,
+	gate_set(index, KERNEL_CS, (unsigned int) addr,
 		 IDT_PRESENT | IDT_32 | IDT_INT | IDT_DPL3);
 }
 
 void idt_trap_set(uint32_t index,
 		  void*    addr)
 {
-        gate_set(index, KERNEL_CS, (unsigned int) addr,
+	gate_set(index, KERNEL_CS, (unsigned int) addr,
 		 IDT_PRESENT | IDT_32 | IDT_TRAP | IDT_DPL3);
 }
 
 void idt_task_set(uint32_t index,
 		  uint16_t segment)
 {
-        gate_set(index, segment, 0,
+	gate_set(index, segment, 0,
 		 IDT_PRESENT | IDT_TASK | IDT_DPL0);
 }
 
@@ -105,16 +105,16 @@ static dbg_result_t command_idt_on_execute(FILE* stream,
 					   int   argc,
 					   char* argv[])
 {
-        int i;
+	int i;
 
-        assert(stream);
-	
+	assert(stream);
+
 	unused_argument(argc);
 	unused_argument(argv);
 
 	fprintf(stream, "IDT:\n");
 
-        for (i = 0; i < IDT_ENTRIES; i++) {
+	for (i = 0; i < IDT_ENTRIES; i++) {
 		if (idt_table[i].flags & IDT_PRESENT) {
 			fprintf(stream,
 				"  %d    0x%02x / 0x%02x / 0x04%x%04x\n",
@@ -126,7 +126,7 @@ static dbg_result_t command_idt_on_execute(FILE* stream,
 		}
 	}
 
-        return DBG_RESULT_OK;
+	return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(idt,
@@ -140,37 +140,37 @@ DBG_COMMAND_DECLARE(idt,
 int idt_init(void)
 {
 #if 0
-        struct desc_p idt_p;
+	struct desc_p idt_p;
 #endif
 
-        int           i;
+	int           i;
 
-        /* Fill all vectors with default handler */
-        for (i = 0; i < IDT_ENTRIES; i++) {
-                idt_trap_set(i, trap_default);
+	/* Fill all vectors with default handler */
+	for (i = 0; i < IDT_ENTRIES; i++) {
+		idt_trap_set(i, trap_default);
 	}
 
 #if 0
-        /* Setup trap handlers */
-        for (i = 0; i < NR_TRAP; i++) {
-                idt_set(i, trap_table[i]);
+	/* Setup trap handlers */
+	for (i = 0; i < NR_TRAP; i++) {
+		idt_set(i, trap_table[i]);
 	}
 
-        /* Setup interrupt handlers */
-        for (i = 0; i < 16; i++) {
-                idt_interrupt_set(0x20 + i, intr_table[i]);
+	/* Setup interrupt handlers */
+	for (i = 0; i < 16; i++) {
+		idt_interrupt_set(0x20 + i, intr_table[i]);
 	}
 
-        /* Setup debug trap */
-        idt_set(3, trap_3, KERNEL_CS, ST_USER | ST_TRAP_GATE);
+	/* Setup debug trap */
+	idt_set(3, trap_3, KERNEL_CS, ST_USER | ST_TRAP_GATE);
 
-        /* Setup system call handler */
-        idt_set(SYSCALL_INT, syscall_entry, KERNEL_CS, ST_USER | ST_TRAP_GATE);
+	/* Setup system call handler */
+	idt_set(SYSCALL_INT, syscall_entry, KERNEL_CS, ST_USER | ST_TRAP_GATE);
 
-        /* Load IDT */
-        idt_p.limit = sizeof(idt) - 1;
-        idt_p.base  = (u_long)&idt;
-        lidt(&idt_p.limit);
+	/* Load IDT */
+	idt_p.limit = sizeof(idt) - 1;
+	idt_p.base  = (u_long)&idt;
+	lidt(&idt_p.limit);
 #endif
 
 	return 1;
@@ -180,4 +180,3 @@ void idt_fini(void)
 {
 	missing();
 }
-

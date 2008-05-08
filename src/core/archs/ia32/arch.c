@@ -23,12 +23,12 @@
 #include "config/config.h"
 #include "core/archs/arch.h"
 #include "core/arch/port.h"
-#include "core/arch/timer.h"
 #include "core/arch/cpu.h"
 #include "core/arch/gdt.h"
 #include "core/arch/idt.h"
 #include "core/arch/bios.h"
 #include "core/arch/cmos.h"
+#include "core/arch/i8253.h"
 #include "core/arch/i8259.h"
 
 #if CONFIG_ARCH_DEBUG
@@ -66,10 +66,13 @@ int arch_init(void)
 		panic("Cannot initialize i8259");
 	}
 
-	if (!timer_init()) {
-		panic("Cannot initialize timer");
+	i8259_irq_enable(0);
+
+	if (!i8253_init()) {
+		panic("Cannot initialize i8253");
 	}
-	/* We could call delay() now */
+
+	/* We can call delay() now */
 
 	dprintf("Architecture initialized\n");
 
@@ -78,9 +81,9 @@ int arch_init(void)
 
 void arch_fini(void)
 {
-	if (!timer_fini()) {
-		panic("Cannot finalize timer");
-	}
+	i8253_fini();
+
+	i8259_irq_disable(0);
 
 	i8259_fini();
 	idt_fini();
