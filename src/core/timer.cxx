@@ -27,7 +27,6 @@
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
-
 #include "libc++/list"
 
 #define BANNER          "timer: "
