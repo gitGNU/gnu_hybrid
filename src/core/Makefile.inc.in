@@ -46,8 +46,6 @@ core_SRCS =					\
 	@reldir@/power.c			\
 	@reldir@/resource.h			\
 	@reldir@/resource.c			\
-	@reldir@/process.h			\
-	@reldir@/process.c			\
 	@reldir@/thread.h			\
 	@reldir@/thread.c			\
 	@reldir@/semaphore.h			\
@@ -63,7 +61,7 @@ core_SRCS =					\
 	@reldir@/log.h				\
 	@reldir@/log.c				\
 	@reldir@/scheduler.h			\
-	@reldir@/scheduler.c			\
+	@reldir@/scheduler.cxx			\
 	@reldir@/module.h			\
 	@reldir@/module.c			\
 	@reldir@/main.cxx
