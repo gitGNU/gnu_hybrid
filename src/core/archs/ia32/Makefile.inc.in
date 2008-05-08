@@ -35,11 +35,7 @@ arch_ia32_multiboot_SRCS =			\
 arch_ia32_SRCS =				\
 	@reldir@/keyboard.h			\
 	@reldir@/arch.c				\
-	@reldir@/timer.h			\
-	@reldir@/timer.c			\
 	@reldir@/power.c			\
-	@reldir@/irq.h				\
-	@reldir@/irq.c				\
 	@reldir@/port.h				\
 	@reldir@/port.c				\
 	@reldir@/cmos.h				\
