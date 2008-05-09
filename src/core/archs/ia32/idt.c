@@ -83,14 +83,14 @@ static void gate_set(uint32_t index,
 void idt_interrupt_set(uint32_t index,
 		       void *   addr)
 {
-	gate_set(index, KERNEL_CS, (unsigned int) addr,
+	gate_set(index, SEGMENT_KERNEL_CODE, (unsigned int) addr,
 		 IDT_PRESENT | IDT_32 | IDT_INT | IDT_DPL3);
 }
 
 void idt_trap_set(uint32_t index,
 		  void *   addr)
 {
-	gate_set(index, KERNEL_CS, (unsigned int) addr,
+	gate_set(index, SEGMENT_KERNEL_CODE, (unsigned int) addr,
 		 IDT_PRESENT | IDT_32 | IDT_TRAP | IDT_DPL3);
 }
 
@@ -106,11 +106,14 @@ static void trap_default(void)
 	panic("Unexpected interrupt");
 }
 
-static void idt_load(idt_entry_t * table)
+static void idt_load(idt_entry_t * table,
+		     size_t        entries)
 {
 	idt_pointer_t idt_p;
 
-	idt_p.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
+	assert(entries <= IDT_ENTRIES);
+
+	idt_p.limit = (sizeof(idt_entry_t) * entries) - 1;
 	idt_p.base  = (uint32_t) table;
 
 	lidt(&idt_p.limit);
@@ -137,13 +140,15 @@ int idt_init(void)
 	}
 
 	/* Setup debug trap */
-	idt_set(3, trap_3, KERNEL_CS, ST_USER | ST_TRAP_GATE);
+	idt_set(3, trap_3, SEGMENT_KERNEL_CODE, ST_USER | ST_TRAP_GATE);
 
 	/* Setup system call handler */
-	idt_set(SYSCALL_INT, syscall_entry, KERNEL_CS, ST_USER | ST_TRAP_GATE);
+	idt_set(SYSCALL_INT,
+		syscall_entry,
+		SEGMENT_KERNEL_CODE, ST_USER | ST_TRAP_GATE);
 #endif
 
-	idt_load(idt_table);
+	idt_load(idt_table, IDT_ENTRIES);
 
 	return 1;
 }
