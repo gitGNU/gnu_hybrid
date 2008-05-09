@@ -41,13 +41,12 @@ __BEGIN_DECLS
 #define USER_SS     0x28
 
 /* GDT */
-#define GDT_ADDR    0x181000
-#define GDT_ENTRIES 0x1000   /* 4192 */
+#define GDT_ENTRIES     3
 
-/* FLAGS1 (P + DPL + S + TYPE) */
+/* FLAGS1 (P:1 + DPL:2 + DT:1 + TYPE:4) */
 #define GDT_PRESENT     0x80
 
-#define GDT_DPL3        0x60 
+#define GDT_DPL3        0x60
 #define GDT_DPL1        0x20
 #define GDT_DPL2        0x40
 #define GDT_DPL0        0x00
@@ -79,8 +78,8 @@ __BEGIN_DECLS
 #define GDT_READ        0x02
 #define GDT_CONF        0x04
 
-/* FLAGS2 (G + D/B + 0 + AVL) */
-#define GDT_GRANULARITY 0x80 
+/* FLAGS2 (G:1 + D:1 + 0:1 + A:1 + SEGLEN:4) */
+#define GDT_GRANULARITY 0x80
 
 /*  TSS */
 #define GDT_USE32       0x40
@@ -88,7 +87,8 @@ __BEGIN_DECLS
 
 #define GDT_AVAIL       0x00
 
-uint32_t gdt_segment_create(uint32_t base,
+void     gdt_segment_create(uint32_t entry,
+			    uint32_t base,
 			    uint32_t len,
 			    uint8_t  flags1,
 			    uint8_t  flags2);

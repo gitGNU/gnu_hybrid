@@ -33,123 +33,83 @@
 #define dprintf(F,A...)
 #endif
 
-typedef struct {
-        uint16_t len15_0;
-        uint16_t base15_0; 
-        uint8_t  base23_16; 
-        uint8_t  flags1; 
-        uint8_t  flags2;
-        uint8_t  base31_24;
-} gdt_descriptor_t;
+struct gdt_entry {
+	uint16_t len15_0;   /* Limit low */
+	uint16_t base15_0;  /* Base low */
+	uint8_t  base23_16; /* Base middle */
+	uint8_t  flags1;    /* Access */
+	uint8_t  flags2;    /* Granularity */
+	uint8_t  base31_24; /* Base high */
+} ATTRIBUTE(packed);
+typedef struct gdt_entry gdt_entry_t;
 
-static gdt_descriptor_t* gdt_table = (gdt_descriptor_t *) GDT_ADDR;
+struct gdt_pointer {
+	uint16_t limit;
+	uint32_t base;
+} ATTRIBUTE(packed);
+typedef struct gdt_pointer gdt_pointer_t;
 
-uint32_t gdt_segment_create(uint32_t base,
-			    uint32_t len,
-			    uint8_t  flags1,
-			    uint8_t  flags2)
+static gdt_entry_t gdt_table[GDT_ENTRIES];
 
+void gdt_segment_create(uint32_t i,
+			uint32_t base,
+			uint32_t len,
+			uint8_t  flags1,
+			uint8_t  flags2)
 {
-	uint16_t i;
-
-	i = 8; /* Skip first eight positions
-		* NULL, unused, KERNEL_CS, KERNEL_DS
-		* USER_CS, USER_DS, unused, unused
-		*/
-	
-	while (i < GDT_ENTRIES) {
-		if ((gdt_table[i].len15_0   == 0) && 
-		    (gdt_table[i].base15_0  == 0) &&
-		    (gdt_table[i].base23_16 == 0) &&
-		    (gdt_table[i].flags1    == 0) &&
-		    (gdt_table[i].flags2    == 0) &&
-		    (gdt_table[i].base31_24 == 0)) {
-			gdt_table[i].len15_0   =
-				(uint16_t)(len  & 0xFFFF);
-			gdt_table[i].base15_0  =
-				(uint16_t)(base & 0xFFFF);
-			gdt_table[i].base23_16 =
-				(uint8_t)((base >> 16) & 0xFF);
-			gdt_table[i].flags1    =
-				flags1;
-			gdt_table[i].flags2    =
-				flags2 | ((len >> 16) & 0xF);
-			gdt_table[i].base31_24 =
-				(uint8_t)((base & 0xF000) >> 24);
-			
-			return i;
-		}
-		i++;
-	}
-
-	return 0;
+	gdt_table[i].base31_24 = (uint8_t)((base & 0xF000) >> 24);
+	gdt_table[i].base23_16 = (uint8_t)((base >> 16) & 0xFF);
+	gdt_table[i].base15_0  = (uint16_t)(base & 0xFFFF);
+	gdt_table[i].len15_0   = (uint16_t)(len  & 0xFFFF);
+	gdt_table[i].flags1    = flags1;
+	gdt_table[i].flags2    = flags2 | ((len >> 16) & 0x0F);
 }
 
-void gdt_segment_destroy(uint32_t entry)
+void gdt_segment_destroy(uint32_t i)
 {
-	uint32_t i;
-
-	i = entry / 8;
-
-	gdt_table[i].len15_0   = 0;
-	gdt_table[i].base15_0  = 0; 
-	gdt_table[i].base23_16 = 0; 
-	gdt_table[i].flags1    = 0; 
-	gdt_table[i].flags2    = 0;
 	gdt_table[i].base31_24 = 0;
+	gdt_table[i].base23_16 = 0;
+	gdt_table[i].base15_0  = 0;
+	gdt_table[i].len15_0   = 0;
+	gdt_table[i].flags1    = 0;
+	gdt_table[i].flags2    = 0;
 }
 
-uint32_t gdt_base_get(uint32_t entry)
+uint32_t gdt_base_get(uint32_t i)
 {
-	uint32_t i;
 	uint32_t base;
 
-	i    = entry / 8;
-	base = 0;
-    
 	base  = gdt_table[i].base15_0;
 	base += (gdt_table[i].base23_16 << 16);
 	base += (gdt_table[i].base31_24 << 24);
-	
+
 	return base;
 }
 
-void gdt_base_set(uint32_t entry,
+void gdt_base_set(uint32_t i,
 		  uint32_t base)
 {
-	uint32_t i = entry / 8;
-	
-	gdt_table[i].base15_0  = (uint16_t)(base & 0xFFFF);
-	gdt_table[i].base23_16 = (uint8_t)((base >> 16) & 0xFF);
-	gdt_table[i].base31_24 = (uint8_t)((base & 0xF000) >> 24);
+	gdt_table[i].base15_0  = (uint16_t) (base & 0xFFFF);
+	gdt_table[i].base23_16 = (uint8_t)  ((base >> 16) & 0xFF);
+	gdt_table[i].base31_24 = (uint8_t)  ((base & 0xF000) >> 24);
 }
 
-uint32_t gdt_dpl_get(uint32_t entry)
+#if 0
+uint32_t gdt_dpl_get(uint32_t i)
 {
-	uint32_t i;
-
-	i = entry / 8;
-	
 	return (gdt_table[i].flags1 & GDT_DPL3);
 }
 
-void gdt_dpl_set(uint32_t entry,
+void gdt_dpl_set(uint32_t i,
 		 uint32_t dpl)
 {
-	uint32_t i;
-
-	i = entry / 8;
-	
 	gdt_table[i].flags1 &= ~(GDT_DPL3);
 	gdt_table[i].flags1 |= dpl;
 }
+#endif
 
-uint8_t gdt_flags_get(uint32_t entry) 
-{  
-	uint32_t i;
-
-	i = entry / 8;
-
+uint8_t gdt_flags_get(uint32_t i)
+{
 	return gdt_table[i].flags1;
 }
 
@@ -157,51 +117,40 @@ void gdt_flags_set(uint32_t entry,
 		   uint8_t  flags)
 {
 	uint32_t i;
-	
+
 	i = entry / 8;
 
 	gdt_table[i].flags1 &= (GDT_DPL3);
 	gdt_table[i].flags1 |= flags;
 }
 
-#if CONFIG_DEBUGGER
-static dbg_result_t command_gdt_on_execute(FILE* stream,
-					   int   argc,
-					   char* argv[])
+static void gdt_load(gdt_entry_t * table)
 {
-        int i;
-	
-        assert(stream);
-	
-	unused_argument(argc);
-	unused_argument(argv);
+	gdt_pointer_t gdt_p;
 
-	fprintf(stream, "GDT:\n");
+	gdt_p.limit = (sizeof(gdt_entry_t) * GDT_ENTRIES) - 1;
+	gdt_p.base  = (uint32_t) table;
 
-        for (i = 0; i < GDT_ENTRIES; i++) {
-		if (gdt_table[i].flags1 & GDT_PRESENT) {
-			fprintf(stream,
-				"  %d    0x%02x / 0x%02x\n",
-				i,
-				gdt_table[i].flags1,
-				gdt_table[i].flags2);
-		}
-	}
-
-        return DBG_RESULT_OK;
+	lgdt(&gdt_p.limit);
 }
-
-DBG_COMMAND_DECLARE(gdt,
-		    "Show gdt",
-		    NULL,
-		    NULL,
-		    command_gdt_on_execute,
-		    NULL);
-#endif
 
 int gdt_init(void)
 {
-	missing();
+	gdt_segment_create(0,
+			   0, 0,
+			   0x00,
+			   0x00);
+	gdt_segment_create(1,
+			   0, 0xFFFFFFFF,
+			   GDT_PRESENT | GDT_APP | GDT_TSS32 | GDT_TSS16,
+			   GDT_GRANULARITY | GDT_USE32 | 0x0F);
+	gdt_segment_create(2,
+			   0, 0xFFFFFFFF,
+			   GDT_PRESENT | GDT_APP | GDT_LDT,
+			   GDT_GRANULARITY | GDT_USE32 | 0x0F);
+
+	gdt_load(gdt_table);
+
 	return 1;
 }
 
@@ -215,3 +164,41 @@ int arch_vm_pagesize(void)
 	return CONFIG_PAGE_SIZE;
 }
 
+#if CONFIG_DEBUGGER
+static dbg_result_t command_gdt_on_execute(FILE* stream,
+					   int   argc,
+					   char* argv[])
+{
+	int i;
+
+	assert(stream);
+
+	unused_argument(argc);
+	unused_argument(argv);
+
+	fprintf(stream, "GDT:\n");
+
+	for (i = 0; i < GDT_ENTRIES; i++) {
+		if (gdt_table[i].flags1 & GDT_PRESENT) {
+			fprintf(stream,
+				"  %d    0x%01x%02x%02x 0x%02x/0x%02x/0x02\n",
+				i,
+				gdt_table[i].base31_24,
+				gdt_table[i].base23_16,
+				gdt_table[i].base15_0,
+				gdt_table[i].flags1,
+				gdt_table[i].flags2,
+				gdt_table[i].len15_0);
+		}
+	}
+
+	return DBG_RESULT_OK;
+}
+
+DBG_COMMAND_DECLARE(gdt,
+		    "Show gdt",
+		    NULL,
+		    NULL,
+		    command_gdt_on_execute,
+		    NULL);
+#endif
