@@ -63,6 +63,10 @@ void gdt_segment_create(uint32_t i,
 	gdt_table[i].len15_0   = (uint16_t)(len  & 0xFFFF);
 	gdt_table[i].flags1    = flags1;
 	gdt_table[i].flags2    = flags2 | ((len >> 16) & 0x0F);
+
+	dprintf("Created segment %d: "
+		"base=0x%x, length=0x%x, flags1=0x%x, flags2=0x%x\n",
+		i, base, len, flags1, flags2);
 }
 
 void gdt_segment_destroy(uint32_t i)
@@ -124,32 +128,36 @@ void gdt_flags_set(uint32_t entry,
 	gdt_table[i].flags1 |= flags;
 }
 
-static void gdt_load(gdt_entry_t * table)
+static void gdt_load(gdt_entry_t * table,
+		     size_t        entries)
 {
 	gdt_pointer_t gdt_p;
 
-	gdt_p.limit = (sizeof(gdt_entry_t) * GDT_ENTRIES) - 1;
+	assert(entries <= GDT_ENTRIES);
+
+	gdt_p.limit = (sizeof(gdt_entry_t) * entries) - 1;
 	gdt_p.base  = (uint32_t) table;
 
+	dprintf("Loading GDT table at 0x%p (%d entries)\n", table, entries);
 	lgdt(&gdt_p.limit);
 }
 
 int gdt_init(void)
 {
-	gdt_segment_create(0,
+	gdt_segment_create(SEGMENT_NULL,
 			   0, 0,
 			   0x00,
 			   0x00);
-	gdt_segment_create(1,
+	gdt_segment_create(SEGMENT_KERNEL_CODE,
 			   0, 0xFFFFFFFF,
 			   GDT_PRESENT | GDT_APP | GDT_TSS32 | GDT_TSS16,
 			   GDT_GRANULARITY | GDT_USE32 | 0x0F);
-	gdt_segment_create(2,
+	gdt_segment_create(SEGMENT_KERNEL_DATA,
 			   0, 0xFFFFFFFF,
 			   GDT_PRESENT | GDT_APP | GDT_LDT,
 			   GDT_GRANULARITY | GDT_USE32 | 0x0F);
 
-	gdt_load(gdt_table);
+	gdt_load(gdt_table, GDT_ENTRIES);
 
 	return 1;
 }
