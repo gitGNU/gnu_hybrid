@@ -62,7 +62,7 @@ int irq_disable(uint_t index)
 	if (irqs[index].enabled) {
 		irqs[index].enabled = 0;
 	}
-	
+
 	return 1;
 }
 
