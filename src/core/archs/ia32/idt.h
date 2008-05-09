@@ -27,8 +27,8 @@ __BEGIN_DECLS
 
 int  idt_init(void);
 void idt_fini(void);
-void idt_interrupt_set(uint32_t index, void*  addr);
-void idt_trap_set(uint32_t index, void*  addr);
+void idt_interrupt_set(uint32_t index, void *  addr);
+void idt_trap_set(uint32_t index, void *  addr);
 void idt_task_set(uint32_t index, uint16_t segment);
 
 __END_DECLS

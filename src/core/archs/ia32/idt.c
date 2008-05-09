@@ -34,7 +34,6 @@
 #define dprintf(F,A...)
 #endif
 
-#define IDT_ADDR     0x180000
 #define IDT_ENTRIES  0x100       /* 256 */
 
 #define IDT_PRESENT  0x8000      /* 10000000 00000000b */
@@ -47,8 +46,8 @@
 #define IDT_DPL2     0x4000      /* 01000000 00000000b */
 #define IDT_DPL3     0x6000      /* 01100000 00000000b */
 
-typedef struct {
-	uint16_t offset15_0;
+struct idt_entry {
+	uint16_t offset15_0;  /* Base-LO */
 	uint16_t segment;     /* Selector */
 	uint16_t flags;       /* parms: 5
 			       * zeros: 3
@@ -57,10 +56,17 @@ typedef struct {
 			       * dpl:   2
 			       * valid: 1
 			       */
-	uint16_t offset31_16;
-} idt_descriptor_t;
+	uint16_t offset31_16; /* Base-HI */
+} ATTRIBUTE(packed);
+typedef struct idt_entry idt_entry_t;
 
-idt_descriptor_t* idt_table = (idt_descriptor_t *) IDT_ADDR;
+struct idt_pointer {
+	uint16_t limit;
+	uint32_t base;
+} ATTRIBUTE(packed);
+typedef struct idt_pointer idt_pointer_t;
+
+static idt_entry_t idt_table[IDT_ENTRIES];
 
 static void gate_set(uint32_t index,
 		     uint16_t segment,
@@ -75,14 +81,14 @@ static void gate_set(uint32_t index,
 }
 
 void idt_interrupt_set(uint32_t index,
-		       void*    addr)
+		       void *   addr)
 {
 	gate_set(index, KERNEL_CS, (unsigned int) addr,
 		 IDT_PRESENT | IDT_32 | IDT_INT | IDT_DPL3);
 }
 
 void idt_trap_set(uint32_t index,
-		  void*    addr)
+		  void *   addr)
 {
 	gate_set(index, KERNEL_CS, (unsigned int) addr,
 		 IDT_PRESENT | IDT_32 | IDT_TRAP | IDT_DPL3);
@@ -100,52 +106,21 @@ static void trap_default(void)
 	panic("Unexpected interrupt");
 }
 
-#if CONFIG_DEBUGGER
-static dbg_result_t command_idt_on_execute(FILE* stream,
-					   int   argc,
-					   char* argv[])
+static void idt_load(idt_entry_t * table)
 {
-	int i;
+	idt_pointer_t idt_p;
 
-	assert(stream);
+	idt_p.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
+	idt_p.base  = (uint32_t) table;
 
-	unused_argument(argc);
-	unused_argument(argv);
-
-	fprintf(stream, "IDT:\n");
-
-	for (i = 0; i < IDT_ENTRIES; i++) {
-		if (idt_table[i].flags & IDT_PRESENT) {
-			fprintf(stream,
-				"  %d    0x%02x / 0x%02x / 0x04%x%04x\n",
-				i,
-				idt_table[i].segment,
-				idt_table[i].flags,
-				idt_table[i].offset31_16,
-				idt_table[i].offset15_0);
-		}
-	}
-
-	return DBG_RESULT_OK;
+	lidt(&idt_p.limit);
 }
-
-DBG_COMMAND_DECLARE(idt,
-		    "Show idt",
-		    NULL,
-		    NULL,
-		    command_idt_on_execute,
-		    NULL);
-#endif
 
 int idt_init(void)
 {
-#if 0
-	struct desc_p idt_p;
-#endif
+	int i;
 
-	int           i;
-
-	/* Fill all vectors with default handler */
+	/* Fill all vectors with the default handler */
 	for (i = 0; i < IDT_ENTRIES; i++) {
 		idt_trap_set(i, trap_default);
 	}
@@ -166,12 +141,9 @@ int idt_init(void)
 
 	/* Setup system call handler */
 	idt_set(SYSCALL_INT, syscall_entry, KERNEL_CS, ST_USER | ST_TRAP_GATE);
-
-	/* Load IDT */
-	idt_p.limit = sizeof(idt) - 1;
-	idt_p.base  = (u_long)&idt;
-	lidt(&idt_p.limit);
 #endif
+
+	idt_load(idt_table);
 
 	return 1;
 }
@@ -180,3 +152,40 @@ void idt_fini(void)
 {
 	missing();
 }
+
+#if CONFIG_DEBUGGER
+static dbg_result_t command_idt_on_execute(FILE* stream,
+					   int   argc,
+					   char* argv[])
+{
+	int i;
+
+	assert(stream);
+
+	unused_argument(argc);
+	unused_argument(argv);
+
+	fprintf(stream, "IDT:\n");
+
+	for (i = 0; i < IDT_ENTRIES; i++) {
+		if (idt_table[i].flags & IDT_PRESENT) {
+			fprintf(stream,
+				"  %d     0x04%x%04x / 0x%04x /0x%04x \n",
+				i,
+				idt_table[i].offset31_16,
+				idt_table[i].offset15_0,
+				idt_table[i].segment,
+				idt_table[i].flags);
+		}
+	}
+
+	return DBG_RESULT_OK;
+}
+
+DBG_COMMAND_DECLARE(idt,
+		    "Show idt",
+		    NULL,
+		    NULL,
+		    command_idt_on_execute,
+		    NULL);
+#endif
