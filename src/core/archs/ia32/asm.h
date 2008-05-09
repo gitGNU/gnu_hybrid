@@ -53,7 +53,7 @@ __BEGIN_DECLS
 #define X86_FEATURE_ACPI        (0*32+22) /* ACPI via MSR */
 #define X86_FEATURE_MMX         (0*32+23) /* Multimedia Extensions */
 #define X86_FEATURE_FXSR        (0*32+24) /* FXSAVE and FXRSTOR instructions (fast save and restore */
-                                          /* of FPU context), and CR4.OSFXSR available */
+					  /* of FPU context), and CR4.OSFXSR available */
 #define X86_FEATURE_XMM         (0*32+25) /* Streaming SIMD Extensions */
 #define X86_FEATURE_XMM2        (0*32+26) /* Streaming SIMD Extensions-2 */
 #define X86_FEATURE_SELFSNOOP   (0*32+27) /* CPU self snoop */
@@ -212,8 +212,10 @@ void          cr2_set(unsigned long cr2);
 unsigned long cr0_get(void);
 void          cr0_set(unsigned long cr0);
 
-void          lidt(void* idt_ptr);
-void          lgdt(void* gdt_ptr);
+void          lidt(void * idt_ptr);
+
+void          lgdt(void * gdt_ptr);
+void          lgdt_commit(void);
 
 void          cli(void);
 void          sti(void);
