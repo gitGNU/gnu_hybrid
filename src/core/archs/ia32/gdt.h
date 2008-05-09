@@ -25,20 +25,9 @@
 __BEGIN_DECLS
 
 /* Segments */
-#define KERNEL_CS   0x10
-#define KERNEL_DS   0x18
-#define KERNEL_ES   0x18
-#define KERNEL_FS   0x18
-#define KERNEL_GS   0x18
-#define KERNEL_SS   0x18
-#define KERNEL_ESP  0x200000
-
-#define USER_CS     0x20
-#define USER_DS     0x28
-#define USER_ES     0x28
-#define USER_FS     0x28
-#define USER_GS     0x28
-#define USER_SS     0x28
+#define SEGMENT_NULL        0
+#define SEGMENT_KERNEL_CODE 1
+#define SEGMENT_KERNEL_DATA 2
 
 /* GDT */
 #define GDT_ENTRIES     3
