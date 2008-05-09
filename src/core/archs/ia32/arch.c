@@ -54,16 +54,17 @@ int arch_init(void)
 	}
 	/* We know CPU capabilities now */
 
+	/* Turn IRQ off before initializing GDT */
+	if (!i8259_init()) {
+		panic("Cannot initialize i8259");
+	}
+
 	if (!gdt_init()) {
 		panic("Cannot initialize GDT");
 	}
 
 	if (!idt_init()) {
 		panic("Cannot initialize IDT");
-	}
-
-	if (!i8259_init()) {
-		panic("Cannot initialize i8259");
 	}
 
 	i8259_irq_enable(0);
@@ -81,6 +82,7 @@ int arch_init(void)
 
 void arch_fini(void)
 {
+	/* XXX FIXME: Review the shutdown procedure ... */
 	i8253_fini();
 
 	i8259_irq_disable(0);
