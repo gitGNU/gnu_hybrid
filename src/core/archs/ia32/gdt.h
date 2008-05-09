@@ -25,6 +25,11 @@
 __BEGIN_DECLS
 
 /* Segments */
+#define SEGMENT_REGISTER_BUILDER(PRIVILEGE,LDT,INDEX)	\
+  ((((PRIVILEGE) & 0x3)  << 0) |			\
+   (((LDT) ? 1 : 0)      << 2) |			\
+   ((INDEX)              << 3))
+
 #define SEGMENT_NULL        0
 #define SEGMENT_KERNEL_CODE 1
 #define SEGMENT_KERNEL_DATA 2

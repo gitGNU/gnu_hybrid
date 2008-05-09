@@ -37,24 +37,30 @@
 #define IDT_ENTRIES  0x100       /* 256 */
 
 #define IDT_PRESENT  0x8000      /* 10000000 00000000b */
+
 #define IDT_TRAP     0x0700      /* 00000111 00000000b */
 #define IDT_INT      0x0600      /* 00000110 00000000b */
 #define IDT_TASK     0x0500      /* 00000101 00000000b */
+
 #define IDT_32       0x0800      /* 00001000 00000000b */
+
 #define IDT_DPL0     0x0000      /* 00000000 00000000b */
 #define IDT_DPL1     0x2000      /* 00100000 00000000b */
 #define IDT_DPL2     0x4000      /* 01000000 00000000b */
 #define IDT_DPL3     0x6000      /* 01100000 00000000b */
 
+#define IDT_DPL_MASK (IDT_DPL3 | IDT_DPL2 | IDT_DPL1 | IDT_DPL0)
+
 struct idt_entry {
 	uint16_t offset15_0;  /* Base-LO */
 	uint16_t segment;     /* Selector */
-	uint16_t flags;       /* parms: 5
-			       * zeros: 3
-			       * type:  4
-			       * azero: 1
-			       * dpl:   2
-			       * valid: 1
+	uint16_t flags;       /* reserved: 5
+			       * flags:    3
+			       * type:     3
+			       * size:     1
+			       * zero:     1
+			       * dpl:      2
+			       * present:  1
 			       */
 	uint16_t offset31_16; /* Base-HI */
 } ATTRIBUTE(packed);
@@ -68,12 +74,13 @@ typedef struct idt_pointer idt_pointer_t;
 
 static idt_entry_t idt_table[IDT_ENTRIES];
 
-static void gate_set(uint32_t index,
-		     uint16_t segment,
-		     uint32_t offset,
-		     uint16_t flags)
+static void idt_gate_set(uint32_t index,
+			 uint16_t segment,
+			 uint16_t flags,
+			 uint32_t offset)
 {
 	assert(index < IDT_ENTRIES);
+
 	idt_table[index].segment     = segment;
 	idt_table[index].flags       = flags;
 	idt_table[index].offset15_0  = offset & 0xFFFF;
@@ -83,27 +90,17 @@ static void gate_set(uint32_t index,
 void idt_interrupt_set(uint32_t index,
 		       void *   addr)
 {
-	gate_set(index, SEGMENT_KERNEL_CODE, (unsigned int) addr,
-		 IDT_PRESENT | IDT_32 | IDT_INT | IDT_DPL3);
+	idt_gate_set(index, SEGMENT_KERNEL_CODE,
+		     IDT_PRESENT | IDT_32 | IDT_INT | IDT_DPL3,
+		      (unsigned int) addr);
 }
 
 void idt_trap_set(uint32_t index,
 		  void *   addr)
 {
-	gate_set(index, SEGMENT_KERNEL_CODE, (unsigned int) addr,
-		 IDT_PRESENT | IDT_32 | IDT_TRAP | IDT_DPL3);
-}
-
-void idt_task_set(uint32_t index,
-		  uint16_t segment)
-{
-	gate_set(index, segment, 0,
-		 IDT_PRESENT | IDT_TASK | IDT_DPL0);
-}
-
-static void trap_default(void)
-{
-	panic("Unexpected interrupt");
+	idt_gate_set(index, SEGMENT_KERNEL_CODE,
+		     IDT_PRESENT | IDT_32 | IDT_TRAP | IDT_DPL3,
+		      (unsigned int) addr);
 }
 
 static void idt_load(idt_entry_t * table,
@@ -125,28 +122,12 @@ int idt_init(void)
 
 	/* Fill all vectors with the default handler */
 	for (i = 0; i < IDT_ENTRIES; i++) {
-		idt_trap_set(i, trap_default);
+		idt_gate_set(i,
+			     SEGMENT_REGISTER_BUILDER(0, 0,
+						      SEGMENT_KERNEL_CODE),
+			     0,
+			     IDT_INT | IDT_32);
 	}
-
-#if 0
-	/* Setup trap handlers */
-	for (i = 0; i < NR_TRAP; i++) {
-		idt_set(i, trap_table[i]);
-	}
-
-	/* Setup interrupt handlers */
-	for (i = 0; i < 16; i++) {
-		idt_interrupt_set(0x20 + i, intr_table[i]);
-	}
-
-	/* Setup debug trap */
-	idt_set(3, trap_3, SEGMENT_KERNEL_CODE, ST_USER | ST_TRAP_GATE);
-
-	/* Setup system call handler */
-	idt_set(SYSCALL_INT,
-		syscall_entry,
-		SEGMENT_KERNEL_CODE, ST_USER | ST_TRAP_GATE);
-#endif
 
 	idt_load(idt_table, IDT_ENTRIES);
 
