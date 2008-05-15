@@ -148,7 +148,7 @@ static int option_config(option_t** start,
 
 	assert(start);
 	assert(stop);
-	assert(start < stop);
+	assert(start <= stop);
 
 	dprintf("Configuring options (start = 0x%x, stop = 0x%x)\n",
 		start, stop);
@@ -247,8 +247,6 @@ int option_init(void)
 		dprintf("Cannot initialize kernel options");
 		return 0;
 	}
-
-	assert(options);
 
 #if 0
 	if (!option_scanner_init()) {
