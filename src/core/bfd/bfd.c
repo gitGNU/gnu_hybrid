@@ -28,7 +28,6 @@
 #include "core/bfd/formats/aout.h"
 #include "core/bfd/formats/aout-format.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/mem/heap.h"
 #include "core/boot/bootinfo.h"
@@ -46,11 +45,11 @@ typedef enum {
 	BFD_UNKNOWN = 0,
 	BFD_ELF,
 	BFD_AOUT,
-} bfd_type_t; 
+} bfd_type_t;
 
 typedef struct bfd {
-        struct bfd*         next;
-        uint_t              id;
+	struct bfd*         next;
+	uint_t              id;
 	bfd_type_t          type;
 	union {
 #if CONFIG_ELF
@@ -89,7 +88,7 @@ int bfd_config_bootinfo_image(bi_image_t*  bi_image,
 			dprintf("Initializing ELF bfd descriptor\n");
 
 			bfd_image->type = BFD_ELF;
-			
+
 			if (!elf_init(&(bfd_image->data.elf),
 				      bi_image->data.elf.num,
 				      bi_image->data.elf.size,
@@ -98,7 +97,7 @@ int bfd_config_bootinfo_image(bi_image_t*  bi_image,
 				dprintf("Cannot initialize ELF descriptor\n");
 				break;
 			}
-			
+
 			retval = 1;
 #else
 			printf("Unsupported image type\n");
@@ -107,12 +106,12 @@ int bfd_config_bootinfo_image(bi_image_t*  bi_image,
 #endif
 			break;
 
-		case BOOTINFO_IMAGE_AOUT: 
+		case BOOTINFO_IMAGE_AOUT:
 #if CONFIG_AOUT
 			dprintf("Initializing AOUT bfd descriptor\n");
 
 			bfd_image->type = BFD_AOUT;
-			
+
 			if (!aout_init(&(bfd_image->data.aout),
 				       bi_image->data.aout.num,
 				       bi_image->data.aout.strsize,
@@ -124,19 +123,19 @@ int bfd_config_bootinfo_image(bi_image_t*  bi_image,
 			retval = 1;
 #else
 			printf("Unsupported image type\n");
-			
+
 			retval = 0;
 #endif
 			break;
 
-		case BFD_UNKNOWN: 
+		case BFD_UNKNOWN:
 			dprintf("Unknown image type\n");
 
 			break;
-			
-		default: 
+
+		default:
 			bug();
-		
+
 			break;
 	}
 
@@ -148,13 +147,13 @@ int bfd_config_kernel(bootinfo_t* bootinfo)
 	/* Set up bfd descriptor for kernel image */
 	kernel.id   = 1;
 	kernel.type = BFD_UNKNOWN;
-	
+
 	if (!bfd_config_bootinfo_image(&(bootinfo->kernel), &kernel)) {
 		dprintf("Cannot initialize bootinfo descriptor for "
 			"kernel image\n");
 		return 0;
 	}
-	
+
 	assert(kernel.type != BFD_UNKNOWN);
 
 	kernel.next = NULL;
@@ -194,7 +193,7 @@ int bfd_symbol_reverse_lookup(void*  address,
 
 	/* Always fall-back in order to detect possible bugs */
 #endif
-	
+
 	p = head;
 	while (p) {
 		switch (p->type) {
@@ -241,7 +240,7 @@ int bfd_symbols_foreach(int (* callback)(const char*   name,
 					 unsigned long address))
 {
 	bfd_image_t* p;
-	
+
 	assert(callback);
 
 	p = head;
@@ -272,7 +271,7 @@ int bfd_symbols_foreach(int (* callback)(const char*   name,
 				bug();
 				break;
 		}
-		
+
 		p = p->next;
 	}
 
@@ -283,7 +282,7 @@ int bfd_symbols_foreach(int (* callback)(const char*   name,
 int bfd_images_foreach(int (* callback)(const char* name))
 {
 	bfd_image_t* p;
-	
+
 	assert(callback);
 
 	p = head;
@@ -308,7 +307,7 @@ void bfd_fini(void)
 		if (head != &kernel) {
 			p = head;
 			head = head->next;
-			
+
 			dprintf("Destroying bfd %d\n", p->id);
 			free(p);
 		} else {
@@ -349,7 +348,7 @@ static unsigned long atoaddr(char* string)
 
 	tmp_val = strtoul(string, &tmp_char, 0);
 	if (tmp_char[0] == '\0') {
-	        return tmp_val;
+		return tmp_val;
 	}
 
 	return 0;

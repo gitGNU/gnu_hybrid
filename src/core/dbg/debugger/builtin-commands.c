@@ -26,7 +26,6 @@
 #include "core/bfd/bfd.h"
 #include "core/boot/option.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 #include "core/dbg/backtrace.h"
 #include "core/dbg/debugger/debugger.h"
 
@@ -71,7 +70,7 @@ static dbg_result_t command_help_on_execute(FILE* stream,
 
 		fprintf(stream, "Available commands:\n");
 		fprintf(stream, "\n");
-		
+
 		/* Look for the maximum command name length */
 		max_name  = 0;
 		temp      = commands;
@@ -81,13 +80,13 @@ static dbg_result_t command_help_on_execute(FILE* stream,
 			if (max_name < strlen(temp->name)) {
 				max_name = strlen(temp->name);
 			}
-			
+
 			temp = temp->next;
 		}
 		temp = NULL; /* Do not access temp anymore */
 
 		dprintf("max_name=%d\n", max_name);
-		
+
 		/* Some sane defaults */
 		assert(max_name  < 100);
 
@@ -104,15 +103,15 @@ static dbg_result_t command_help_on_execute(FILE* stream,
 		temp = commands;
 		while (temp) {
 			assert(temp->name);
-			
+
 			fprintf(stream, format,
 				temp->name,
 				temp->help.short_form ?
 				temp->help.short_form : "");
-			
+
 			temp = temp->next;
 		}
-		
+
 		fprintf(stream, "\n");
 		fprintf(stream,
 			"Use 'help <command>' in order to get more infos\n");
@@ -128,7 +127,7 @@ static dbg_result_t command_help_on_execute(FILE* stream,
 			fprintf(stream, "Unknown command '%s'\n", argv[0]);
 			return DBG_RESULT_ERROR;
 		}
-		
+
 		if (!(temp->help.long_form)) {
 			fprintf(stream,
 				"Command '%s' has no long help\n", argv[0]);
@@ -137,15 +136,15 @@ static dbg_result_t command_help_on_execute(FILE* stream,
 
 		fprintf(stream, "Command '%s':\n", argv[0]);
 		fprintf(stream, "\n");
-		
+
 		/*
 		 * XXX FIXME:
 		 *     We should add a proper formatting here ...
 		 */
-		
+
 		fprintf(stream, "    %s\n", temp->help.long_form);
 		fprintf(stream, "\n");
-		
+
 		return DBG_RESULT_OK;
 	}
 
@@ -188,15 +187,15 @@ static dbg_result_t command_history_on_execute(FILE* stream,
 		count = dbg_history_count();
 		if (count != 0) {
 			int i;
-			
+
 			fprintf(stream, "History:\n");
 			fprintf(stream, "\n");
-			
+
 			for (i = 0; i < count; i++) {
 				const char* s;
-				
+
 				s = dbg_history_retrieve(i);
-				
+
 				/*
 				 * NOTE:
 				 *     The history line must be not empty
@@ -208,7 +207,7 @@ static dbg_result_t command_history_on_execute(FILE* stream,
 
 				fprintf(stream, "  %d %s\n", i, s);
 			}
-			
+
 			fprintf(stream, "\n");
 		} else {
 			fprintf(stream, "History is empty\n");
@@ -259,7 +258,7 @@ static dbg_result_t command_recall_on_execute(FILE* stream,
 	}
 
 	assert(argv[0]);
-	
+
 	/* Code needed ... */
 
 	i = atoi(argv[0]);
@@ -272,10 +271,10 @@ static dbg_result_t command_recall_on_execute(FILE* stream,
 	dprintf("History line at index %d is '%s'\n", i, s);
 
 	missing();
-		
+
 	return DBG_RESULT_OK;
 }
- 
+
 DBG_COMMAND_DECLARE(recall,
 		    "Recalls a command from history",
 		    "Recalls an item from history. Pass the item number as "
@@ -335,7 +334,7 @@ static dbg_result_t command_version_on_execute(FILE* stream,
 	}
 
 	unused_argument(argv);
-	
+
 #if defined(HAVE___DATE__) && defined(HAVE___TIME__)
 	fprintf(stream, "%s %s (compiled on %s %s)\n",
 		PACKAGE_NAME, PACKAGE_VERSION, __DATE__, __TIME__);
@@ -381,14 +380,14 @@ static dbg_result_t command_breakpoint_on_execute(FILE* stream,
 
 		/* Set the breakpoint */
 		assert(argv[0]);
-		
+
 		breakpoint = 0;
 
 		fprintf(stream, "Breakpoint set to 0x%08x\n", breakpoint);
 
 		missing();
 		return DBG_RESULT_OK;
-		
+
 	}
 
 	bug();
@@ -474,9 +473,9 @@ static dbg_result_t command_disassemble_on_execute(FILE* stream,
 	unused_argument(argv);
 
 	fprintf(stream, "Disassemble:\n");
-		
+
 	missing();
-		
+
 	return DBG_RESULT_OK;
 }
 
@@ -501,9 +500,9 @@ static dbg_result_t command_frame_on_execute(FILE* stream,
 	unused_argument(argv);
 
 	fprintf(stream, "Frame:\n");
-	
+
 	missing();
-	
+
 	return DBG_RESULT_OK;
 }
 
@@ -532,13 +531,13 @@ static dbg_result_t command_set_on_execute(FILE* stream,
 	assert(argv);
 	assert(argv[0]);
 	assert(argv[1]);
-	
+
 	var = dbg_variable_lookup(argv[0]);
 	if (!var) {
 		/* Variable not found */
 		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
 	}
-	
+
 	value = atoi(argv[1]);
 	if (var->type == DBG_VAR_RW) {
 		if (var->actions.on_set) {
@@ -571,7 +570,7 @@ static dbg_result_t command_get_on_execute(FILE* stream,
 	const dbg_variable_t* var;
 	int                   value;
 	dbg_result_t          ret;
-	
+
 	assert(stream);
 	assert(argc >= 0);
 
@@ -587,7 +586,7 @@ static dbg_result_t command_get_on_execute(FILE* stream,
 		/* Variable not found */
 		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
 	}
-	
+
 	value = 0;
 	ret   = DBG_RESULT_ERROR;
 	if ((var->type == DBG_VAR_RO) || (var->type == DBG_VAR_RW)) {
@@ -606,7 +605,7 @@ static dbg_result_t command_get_on_execute(FILE* stream,
 	if (ret == DBG_RESULT_OK) {
 		fprintf(stream, "Variable %s = %d\n", var->name, value);
 	}
-	
+
 	return ret;
 }
 
@@ -695,7 +694,7 @@ static dbg_result_t command_environment_on_execute(FILE* stream,
 	char            format[]  =
 		"                     "
 		"                     ";
-	
+
 	assert(stream);
 	assert(argc >= 0);
 
@@ -707,49 +706,49 @@ static dbg_result_t command_environment_on_execute(FILE* stream,
 
 	fprintf(stream, "Available variables:\n");
 	fprintf(stream, "\n");
-		
+
 	/* Look for the maximum command name length */
 	max_name  = 0;
 	temp = variables;
 	while (temp) {
 		assert(temp->name);
-			
+
 		if (max_name < strlen(temp->name)) {
 			max_name = strlen(temp->name);
 		}
-			
+
 		temp = temp->next;
 	}
 	temp = NULL; /* Do not access temp */
-		
+
 	dprintf("max_name=%d\n", max_name);
-		
+
 	/* Some sane defaults */
 	assert(max_name  < 100);
-		
+
 	dputs(sformat);
-		
+
 	/* Build the format string */
 	ret = snprintf(format, strlen(format), sformat,
 		       '%', max_name,  's', '%', 's');
 	assert(ret >= 0);
-		
+
 	dputs(format);
-		
+
 	/* Dump the variables environment */
 	temp = variables;
 	while (temp) {
 		assert(temp->name);
-			
+
 		fprintf(stream, format,
 			temp->name,
 			temp->help ? temp->help : "");
-			
+
 		temp = temp->next;
 	}
-		
+
 	fprintf(stream, "\n");
-		
+
 	return DBG_RESULT_OK;
 }
 

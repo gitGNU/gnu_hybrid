@@ -23,7 +23,6 @@
 #include "core/arch/cpu.h"
 #include "core/arch/asm.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 
 #if CONFIG_CPU_DEBUG
 #define dprintf(F,A...)   printf("intel: " F,##A)
@@ -45,64 +44,64 @@
 #define LVL_3           4
 #define LVL_TRACE       5
 
-/* 
+/*
  * NOTE:
  *     All the cache descriptor types we care about (no TLB or trace cache
  *     entries.
  *     SA = Set Associative, LS = Line Size, SC = Sectored Cache
  */
 struct {
-        unsigned char descriptor;
-        char          type;
-        short         size;
+	unsigned char descriptor;
+	char          type;
+	short         size;
 } cache_table[] = {
-        { 0x06, LVL_1_INST,    8 }, /* 4-way SA,   , 32 byte LS */
-        { 0x08, LVL_1_INST,   16 }, /* 4-way SA,   , 32 byte LS */
-        { 0x0a, LVL_1_DATA,    8 }, /* 2 way SA,   , 32 byte LS */
-        { 0x0c, LVL_1_DATA,   16 }, /* 4-way SA,   , 32 byte LS */
-        { 0x22, LVL_3,       512 }, /* 4-way SA, SC, 64 byte LS */
-        { 0x23, LVL_3,      1024 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x25, LVL_3,      2048 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x29, LVL_3,      4096 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x2c, LVL_1_DATA,   32 }, /* 8-way SA,   , 64 byte LS */
-        { 0x30, LVL_1_INST,   32 }, /* 8-way SA,   , 64 byte LS */
-        { 0x39, LVL_2,       128 }, /* 4-way SA, SC, 64 byte LS */
-        { 0x3b, LVL_2,       128 }, /* 2-way SA, SC, 64 byte LS */
-        { 0x3c, LVL_2,       256 }, /* 4-way SA, SC, 64 byte LS */
-        /* { 0x40, ???, ??? }, */
-        { 0x41, LVL_2,       128 }, /* 4-way SA,   , 32 byte LS */
-        { 0x42, LVL_2,       256 }, /* 4-way SA,   , 32 byte LS */
-        { 0x43, LVL_2,       512 }, /* 4-way SA,   , 32 byte LS */
-        { 0x44, LVL_2,      1024 }, /* 4-way SA,   , 32 byte LS */
-        { 0x45, LVL_2,      2048 }, /* 4-way SA,   , 32 byte LS */
-        /* { 0x50, ???, ??? }, */
-        /* { 0x5b, ???, ??? }, */
-        { 0x60, LVL_1_DATA,   16 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x66, LVL_1_DATA,    8 }, /* 4-way SA, SC, 64 byte LS */
-        { 0x67, LVL_1_DATA,   16 }, /* 4-way SA, SC, 64 byte LS */
-        { 0x68, LVL_1_DATA,   32 }, /* 4-way SA, SC, 64 byte LS */
-        { 0x70, LVL_TRACE,    12 }, /* 8-way SA    ,            */
-        { 0x71, LVL_TRACE,    16 }, /* 8-way SA    ,            */
-        { 0x72, LVL_TRACE,    32 }, /* 8-way SA    ,            */
-        { 0x78, LVL_2,      1024 }, /* 4-way SA,   , 64 byte LS */
-        { 0x79, LVL_2,       128 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x7a, LVL_2,       256 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x7b, LVL_2,       512 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x7c, LVL_2,      1024 }, /* 8-way SA, SC, 64 byte LS */
-        { 0x7d, LVL_2,      2048 }, /* 8-way SA,   , 64 byte LS */
-        { 0x7f, LVL_2,       512 }, /* 2-way SA,   , 64 byte LS */
-        { 0x82, LVL_2,       256 }, /* 8-way SA,   , 32 byte LS */
-        { 0x83, LVL_2,       512 }, /* 8-way SA,   , 32 byte LS */
-        { 0x84, LVL_2,      1024 }, /* 8-way SA,   , 32 byte LS */
-        { 0x85, LVL_2,      2048 }, /* 8-way SA,   , 32 byte LS */
-        { 0x86, LVL_2,       512 }, /* 4-way SA,   , 64 byte LS */
-        { 0x87, LVL_2,      1024 }, /* 8-way SA,   , 64 byte LS */
-        { 0x00, 0, 0}
+	{ 0x06, LVL_1_INST,    8 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x08, LVL_1_INST,   16 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x0a, LVL_1_DATA,    8 }, /* 2 way SA,   , 32 byte LS */
+	{ 0x0c, LVL_1_DATA,   16 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x22, LVL_3,       512 }, /* 4-way SA, SC, 64 byte LS */
+	{ 0x23, LVL_3,      1024 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x25, LVL_3,      2048 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x29, LVL_3,      4096 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x2c, LVL_1_DATA,   32 }, /* 8-way SA,   , 64 byte LS */
+	{ 0x30, LVL_1_INST,   32 }, /* 8-way SA,   , 64 byte LS */
+	{ 0x39, LVL_2,       128 }, /* 4-way SA, SC, 64 byte LS */
+	{ 0x3b, LVL_2,       128 }, /* 2-way SA, SC, 64 byte LS */
+	{ 0x3c, LVL_2,       256 }, /* 4-way SA, SC, 64 byte LS */
+	/* { 0x40, ???, ??? }, */
+	{ 0x41, LVL_2,       128 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x42, LVL_2,       256 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x43, LVL_2,       512 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x44, LVL_2,      1024 }, /* 4-way SA,   , 32 byte LS */
+	{ 0x45, LVL_2,      2048 }, /* 4-way SA,   , 32 byte LS */
+	/* { 0x50, ???, ??? }, */
+	/* { 0x5b, ???, ??? }, */
+	{ 0x60, LVL_1_DATA,   16 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x66, LVL_1_DATA,    8 }, /* 4-way SA, SC, 64 byte LS */
+	{ 0x67, LVL_1_DATA,   16 }, /* 4-way SA, SC, 64 byte LS */
+	{ 0x68, LVL_1_DATA,   32 }, /* 4-way SA, SC, 64 byte LS */
+	{ 0x70, LVL_TRACE,    12 }, /* 8-way SA    ,            */
+	{ 0x71, LVL_TRACE,    16 }, /* 8-way SA    ,            */
+	{ 0x72, LVL_TRACE,    32 }, /* 8-way SA    ,            */
+	{ 0x78, LVL_2,      1024 }, /* 4-way SA,   , 64 byte LS */
+	{ 0x79, LVL_2,       128 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x7a, LVL_2,       256 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x7b, LVL_2,       512 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x7c, LVL_2,      1024 }, /* 8-way SA, SC, 64 byte LS */
+	{ 0x7d, LVL_2,      2048 }, /* 8-way SA,   , 64 byte LS */
+	{ 0x7f, LVL_2,       512 }, /* 2-way SA,   , 64 byte LS */
+	{ 0x82, LVL_2,       256 }, /* 8-way SA,   , 32 byte LS */
+	{ 0x83, LVL_2,       512 }, /* 8-way SA,   , 32 byte LS */
+	{ 0x84, LVL_2,      1024 }, /* 8-way SA,   , 32 byte LS */
+	{ 0x85, LVL_2,      2048 }, /* 8-way SA,   , 32 byte LS */
+	{ 0x86, LVL_2,       512 }, /* 4-way SA,   , 64 byte LS */
+	{ 0x87, LVL_2,      1024 }, /* 8-way SA,   , 64 byte LS */
+	{ 0x00, 0, 0}
 };
 
 int intel_cache_init(arch_cpu_t* cpu)
 {
-        unsigned int   trace;
+	unsigned int   trace;
 	unsigned int   l1i;
 	unsigned int   l1d;
 	unsigned int   l2;
@@ -111,13 +110,13 @@ int intel_cache_init(arch_cpu_t* cpu)
 	int            regs[4];
 	unsigned char* dp;
 
-        trace = 0;
+	trace = 0;
 	l1i   = 0;
 	l1d   = 0;
 	l2    = 0;
 	l3    = 0;
 
-        if (cpu->level <= 1) {
+	if (cpu->level <= 1) {
 		return 0;
 	}
 	/* supports eax=2  call */
@@ -127,14 +126,14 @@ int intel_cache_init(arch_cpu_t* cpu)
 	dp = (unsigned char *) regs;
 	/* Number of times to iterate */
 	n  = cpuid_eax(2) & 0xFF;
-	
+
 	for (i = 0; i < n; i++) {
 		cpuid(2,
 		      (unsigned int *) &regs[0],
 		      (unsigned int *) &regs[1],
 		      (unsigned int *) &regs[2],
 		      (unsigned int *) &regs[3]);
-		
+
 		/* If bit 31 is set, this is an unknown format */
 		for (j = 0; j < 3; j++) {
 			if (regs[j] < 0) {
@@ -144,13 +143,13 @@ int intel_cache_init(arch_cpu_t* cpu)
 				regs[j] = 0;
 			}
 		}
-		
+
 		/* Byte 0 is level count, not a descriptor */
 		for (j = 1; j < 16; j++) {
 			unsigned char des;
 			unsigned char k;
 			int           found;
-			
+
 			des   = dp[j];
 			k     = 0;
 			found = 0;
@@ -190,7 +189,7 @@ int intel_cache_init(arch_cpu_t* cpu)
 
 				break;
 			}
-			
+
 			if (!found) {
 				cprintf(cpu,
 					"Cache descriptor 0x%x unknown\n",
@@ -229,20 +228,20 @@ int intel_infos(arch_cpu_t* cpu)
 
 	/* Clear the features */
 	memset(cpu->infos.features, 0, sizeof(cpu->infos.features));
-	
+
 	/* Get features and other infos */
-        cpuid(1, &eax, &ebx, &ecx, &edx);
-        cpu->infos.family      = (eax >> 8) & 0xf;
-        cpu->infos.model       = (eax >> 4) & 0xf;
-        cpu->infos.stepping    = (eax     ) & 0xf;
-        cpu->infos.features[0] = edx;
+	cpuid(1, &eax, &ebx, &ecx, &edx);
+	cpu->infos.family      = (eax >> 8) & 0xf;
+	cpu->infos.model       = (eax >> 4) & 0xf;
+	cpu->infos.stepping    = (eax     ) & 0xf;
+	cpu->infos.features[0] = edx;
 
 	return 1;
 }
 
 #if 0
 typedef struct {
-        int   family;
+	int   family;
 	char* model[12];
 } cpu_table_t;
 
@@ -251,13 +250,13 @@ cpu_table_t cpu_table[] = {
 		6,
 		{
 			[0]  = "Pentium Pro A-step",
-			[1]  = "Pentium Pro", 
-			[3]  = "Pentium II (Klamath)", 
-			[4]  = "Pentium II (Deschutes)", 
-			[5]  = "Pentium II (Deschutes)", 
+			[1]  = "Pentium Pro",
+			[3]  = "Pentium II (Klamath)",
+			[4]  = "Pentium II (Deschutes)",
+			[5]  = "Pentium II (Deschutes)",
 			[6]  = "Mobile Pentium II",
-			[7]  = "Pentium III (Katmai)", 
-			[8]  = "Pentium III (Coppermine)", 
+			[7]  = "Pentium III (Katmai)",
+			[8]  = "Pentium III (Coppermine)",
 			[10] = "Pentium III (Cascades)",
 			[11] = "Pentium III (Tualatin)",
 		}

@@ -23,7 +23,6 @@
 #include "libc/stdlib.h"
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 #include "core/mem/fit.h"
 #include "core/dbg/debugger/debugger.h"
 
@@ -148,7 +147,7 @@ static void cfit_free(void* ptr)
 		}
 	}
 	if (prev == NULL) {
-		/* No blocks on list */ 
+		/* No blocks on list */
 		target->next = free_list;
 		free_list    = target;
 	} else {
@@ -160,7 +159,7 @@ static void cfit_free(void* ptr)
 	/* Coalesce the block if needed */
 	if (target + target->size == target->next) {
 		/* Yes we can */
-		
+
 	}
 }
 
@@ -222,12 +221,12 @@ void* fit_alloc(size_t size)
 {
 	assert(fit_alloc_cb);
 	assert(size);
-	
+
 	/* Useless if we pass from malloc() */
 	if (size == 0) {
 		return NULL;
 	}
-	
+
 	return fit_alloc_cb(size);
 }
 
@@ -235,7 +234,7 @@ void fit_free(void* ptr)
 {
 	assert(fit_free_cb);
 	assert(ptr);
-	
+
 	/* Useless if we pass from free() */
 	if (!ptr) {
 		return;
@@ -251,7 +250,7 @@ static int fit_foreach(int (* callback)(addr_t base,
 	fit_block_t* tmp;
 
 	assert(callback);
-	
+
 	for (tmp = used_list; tmp != NULL; tmp = tmp->next) {
 		if (!callback((addr_t)(tmp + sizeof(fit_block_t)),
 			      tmp->size)) {
@@ -301,13 +300,13 @@ static dbg_result_t command_fitfree_on_execute(FILE* stream,
 
 	assert(stream);
 	assert(argc >= 0);
-	
+
 	if (argc > 1) {
 		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
-	
+
 	assert(argv[0]);
-	
+
 	ptr = (void *) atoi(argv[0]);
 	fit_free(ptr);
 
@@ -339,7 +338,7 @@ static dbg_result_t command_fitdump_on_execute(FILE* stream,
 {
 	assert(stream);
 	assert(argc >= 0);
-	
+
 	unused_argument(argv);
 
 	fit_stream = stream;

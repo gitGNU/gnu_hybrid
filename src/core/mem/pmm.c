@@ -24,7 +24,6 @@
 #include "libc/stdlib.h"
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 #include "core/mem/pmm.h"
 #include "core/boot/bootinfo.h"
 #include "core/dbg/debugger/debugger.h"
@@ -37,7 +36,7 @@
 #define dprintf(F,A...)
 #endif
 
-/* 
+/*
  * NOTE:
  *     We don't have a valid heap when pmm_init() is called so we need
  *     static allocation of this structure ...
@@ -81,7 +80,7 @@ int pmm_foreach(int (* callback)(uint_t     start,
 	int i;
 
 	assert(callback);
-	
+
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_VALID(i)) {
 			assert(RGN_SIZE(i) != 0);
@@ -153,51 +152,51 @@ static void pmm_dump(void)
 static int region_test_pattern(pmm_region_t* region,
 			       uint8_t       pattern)
 {
-        uint8_t * p;
+	uint8_t * p;
 
-        assert(region);
+	assert(region);
 
 	dprintf("Writing pattern 0x%02x\n", pattern);
 	memset((void *) region->start, pattern, region->stop - region->start);
 
 	dprintf("Reading pattern 0x%02x\n", pattern);
-        for (p = (uint8_t *) region->start;
-             p < (uint8_t *) region->stop;
-             p++) {
+	for (p = (uint8_t *) region->start;
+	     p < (uint8_t *) region->stop;
+	     p++) {
 
-                if (*p != pattern) {
-                        dprintf("Wrong pattern on region 0x%x-0x%x "
-                                "at address 0x%x\n",
-                                region->start, region->stop, p);
-                        return 0;
-                }
-        }
+		if (*p != pattern) {
+			dprintf("Wrong pattern on region 0x%x-0x%x "
+				"at address 0x%x\n",
+				region->start, region->stop, p);
+			return 0;
+		}
+	}
 
-        return 1;
+	return 1;
 }
 
 int region_test(pmm_region_t* region)
 {
-        assert(region);
+	assert(region);
 
 	dprintf("Testing region 0x%x-0x%x\n", region->start, region->stop);
 
-        if (!region_test_pattern(region, 0xff)) {
-                return 0;
-        }
-        if (!region_test_pattern(region, 0xaa)) {
-                return 0;
-        }
-        if (!region_test_pattern(region, 0x55)) {
-                return 0;
-        }
-        if (!region_test_pattern(region, 0x00)) {
-                return 0;
-        }
+	if (!region_test_pattern(region, 0xff)) {
+		return 0;
+	}
+	if (!region_test_pattern(region, 0xaa)) {
+		return 0;
+	}
+	if (!region_test_pattern(region, 0x55)) {
+		return 0;
+	}
+	if (!region_test_pattern(region, 0x00)) {
+		return 0;
+	}
 
 	region->flags |= PMM_FLAG_TESTED;
 
-        return 1;
+	return 1;
 }
 #endif /* CONFIG_PMM_MEMORY_TEST */
 
@@ -239,11 +238,11 @@ int pmm_init(bootinfo_t* bi)
 			RGN_START(j) = bi->mem[i].base;
 			RGN_STOP(j)  = bi->mem[i].base + bi->mem[i].size;
 			RGN_FLAGS(j) = PMM_FLAG_VALID;
-			
+
 			j++;
 		}
 	}
-	
+
 	/*
 	 * NOTE:
 	 *     bootinfo mem structures are already ordered by their base
@@ -254,21 +253,21 @@ int pmm_init(bootinfo_t* bi)
 		if (!RGN_VALID(i)) {
 			continue;
 		}
-		
+
 		j = i + 1;
-		
+
 		if (j >= PMM_MAX_REGIONS) {
 			break;
 		}
-		
+
 		if (!RGN_VALID(j)) {
 			continue;
 		}
-		
+
 		if (RGN_START(i) >= RGN_START(j)) {
 			panic("Wrong bootinfo structure");
 		}
-		
+
 	}
 
 #if CONFIG_PMM_MEMORY_TEST
@@ -296,7 +295,7 @@ int pmm_init(bootinfo_t* bi)
 			RGN_FLAGS(i) |= PMM_FLAG_ENABLED;
 		}
 	}
-	
+
 	/* Finally reorder them */
 	pmm_reorder();
 
@@ -315,7 +314,7 @@ void pmm_fini(void)
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_ENABLED(i)) {
-			
+
 			assert(RGN_VALID(i));
 
 			if (RGN_USED(i)) {
@@ -354,13 +353,13 @@ uint_t pmm_reserve(uint_t size)
 		assert(RGN_ENABLED(i));
 
 		assert(RGN_START(i) < RGN_STOP(i));
-		
+
 		/* Can this region contains the requested one ? */
 		if (RGN_SIZE(i) < size) {
 			/* No ... */
 			continue;
 		}
-		
+
 		/* dprintf("Region %d will be used\n", i); */
 
 		/* Yes, so mark it as used */
@@ -383,12 +382,12 @@ uint_t pmm_reserve(uint_t size)
 				/* dprintf("Region %d will be used\n", j); */
 
 				assert(!RGN_VALID(j));
-				
+
 				/* Copy that region over the free entry */
 				memcpy(&regions[j],
 				       &regions[i],
 				       sizeof(pmm_region_t));
-				
+
 				/* Rearrange region j (start) */
 				RGN_START(j) = RGN_START(i) + size + 1;
 				RGN_STOP(j)  = RGN_STOP(i);
@@ -402,10 +401,10 @@ uint_t pmm_reserve(uint_t size)
 				pmm_reorder();
 			}
 		}
-		
+
 		return RGN_START(i);
 	}
-		
+
 	return ((uint_t) -1);
 }
 
@@ -419,7 +418,7 @@ static void pmm_merge(void)
 	/* Try to merge all valid, unused and enabled regions */
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		int j;
-		
+
 		if (!RGN_VALID(i)) {
 			continue;
 		}
@@ -433,7 +432,7 @@ static void pmm_merge(void)
 		assert(RGN_VALID(i));
 		assert(!RGN_USED(i));
 		assert(RGN_ENABLED(i));
-		
+
 		/* Find a merging pair */
 		for (j = i +  1; j < PMM_MAX_REGIONS; j++) {
 			if (!RGN_VALID(j)) {
@@ -445,7 +444,7 @@ static void pmm_merge(void)
 			if (!RGN_ENABLED(j)) {
 				continue;
 			}
-			
+
 			assert(RGN_VALID(j));
 			assert(!RGN_USED(j));
 			assert(RGN_ENABLED(j));

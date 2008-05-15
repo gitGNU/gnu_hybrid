@@ -22,23 +22,16 @@
 
 #include "config/config.h"
 #include "libc/stdio.h"
-#include "core/dbg/assert.h"
+#include "libc/assert.h"
 
-__BEGIN_DECLS
-
-#define missing()					\
-	__BEGIN_MACRO					\
-	printf("Missing code in '%s' line %d\n",	\
-	       __PRETTY_FUNCTION__,__LINE__);		\
+/*
+ * NOTE:
+ *     Nobody should remove bug(), unpredictable results will happen ...
+ */
+#define bug()					\
+	__BEGIN_MACRO				\
+	panic("Bug found in '%s' line %d",	\
+	       __PRETTY_FUNCTION__,__LINE__);	\
 	__END_MACRO
-
-/* The user has the option to cut-off expect() calls */
-#if CONFIG_EXPECT
-#define expect(EXPRESSION)   assert(EXPRESSION)
-#else
-#define expect(EXPRESSION)
-#endif
-
-__END_DECLS
 
 #endif /* CORE_DBG_DEBUG_H */

@@ -27,11 +27,9 @@ EXTRA_DIST +=					\
 core_dbg_SRCS =					\
 	@reldir@/panic.c			\
 	@reldir@/panic.h			\
-	@reldir@/assert.h			\
 	@reldir@/backtrace.c			\
 	@reldir@/backtrace.h			\
 	@reldir@/morse.c			\
 	@reldir@/morse.h			\
-	@reldir@/bug.h				\
 	@reldir@/debug.h			\
 	$(core_dbg_debugger_SRCS)

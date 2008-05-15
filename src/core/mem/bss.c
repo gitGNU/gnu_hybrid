@@ -25,7 +25,6 @@
 #include "libc/stdlib.h"
 #include "core/mem/address.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/power.h"
 #include "core/bfd/bfd.h"
@@ -41,17 +40,17 @@
 int bss_init(void)
 {
 	char * bss;
-	
+
 	dprintf("Initializing BSS 0x%x:0x%x (%d bytes)\n",
 		&_bss, &_ebss, &_ebss - &_bss);
-	
+
 	if (&_bss > &_ebss) {
 		/* Wrong bss addresses, let us return before wrecking
 		 * the whole thing ...
 		 */
 		return 0;
 	}
-	
+
 	for (bss = ((char *) &_bss); bss < ((char *) &_ebss); bss++) {
 		assert(valid_bss_address((unsigned int) bss));
 

@@ -27,7 +27,6 @@
 #include "core/archs/linker.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/bug.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/boot/bootinfo.h"
 
@@ -142,7 +141,7 @@ static int mem_compose(bootinfo_t* bi,
 	assert(bi);
 	assert((i >= 0) && (i < BOOTINFO_MEM_REGIONS));
 	assert((j >= 0) && (j < BOOTINFO_MEM_REGIONS));
-	
+
 	t1 = MEM_TYPE(bi, i);
 	t2 = MEM_TYPE(bi, j);
 
@@ -155,22 +154,22 @@ static int mem_compose(bootinfo_t* bi,
 	e2 = MEM_BASE(bi, j) + MEM_SIZE(bi, j);
 
 	assert(b1 <= b2);
-		
+
 	/* Merge overlapping RAM entries */
 	if ((t1 == BOOTINFO_MEM_RAM) &&
 	    (t2 == BOOTINFO_MEM_RAM)) {
 		uint_t b3, e3;
-		
+
 		/* RAM is resizable :-) */
 		if (e1 >= b2) {
 			/* Entry i overlaps entry j */
 			b3 = b1;
 			e3 = MAX(e1, e2);
-			
+
 			/* Update region i */
 			MEM_BASE(bi, i) = b3;
 			MEM_SIZE(bi, i) = e3 - b3;
-			
+
 			/* Leave j unused */
 			mem_invalidate(bi, j);
 		}
@@ -217,7 +216,7 @@ static int mem_compose(bootinfo_t* bi,
 
 	return 1;
 }
-	
+
 int bootinfo_mem_fix(bootinfo_t* bi)
 {
 	int i;
@@ -246,11 +245,11 @@ int bootinfo_mem_fix(bootinfo_t* bi)
 	/* Fix remaining entries */
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		int j;
-		
+
 		if (!mem_valid(bi, i)) {
 			continue;
 		}
-		
+
 		/* Find the next valid entry after i */
 		for (j = i + 1; j < BOOTINFO_MEM_REGIONS; j++) {
 			if (mem_valid(bi, j)) {
@@ -273,11 +272,11 @@ int bootinfo_mem_fix(bootinfo_t* bi)
 			return 0;
 		}
 	}
-	
+
 	/* Remove kernel addresses from regions that cointain it */
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		uint_t b1, e1;
-		
+
 		if (!mem_valid(bi, i)) {
 			continue;
 		}
@@ -299,12 +298,12 @@ int bootinfo_mem_fix(bootinfo_t* bi)
 			assert(i != j);
 
 			mem_duplicate(bi, i, j);
-			
+
 			b1 = MEM_BASE(bi, i);
 			e1 = MEM_BASE(bi, i) + MEM_SIZE(bi, i);
 			b2 = b1;
 			e2 = e1;
-			
+
 			/* Resize/rearrange the regions */
 			e1 = MIN((uint_t) &_kernel,  e1);
 			b2 = MAX((uint_t) &_ekernel, b2);
@@ -326,7 +325,7 @@ int bootinfo_mem_fix(bootinfo_t* bi)
 			}
 		}
 	}
-	 
+
 	/* Finally sort remaining regions again */
 	qsort((void *) bi->mem,
 	      BOOTINFO_MEM_REGIONS,
@@ -364,7 +363,7 @@ int bootinfo_args_fix(bootinfo_t* bi)
 
 		bi->args[i] = 0;
 	}
-	
+
 	return 1;
 }
 
@@ -384,7 +383,7 @@ static int mod_valid(bootinfo_t* bi,
 {
 	assert(bi);
 	assert((i >= 0) && (i < BOOTINFO_MODULES));
-	
+
 	switch (bi->modules[i].type) {
 		case BOOTINFO_IMAGE_RAW:
 			if (bi->modules[i].data.raw.start >=
@@ -406,7 +405,7 @@ static int mod_valid(bootinfo_t* bi,
 		default:
 			return 0;
 	}
-	
+
 	return 1;
 }
 
@@ -415,17 +414,17 @@ int bootinfo_mod_fix(bootinfo_t* bi)
 	int i;
 
 	assert(bi);
-	
+
 	dprintf("Rearranging modules\n");
 
 	for (i = 0; i < BOOTINFO_MODULES; i++) {
 		if (mod_valid(bi, i)) {
 			continue;
 		}
-		
+
 		mod_invalidate(bi, i);
 	}
-	
+
 	return 1;
 }
 
@@ -464,14 +463,14 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 	int         i;
 #endif
 
-        assert(stream);
-        assert(argc >= 0);
+	assert(stream);
+	assert(argc >= 0);
 
-        if (argc != 0) {
-                return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-        }
+	if (argc != 0) {
+		return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+	}
 
-        unused_argument(argv);	
+	unused_argument(argv);
 
 	bi = bootinfo_last;
 	if (!bi) {
@@ -479,10 +478,10 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 		return DBG_RESULT_OK;
 	}
 
-        fprintf(stream, "Bootinfos:\n");
-	
+	fprintf(stream, "Bootinfos:\n");
+
 	fprintf(stream, "   args    = '%s'\n", bi->args);
-	
+
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		if (mem_valid(bi, i)) {
 			fprintf(stream,
@@ -493,10 +492,10 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 				BOOTINFO_MEMTYPE2STRING(MEM_TYPE(bi, i)));
 		}
 	}
-	
+
 	fprintf(stream, "   kernel  = '%s'\n",
 		BOOTINFO_IMAGETYPE2STRING(bi->kernel.type));
-	
+
 #if CONFIG_MODULES
 	for (i = 0; i < BOOTINFO_MODULES; i++) {
 		if (mod_valid(bi, i)) {
@@ -511,13 +510,13 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 	}
 #endif
 
-        return DBG_RESULT_OK;
+	return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(bootinfo,
-                    "Dumps bootinfos",
-                    "Dumps bootinfos, showing their last values",
-                    NULL,
-                    command_bootinfo_on_execute,
-                    NULL);
+		    "Dumps bootinfos",
+		    "Dumps bootinfos, showing their last values",
+		    NULL,
+		    command_bootinfo_on_execute,
+		    NULL);
 #endif /* CONFIG_BOOTINFO_DEBUG */
