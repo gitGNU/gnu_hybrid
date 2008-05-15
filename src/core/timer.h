@@ -32,6 +32,7 @@ struct timer {
 
 #if CONFIG_TIMERS_DEBUG
 	int          absolute;   /* Absolute expiration time */
+	int          removable;
 #endif
 };
 typedef struct timer timer_t;

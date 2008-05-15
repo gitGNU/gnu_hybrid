@@ -21,6 +21,7 @@
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
+#include "libc/string.h"
 #include "core/timer.h"
 #include "core/mutex.h"
 #include "core/dbg/debug.h"
@@ -111,7 +112,8 @@ int timer_add(timer_t * timer)
 		return 0;
 	}
 
-	dprintf("Adding timer 0x%p (expiration %d)\n", timer, timer->expiration);
+	dprintf("Adding timer 0x%p (expiration %d)\n",
+		timer, timer->expiration);
 
 	if (timers.empty()) {
 		dprintf("Timers list is empty, adding timer at the head\n");
@@ -196,6 +198,11 @@ int timer_remove(timer_t * timer)
 }
 
 #if CONFIG_DEBUGGER
+static void callback(void * data)
+{
+	dprintf("Called test timer callback with opaque data 0x%p", data);
+}
+
 static dbg_result_t command_timers_on_execute(FILE * stream,
 					      int    argc,
 					      char * argv[])
@@ -203,35 +210,82 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 	assert(stream);
 	assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+	if (argc == 0) {
+		fprintf(stream, "Timers:\n");
 
-	unused_argument(argv);
-
-	fprintf(stream, "Timers:\n");
-
-	ktl::list<timer_t *>::iterator iter;
-	for (iter = timers.begin(); iter != timers.end(); iter++) {
+		ktl::list<timer_t *>::iterator iter;
+		for (iter = timers.begin(); iter != timers.end(); iter++) {
 #if CONFIG_TIMERS_DEBUG
-		fprintf(stream, "  0x%p 0x%p %d (%d)\n",
-			(*iter),
-			(*iter)->callback,
-			(*iter)->expiration,
-			(*iter)->absolute);
+			fprintf(stream, "  0x%p 0x%p %d (%d)\n",
+				(*iter),
+				(*iter)->callback,
+				(*iter)->expiration,
+				(*iter)->absolute);
 #else
-		fprintf(stream, "  0x%p 0x%p %d\n",
-			(*iter),
-			(*iter)->callback,
-			(*iter)->expiration);
+			fprintf(stream, "  0x%p 0x%p %d\n",
+				(*iter),
+				(*iter)->callback,
+				(*iter)->expiration);
 #endif
-	}
+		}
 
-	return DBG_RESULT_OK;
+		return DBG_RESULT_OK;
+#if CONFIG_TIMERS_DEBUG
+	} else if (argc == 2) {
+		int time;
+
+		time = atoi(argv[1]);
+
+		if (!strcmp(argv[0], "add")) {
+			timer_t * t;
+
+			t = new timer_t;
+			t->expiration = time;
+			t->callback   = callback;
+			t->removable  = 1;
+
+			if (!timer_add(t)) {
+				return DBG_RESULT_ERROR;
+			}
+			return DBG_RESULT_OK;
+
+		} else if (!strcmp(argv[0], "remove")) {
+			ktl::list<timer_t *>::iterator iter;
+			timer_t *                      timer;
+
+			for (iter  = timers.begin();
+			     iter != timers.end();
+			     iter++) {
+				if ((*iter)->expiration == time) {
+					break;
+				}
+			}
+			if (iter == timers.end()) {
+				return DBG_RESULT_ERROR;
+			}
+
+			timer = *iter;
+			if (timer->removable) {
+				dprintf("Deleting timer 0x%p\n", timer);
+				timers.erase(iter);
+				delete timer;
+			} else {
+				dprintf("Cannot remove timer\n");
+				return DBG_RESULT_ERROR;
+			}
+
+			return DBG_RESULT_OK;
+		} else {
+			return DBG_RESULT_ERROR_WRONG_PARAMETERS;
+		}
+	}
+#endif
+
+	return DBG_RESULT_ERROR_WRONG_PARAMETERS;
 }
 
 DBG_COMMAND_DECLARE(timers,
-		    "Show timers",
+		    "Manage timers",
 		    NULL,
 		    NULL,
 		    command_timers_on_execute,
