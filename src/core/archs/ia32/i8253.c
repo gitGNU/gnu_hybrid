@@ -39,7 +39,6 @@
 
 #define PIT_SECOND	1193180
 #define HZ		100
-//#define LATCH		((PIT_SECOND + HZ / 2) / HZ)
 
 /* I/O port for 8254 commands */
 #define TMR_PORT	0x43
@@ -61,11 +60,11 @@
 
 /* Modes */
 #define PIT_MODE_0	0x0	/* One shot */
-#define PIT_MODE_1	0x2	/* No worky */
-#define PIT_MODE_2	0x4	/* forever */
-#define PIT_MODE_3	0x6	/* forever */
-#define PIT_MODE_4	0x8	/* No worky */
-#define PIT_MODE_5	0xA	/* No worky */
+#define PIT_MODE_1	0x2	/* Not working */
+#define PIT_MODE_2	0x4	/* Forever */
+#define PIT_MODE_3	0x6	/* Forever */
+#define PIT_MODE_4	0x8	/* Not working */
+#define PIT_MODE_5	0xA	/* Not working */
 
 #define PIT_LATCH	0x00
 #define PIT_BCD		0x01
@@ -81,23 +80,40 @@ static inline void delay_loops(uint32_t loops)
 {
 	int d0;
 
-	__asm__ volatile ("	     jmp 1f  \n"
-			  ".align 16	     \n"
-			  "1:     jmp 2f  \n"
-			  ".align 16	     \n"
-			  "2:     decl %0 \n"
-			  "	     jns 2b  \n"
-			  :"=&a" (d0)
-			  :"0" (loops));
+	__asm__ volatile ("	     jmp 1f \n"
+			  ".align 16	    \n"
+			  "1:     jmp 2f    \n"
+			  ".align 16	    \n"
+			  "2:     decl %0   \n"
+			  "	  jns 2b    \n"
+			  : "=&a" (d0)
+			  : "0" (loops));
 }
 
 /* Generic PIT routines */
-static void set_timer_chan_oneshot(uint16_t h, uint8_t chan)
+static void set_timer_chan_oneshot(uint16_t hz, uint8_t chan)
 {
+	int divisor;
+
+	divisor = PIT_SECOND / hz;
+
 	port_out8(TMR_PORT,      (chan * 0x40) | PIT_BOTH | PIT_MODE_0);
-	port_out8((0x40 + chan), (uint8_t)(h & 0xFF));
-	port_out8((0x40 + chan), (uint8_t)(h >> 8));
+	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
+	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
 }
+
+#if 0
+static void set_timer_chan_forever(uint16_t hz, uint8_t chan)
+{
+	int divisor;
+
+	divisor = PIT_SECOND / hz;
+
+	port_out8(TMR_PORT,	 (chan * 0x40) | PIT_BOTH | PIT_MODE_3);
+	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
+	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
+}
+#endif
 
 static uint32_t get_timer_chan(uint8_t chan, int reset)
 {
@@ -121,7 +137,7 @@ static void calibrate_delay_loop(void)
 	while (__this_cpu->arch.loops_ms <<= 1) {
 		set_timer_chan_oneshot(0xFFFF, 0);
 		delay_loops(__this_cpu->arch.loops_ms);
-		if (get_timer_chan(0,1) < 64000) {
+		if (get_timer_chan(0, 1) < 64000) {
 			break;
 		}
 	}
@@ -134,7 +150,7 @@ static void calibrate_delay_loop(void)
 		__this_cpu->arch.loops_ms |= lb;
 		set_timer_chan_oneshot(0xFFFF, 0);
 		delay_loops(__this_cpu->arch.loops_ms);
-		if (get_timer_chan(0,1) < 64000) {
+		if (get_timer_chan(0, 1) < 64000) {
 			__this_cpu->arch.loops_ms &= ~lb;
 		}
 
@@ -151,33 +167,31 @@ static void calibrate_delay_loop(void)
 	       ((__this_cpu->arch.loops_ms * 10) / 50) % 100);
 }
 
-static void set_timer_chan(uint16_t hz, uint8_t chan)
+int i8254_frequency_set(uint32_t freq)
 {
-	int divisor;
+	unsigned int tick;
 
-	divisor = PIT_SECOND / hz;
+	assert(freq > 0);
 
-	port_out8(TMR_PORT,	 (chan * 0x40) | PIT_BOTH | PIT_MODE_3);
-	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
-	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
-}
+	tick = PIT_SECOND / freq;
 
-#if 0
-static uint32_t ticks;
+	/* Counter must be between 1 and 65536 */
+	if ((tick <= 0) || (tick > 65536)) {
+		return 0;
+	}
 
-static void isr(registers_t regs)
-{
-	(void) regs;
+	if (tick == 65536) {
+		tick = 0;
+	}
 
-	ticks++;
-	printf("Ticks %d\n", ticks);
-}
-#endif
+	/* Configure timer0 in mode 2, as a rate generator */
+	port_out8(TMR_PORT, 0x34);
 
-void pit_start_timer1(void)
-{
-	//	set_irq_handler(0, pit_isr);
-	set_timer_chan(HZ, 0);
+	/* Send counter LSB first, then MSB */
+	port_out8(COUNTER_0, tick & 0xFF);
+	port_out8(COUNTER_0, (tick >> 8) & 0xFF);
+
+	return 1;
 }
 
 /* millisecond delay */
@@ -208,6 +222,9 @@ size_t arch_timer_granularity(void)
 int i8253_init(void)
 {
 	frequency = HZ;
+	if (!i8254_frequency_set(frequency)) {
+		return 0;
+	}
 
 	calibrate_delay_loop();
 
