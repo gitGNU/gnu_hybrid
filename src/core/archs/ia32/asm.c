@@ -164,10 +164,8 @@ void lgdt(void * gdt_ptr)
 			  "\tmovw %%ax, %%gs\n"
 			  :
 			  :"a" (gdt_ptr),
-			  "i" (SEGMENT_REGISTER_BUILDER(0, 0,
-							SEGMENT_KERNEL_CODE)),
-			  "i" (SEGMENT_REGISTER_BUILDER(0, 0,
-							SEGMENT_KERNEL_DATA)));
+			  "i" (SEGMENT_BUILDER(0, 0, SEGMENT_KERNEL_CODE)),
+			  "i" (SEGMENT_BUILDER(0, 0, SEGMENT_KERNEL_DATA)));
 }
 
 unsigned long cr4_get(void)

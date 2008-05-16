@@ -75,32 +75,39 @@ typedef struct idt_pointer idt_pointer_t;
 static idt_entry_t idt_table[IDT_ENTRIES];
 
 static void idt_gate_set(uint32_t index,
-			 uint16_t segment,
 			 uint16_t flags,
 			 uint32_t offset)
 {
 	assert(index < IDT_ENTRIES);
 
-	idt_table[index].segment     = segment;
-	idt_table[index].flags       = flags;
+	idt_table[index].segment     = SEGMENT_BUILDER(0, 0,
+						       SEGMENT_KERNEL_CODE);
+	idt_table[index].flags       = flags | IDT_PRESENT | IDT_DPL3 | IDT_32;
 	idt_table[index].offset15_0  = offset & 0xFFFF;
 	idt_table[index].offset31_16 = (offset >> 16) & 0xFFFF;
+}
+
+static void idt_gate_clear(uint32_t index)
+{
+	assert(index < IDT_ENTRIES);
+
+	idt_table[index].segment     = SEGMENT_BUILDER(0, 0,
+						       SEGMENT_KERNEL_CODE);
+	idt_table[index].flags       = IDT_32 | IDT_INT;
+	idt_table[index].offset15_0  = 0;
+	idt_table[index].offset31_16 = 0;
 }
 
 void idt_interrupt_set(uint32_t index,
 		       void *   addr)
 {
-	idt_gate_set(index, SEGMENT_KERNEL_CODE,
-		     IDT_PRESENT | IDT_32 | IDT_INT | IDT_DPL3,
-		      (unsigned int) addr);
+	idt_gate_set(index, IDT_INT, (uint32_t) addr);
 }
 
 void idt_trap_set(uint32_t index,
 		  void *   addr)
 {
-	idt_gate_set(index, SEGMENT_KERNEL_CODE,
-		     IDT_PRESENT | IDT_32 | IDT_TRAP | IDT_DPL3,
-		      (unsigned int) addr);
+	idt_gate_set(index, IDT_TRAP, (uint32_t) addr);
 }
 
 static void idt_load(idt_entry_t * table,
@@ -116,18 +123,21 @@ static void idt_load(idt_entry_t * table,
 	lidt(&idt_p.limit);
 }
 
+void irq0(void)
+{
+	printf("TEST ");
+}
+
 int idt_init(void)
 {
 	int i;
 
-	/* Fill all vectors with the default handler */
+	/* Clear all gates */
 	for (i = 0; i < IDT_ENTRIES; i++) {
-		idt_gate_set(i,
-			     SEGMENT_REGISTER_BUILDER(0, 0,
-						      SEGMENT_KERNEL_CODE),
-			     0,
-			     IDT_INT | IDT_32);
+		idt_gate_clear(i);
 	}
+	/* Set default gates */
+	idt_interrupt_set(0, irq0);
 
 	idt_load(idt_table, IDT_ENTRIES);
 
@@ -156,7 +166,7 @@ static dbg_result_t command_idt_on_execute(FILE* stream,
 	for (i = 0; i < IDT_ENTRIES; i++) {
 		if (idt_table[i].flags & IDT_PRESENT) {
 			fprintf(stream,
-				"  %d     0x04%x%04x / 0x%04x /0x%04x \n",
+				"  %d     0x04%x%04x / 0x%04x /0x%04x\n",
 				i,
 				idt_table[i].offset31_16,
 				idt_table[i].offset15_0,
