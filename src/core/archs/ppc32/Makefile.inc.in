@@ -21,7 +21,6 @@
 include @reldir@/dbg/Makefile.inc
 include @reldir@/cpu/Makefile.inc
 include @reldir@/bsp/Makefile.inc
-include @reldir@/libs/Makefile.inc
 include @reldir@/boot/Makefile.inc
 
 EXTRA_DIST +=					\
@@ -35,5 +34,4 @@ arch_ppc32_multiboot_SRCS =			\
 arch_ppc32_SRCS =				\
 	$(arch_ppc32_dbg_SRCS)			\
 	$(arch_ppc32_cpu_SRCS)			\
-	$(arch_ppc32_bsp_SRCS)			\
-	$(arch_ppc32_libs_SRCS)
+	$(arch_ppc32_bsp_SRCS)
