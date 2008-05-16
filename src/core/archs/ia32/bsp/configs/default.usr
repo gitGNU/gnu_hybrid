@@ -6,6 +6,7 @@
 # Intel ia-32 architecture
 #
 ARCH_DEBUG=y
+I8253_DEBUG=y
 I8259_DEBUG=y
 CMOS_DEBUG=y
 BIOS_DEBUG=y
