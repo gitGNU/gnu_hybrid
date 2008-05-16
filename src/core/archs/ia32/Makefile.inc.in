@@ -21,7 +21,6 @@
 include @reldir@/dbg/Makefile.inc
 include @reldir@/cpu/Makefile.inc
 include @reldir@/bsp/Makefile.inc
-include @reldir@/libs/Makefile.inc
 include @reldir@/boot/Makefile.inc
 
 EXTRA_DIST +=					\
@@ -59,5 +58,4 @@ arch_ia32_SRCS =				\
 	@reldir@/cpu.c				\
 	$(arch_ia32_dbg_SRCS)			\
 	$(arch_ia32_cpu_SRCS)			\
-	$(arch_ia32_bsp_SRCS)			\
-	$(arch_ia32_libs_SRCS)
+	$(arch_ia32_bsp_SRCS)
