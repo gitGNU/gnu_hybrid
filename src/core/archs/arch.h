@@ -24,7 +24,6 @@
 #include "libc/stdint.h"
 #include "libc/stdlib.h"
 #include "core/arch/irq.h"
-#include "core/arch/libs/c/endian.h"
 #include "core/archs/common/cpu.h"
 
 __BEGIN_DECLS
