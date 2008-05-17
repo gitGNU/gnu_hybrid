@@ -34,12 +34,12 @@
 #endif
 
 struct gdt_entry {
-	uint16_t len15_0;   /* Limit low */
-	uint16_t base15_0;  /* Base low */
-	uint8_t  base23_16; /* Base middle */
-	uint8_t  flags1;    /* Access */
-	uint8_t  flags2;    /* Granularity */
-	uint8_t  base31_24; /* Base high */
+	uint16_t len15_0;
+	uint16_t base15_0;
+	uint8_t  base23_16;
+	uint8_t  flags1;
+	uint8_t  flags2;
+	uint8_t  base31_24;
 } ATTRIBUTE(packed);
 typedef struct gdt_entry gdt_entry_t;
 
@@ -51,35 +51,8 @@ typedef struct gdt_pointer gdt_pointer_t;
 
 static gdt_entry_t gdt_table[GDT_ENTRIES];
 
-void gdt_segment_create(uint32_t i,
-			uint32_t base,
-			uint32_t len,
-			uint8_t  flags1,
-			uint8_t  flags2)
-{
-	gdt_table[i].base31_24 = (uint8_t)((base & 0xF000) >> 24);
-	gdt_table[i].base23_16 = (uint8_t)((base >> 16) & 0xFF);
-	gdt_table[i].base15_0  = (uint16_t)(base & 0xFFFF);
-	gdt_table[i].len15_0   = (uint16_t)(len  & 0xFFFF);
-	gdt_table[i].flags1    = flags1;
-	gdt_table[i].flags2    = flags2 | ((len >> 16) & 0x0F);
-
-	dprintf("Created segment %d: "
-		"base=0x%x, length=0x%x, flags1=0x%x, flags2=0x%x\n",
-		i, base, len, flags1, flags2);
-}
-
-void gdt_segment_destroy(uint32_t i)
-{
-	gdt_table[i].base31_24 = 0;
-	gdt_table[i].base23_16 = 0;
-	gdt_table[i].base15_0  = 0;
-	gdt_table[i].len15_0   = 0;
-	gdt_table[i].flags1    = 0;
-	gdt_table[i].flags2    = 0;
-}
-
-uint32_t gdt_base_get(uint32_t i)
+#if 0
+static uint32_t gdt_base_get(uint32_t i)
 {
 	uint32_t base;
 
@@ -90,34 +63,32 @@ uint32_t gdt_base_get(uint32_t i)
 	return base;
 }
 
-void gdt_base_set(uint32_t i,
-		  uint32_t base)
+static void gdt_base_set(uint32_t i,
+			 uint32_t base)
 {
 	gdt_table[i].base15_0  = (uint16_t) (base & 0xFFFF);
 	gdt_table[i].base23_16 = (uint8_t)  ((base >> 16) & 0xFF);
 	gdt_table[i].base31_24 = (uint8_t)  ((base & 0xF000) >> 24);
 }
 
-#if 0
-uint32_t gdt_dpl_get(uint32_t i)
+static uint32_t gdt_dpl_get(uint32_t i)
 {
 	return (gdt_table[i].flags1 & GDT_DPL3);
 }
 
-void gdt_dpl_set(uint32_t i,
+static void gdt_dpl_set(uint32_t i,
 		 uint32_t dpl)
 {
 	gdt_table[i].flags1 &= ~(GDT_DPL3);
 	gdt_table[i].flags1 |= dpl;
 }
-#endif
 
-uint8_t gdt_flags_get(uint32_t i)
+static uint8_t gdt_flags_get(uint32_t i)
 {
 	return gdt_table[i].flags1;
 }
 
-void gdt_flags_set(uint32_t entry,
+static void gdt_flags_set(uint32_t entry,
 		   uint8_t  flags)
 {
 	uint32_t i;
@@ -127,6 +98,37 @@ void gdt_flags_set(uint32_t entry,
 	gdt_table[i].flags1 &= (GDT_DPL3);
 	gdt_table[i].flags1 |= flags;
 }
+#endif
+
+static void gdt_segment_set(uint32_t i,
+			    uint32_t base,
+			    uint16_t len,
+			    uint8_t  flags1,
+			    uint8_t  flags2)
+{
+	gdt_table[i].base31_24 = (uint8_t)  ((base & 0xFF000000) >> 24);
+	gdt_table[i].base23_16 = (uint8_t)  ((base & 0x00FF0000) >> 16);
+	gdt_table[i].base15_0  = (uint16_t) ((base & 0x0000FFFF) >>  0);
+	gdt_table[i].len15_0   = len;
+	gdt_table[i].flags1    = flags1;
+	gdt_table[i].flags2    = flags2;
+
+	dprintf("segment %d: "
+		"base=0x%08x, length=0x%04x, flags1=0x%02x, flags2=0x%02x\n",
+		i, base, len, flags1, flags2);
+}
+
+#if 0
+static void gdt_segment_clear(uint32_t i)
+{
+	gdt_table[i].base31_24 = 0;
+	gdt_table[i].base23_16 = 0;
+	gdt_table[i].base15_0  = 0;
+	gdt_table[i].len15_0   = 0;
+	gdt_table[i].flags1    = 0;
+	gdt_table[i].flags2    = 0;
+}
+#endif
 
 static void gdt_load(gdt_entry_t * table,
 		     size_t        entries)
@@ -144,18 +146,54 @@ static void gdt_load(gdt_entry_t * table,
 
 int gdt_init(void)
 {
-	gdt_segment_create(SEGMENT_NULL,
-			   0, 0,
-			   0x00,
-			   0x00);
-	gdt_segment_create(SEGMENT_KERNEL_CODE,
-			   0, 0xFFFFFFFF,
-			   GDT_PRESENT | GDT_APP | GDT_TSS32 | GDT_TSS16,
-			   GDT_GRANULARITY | GDT_USE32 | 0x0F);
-	gdt_segment_create(SEGMENT_KERNEL_DATA,
-			   0, 0xFFFFFFFF,
-			   GDT_PRESENT | GDT_APP | GDT_LDT,
-			   GDT_GRANULARITY | GDT_USE32 | 0x0F);
+	gdt_segment_set(SEGMENT_NULL,
+			0, 0,
+			0x00,
+			0x00);
+	/* 4GB flat code at 0x0 */
+	gdt_segment_set(SEGMENT_KERNEL_CODE,
+			0, 0xFFFF,
+
+			// 0x9A,
+			GDT_P_PRESENT | GDT_DPL_0 | GDT_DT_APP |
+			GDT_TYPE_CODE | GDT_TYPE_READABLE,
+
+			// 0xCF
+			GDT_G_4KB | GDT_D_USE32 | 0x0F
+			);
+	/* 4GB flat data at 0x0 */
+	gdt_segment_set(SEGMENT_KERNEL_DATA,
+			0, 0xFFFF,
+
+			// 0x92,
+			GDT_P_PRESENT | GDT_DPL_0 | GDT_DT_APP |
+			GDT_TYPE_DATA | GDT_TYPE_WRITABLE,
+
+			// 0xCF
+			GDT_G_4KB | GDT_D_USE32 | 0x0F
+			);
+	/* 4GB flat code at 0x0 */
+	gdt_segment_set(SEGMENT_USER_CODE,
+			0, 0xFFFF,
+
+			// 0xFA,
+			GDT_P_PRESENT | GDT_DPL_3 | GDT_DT_APP |
+			GDT_TYPE_CODE | GDT_TYPE_READABLE,
+
+			// 0xCF
+			GDT_G_4KB | GDT_D_USE32 | 0x0F
+			);
+	/* 4GB flat data at 0x0 */
+	gdt_segment_set(SEGMENT_USER_DATA,
+			0, 0xFFFF,
+
+			//0xF2,
+			GDT_P_PRESENT | GDT_DPL_3 | GDT_DT_APP |
+			GDT_TYPE_DATA | GDT_TYPE_WRITABLE,
+
+			// 0xCF
+			GDT_G_4KB | GDT_D_USE32 | 0x0F
+			);
 
 	gdt_load(gdt_table, GDT_ENTRIES);
 
@@ -187,16 +225,18 @@ static dbg_result_t command_gdt_on_execute(FILE* stream,
 	fprintf(stream, "GDT:\n");
 
 	for (i = 0; i < GDT_ENTRIES; i++) {
-		if (gdt_table[i].flags1 & GDT_PRESENT) {
+		if (gdt_table[i].flags1 & GDT_P_PRESENT) {
 			fprintf(stream,
-				"  %d    0x%01x%02x%02x 0x%02x/0x%02x/0x02\n",
+				"  %d    "
+				"0x%02x%02x%04x/0x%04x "
+				"0x%02x/0x%02x\n",
 				i,
 				gdt_table[i].base31_24,
 				gdt_table[i].base23_16,
 				gdt_table[i].base15_0,
+				gdt_table[i].len15_0,
 				gdt_table[i].flags1,
-				gdt_table[i].flags2,
-				gdt_table[i].len15_0);
+				gdt_table[i].flags2);
 		}
 	}
 
