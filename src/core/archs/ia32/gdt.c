@@ -114,8 +114,17 @@ static void gdt_segment_set(uint32_t i,
 	gdt_table[i].flags2    = flags2;
 
 	dprintf("segment %d: "
-		"base=0x%08x, length=0x%04x, flags1=0x%02x, flags2=0x%02x\n",
-		i, base, len, flags1, flags2);
+		"base=0x%02x%02x%04x, "
+		"length=0x%04x, "
+		"flags1=0x%02x, "
+		"flags2=0x%02x\n",
+		i,
+		gdt_table[i].base31_24,
+		gdt_table[i].base23_16,
+		gdt_table[i].base15_0,
+		gdt_table[i].len15_0,
+		gdt_table[i].flags1,
+		gdt_table[i].flags2);
 }
 
 #if 0
