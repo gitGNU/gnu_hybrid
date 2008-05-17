@@ -80,8 +80,7 @@ static void idt_gate_set(uint32_t index,
 {
 	assert(index < IDT_ENTRIES);
 
-	idt_table[index].segment     = SEGMENT_BUILDER(0, 0,
-						       SEGMENT_KERNEL_CODE);
+	idt_table[index].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
 	idt_table[index].flags       = flags | IDT_PRESENT | IDT_DPL3 | IDT_32;
 	idt_table[index].offset15_0  = offset & 0xFFFF;
 	idt_table[index].offset31_16 = (offset >> 16) & 0xFFFF;
@@ -91,24 +90,25 @@ static void idt_gate_clear(uint32_t index)
 {
 	assert(index < IDT_ENTRIES);
 
-	idt_table[index].segment     = SEGMENT_BUILDER(0, 0,
-						       SEGMENT_KERNEL_CODE);
+	idt_table[index].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
 	idt_table[index].flags       = IDT_32 | IDT_INT;
 	idt_table[index].offset15_0  = 0;
 	idt_table[index].offset31_16 = 0;
 }
 
-void idt_interrupt_set(uint32_t index,
+static void idt_interrupt_set(uint32_t index,
 		       void *   addr)
 {
 	idt_gate_set(index, IDT_INT, (uint32_t) addr);
 }
 
-void idt_trap_set(uint32_t index,
+#if 0
+static void idt_trap_set(uint32_t index,
 		  void *   addr)
 {
 	idt_gate_set(index, IDT_TRAP, (uint32_t) addr);
 }
+#endif
 
 static void idt_load(idt_entry_t * table,
 		     size_t        entries)
@@ -123,7 +123,7 @@ static void idt_load(idt_entry_t * table,
 	lidt(&idt_p.limit);
 }
 
-void irq0(void)
+static void irq0(void)
 {
 	printf("TEST ");
 }
