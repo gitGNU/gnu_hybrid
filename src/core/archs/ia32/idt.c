@@ -97,14 +97,14 @@ static void idt_gate_clear(uint32_t index)
 }
 
 static void idt_interrupt_set(uint32_t index,
-		       void *   addr)
+			      void *   addr)
 {
 	idt_gate_set(index, IDT_INT, (uint32_t) addr);
 }
 
 #if 0
 static void idt_trap_set(uint32_t index,
-		  void *   addr)
+			 void *   addr)
 {
 	idt_gate_set(index, IDT_TRAP, (uint32_t) addr);
 }
