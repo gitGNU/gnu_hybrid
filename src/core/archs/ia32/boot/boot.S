@@ -18,6 +18,7 @@
 #define ASM	1
 #include "config/config.h"
 #include "core/archs/common/multiboot.h"
+#include "core/archs/common/asm.h"
 
 	.section .text
 
