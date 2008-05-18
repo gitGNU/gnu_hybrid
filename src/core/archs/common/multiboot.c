@@ -23,6 +23,7 @@
 #include "libc/string.h"
 #include "libc/ctype.h"
 #include "core/archs/common/multiboot.h"
+#include "core/archs/common/asm.h"
 #include "core/arch/asm.h"
 #include "core/boot/bootinfo.h"
 #include "core/boot/bootstrap.h"
