@@ -36,13 +36,6 @@
 /* The size of our stack (16KB).  */
 #define STACK_SIZE			0x4000
 
-/* C symbol format. HAVE_ASM_USCORE is defined by configure.  */
-#ifdef HAVE_ASM_USCORE
-# define EXT_C(sym)			_ ## sym
-#else
-# define EXT_C(sym)			sym
-#endif
-
 #ifndef ASM
 /* Do not include here in boot.S.  */
 
