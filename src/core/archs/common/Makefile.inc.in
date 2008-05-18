@@ -25,4 +25,5 @@ arch_common_SRCS =				\
 	@reldir@/multiboot.c			\
 	@reldir@/multiboot.h			\
 	@reldir@/cpu.c				\
-	@reldir@/cpu.h
+	@reldir@/cpu.h				\
+	@reldir@/asm.h
