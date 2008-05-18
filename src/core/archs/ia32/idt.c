@@ -21,6 +21,7 @@
 #include "libc/stdio.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
+#include "core/arch/port.h"
 #include "core/arch/idt.h"
 #include "core/arch/gdt.h"
 #include "core/arch/asm.h"
@@ -82,8 +83,8 @@ static void idt_gate_set(uint32_t index,
 
 	idt_table[index].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
 	idt_table[index].flags       = flags | IDT_PRESENT | IDT_DPL3 | IDT_32;
-	idt_table[index].offset15_0  = offset & 0xFFFF;
 	idt_table[index].offset31_16 = (offset >> 16) & 0xFFFF;
+	idt_table[index].offset15_0  = offset & 0xFFFF;
 }
 
 static void idt_gate_clear(uint32_t index)
@@ -92,8 +93,8 @@ static void idt_gate_clear(uint32_t index)
 
 	idt_table[index].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
 	idt_table[index].flags       = IDT_32 | IDT_INT;
-	idt_table[index].offset15_0  = 0;
 	idt_table[index].offset31_16 = 0;
+	idt_table[index].offset15_0  = 0;
 }
 
 static void idt_interrupt_set(uint32_t index,
@@ -123,10 +124,152 @@ static void idt_load(idt_entry_t * table,
 	lidt(&idt_p.limit);
 }
 
-static void irq0(void)
+/* This defines what the stack looks like after an ISR was running */
+struct regs {
+	/* pushed the segs last */
+	uint_t gs, fs, es, ds;
+	/* pushed by 'pusha' */
+	uint_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+	/* our 'push byte #' and ecodes do this */
+	uint_t int_no, err_code;
+	/* pushed by the processor automatically */
+	uint_t eip, cs, eflags, useresp, ss;
+};
+typedef struct regs regs_t;
+
+static char * exception_messages[] = {
+	"Division By Zero Exception",
+	"Debug Exception",
+	"Non Maskable Interrupt Exception",
+	"Breakpoint Exception",
+	"Into Detected Overflow Exception",
+	"Out of Bounds Exception",
+	"Invalid Opcode Exception",
+	"No Coprocessor Exception",
+	"Double Fault Exception",
+	"Coprocessor Segment Overrun Exception",
+	"Bad TSS Exception",
+	"Segment Not Present Exception",
+	"Stack Fault Exception",
+	"General Protection Fault Exception",
+	"Page Fault Exception",
+	"Unknown Interrupt Exception",
+	"Coprocessor Fault Exception",
+	"Alignment Check Exception",
+	"Machine Check Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+	"Reserved Exception",
+};
+
+void fault_handler(regs_t * regs)
 {
-	printf("TEST ");
+	if (regs->int_no < 32) {
+		panic("%s\n", exception_messages[regs->int_no]);
+	}
 }
+
+/* This array is actually an array of function pointers. We use
+ *  this to handle custom IRQ handlers for a given IRQ */
+void * irq_routines[16] = {
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0
+};
+
+typedef void (* irq_handler_t)(regs_t * regs);
+
+void irq_handler_install(int irq, irq_handler_t handler)
+{
+	irq_routines[irq] = handler;
+}
+
+void irq_handler_uninstall(int irq)
+{
+	irq_routines[irq] = 0;
+}
+
+void irq_handler(regs_t * regs)
+{
+	irq_handler_t handler;
+
+	/* Find out if we have a custom handler to run for this
+	 *  IRQ, and then finally, run it */
+	handler = irq_routines[regs->int_no - 32];
+	if (handler) {
+		handler(regs);
+	}
+
+	/* If the IDT entry that was invoked was greater than 40
+	 *  (meaning IRQ8 - 15), then we need to send an EOI to
+	 *  the slave controller */
+	if (regs->int_no >= 40) {
+		port_out8(0x20, 0xA0);
+	}
+
+	/* In either case, we need to send an EOI to the master
+	 *  interrupt controller too */
+	port_out8(0x20, 0x20);
+}
+
+extern void isr_00(void);
+extern void isr_01(void);
+extern void isr_02(void);
+extern void isr_03(void);
+extern void isr_04(void);
+extern void isr_05(void);
+extern void isr_06(void);
+extern void isr_07(void);
+extern void isr_08(void);
+extern void isr_09(void);
+extern void isr_10(void);
+extern void isr_11(void);
+extern void isr_12(void);
+extern void isr_13(void);
+extern void isr_14(void);
+extern void isr_15(void);
+extern void isr_16(void);
+extern void isr_17(void);
+extern void isr_18(void);
+extern void isr_19(void);
+extern void isr_20(void);
+extern void isr_21(void);
+extern void isr_22(void);
+extern void isr_23(void);
+extern void isr_24(void);
+extern void isr_25(void);
+extern void isr_26(void);
+extern void isr_27(void);
+extern void isr_28(void);
+extern void isr_29(void);
+extern void isr_30(void);
+extern void isr_31(void);
+
+extern void irq_00(void);
+extern void irq_01(void);
+extern void irq_02(void);
+extern void irq_03(void);
+extern void irq_04(void);
+extern void irq_05(void);
+extern void irq_06(void);
+extern void irq_07(void);
+extern void irq_08(void);
+extern void irq_09(void);
+extern void irq_10(void);
+extern void irq_11(void);
+extern void irq_12(void);
+extern void irq_13(void);
+extern void irq_14(void);
+extern void irq_15(void);
 
 int idt_init(void)
 {
@@ -136,8 +279,55 @@ int idt_init(void)
 	for (i = 0; i < IDT_ENTRIES; i++) {
 		idt_gate_clear(i);
 	}
-	/* Set default gates */
-	idt_interrupt_set(0, irq0);
+
+	idt_interrupt_set(0,  isr_00);
+	idt_interrupt_set(1,  isr_01);
+	idt_interrupt_set(2,  isr_02);
+	idt_interrupt_set(3,  isr_03);
+	idt_interrupt_set(4,  isr_04);
+	idt_interrupt_set(5,  isr_05);
+	idt_interrupt_set(6,  isr_06);
+	idt_interrupt_set(7,  isr_07);
+	idt_interrupt_set(8,  isr_08);
+	idt_interrupt_set(9,  isr_09);
+	idt_interrupt_set(10, isr_10);
+	idt_interrupt_set(11, isr_11);
+	idt_interrupt_set(12, isr_12);
+	idt_interrupt_set(13, isr_13);
+	idt_interrupt_set(14, isr_14);
+	idt_interrupt_set(15, isr_15);
+	idt_interrupt_set(16, isr_16);
+	idt_interrupt_set(17, isr_17);
+	idt_interrupt_set(18, isr_18);
+	idt_interrupt_set(19, isr_19);
+	idt_interrupt_set(20, isr_20);
+	idt_interrupt_set(21, isr_21);
+	idt_interrupt_set(22, isr_22);
+	idt_interrupt_set(23, isr_23);
+	idt_interrupt_set(24, isr_24);
+	idt_interrupt_set(25, isr_25);
+	idt_interrupt_set(26, isr_26);
+	idt_interrupt_set(27, isr_27);
+	idt_interrupt_set(28, isr_28);
+	idt_interrupt_set(39, isr_29);
+	idt_interrupt_set(30, isr_30);
+	idt_interrupt_set(31, isr_31);
+
+	idt_interrupt_set(32, irq_01);
+	idt_interrupt_set(33, irq_02);
+	idt_interrupt_set(34, irq_03);
+	idt_interrupt_set(35, irq_04);
+	idt_interrupt_set(36, irq_05);
+	idt_interrupt_set(37, irq_06);
+	idt_interrupt_set(38, irq_07);
+	idt_interrupt_set(39, irq_08);
+	idt_interrupt_set(40, irq_09);
+	idt_interrupt_set(41, irq_10);
+	idt_interrupt_set(42, irq_11);
+	idt_interrupt_set(43, irq_12);
+	idt_interrupt_set(44, irq_13);
+	idt_interrupt_set(45, irq_14);
+	idt_interrupt_set(46, irq_15);
 
 	idt_load(idt_table, IDT_ENTRIES);
 
