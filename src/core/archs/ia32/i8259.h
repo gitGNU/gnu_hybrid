@@ -33,6 +33,8 @@ uint16_t i8259_irq_mask_get(void);
 void     i8259_irq_mask_set(uint16_t mask);
 void     i8259_irq_enable(int irq);
 void     i8259_irq_disable(int irq);
+void     i8259_eoi_slave(void);
+void     i8259_eoi_master(void);
 
 __END_DECLS
 
