@@ -21,10 +21,10 @@
 #include "libc/stdio.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
-#include "core/arch/port.h"
 #include "core/arch/idt.h"
 #include "core/arch/gdt.h"
 #include "core/arch/asm.h"
+#include "core/arch/i8259.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
@@ -179,22 +179,26 @@ void fault_handler(regs_t * regs)
 	}
 }
 
-/* This array is actually an array of function pointers. We use
- *  this to handle custom IRQ handlers for a given IRQ */
-void * irq_routines[16] = {
+static void * irq_routines[16] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0
 };
 
 typedef void (* irq_handler_t)(regs_t * regs);
 
-void irq_handler_install(int irq, irq_handler_t handler)
+void irq_handler_install(uint_t        irq,
+			 irq_handler_t handler)
 {
+	assert(irq < 16);
+	assert(handler);
+
 	irq_routines[irq] = handler;
 }
 
-void irq_handler_uninstall(int irq)
+void irq_handler_uninstall(uint_t irq)
 {
+	assert(irq < 16);
+
 	irq_routines[irq] = 0;
 }
 
@@ -202,23 +206,16 @@ void irq_handler(regs_t * regs)
 {
 	irq_handler_t handler;
 
-	/* Find out if we have a custom handler to run for this
-	 *  IRQ, and then finally, run it */
 	handler = irq_routines[regs->int_no - 32];
 	if (handler) {
 		handler(regs);
 	}
 
-	/* If the IDT entry that was invoked was greater than 40
-	 *  (meaning IRQ8 - 15), then we need to send an EOI to
-	 *  the slave controller */
 	if (regs->int_no >= 40) {
-		port_out8(0x20, 0xA0);
+		i8259_eoi_slave();
 	}
 
-	/* In either case, we need to send an EOI to the master
-	 *  interrupt controller too */
-	port_out8(0x20, 0x20);
+	i8259_eoi_master();
 }
 
 extern void isr_00(void);
