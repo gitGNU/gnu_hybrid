@@ -22,11 +22,17 @@
 
 #include "config/config.h"
 
-/* Segments */
+#ifndef ASM
 #define SEGMENT_BUILDER(PRIVILEGE,LDT,INDEX)	\
-  ((((PRIVILEGE) & 0x3)  << 0) |		\
-   (((LDT) ? 1 : 0)      << 2) |		\
-   ((INDEX)              << 3))
+	((((PRIVILEGE) & 0x3) << 0) |		\
+	 (((LDT) ? 1 : 0)     << 2) |		\
+	 ((INDEX)             << 3))
+#else
+#define SEGMENT_BUILDER(PRIVILEGE,LDT,INDEX)	\
+	((((PRIVILEGE) & 0x3) << 0) |		\
+	 (((LDT) & 1)         << 2) |		\
+	 ((INDEX)             << 3))
+#endif
 
 #define SEGMENT_NULL        0
 #define SEGMENT_KERNEL_CODE 1
