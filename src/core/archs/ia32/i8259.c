@@ -37,7 +37,7 @@
 #define PIC_MASTER   ICU0
 #define PIC_SLAVE    ICU1
 
-static void remap(void)
+static void irq_remap(void)
 {
 	dprintf("Remapping PIC\n");
 
@@ -69,7 +69,7 @@ int i8259_init(void)
 
 	cli();
 
-	remap();
+	irq_remap();
 
 	return 1;
 }
