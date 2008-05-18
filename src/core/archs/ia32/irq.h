@@ -21,6 +21,6 @@
 #define IRQ_H
 
 #include "config/config.h"
-#include "core/archs/ia32/i8259.h"
+#include "core/arch/i8259.h"
 
 #endif /* IRQ_H */

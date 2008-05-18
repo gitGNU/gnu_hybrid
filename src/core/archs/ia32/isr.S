@@ -20,7 +20,7 @@
 #define ASM	1
 #include "config/config.h"
 #include "core/archs/common/asm.h"
-#include "core/archs/ia32/gdt.h"
+#include "core/arch/gdt.h"
 
 	.global isr_00
 	.global isr_01

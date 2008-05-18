@@ -20,7 +20,7 @@
 #define ASM	1
 #include "config/config.h"
 #include "core/archs/common/asm.h"
-#include "core/archs/ia32/gdt.h"
+#include "core/arch/gdt.h"
 
 	.global irq_00
 	.global irq_01
@@ -38,7 +38,7 @@
 	.global irq_13
 	.global irq_14
 	.global irq_15
-	
+
 irq_00:
     cli
     push 0
