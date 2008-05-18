@@ -22,8 +22,6 @@
 
 #include "config/config.h"
 
-__BEGIN_DECLS
-
 /* Segments */
 #define SEGMENT_BUILDER(PRIVILEGE,LDT,INDEX)	\
   ((((PRIVILEGE) & 0x3)  << 0) |		\
@@ -77,9 +75,13 @@ __BEGIN_DECLS
 #define GDT_D_USE32     0x40 /* Operand size 32 bit */
 #define GDT_D_USE16     0x00 /* Operand size 16 bit */
 
+#ifndef ASM
+__BEGIN_DECLS
+
 int      gdt_init(void);
 void     gdt_fini(void);
 
 __END_DECLS
+#endif
 
 #endif /* GDT_H */
