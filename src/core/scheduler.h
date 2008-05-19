@@ -31,8 +31,6 @@ struct process {
 typedef struct process process_t;
 
 int  scheduler_init(void);
-void scheduler_lock(void);
-void scheduler_unlock(void);
 void scheduler_run(void);
 int  scheduler_fini(void);
 
