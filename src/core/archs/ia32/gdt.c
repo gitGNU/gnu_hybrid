@@ -110,48 +110,42 @@ int gdt_init(void)
 			0, 0,
 			0x00,
 			0x00);
+
 	/* 4GB flat code at 0x0 */
 	gdt_segment_set(SEGMENT_KERNEL_CODE,
 			0, 0xFFFF,
 
-			// 0x9A,
 			GDT_P_PRESENT | GDT_DPL_0 | GDT_DT_APP |
 			GDT_TYPE_CODE | GDT_TYPE_READABLE,
 
-			// 0xCF
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
+
 	/* 4GB flat data at 0x0 */
 	gdt_segment_set(SEGMENT_KERNEL_DATA,
 			0, 0xFFFF,
 
-			// 0x92,
 			GDT_P_PRESENT | GDT_DPL_0 | GDT_DT_APP |
 			GDT_TYPE_DATA | GDT_TYPE_WRITABLE,
 
-			// 0xCF
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
 	/* 4GB flat code at 0x0 */
 	gdt_segment_set(SEGMENT_USER_CODE,
 			0, 0xFFFF,
 
-			// 0xFA,
 			GDT_P_PRESENT | GDT_DPL_3 | GDT_DT_APP |
 			GDT_TYPE_CODE | GDT_TYPE_READABLE,
 
-			// 0xCF
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
 	/* 4GB flat data at 0x0 */
 	gdt_segment_set(SEGMENT_USER_DATA,
 			0, 0xFFFF,
 
-			//0xF2,
 			GDT_P_PRESENT | GDT_DPL_3 | GDT_DT_APP |
 			GDT_TYPE_DATA | GDT_TYPE_WRITABLE,
 
-			// 0xCF
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
 

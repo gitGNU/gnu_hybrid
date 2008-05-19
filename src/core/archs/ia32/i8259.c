@@ -65,12 +65,12 @@ static void remap(void)
 
 void i8259_eoi_slave(void)
 {
-	port_out8(0x20, 0xA0);
+	port_out8(PIC_MASTER, 0xA0);
 }
 
 void i8259_eoi_master(void)
 {
-	port_out8(0x20, 0x20);
+	port_out8(PIC_MASTER, 0x20);
 }
 
 int i8259_init(void)

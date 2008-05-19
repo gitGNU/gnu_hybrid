@@ -253,7 +253,6 @@ void irq_handler(regs_t * regs)
 
 	assert(regs->isr_no >= 32);
 
-	handler = irq_routines[regs->isr_no - 32];
 	if (regs->isr_no >= 40) {
 		i8259_eoi_slave();
 	}
@@ -262,6 +261,7 @@ void irq_handler(regs_t * regs)
 
 	dump_frame(regs);
 
+	handler = irq_routines[regs->isr_no - 32];
 	if (handler) {
 		sti();
 		handler(regs);

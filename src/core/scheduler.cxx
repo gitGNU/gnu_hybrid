@@ -69,6 +69,12 @@ int scheduler_fini(void)
 
 void scheduler_lock(void)
 {
+	dprintf("Scheduler locked\n");
+}
+
+void scheduler_unlock(void)
+{
+	dprintf("Scheduler unlocked\n");
 }
 
 #if CONFIG_DEBUGGER
