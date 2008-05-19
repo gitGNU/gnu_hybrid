@@ -101,7 +101,7 @@ void         arch_context_switch(uint_t * old_stack,
 
 void	     arch_halt(void);
 void	     arch_poweroff(void);
-void	     arch_reboot(void);
+void	     arch_reset(void);
 
 uint_t       arch_backtrace_store(uint_t * backtrace,
 				  uint_t   max_len);
