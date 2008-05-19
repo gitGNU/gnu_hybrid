@@ -1,0 +1,115 @@
+/*
+ * Copyright (C) 2008 Francesco Salvestrini
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
+#define ASM	1
+#include "config/config.h"
+#include "core/archs/common/asm.h"
+#include "core/arch/gdt.h"
+
+	.section .text
+
+.macro TRAP_ENTRY INDEX TRAP
+	.global trap_\INDEX
+trap_\INDEX :
+	pushl  $0
+	pushl  \TRAP
+	jmp    trap_common
+.endm
+
+.macro TRAP_ENTRY_ERROR INDEX TRAP
+	.global trap_\INDEX
+trap_\INDEX :
+	pushl  \TRAP
+	jmp    trap_common
+.endm
+
+	TRAP_ENTRY       00, 0
+	TRAP_ENTRY       01, 1
+	TRAP_ENTRY       02, 2
+	TRAP_ENTRY       03, 3
+	TRAP_ENTRY       04, 4
+	TRAP_ENTRY       05, 5
+	TRAP_ENTRY       06, 6
+	TRAP_ENTRY       07, 7
+	TRAP_ENTRY_ERROR 08, 8
+	TRAP_ENTRY_ERROR 09, 9
+	TRAP_ENTRY_ERROR 10,10
+	TRAP_ENTRY_ERROR 11,11
+	TRAP_ENTRY_ERROR 13,13
+	TRAP_ENTRY_ERROR 12,12
+	TRAP_ENTRY_ERROR 14,14
+	TRAP_ENTRY       15,15
+	TRAP_ENTRY       16,16
+	TRAP_ENTRY_ERROR 17,17
+	TRAP_ENTRY_ERROR 18,18
+	TRAP_ENTRY       19,19
+	TRAP_ENTRY       20,20
+	TRAP_ENTRY       21,21
+	TRAP_ENTRY       22,22
+	TRAP_ENTRY       23,23
+	TRAP_ENTRY       24,24
+	TRAP_ENTRY       25,25
+	TRAP_ENTRY       26,26
+	TRAP_ENTRY       27,27
+	TRAP_ENTRY       28,28
+	TRAP_ENTRY       29,29
+	TRAP_ENTRY       30,30
+	TRAP_ENTRY       31,31
+
+.macro REGS_SAVE_ALL
+	cld
+	pushl %es
+	pushl %ds
+	pushl %eax
+	pushl %ebp
+	pushl %edi
+	pushl %esi
+	pushl %edx
+	pushl %ecx
+	pushl %ebx
+.endm
+
+.macro REGS_RESTORE_ALL
+	popl %ebx
+	popl %ecx
+	popl %edx
+	popl %esi
+	popl %edi
+	popl %ebp
+	popl %eax
+	popl %ds
+	popl %es
+.endm
+
+.macro SEGMENT_SETUP
+	movl $(SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_DATA)), %edx
+	movl %edx, %ds
+	movl %edx, %es
+.endm
+
+trap_common:
+	REGS_SAVE_ALL
+	SEGMENT_SETUP
+	pushl %esp
+	call EXT_C(trap_handler)
+	addl  $5, %esp
+trap_return:
+	REGS_RESTORE_ALL
+	addl $8, %ebp
+	iret
