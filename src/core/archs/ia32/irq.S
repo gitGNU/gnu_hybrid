@@ -20,144 +20,93 @@
 #define ASM	1
 #include "config/config.h"
 #include "core/archs/common/asm.h"
+//#include "core/archs/common/multiboot.h"
 #include "core/arch/gdt.h"
 
-	.global irq_00
-	.global irq_01
-	.global irq_02
-	.global irq_03
-	.global irq_04
-	.global irq_05
-	.global irq_06
-	.global irq_07
-	.global irq_08
-	.global irq_09
-	.global irq_10
-	.global irq_11
-	.global irq_12
-	.global irq_13
-	.global irq_14
-	.global irq_15
+	.section .text
 
-irq_00:
-    cli
-    push 0
-    push 32
-    jmp  irq_common_stub
+.macro IRQ_ENTRY INDEX IRQ
+	.global irq_\INDEX
+	.align 4,0x90
+irq_\INDEX :
+	cli
+	pushl  $0
+	pushl  \IRQ
+	jmp    irq_common
+.endm
 
-irq_01:
-    cli
-    push 0
-    push 33
-    jmp  irq_common_stub
+	IRQ_ENTRY 00,32
+	IRQ_ENTRY 01,33
+	IRQ_ENTRY 02,34
+	IRQ_ENTRY 03,35
+	IRQ_ENTRY 04,36
+	IRQ_ENTRY 05,37
+	IRQ_ENTRY 06,38
+	IRQ_ENTRY 07,39
+	IRQ_ENTRY 08,40
+	IRQ_ENTRY 09,41
+	IRQ_ENTRY 10,42
+	IRQ_ENTRY 11,43
+	IRQ_ENTRY 12,44
+	IRQ_ENTRY 13,45
+	IRQ_ENTRY 14,46
+	IRQ_ENTRY 15,47
 
-irq_02:
-    cli
-    push 0
-    push 34
-    jmp  irq_common_stub
+.macro REGS_SAVE_ALL
+	cld
+	pushl %es
+	pushl %ds
+	pushl %eax
+	pushl %ebp
+	pushl %edi
+	pushl %esi
+	pushl %edx
+	pushl %ecx
+	pushl %ebx
+.endm
 
-irq_03:
-    cli
-    push 0
-    push 35
-    jmp  irq_common_stub
+.macro REGS_RESTORE_ALL
+	popl %ebx
+	popl %ecx
+	popl %edx
+	popl %esi
+	popl %edi
+	popl %ebp
+	popl %eax
+	popl %ds
+	popl %es
+.endm
 
-irq_04:
-    cli
-    push 0
-    push 36
-    jmp  irq_common_stub
+.macro SEGMENT_SETUP
+	movl $(SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_DATA)), %edx
+	movl %edx, %ds
+	movl %edx, %es
+.endm
 
-irq_05:
-    cli
-    push 0
-    push 37
-    jmp  irq_common_stub
+irq_common:
+	REGS_SAVE_ALL
+	SEGMENT_SETUP
+	incl  irq_nesting
+	cmpl  $1, irq_nesting
+	jne   irq_nested
+	mov   %esp, %ebp
+//	movl  $(stack + STACK_SIZE), %esp
+	call  EXT_C(scheduler_lock)
+	testl $3, 0x30(%esp)
+	jz    irq_return
+//	call  exception
+irq_return:
+	REGS_RESTORE_ALL
+	addl $8, %esp
+	iret
+irq_nested:
+	push %esp
+	call EXT_C(irq_handler)
+	addl $4, %esp
+	decl irq_nesting
+	jmp irq_return
 
-irq_06:
-    cli
-    push 0
-    push 38
-    jmp  irq_common_stub
+	.section .bss
 
-irq_07:
-    cli
-    push 0
-    push 39
-    jmp  irq_common_stub
-
-irq_08:
-    cli
-    push 0
-    push 40
-    jmp  irq_common_stub
-
-irq_09:
-    cli
-    push 0
-    push 41
-    jmp  irq_common_stub
-
-irq_10:
-    cli
-    push 0
-    push 42
-    jmp  irq_common_stub
-
-irq_11:
-    cli
-    push 0
-    push 43
-    jmp  irq_common_stub
-
-irq_12:
-    cli
-    push 0
-    push 44
-    jmp  irq_common_stub
-
-irq_13:
-    cli
-    push 0
-    push 45
-    jmp  irq_common_stub
-
-irq_14:
-    cli
-    push 0
-    push 46
-    jmp  irq_common_stub
-
-irq_15:
-    cli
-    push 0
-    push 47
-    jmp  irq_common_stub
-
-irq_common_stub:
-    pusha
-    push %ds
-    push %es
-    push %fs
-    push %gs
-
-    mov  %ax,  SEGMENT_KERNEL_DATA
-    mov  %ds,  %ax
-    mov  %es,  %ax
-    mov  %fs,  %ax
-    mov  %gs,  %ax
-    mov  %eax, %esp
-
-    push %eax
-    mov  %eax, EXT_C(irq_handler)
-    call %eax
-    pop  %eax
-
-    pop  %gs
-    pop  %fs
-    pop  %es
-    pop  %ds
-    popa
-    add  %esp, 8
-    iret
+irq_nesting:
+	.long 0
