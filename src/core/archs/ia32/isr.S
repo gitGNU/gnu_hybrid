@@ -22,8 +22,6 @@
 #include "core/archs/common/asm.h"
 #include "core/arch/gdt.h"
 
-	.section .text
-
 .macro REGS_SAVE_ALL
 	pushl %es
 	pushl %ds
@@ -54,14 +52,20 @@
 	movl %edx, %es
 .endm
 
+	//
+	// IRQs
+	//
+
 .macro IRQ_ENTRY INDEX ISR_INDEX
 	.global irq_\INDEX
 	.align 4,0x90
 irq_\INDEX :
 	pushl  $0
-	pushl  \ISR_INDEX
+	pushl  $\ISR_INDEX
 	jmp    irq_common
 .endm
+
+	.section .text
 
 	IRQ_ENTRY 00,32
 	IRQ_ENTRY 01,33
@@ -85,24 +89,32 @@ irq_common:
 	SEGMENT_SETUP
 	mov   %esp, %ebp
 	pushl %ebp
-	call EXT_C(irq_handler)
+	call  EXT_C(irq_handler)
+	movl  %ebp, %esp
 	REGS_RESTORE_ALL
 	iret
+
+
+	//
+	// TRAPs
+	//
 
 .macro TRAP_ENTRY INDEX ISR_INDEX
 	.global trap_\INDEX
 trap_\INDEX :
 	pushl  $0
-	pushl  \ISR_INDEX
+	pushl  $\ISR_INDEX
 	jmp    trap_common
 .endm
 
-.macro TRAP_ENTRY_ERROR INDEX TRAP
+.macro TRAP_ENTRY_ERROR INDEX ISR_INDEX
 	.global trap_\INDEX
 trap_\INDEX :
-	pushl  \TRAP
+	pushl  $\ISR_INDEX
 	jmp    trap_common
 .endm
+
+	.section .text
 
 	TRAP_ENTRY       00, 0
 	TRAP_ENTRY       01, 1
