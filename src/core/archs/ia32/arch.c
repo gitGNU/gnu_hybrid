@@ -70,13 +70,12 @@ int arch_init(void)
 		panic("Cannot initialize i8259");
 	}
 
-	i8259_irq_enable(0);
-
 	if (!i8253_init()) {
 		panic("Cannot initialize i8253");
 	}
-
 	/* We can call delay() now */
+
+	i8259_irq_enable(0);
 
 	sti();
 

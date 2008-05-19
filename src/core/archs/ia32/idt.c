@@ -103,7 +103,7 @@ static void idt_gate_clear(uint32_t i)
 	assert(i < IDT_ENTRIES);
 
 	idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_NULL);
-	idt_table[i].flags       = 0;
+	idt_table[i].flags       = IDT_INT | IDT_32;
 	idt_table[i].offset31_16 = 0;
 	idt_table[i].offset15_0  = 0;
 }
@@ -251,7 +251,9 @@ void irq_handler(regs_t * regs)
 {
 	irq_handler_t handler;
 
-	assert(regs->isr_no >= 32);
+	printf("IRQ %d!\n", regs->isr_no);
+
+	//	assert(regs->isr_no >= 32);
 
 	if (regs->isr_no >= 40) {
 		i8259_eoi_slave();
@@ -263,9 +265,9 @@ void irq_handler(regs_t * regs)
 
 	handler = irq_routines[regs->isr_no - 32];
 	if (handler) {
-		sti();
-		handler(regs);
 		cli();
+		handler(regs);
+		sti();
 	}
 }
 

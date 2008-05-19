@@ -65,11 +65,13 @@ static void remap(void)
 
 void i8259_eoi_slave(void)
 {
+	dprintf("Sending EOI to slave\n");
 	port_out8(PIC_MASTER, 0xA0);
 }
 
 void i8259_eoi_master(void)
 {
+	dprintf("Sending EOI to master\n");
 	port_out8(PIC_MASTER, 0x20);
 }
 

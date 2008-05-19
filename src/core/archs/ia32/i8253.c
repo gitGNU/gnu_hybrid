@@ -90,7 +90,7 @@ static inline void delay_loops(uint32_t loops)
 			  : "0" (loops));
 }
 
-/* Generic PIT routines */
+#if 0
 static void set_timer_chan_oneshot(uint16_t hz, uint8_t chan)
 {
 	int divisor;
@@ -102,7 +102,6 @@ static void set_timer_chan_oneshot(uint16_t hz, uint8_t chan)
 	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
 }
 
-#if 0
 static void set_timer_chan_forever(uint16_t hz, uint8_t chan)
 {
 	int divisor;
@@ -113,7 +112,6 @@ static void set_timer_chan_forever(uint16_t hz, uint8_t chan)
 	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
 	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
 }
-#endif
 
 static uint32_t get_timer_chan(uint8_t chan, int reset)
 {
@@ -166,6 +164,7 @@ static void calibrate_delay_loop(void)
 	       ((__this_cpu->arch.loops_ms * 10) / 5000),
 	       ((__this_cpu->arch.loops_ms * 10) / 50) % 100);
 }
+#endif
 
 int i8254_frequency_set(uint32_t freq)
 {
@@ -226,7 +225,7 @@ int i8253_init(void)
 		return 0;
 	}
 
-	calibrate_delay_loop();
+	//	calibrate_delay_loop();
 
 	return 1;
 }

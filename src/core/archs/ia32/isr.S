@@ -25,7 +25,6 @@
 	.section .text
 
 .macro REGS_SAVE_ALL
-	cld
 	pushl %es
 	pushl %ds
 	pushl %eax
@@ -55,13 +54,12 @@
 	movl %edx, %es
 .endm
 
-.macro IRQ_ENTRY INDEX IRQ
+.macro IRQ_ENTRY INDEX ISR_INDEX
 	.global irq_\INDEX
 	.align 4,0x90
 irq_\INDEX :
-	cli
 	pushl  $0
-	pushl  \IRQ
+	pushl  \ISR_INDEX
 	jmp    irq_common
 .endm
 
@@ -85,38 +83,17 @@ irq_\INDEX :
 irq_common:
 	REGS_SAVE_ALL
 	SEGMENT_SETUP
-	incl  irq_nesting
-	cmpl  $1, irq_nesting
-	jne   irq_nested
 	mov   %esp, %ebp
-//	movl  $(stack + STACK_SIZE), %esp
-	call  EXT_C(scheduler_lock)
-	testl $3, 0x30(%esp)
-	jz    irq_return
-//	call  exception
-irq_return:
-	REGS_RESTORE_ALL
-	addl $8, %esp
-	iret
-irq_nested:
-	push %esp
+	pushl %ebp
 	call EXT_C(irq_handler)
-	addl $4, %esp
-	decl irq_nesting
-	jmp irq_return
+	REGS_RESTORE_ALL
+	iret
 
-	.section .bss
-
-irq_nesting:
-	.long 0
-
-	.section .text
-
-.macro TRAP_ENTRY INDEX TRAP
+.macro TRAP_ENTRY INDEX ISR_INDEX
 	.global trap_\INDEX
 trap_\INDEX :
 	pushl  $0
-	pushl  \TRAP
+	pushl  \ISR_INDEX
 	jmp    trap_common
 .endm
 
