@@ -22,6 +22,7 @@
 
 #include "config/config.h"
 #include "core/archs/arch.h"
+#include "core/arch/asm.h"
 #include "core/arch/port.h"
 #include "core/arch/cpu.h"
 #include "core/arch/gdt.h"
@@ -55,9 +56,7 @@ int arch_init(void)
 	/* We know CPU capabilities now */
 
 	/* Turn IRQ off before initializing GDT */
-	if (!i8259_init()) {
-		panic("Cannot initialize i8259");
-	}
+	cli();
 
 	if (!gdt_init()) {
 		panic("Cannot initialize GDT");
@@ -65,6 +64,10 @@ int arch_init(void)
 
 	if (!idt_init()) {
 		panic("Cannot initialize IDT");
+	}
+
+	if (!i8259_init()) {
+		panic("Cannot initialize i8259");
 	}
 
 	i8259_irq_enable(0);
@@ -76,7 +79,7 @@ int arch_init(void)
 	/* We can call delay() now */
 
 #include "core/arch/asm.h"
-	//sti();
+	sti();
 
 	dprintf("Architecture initialized\n");
 
@@ -85,11 +88,8 @@ int arch_init(void)
 
 void arch_fini(void)
 {
-	/* XXX FIXME: Review the shutdown procedure ... */
 	i8253_fini();
-
 	i8259_irq_disable(0);
-
 	i8259_fini();
 	idt_fini();
 	gdt_fini();
