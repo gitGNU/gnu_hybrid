@@ -94,5 +94,5 @@ multiboot_entry:
 loop:   hlt
 	jmp     loop
 
-	/* Our stack area.  */
+	/* Our stack area */
 	.comm	stack, STACK_SIZE
