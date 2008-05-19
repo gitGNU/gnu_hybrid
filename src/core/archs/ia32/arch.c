@@ -78,7 +78,6 @@ int arch_init(void)
 
 	/* We can call delay() now */
 
-#include "core/arch/asm.h"
 	sti();
 
 	dprintf("Architecture initialized\n");

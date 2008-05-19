@@ -20,37 +20,9 @@
 #define ASM	1
 #include "config/config.h"
 #include "core/archs/common/asm.h"
-//#include "core/archs/common/multiboot.h"
 #include "core/arch/gdt.h"
 
 	.section .text
-
-.macro IRQ_ENTRY INDEX IRQ
-	.global irq_\INDEX
-	.align 4,0x90
-irq_\INDEX :
-	cli
-	pushl  $0
-	pushl  \IRQ
-	jmp    irq_common
-.endm
-
-	IRQ_ENTRY 00,32
-	IRQ_ENTRY 01,33
-	IRQ_ENTRY 02,34
-	IRQ_ENTRY 03,35
-	IRQ_ENTRY 04,36
-	IRQ_ENTRY 05,37
-	IRQ_ENTRY 06,38
-	IRQ_ENTRY 07,39
-	IRQ_ENTRY 08,40
-	IRQ_ENTRY 09,41
-	IRQ_ENTRY 10,42
-	IRQ_ENTRY 11,43
-	IRQ_ENTRY 12,44
-	IRQ_ENTRY 13,45
-	IRQ_ENTRY 14,46
-	IRQ_ENTRY 15,47
 
 .macro REGS_SAVE_ALL
 	cld
@@ -83,6 +55,33 @@ irq_\INDEX :
 	movl %edx, %es
 .endm
 
+.macro IRQ_ENTRY INDEX IRQ
+	.global irq_\INDEX
+	.align 4,0x90
+irq_\INDEX :
+	cli
+	pushl  $0
+	pushl  \IRQ
+	jmp    irq_common
+.endm
+
+	IRQ_ENTRY 00,32
+	IRQ_ENTRY 01,33
+	IRQ_ENTRY 02,34
+	IRQ_ENTRY 03,35
+	IRQ_ENTRY 04,36
+	IRQ_ENTRY 05,37
+	IRQ_ENTRY 06,38
+	IRQ_ENTRY 07,39
+	IRQ_ENTRY 08,40
+	IRQ_ENTRY 09,41
+	IRQ_ENTRY 10,42
+	IRQ_ENTRY 11,43
+	IRQ_ENTRY 12,44
+	IRQ_ENTRY 13,45
+	IRQ_ENTRY 14,46
+	IRQ_ENTRY 15,47
+
 irq_common:
 	REGS_SAVE_ALL
 	SEGMENT_SETUP
@@ -110,3 +109,64 @@ irq_nested:
 
 irq_nesting:
 	.long 0
+
+	.section .text
+
+.macro TRAP_ENTRY INDEX TRAP
+	.global trap_\INDEX
+trap_\INDEX :
+	pushl  $0
+	pushl  \TRAP
+	jmp    trap_common
+.endm
+
+.macro TRAP_ENTRY_ERROR INDEX TRAP
+	.global trap_\INDEX
+trap_\INDEX :
+	pushl  \TRAP
+	jmp    trap_common
+.endm
+
+	TRAP_ENTRY       00, 0
+	TRAP_ENTRY       01, 1
+	TRAP_ENTRY       02, 2
+	TRAP_ENTRY       03, 3
+	TRAP_ENTRY       04, 4
+	TRAP_ENTRY       05, 5
+	TRAP_ENTRY       06, 6
+	TRAP_ENTRY       07, 7
+	TRAP_ENTRY_ERROR 08, 8
+	TRAP_ENTRY_ERROR 09, 9
+	TRAP_ENTRY_ERROR 10,10
+	TRAP_ENTRY_ERROR 11,11
+	TRAP_ENTRY_ERROR 13,13
+	TRAP_ENTRY_ERROR 12,12
+	TRAP_ENTRY_ERROR 14,14
+	TRAP_ENTRY       15,15
+	TRAP_ENTRY       16,16
+	TRAP_ENTRY_ERROR 17,17
+	TRAP_ENTRY_ERROR 18,18
+	TRAP_ENTRY       19,19
+	TRAP_ENTRY       20,20
+	TRAP_ENTRY       21,21
+	TRAP_ENTRY       22,22
+	TRAP_ENTRY       23,23
+	TRAP_ENTRY       24,24
+	TRAP_ENTRY       25,25
+	TRAP_ENTRY       26,26
+	TRAP_ENTRY       27,27
+	TRAP_ENTRY       28,28
+	TRAP_ENTRY       29,29
+	TRAP_ENTRY       30,30
+	TRAP_ENTRY       31,31
+
+trap_common:
+	REGS_SAVE_ALL
+	SEGMENT_SETUP
+	pushl %esp
+	call EXT_C(trap_handler)
+	addl  $5, %esp
+trap_return:
+	REGS_RESTORE_ALL
+	addl $8, %ebp
+	iret
