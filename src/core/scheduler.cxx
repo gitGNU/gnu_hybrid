@@ -67,16 +67,6 @@ int scheduler_fini(void)
 	return 1;
 }
 
-void scheduler_lock(void)
-{
-	dprintf("Scheduler locked\n");
-}
-
-void scheduler_unlock(void)
-{
-	dprintf("Scheduler unlocked\n");
-}
-
 #if CONFIG_DEBUGGER
 static dbg_result_t command_processes_on_execute(FILE* stream,
 						 int   argc,
