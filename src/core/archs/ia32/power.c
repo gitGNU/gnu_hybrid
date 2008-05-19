@@ -28,8 +28,8 @@
 
 void arch_halt(void)
 {
-        cli();
-        hlt();
+	cli();
+	hlt();
 }
 
 void arch_poweroff(void)
@@ -39,20 +39,20 @@ void arch_poweroff(void)
 	arch_halt();
 }
 
-void arch_reboot(void)
+void arch_reset(void)
 {
-        uint8_t temp;
+	uint8_t temp;
 
-        cli();
-        
-        /* flush the keyboard controller */
-        do {
-                temp = port_in8(0x64);
-                if (temp & 1) {
-                        port_in8(0x60);
-                }
-        } while (temp & 2);
-	
-        /* send the CPU reset line */
-        port_out8(0x64, 0xFE);
+	cli();
+
+	/* flush the keyboard controller */
+	do {
+		temp = port_in8(0x64);
+		if (temp & 1) {
+			port_in8(0x60);
+		}
+	} while (temp & 2);
+
+	/* send the CPU reset line */
+	port_out8(0x64, 0xFE);
 }

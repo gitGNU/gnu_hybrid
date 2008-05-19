@@ -63,7 +63,7 @@ static dbg_result_t command_halt_on_execute(FILE* stream,
 	}
 
 	unused_argument(argv);
-	
+
 	if (!halt()) {
 		return DBG_RESULT_ERROR;
 	}
@@ -84,13 +84,13 @@ SYSCALL(2,poweroff);
 int poweroff(void)
 {
 	printf("Power-off in progress ...\n");
-	
+
 	arch_poweroff();
 
 	printf("... Cannot power-off!\n");
 
 	hang(); /* We shouldn't reach this point */
-	
+
 	return 0;
 }
 
@@ -105,9 +105,9 @@ static dbg_result_t command_poweroff_on_execute(FILE* stream,
 	if (argc != 0) {
 		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
 	}
-	
+
 	unused_argument(argv);
-	
+
 	if (!poweroff()) {
 		return DBG_RESULT_ERROR;
 	}
@@ -125,23 +125,23 @@ DBG_COMMAND_DECLARE(poweroff,
 
 SYSCALL(3,reboot);
 
-int reboot(void)
+int reset(void)
 {
 	printf("Reboot in progress ...\n");
-	
-	arch_reboot();
+
+	arch_reset();
 
 	printf("... Cannot reboot!\n");
-	
+
 	hang(); /* We shouldn't reach this point */
 
 	return 0;
 }
 
 #if CONFIG_DEBUGGER
-static dbg_result_t command_reboot_on_execute(FILE* stream,
-					      int   argc,
-					      char* argv[])
+static dbg_result_t command_reset_on_execute(FILE* stream,
+					     int   argc,
+					     char* argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
@@ -152,17 +152,17 @@ static dbg_result_t command_reboot_on_execute(FILE* stream,
 
 	unused_argument(argv);
 
-	if (!reboot()) {
+	if (!reset()) {
 		return DBG_RESULT_ERROR;
 	}
 
 	return DBG_RESULT_OK;
 }
 
-DBG_COMMAND_DECLARE(reboot,
-		    "Reboots the system",
+DBG_COMMAND_DECLARE(reset,
+		    "Resets the system",
 		    NULL,
 		    NULL,
-		    command_reboot_on_execute,
+		    command_reset_on_execute,
 		    NULL);
 #endif
