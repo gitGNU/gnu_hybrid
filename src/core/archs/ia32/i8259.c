@@ -37,7 +37,7 @@
 #define PIC_MASTER   ICU0
 #define PIC_SLAVE    ICU1
 
-static void irq_remap(void)
+static void remap(void)
 {
 	dprintf("Remapping PIC\n");
 
@@ -77,9 +77,7 @@ int i8259_init(void)
 {
 	dprintf("Initializing\n");
 
-	cli();
-
-	irq_remap();
+	remap();
 
 	return 1;
 }
@@ -87,8 +85,6 @@ int i8259_init(void)
 void i8259_fini(void)
 {
 	dprintf("Finalizing\n");
-
-	cli();
 }
 
 void i8259_irq_enable(int irq)
