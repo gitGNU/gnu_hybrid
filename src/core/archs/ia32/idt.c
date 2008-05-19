@@ -75,41 +75,50 @@ typedef struct idt_pointer idt_pointer_t;
 
 static idt_entry_t idt_table[IDT_ENTRIES];
 
-static void idt_gate_set(uint32_t index,
+static void idt_gate_set(uint32_t i,
 			 uint16_t flags,
 			 uint32_t offset)
 {
-	assert(index < IDT_ENTRIES);
+	assert(i < IDT_ENTRIES);
 
-	idt_table[index].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
-	idt_table[index].flags       = flags | IDT_PRESENT | IDT_DPL3 | IDT_32;
-	idt_table[index].offset31_16 = (offset >> 16) & 0xFFFF;
-	idt_table[index].offset15_0  = offset & 0xFFFF;
+	idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
+	idt_table[i].flags       = flags | IDT_PRESENT | IDT_DPL0 | IDT_32;
+	idt_table[i].offset31_16 = (offset >> 16) & 0xFFFF;
+	idt_table[i].offset15_0  = offset & 0xFFFF;
+
+	if (idt_table[i].flags & IDT_PRESENT) {
+		dprintf("gate %d: "
+			"offset=0x%04x%04x "
+			"segment=0x%04x, "
+			"flags=0x%04x\n",
+			i,
+			idt_table[i].offset31_16, idt_table[i].offset15_0,
+			idt_table[i].segment,
+			idt_table[i].flags);
+	}
 }
 
-static void idt_gate_clear(uint32_t index)
+static void idt_gate_clear(uint32_t i)
 {
-	assert(index < IDT_ENTRIES);
+	assert(i < IDT_ENTRIES);
 
-	idt_table[index].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
-	idt_table[index].flags       = IDT_32 | IDT_INT;
-	idt_table[index].offset31_16 = 0;
-	idt_table[index].offset15_0  = 0;
+	idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_NULL);
+	idt_table[i].flags       = 0;
+	idt_table[i].offset31_16 = 0;
+	idt_table[i].offset15_0  = 0;
 }
 
-static void idt_interrupt_set(uint32_t index,
+static void idt_interrupt_set(uint32_t i,
 			      void *   addr)
 {
-	idt_gate_set(index, IDT_INT, (uint32_t) addr);
+	idt_gate_set(i, IDT_INT, (uint32_t) addr);
 }
 
-#if 0
-static void idt_trap_set(uint32_t index,
+static void idt_trap_set(uint32_t i,
 			 void *   addr)
 {
-	idt_gate_set(index, IDT_TRAP, (uint32_t) addr);
+	idt_gate_set(i, IDT_TRAP, (uint32_t) addr);
 }
-#endif
 
 static void idt_load(idt_entry_t * table,
 		     size_t        entries)
@@ -121,21 +130,55 @@ static void idt_load(idt_entry_t * table,
 	idt_p.limit = (sizeof(idt_entry_t) * entries) - 1;
 	idt_p.base  = (uint32_t) table;
 
+	dprintf("Loading IDT table at 0x%p (%d entries)\n", table, entries);
 	lidt(&idt_p.limit);
 }
 
-/* This defines what the stack looks like after an ISR was running */
+/* This defines what the stack looks like after an ISR (TRAP/IRQ) was running */
 struct regs {
-	/* pushed the segs last */
-	uint_t gs, fs, es, ds;
-	/* pushed by 'pusha' */
-	uint_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
-	/* our 'push byte #' and ecodes do this */
-	uint_t int_no, err_code;
-	/* pushed by the processor automatically */
-	uint_t eip, cs, eflags, useresp, ss;
+	/* Software trap frame */
+	uint_t ebx;
+	uint_t ecx;
+	uint_t edx;
+	uint_t esi;
+	uint_t edi;
+	uint_t ebp;
+	uint_t eax;
+	uint_t ds;
+	uint_t es;
+	/* Hardware trap frame */
+	uint_t isr_no;
+	uint_t err_code;
+	uint_t eip;
+	uint_t cs;
+	uint_t eflags;
+	uint_t esp;
+	uint_t ss;
 };
 typedef struct regs regs_t;
+
+static void dump_frame(regs_t * regs)
+{
+	uint_t ss, esp;
+
+	if (regs->cs & 3) {
+		ss  = regs->ss;
+		esp = regs->esp;
+	} else {
+		ss  = regs->ds;
+		esp = (uint_t) regs;
+	}
+
+	printf("Frame 0x%x (isr %d)\n", regs, regs->isr_no);
+	printf(" eax 0x%08x ebx 0x%08x ecx 0x%08x edx 0x%08x\n",
+	       regs->eax, regs->ebx, regs->ecx, regs->edx);
+	printf(" esi 0x%08x edi 0x%08x\n",
+	       regs->esi, regs->edi);
+	printf(" eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
+	       regs->eip, esp, regs->ebp, regs->eflags);
+	printf(" cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
+	       regs->cs, ss, regs->ds, regs->es);
+}
 
 static char * exception_messages[] = {
 	"Division By Zero Exception",
@@ -172,16 +215,18 @@ static char * exception_messages[] = {
 	"Reserved Exception",
 };
 
-void fault_handler(regs_t * regs)
+void trap_handler(regs_t * regs)
 {
-	if (regs->int_no < 32) {
-		panic("%s\n", exception_messages[regs->int_no]);
+	if (regs->isr_no < 32) {
+		panic("%s\n", exception_messages[regs->isr_no]);
+		dump_frame(regs);
 	}
+	panic("Unknown trap no %d\n", regs->isr_no);
 }
 
 static void * irq_routines[16] = {
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
 };
 
 typedef void (* irq_handler_t)(regs_t * regs);
@@ -199,57 +244,63 @@ void irq_handler_uninstall(uint_t irq)
 {
 	assert(irq < 16);
 
-	irq_routines[irq] = 0;
+	irq_routines[irq] = NULL;
 }
 
 void irq_handler(regs_t * regs)
 {
 	irq_handler_t handler;
 
-	handler = irq_routines[regs->int_no - 32];
-	if (handler) {
-		handler(regs);
-	}
+	assert(regs->isr_no >= 32);
 
-	if (regs->int_no >= 40) {
+	handler = irq_routines[regs->isr_no - 32];
+	if (regs->isr_no >= 40) {
 		i8259_eoi_slave();
 	}
 
 	i8259_eoi_master();
+
+	dump_frame(regs);
+
+	if (handler) {
+		sti();
+		handler(regs);
+		cli();
+	}
 }
 
-extern void isr_00(void);
-extern void isr_01(void);
-extern void isr_02(void);
-extern void isr_03(void);
-extern void isr_04(void);
-extern void isr_05(void);
-extern void isr_06(void);
-extern void isr_07(void);
-extern void isr_08(void);
-extern void isr_09(void);
-extern void isr_10(void);
-extern void isr_11(void);
-extern void isr_12(void);
-extern void isr_13(void);
-extern void isr_14(void);
-extern void isr_15(void);
-extern void isr_16(void);
-extern void isr_17(void);
-extern void isr_18(void);
-extern void isr_19(void);
-extern void isr_20(void);
-extern void isr_21(void);
-extern void isr_22(void);
-extern void isr_23(void);
-extern void isr_24(void);
-extern void isr_25(void);
-extern void isr_26(void);
-extern void isr_27(void);
-extern void isr_28(void);
-extern void isr_29(void);
-extern void isr_30(void);
-extern void isr_31(void);
+extern void trap_00(void);
+extern void trap_01(void);
+extern void trap_02(void);
+extern void trap_03(void);
+extern void trap_04(void);
+extern void trap_05(void);
+extern void trap_06(void);
+extern void trap_07(void);
+extern void trap_08(void);
+extern void trap_09(void);
+extern void trap_10(void);
+extern void trap_11(void);
+extern void trap_12(void);
+extern void trap_13(void);
+extern void trap_14(void);
+extern void trap_15(void);
+extern void trap_16(void);
+extern void trap_17(void);
+extern void trap_18(void);
+extern void trap_19(void);
+extern void trap_20(void);
+extern void trap_21(void);
+extern void trap_22(void);
+extern void trap_23(void);
+extern void trap_24(void);
+extern void trap_25(void);
+extern void trap_26(void);
+extern void trap_27(void);
+extern void trap_28(void);
+extern void trap_29(void);
+extern void trap_30(void);
+extern void trap_31(void);
 
 extern void irq_00(void);
 extern void irq_01(void);
@@ -277,38 +328,38 @@ int idt_init(void)
 		idt_gate_clear(i);
 	}
 
-	idt_interrupt_set(0,  isr_00);
-	idt_interrupt_set(1,  isr_01);
-	idt_interrupt_set(2,  isr_02);
-	idt_interrupt_set(3,  isr_03);
-	idt_interrupt_set(4,  isr_04);
-	idt_interrupt_set(5,  isr_05);
-	idt_interrupt_set(6,  isr_06);
-	idt_interrupt_set(7,  isr_07);
-	idt_interrupt_set(8,  isr_08);
-	idt_interrupt_set(9,  isr_09);
-	idt_interrupt_set(10, isr_10);
-	idt_interrupt_set(11, isr_11);
-	idt_interrupt_set(12, isr_12);
-	idt_interrupt_set(13, isr_13);
-	idt_interrupt_set(14, isr_14);
-	idt_interrupt_set(15, isr_15);
-	idt_interrupt_set(16, isr_16);
-	idt_interrupt_set(17, isr_17);
-	idt_interrupt_set(18, isr_18);
-	idt_interrupt_set(19, isr_19);
-	idt_interrupt_set(20, isr_20);
-	idt_interrupt_set(21, isr_21);
-	idt_interrupt_set(22, isr_22);
-	idt_interrupt_set(23, isr_23);
-	idt_interrupt_set(24, isr_24);
-	idt_interrupt_set(25, isr_25);
-	idt_interrupt_set(26, isr_26);
-	idt_interrupt_set(27, isr_27);
-	idt_interrupt_set(28, isr_28);
-	idt_interrupt_set(39, isr_29);
-	idt_interrupt_set(30, isr_30);
-	idt_interrupt_set(31, isr_31);
+	idt_trap_set(0,  trap_00);
+	idt_trap_set(1,  trap_01);
+	idt_trap_set(2,  trap_02);
+	idt_trap_set(3,  trap_03);
+	idt_trap_set(4,  trap_04);
+	idt_trap_set(5,  trap_05);
+	idt_trap_set(6,  trap_06);
+	idt_trap_set(7,  trap_07);
+	idt_trap_set(8,  trap_08);
+	idt_trap_set(9,  trap_09);
+	idt_trap_set(10, trap_10);
+	idt_trap_set(11, trap_11);
+	idt_trap_set(12, trap_12);
+	idt_trap_set(13, trap_13);
+	idt_trap_set(14, trap_14);
+	idt_trap_set(15, trap_15);
+	idt_trap_set(16, trap_16);
+	idt_trap_set(17, trap_17);
+	idt_trap_set(18, trap_18);
+	idt_trap_set(19, trap_19);
+	idt_trap_set(20, trap_20);
+	idt_trap_set(21, trap_21);
+	idt_trap_set(22, trap_22);
+	idt_trap_set(23, trap_23);
+	idt_trap_set(24, trap_24);
+	idt_trap_set(25, trap_25);
+	idt_trap_set(26, trap_26);
+	idt_trap_set(27, trap_27);
+	idt_trap_set(28, trap_28);
+	idt_trap_set(39, trap_29);
+	idt_trap_set(30, trap_30);
+	idt_trap_set(31, trap_31);
 
 	idt_interrupt_set(32, irq_01);
 	idt_interrupt_set(33, irq_02);

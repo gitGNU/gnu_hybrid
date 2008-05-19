@@ -51,55 +51,6 @@ typedef struct gdt_pointer gdt_pointer_t;
 
 static gdt_entry_t gdt_table[GDT_ENTRIES];
 
-#if 0
-static uint32_t gdt_base_get(uint32_t i)
-{
-	uint32_t base;
-
-	base  = gdt_table[i].base15_0;
-	base += (gdt_table[i].base23_16 << 16);
-	base += (gdt_table[i].base31_24 << 24);
-
-	return base;
-}
-
-static void gdt_base_set(uint32_t i,
-			 uint32_t base)
-{
-	gdt_table[i].base15_0  = (uint16_t) (base & 0xFFFF);
-	gdt_table[i].base23_16 = (uint8_t)  ((base >> 16) & 0xFF);
-	gdt_table[i].base31_24 = (uint8_t)  ((base & 0xF000) >> 24);
-}
-
-static uint32_t gdt_dpl_get(uint32_t i)
-{
-	return (gdt_table[i].flags1 & GDT_DPL3);
-}
-
-static void gdt_dpl_set(uint32_t i,
-		 uint32_t dpl)
-{
-	gdt_table[i].flags1 &= ~(GDT_DPL3);
-	gdt_table[i].flags1 |= dpl;
-}
-
-static uint8_t gdt_flags_get(uint32_t i)
-{
-	return gdt_table[i].flags1;
-}
-
-static void gdt_flags_set(uint32_t entry,
-		   uint8_t  flags)
-{
-	uint32_t i;
-
-	i = entry / 8;
-
-	gdt_table[i].flags1 &= (GDT_DPL3);
-	gdt_table[i].flags1 |= flags;
-}
-#endif
-
 static void gdt_segment_set(uint32_t i,
 			    uint32_t base,
 			    uint16_t len,
