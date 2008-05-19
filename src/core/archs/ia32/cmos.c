@@ -79,7 +79,6 @@ int cmos_read(uint_t pos)
 	int r;
 
 	port_out8(RTC_INDEX, pos);
-	/* jmp_1f(); */
 	r = port_in8(RTC_IO);
 
 	return r;
@@ -89,7 +88,6 @@ void cmos_write(uint_t  pos,
 		uint8_t value)
 {
 	port_out8(RTC_INDEX, pos);
-	/* jmp_1f(); */
 	port_out8(RTC_IO, value);
 }
 

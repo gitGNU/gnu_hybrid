@@ -283,8 +283,3 @@ void tr_set(uint16_t tr)
 {
 	__asm__ ("ltr %0" : : "rm" (tr));
 }
-
-void jmp_1f(void)
-{
-	__asm__ ("jmp 1f\n1:");
-}

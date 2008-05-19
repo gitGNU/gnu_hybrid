@@ -231,8 +231,6 @@ void          ldt_set(uint16_t ldt);
 uint16_t      tr_get(void);
 void          tr_set(uint16_t tr);
 
-void          jmp_1f(void);
-
 __END_DECLS
 
 #endif /* ARCH_ASM_H */
