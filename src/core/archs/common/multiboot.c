@@ -68,13 +68,13 @@ static int multiboot_modules(multiboot_info_t* mbi,
 		mod = (module_t *) mbi->mods_addr;
 		for (i = 0; i < mbi->mods_count; i++) {
 			assert(mod);
-		
+
 			dprintf("   @0x%x: (0x%x-0x%x) '%s'\n",
 				mod,
 				(unsigned) mod->mod_start,
 				(unsigned) mod->mod_end,
 				(char *)   mod->string);
-			
+
 			assert(mod->mod_start);
 			assert(mod->mod_end);
 			assert(mod->mod_start <= mod->mod_end);
@@ -90,7 +90,7 @@ static int multiboot_modules(multiboot_info_t* mbi,
 			bi->modules[j].type           = BOOTINFO_IMAGE_RAW;
 			bi->modules[j].data.raw.start = mod->mod_start;
 			bi->modules[j].data.raw.end   = mod->mod_end;
-			
+
 			mod++;
 			j++;
 		}
