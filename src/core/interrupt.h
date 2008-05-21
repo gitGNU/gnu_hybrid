@@ -25,24 +25,12 @@
 
 __BEGIN_DECLS
 
-#define NR_IRQS 256
+int   interrupts_init(void);
 
-typedef void (*irq_handler_t)(void);
+void  interrupts_disable(void);
+void  interrupts_enable(void);
 
-int irq_init(void);
-
-int  irq_enabled(uint_t index);
-int  irq_disable(uint_t index);
-int  irq_enable(uint_t index);
-int  irq_attach(uint_t        index,
-		irq_handler_t handler);
-int  irq_detach(uint_t index);
-void  irqs_disable(void);
-void  irqs_enable(void);
-void  irqs_save(irq_flags_t* flags);
-void  irqs_restore(const irq_flags_t* flags);
-
-void  irq_fini(void);
+void  interrupts_fini(void);
 
 __END_DECLS
 
