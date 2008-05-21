@@ -17,10 +17,9 @@
  *
  */
 
-#include "debug.h"
-#include "libc/stdio.h"
-
 #include "config/config.h"
+#include "libc/stdio.h"
+#include "libc/assert.h"
 #include "core/archs/arch.h"
 #include "core/arch/asm.h"
 #include "core/arch/port.h"
@@ -75,7 +74,7 @@ int arch_init(void)
 	}
 	/* We can call delay() now */
 
-	i8259_irq_enable(0);
+	i8259_enable(0);
 
 	sti();
 
@@ -87,7 +86,7 @@ int arch_init(void)
 void arch_fini(void)
 {
 	i8253_fini();
-	i8259_irq_disable(0);
+	i8259_disable(0);
 	i8259_fini();
 	idt_fini();
 	gdt_fini();
