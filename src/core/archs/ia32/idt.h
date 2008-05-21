@@ -25,8 +25,33 @@
 
 __BEGIN_DECLS
 
+/* This struct defines the stack after an ISR (TRAP/IRQ) was running */
+struct regs {
+	/* Software frame */
+	uint_t ebx;
+	uint_t ecx;
+	uint_t edx;
+	uint_t esi;
+	uint_t edi;
+	uint_t ebp;
+	uint_t eax;
+	uint_t ds;
+	uint_t es;
+
+	/* Hardware frame */
+	uint_t isr_no;
+	uint_t err_code;
+	uint_t eip;
+	uint_t cs;
+	uint_t eflags;
+	uint_t esp;
+	uint_t ss;
+};
+typedef struct regs regs_t;
+
 int  idt_init(void);
 void idt_fini(void);
+void idt_frame_dump(regs_t * regs);
 
 __END_DECLS
 

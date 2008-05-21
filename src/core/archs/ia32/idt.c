@@ -134,30 +134,7 @@ static void idt_load(idt_entry_t * table,
 	lidt(&idt_p.limit);
 }
 
-/* This defines what the stack looks like after an ISR (TRAP/IRQ) was running */
-struct regs {
-	/* Software trap frame */
-	uint_t ebx;
-	uint_t ecx;
-	uint_t edx;
-	uint_t esi;
-	uint_t edi;
-	uint_t ebp;
-	uint_t eax;
-	uint_t ds;
-	uint_t es;
-	/* Hardware trap frame */
-	uint_t isr_no;
-	uint_t err_code;
-	uint_t eip;
-	uint_t cs;
-	uint_t eflags;
-	uint_t esp;
-	uint_t ss;
-};
-typedef struct regs regs_t;
-
-static void dump_frame(regs_t * regs)
+void idt_frame_dump(regs_t * regs)
 {
 	uint_t ss, esp;
 
@@ -178,97 +155,6 @@ static void dump_frame(regs_t * regs)
 	       regs->eip, esp, regs->ebp, regs->eflags);
 	printf(" cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
 	       regs->cs, ss, regs->ds, regs->es);
-}
-
-static char * exception_messages[] = {
-	"Division By Zero Exception",
-	"Debug Exception",
-	"Non Maskable Interrupt Exception",
-	"Breakpoint Exception",
-	"Into Detected Overflow Exception",
-	"Out of Bounds Exception",
-	"Invalid Opcode Exception",
-	"No Coprocessor Exception",
-	"Double Fault Exception",
-	"Coprocessor Segment Overrun Exception",
-	"Bad TSS Exception",
-	"Segment Not Present Exception",
-	"Stack Fault Exception",
-	"General Protection Fault Exception",
-	"Page Fault Exception",
-	"Unknown Interrupt Exception",
-	"Coprocessor Fault Exception",
-	"Alignment Check Exception",
-	"Machine Check Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-	"Reserved Exception",
-};
-
-void trap_handler(regs_t * regs)
-{
-	if (regs->isr_no < 32) {
-		panic("%s\n", exception_messages[regs->isr_no]);
-		dump_frame(regs);
-	}
-	panic("Unknown trap no %d\n", regs->isr_no);
-}
-
-static void * irq_routines[16] = {
-	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
-};
-
-typedef void (* irq_handler_t)(regs_t * regs);
-
-void irq_handler_install(uint_t        irq,
-			 irq_handler_t handler)
-{
-	assert(irq < 16);
-	assert(handler);
-
-	irq_routines[irq] = handler;
-}
-
-void irq_handler_uninstall(uint_t irq)
-{
-	assert(irq < 16);
-
-	irq_routines[irq] = NULL;
-}
-
-void irq_handler(regs_t * regs)
-{
-	irq_handler_t handler;
-
-	printf("IRQ %d!\n", regs->isr_no);
-
-	//	assert(regs->isr_no >= 32);
-
-	if (regs->isr_no >= 40) {
-		i8259_eoi_slave();
-	}
-
-	i8259_eoi_master();
-
-	dump_frame(regs);
-
-	handler = irq_routines[regs->isr_no - 32];
-	if (handler) {
-		cli();
-		handler(regs);
-		sti();
-	}
 }
 
 extern void trap_00(void);
