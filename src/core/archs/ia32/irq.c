@@ -26,7 +26,7 @@
 #include "core/arch/i8259.h"
 #include "core/arch/asm.h"
 
-static irq_handler_t irq_handlers[NR_IRQS];
+static irq_handler_t irq_handlers[I8259_IRQS];
 
 void irq_handler_install(uint_t        irq,
 			 irq_handler_t handler)
@@ -45,8 +45,8 @@ void irq_handler_uninstall(uint_t irq)
 }
 
 static int      irq_level;
-static int      prio_table[NR_IRQS];
-static uint16_t mask_table[NR_IRQS];
+static int      prio_table[I8259_IRQS];
+static uint16_t mask_table[I8259_IRQS];
 
 void irq_handler(regs_t * regs)
 {
@@ -57,12 +57,12 @@ void irq_handler(regs_t * regs)
 
 	assert(regs);
 
-	//	assert(regs->isr_no >= 32);
+	vector = regs->isr_no - 32;
+	assert(vector >= 0);
 
-	printf("IRQ %d!\n", regs->isr_no);
+	printf("IRQ %d!\n", vector);
 	idt_frame_dump(regs);
 
-	vector   = regs->isr_no;
 	prio_old = irq_level;
 	prio_new = prio_table[vector];
 	if (prio_new > prio_old) {
@@ -70,12 +70,9 @@ void irq_handler(regs_t * regs)
 	}
 	i8259_mask_set(mask_table[irq_level]);
 
-	if (regs->isr_no >= 40) {
-		i8259_eoi_slave();
-	}
-	i8259_eoi_master();
+	i8259_eoi(vector);
 
-	handler = irq_handlers[regs->isr_no - 32];
+	handler = irq_handlers[vector];
 	if (handler) {
 		sti();
 		handler(regs);
@@ -90,7 +87,7 @@ int irq_init(void)
 {
 	int i;
 
-	for (i = 0; i < NR_IRQS; i++) {
+	for (i = 0; i < I8259_IRQS; i++) {
 		irq_handlers[i] = NULL;
 	}
 
@@ -99,4 +96,23 @@ int irq_init(void)
 
 void irq_fini(void)
 {
+}
+
+static int irqs_enabled;
+
+void arch_irqs_enable(void)
+{
+	i8259_enable(0);
+	irqs_enabled = 1;
+}
+
+int arch_irqs_enabled(void)
+{
+	return irqs_enabled;
+}
+
+void arch_irqs_disable(void)
+{
+	i8259_disable(0);
+	irqs_enabled = 0;
 }
