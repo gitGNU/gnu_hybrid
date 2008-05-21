@@ -21,12 +21,20 @@
 #define CORE_DBG_DEBUG_H
 
 #include "config/config.h"
+#include "elklib.h"
 #include "libc/stdio.h"
 #include "libc/assert.h"
+#include "libcompiler/macro.h"
+
+#define missing()						\
+	__BEGIN_MACRO						\
+	printf("Missing functionality in function at %s:%d\n",	\
+	       __FILE__,__PRETTY_FUNCTION__,__LINE__);		\
+	__END_MACRO
 
 /*
  * NOTE:
- *     Nobody should remove bug(), unpredictable results will happen ...
+ *     Nobody should remove bug() or unpredictable results will happen ...
  */
 #define bug()					\
 	__BEGIN_MACRO				\
