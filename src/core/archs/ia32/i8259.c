@@ -23,6 +23,7 @@
 #include "core/arch/port.h"
 #include "core/arch/asm.h"
 #include "core/arch/i8259.h"
+#include "core/dbg/debug.h"
 
 #if CONFIG_I8259_DEBUG
 #define dprintf(F,A...) printf("i8259: " F,##A)
@@ -30,22 +31,22 @@
 #define dprintf(F,A...)
 #endif
 
-#define ICU_RESET    0x11
-#define EDGE_LEVEL   0x4D0
-#define PIC_MASTER   0x20
-#define PIC_SLAVE    0xA0
+#define ICU_RESET      0x11
+#define PIC_MASTER     0x20
+#define PIC_SLAVE      0xA0
+#define IDT_BASE_INDEX 0x20 /* 32 */
 
-static void remap(void)
+static void remap(uint_t idt_base)
 {
 	dprintf("Remapping PIC\n");
 
-	/* Send ICW1 */
+	/* Send ICW1: reset */
 	port_out8(PIC_MASTER,     ICU_RESET);
 	port_out8(PIC_SLAVE,      ICU_RESET);
 
-	/* Send ICW2: controller base address */
-	port_out8(PIC_MASTER + 1, 0x20);
-	port_out8(PIC_SLAVE + 1,  0x28);
+	/* Send ICW2: controller base address (IDT indices) */
+	port_out8(PIC_MASTER + 1, idt_base);
+	port_out8(PIC_SLAVE + 1,  idt_base + 8);
 
 	/* Send ICW3 master: mask where slave is connected to master */
 	port_out8(PIC_MASTER + 1, 0x04);
@@ -61,14 +62,13 @@ static void remap(void)
 	port_out8(PIC_SLAVE + 1,  0xFF);
 }
 
-void i8259_eoi_slave(void)
+void i8259_eoi(uint_t irq)
 {
-	dprintf("Sending EOI to slave\n");
-	port_out8(PIC_MASTER, 0x20);
-}
+	if (irq >= 8) {
+		dprintf("Sending EOI to slave\n");
+		port_out8(PIC_MASTER, 0x20);
+	}
 
-void i8259_eoi_master(void)
-{
 	dprintf("Sending EOI to master\n");
 	port_out8(PIC_MASTER, 0x20);
 }
@@ -77,7 +77,7 @@ int i8259_init(void)
 {
 	dprintf("Initializing\n");
 
-	remap();
+	remap(IDT_BASE_INDEX);
 
 	return 1;
 }
@@ -87,23 +87,29 @@ void i8259_fini(void)
 	dprintf("Finalizing\n");
 }
 
-void i8259_enable(int irq)
+#define CHECK_IRQ_INDEX(X) assert(X < I8259_IRQS)
+
+void i8259_enable(uint_t irq)
 {
+	CHECK_IRQ_INDEX(irq);
+
 	dprintf("Enabling irq %d\n", irq);
 
 	if (irq < 8) {
 		/* IRQ on master PIC */
 		port_out8(PIC_MASTER + 1,
-			  port_in8(PIC_MASTER + 1) & ~(1 << irq));
+			  port_in8(PIC_MASTER + 1) & (~(1 << irq)));
 	} else {
 		/* IRQ on slave PIC */
 		port_out8(PIC_SLAVE + 1,
-			  port_in8(PIC_SLAVE + 1)  & ~(1 << (irq - 8)));
+			  port_in8(PIC_SLAVE + 1)  & (~(1 << (irq - 8))));
 	}
 }
 
-void i8259_disable(int irq)
+void i8259_disable(uint_t irq)
 {
+	CHECK_IRQ_INDEX(irq);
+
 	dprintf("Disabling irq %d\n", irq);
 
 	if (irq < 8) {
@@ -129,23 +135,4 @@ void i8259_mask_set(uint16_t mask)
 
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
-}
-
-static int irqs_enabled;
-
-void arch_irqs_enable(void)
-{
-	i8259_enable(0);
-	irqs_enabled = 1;
-}
-
-int arch_irqs_enabled(void)
-{
-	return irqs_enabled;
-}
-
-void arch_irqs_disable(void)
-{
-	i8259_disable(0);
-	irqs_enabled = 0;
 }
