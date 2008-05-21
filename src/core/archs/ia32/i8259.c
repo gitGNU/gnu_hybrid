@@ -30,12 +30,10 @@
 #define dprintf(F,A...)
 #endif
 
-#define ICU0         0x20
-#define ICU1         0xA0
-#define ICU_RESET    0x11 /* 8086 mode + NOT single controller + call address */
-
-#define PIC_MASTER   ICU0
-#define PIC_SLAVE    ICU1
+#define ICU_RESET    0x11
+#define EDGE_LEVEL   0x4D0
+#define PIC_MASTER   0x20
+#define PIC_SLAVE    0xA0
 
 static void remap(void)
 {
@@ -66,7 +64,7 @@ static void remap(void)
 void i8259_eoi_slave(void)
 {
 	dprintf("Sending EOI to slave\n");
-	port_out8(PIC_MASTER, 0xA0);
+	port_out8(PIC_MASTER, 0x20);
 }
 
 void i8259_eoi_master(void)
@@ -89,7 +87,7 @@ void i8259_fini(void)
 	dprintf("Finalizing\n");
 }
 
-void i8259_irq_enable(int irq)
+void i8259_enable(int irq)
 {
 	dprintf("Enabling irq %d\n", irq);
 
@@ -104,7 +102,7 @@ void i8259_irq_enable(int irq)
 	}
 }
 
-void i8259_irq_disable(int irq)
+void i8259_disable(int irq)
 {
 	dprintf("Disabling irq %d\n", irq);
 
@@ -119,13 +117,13 @@ void i8259_irq_disable(int irq)
 	}
 }
 
-uint16_t i8259_irq_mask_get(void)
+uint16_t i8259_mask_get(void)
 {
 	return (port_in8(PIC_SLAVE + 1) << 8 |
 		port_in8(PIC_MASTER + 1));
 }
 
-void i8259_irq_mask_set(uint16_t mask)
+void i8259_mask_set(uint16_t mask)
 {
 	dprintf("Setting irq mask to 0x%x\n", mask);
 
@@ -137,7 +135,7 @@ static int irqs_enabled;
 
 void arch_irqs_enable(void)
 {
-	i8259_irq_enable(0);
+	i8259_enable(0);
 	irqs_enabled = 1;
 }
 
@@ -148,22 +146,6 @@ int arch_irqs_enabled(void)
 
 void arch_irqs_disable(void)
 {
-	i8259_irq_disable(0);
+	i8259_disable(0);
 	irqs_enabled = 0;
-}
-
-void arch_irqs_save(irq_flags_t * flags)
-{
-	uint16_t mask;
-
-	unused_argument(flags);
-
-	mask = i8259_irq_mask_get();
-}
-
-void arch_irqs_restore(const irq_flags_t * flags)
-{
-	unused_argument(flags);
-
-	i8259_irq_mask_set(0);
 }
