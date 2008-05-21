@@ -19,7 +19,6 @@
 
 #include "config/config.h"
 
-#include "debug.h"
 #include "libc/stdio.h"
 //#include "libc/time.h"
 #include "libc/string.h"
@@ -28,6 +27,7 @@
 #include "core/arch/cpu.h"
 #include "core/arch/port.h"
 #include "core/archs/common/cpu.h"
+#include "core/dbg/debug.h"
 
 #if CONFIG_I8253_DEBUG
 #define dprintf(F,A...) printf("i8253: " F,##A)
