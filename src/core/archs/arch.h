@@ -109,8 +109,6 @@ uint_t       arch_backtrace_store(uint_t * backtrace,
 void	     arch_irqs_enable(void);
 int	     arch_irqs_enabled(void);
 void	     arch_irqs_disable(void);
-void	     arch_irqs_save(irq_flags_t * flags);
-void	     arch_irqs_restore(const irq_flags_t * flags);
 
 void         arch_delay_ms(uint32_t ms);
 void         arch_delay_us(uint32_t us);
