@@ -48,6 +48,9 @@ arch_ia32_SRCS =				\
 	@reldir@/idt.c				\
 	@reldir@/isr.S				\
 	@reldir@/irq.h				\
+	@reldir@/irq.c				\
+	@reldir@/trap.h				\
+	@reldir@/trap.c				\
 	@reldir@/gdt.h				\
 	@reldir@/gdt.c				\
 	@reldir@/dma.h				\
