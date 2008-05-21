@@ -76,6 +76,10 @@ int arch_init(void)
 
 	i8259_enable(0);
 
+	if (!irq_init()) {
+		panic("Cannot initialize IRQs");
+	}
+
 	sti();
 
 	dprintf("Architecture initialized\n");
@@ -85,6 +89,7 @@ int arch_init(void)
 
 void arch_fini(void)
 {
+	irq_fini();
 	i8253_fini();
 	i8259_disable(0);
 	i8259_fini();
