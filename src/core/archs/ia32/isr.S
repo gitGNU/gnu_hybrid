@@ -92,6 +92,7 @@ irq_common:
 	call  EXT_C(irq_handler)
 	movl  %ebp, %esp
 	REGS_RESTORE_ALL
+	addl  $8, %esp
 	iret
 
 
