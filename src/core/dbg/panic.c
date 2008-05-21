@@ -39,7 +39,7 @@ void arch_panic(const char* message)
 {
 	static int panic_in_progress = 0;
 
-	irqs_disable();
+	interrupts_disable();
 
 	/* Remember that a panic is in progress */
 	panic_in_progress++;
@@ -56,7 +56,7 @@ void arch_panic(const char* message)
 	if (panic_in_progress > 1) {
 		/* Don't panic too much, let the previous panic finish ;-) */
 		printf("Panic inside panic, bailing out ...\n");
-		irqs_enable();
+		interrupts_enable();
 		return;
 	}
 
@@ -85,7 +85,7 @@ void arch_panic(const char* message)
 	morse("SOS");
 
 	/* Reenable the interrupts to let other entities complete their work */
-	irqs_enable();
+	interrupts_enable();
 
 #if CONFIG_REBOOT_ON_PANIC
 	if (panic_timeout > 0) {
