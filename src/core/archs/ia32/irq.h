@@ -17,10 +17,21 @@
  *
  */
 
-#ifndef IRQ_H
-#define IRQ_H
+#ifndef ARCH_IRQ_H
+#define ARCH_IRQ_H
 
 #include "config/config.h"
-#include "core/arch/i8259.h"
+#include "libc/stddef.h"
+#include "core/arch/idt.h"
 
-#endif /* IRQ_H */
+typedef void (* irq_handler_t)(regs_t * regs);
+
+int  irq_init(void);
+void irq_fini(void);
+void irq_handler_install(uint_t        irq,
+			 irq_handler_t handler);
+void irq_handler_uninstall(uint_t irq);
+void irq_handler(regs_t * regs);
+
+
+#endif /* ARCH_IRQ_H */
