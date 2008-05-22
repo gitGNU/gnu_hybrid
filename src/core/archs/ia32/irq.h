@@ -33,5 +33,4 @@ void irq_handler_install(uint_t        irq,
 void irq_handler_uninstall(uint_t irq);
 void irq_handler(regs_t * regs);
 
-
 #endif /* ARCH_IRQ_H */

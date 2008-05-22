@@ -31,7 +31,7 @@ static irq_handler_t handlers[I8259_IRQS];
 void irq_handler_install(uint_t        irq,
 			 irq_handler_t handler)
 {
-	assert(irq < 16);
+	assert(irq < I8259_IRQS);
 	assert(handler);
 
 	handlers[irq] = handler;
@@ -39,14 +39,14 @@ void irq_handler_install(uint_t        irq,
 
 void irq_handler_uninstall(uint_t irq)
 {
-	assert(irq < 16);
+	assert(irq < I8259_IRQS);
 
 	handlers[irq] = NULL;
 }
 
-static int      irq_level;
-static int      prio_table[I8259_IRQS];
-static uint16_t mask_table[I8259_IRQS];
+static int          irq_level;
+static int          prio_table[I8259_IRQS];
+static i8259_mask_t mask_table[I8259_IRQS];
 
 void irq_handler(regs_t * regs)
 {
@@ -57,7 +57,7 @@ void irq_handler(regs_t * regs)
 
 	assert(regs);
 
-	vector = regs->isr_no - 32;
+	vector = regs->isr_no - I8259_IDT_BASE_INDEX;
 	assert((vector >= 0) && (vector < I8259_IRQS));
 
 	printf("IRQ %d!\n", vector);
@@ -84,9 +84,13 @@ void irq_handler(regs_t * regs)
 	i8259_mask_set(mask_table[irq_level]);
 }
 
+static int irqs_enabled;
+
 int irq_init(void)
 {
 	int i;
+
+	irqs_enabled = 0;
 
 	for (i = 0; i < I8259_IRQS; i++) {
 		handlers[i]   = NULL;
@@ -100,8 +104,6 @@ int irq_init(void)
 void irq_fini(void)
 {
 }
-
-static int irqs_enabled;
 
 void arch_irqs_enable(void)
 {
