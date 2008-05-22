@@ -29,6 +29,8 @@ int   interrupts_init(void);
 
 void  interrupts_disable(void);
 void  interrupts_enable(void);
+void  interrupts_lock(void);
+void  interrupts_unlock(void);
 
 void  interrupts_fini(void);
 

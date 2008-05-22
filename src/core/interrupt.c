@@ -42,6 +42,14 @@ void interrupts_enable(void)
 	arch_irqs_enable();
 }
 
+void interrupts_lock(void)
+{
+}
+
+void interrupts_unlock(void)
+{
+}
+
 void interrupts_fini(void)
 {
 	arch_irqs_disable();
