@@ -49,6 +49,8 @@ struct regs {
 };
 typedef struct regs regs_t;
 
+#define I8259_IDT_BASE_INDEX 0x20 /* 32 */
+
 int  idt_init(void);
 void idt_fini(void);
 void idt_frame_dump(regs_t * regs);
