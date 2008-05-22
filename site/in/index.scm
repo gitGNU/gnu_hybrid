@@ -1,5 +1,14 @@
 (h3 "DESCRIPTION")
-(p "Hybrid is a micro-kernel.")
+(p "Hybrid is a kernel built on top of "
+   (a (@ (href "http://www.nongnu.org/elklib")) "elklib")
+   "."
+)
+(h4 "Copying")
+(p
+ "Hybrid is licensed under the "
+ (a (@ (href "http://www.gnu.org/licenses/licenses.html"))
+    "GNU General Public License, version 2")
+ )
 
 (h3 "MAINTAINERS")
 (p
