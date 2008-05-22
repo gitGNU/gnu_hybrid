@@ -23,6 +23,7 @@
 #include "core/arch/port.h"
 #include "core/arch/asm.h"
 #include "core/arch/i8259.h"
+#include "core/arch/idt.h"
 #include "core/dbg/debug.h"
 
 #if CONFIG_I8259_DEBUG
@@ -31,10 +32,9 @@
 #define dprintf(F,A...)
 #endif
 
-#define ICU_RESET      0x11
-#define PIC_MASTER     0x20
-#define PIC_SLAVE      0xA0
-#define IDT_BASE_INDEX 0x20 /* 32 */
+#define ICU_RESET            0x11
+#define PIC_MASTER           0x20
+#define PIC_SLAVE            0xA0
 
 static void remap(uint_t idt_base)
 {
@@ -77,7 +77,7 @@ int i8259_init(void)
 {
 	dprintf("Initializing\n");
 
-	remap(IDT_BASE_INDEX);
+	remap(I8259_IDT_BASE_INDEX);
 
 	return 1;
 }
@@ -123,13 +123,13 @@ void i8259_disable(uint_t irq)
 	}
 }
 
-uint16_t i8259_mask_get(void)
+i8259_mask_t i8259_mask_get(void)
 {
 	return (port_in8(PIC_SLAVE + 1) << 8 |
 		port_in8(PIC_MASTER + 1));
 }
 
-void i8259_mask_set(uint16_t mask)
+void i8259_mask_set(i8259_mask_t mask)
 {
 	dprintf("Setting irq mask to 0x%x\n", mask);
 
