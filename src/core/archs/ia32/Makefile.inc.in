@@ -33,6 +33,7 @@ arch_ia32_multiboot_SRCS =			\
 
 arch_ia32_SRCS =				\
 	@reldir@/keyboard.h			\
+	@reldir@/arch.h				\
 	@reldir@/arch.c				\
 	@reldir@/power.c			\
 	@reldir@/port.h				\
