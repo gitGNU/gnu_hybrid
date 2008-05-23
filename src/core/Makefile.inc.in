@@ -53,7 +53,7 @@ core_SRCS =					\
 	@reldir@/mutex.h			\
 	@reldir@/mutex.c			\
 	@reldir@/interrupt.h			\
-	@reldir@/interrupt.c			\
+	@reldir@/interrupt.cxx			\
 	@reldir@/timer.h			\
 	@reldir@/timer.cxx			\
 	@reldir@/time.h				\
