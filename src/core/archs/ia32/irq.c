@@ -22,6 +22,7 @@
 #include "core/arch/irq.h"
 #include "core/arch/port.h"
 #include "core/arch/idt.h"
+#include "core/arch/arch.h"
 #include "core/dbg/debug.h"
 #include "core/arch/i8259.h"
 #include "core/arch/asm.h"
@@ -68,7 +69,6 @@ void irq_handler(regs_t * regs)
 	if (prio_new > prio_old) {
 		irq_level = prio_new;
 	}
-
 	i8259_mask_set(mask_table[irq_level]);
 
 	i8259_eoi(vector);
@@ -98,11 +98,16 @@ int irq_init(void)
 		mask_table[i] = 0xFFFB;
 	}
 
+	if (!i8259_init()) {
+		panic("Cannot initialize i8259");
+	}
+
 	return 1;
 }
 
 void irq_fini(void)
 {
+	i8259_fini();
 }
 
 void arch_irqs_enable(void)
@@ -120,4 +125,16 @@ void arch_irqs_disable(void)
 {
 	i8259_disable(0);
 	irqs_enabled = 0;
+}
+
+arch_irqs_state_t arch_irqs_state_get(void)
+{
+	return i8259_mask_get();
+}
+
+void arch_irqs_state_set(arch_irqs_state_t * state)
+{
+	assert(state);
+
+	i8259_mask_set(*state);
 }
