@@ -24,6 +24,7 @@
 #include "core/dbg/debugger/debugger.h"
 #include "core/dbg/debug.h"
 #include "core/timer.h"
+#include "core/interrupt.h"
 #include "core/scheduler.h"
 #include "core/boot/option.h"
 #include "core/build.h"
@@ -46,13 +47,19 @@ int main(int argc, char* argv[])
 		panic("Cannot initialize timers");
 	}
 
+	if (!timers_init()) {
+		panic("Cannot initialize interrupts");
+	}
+
 	if (!scheduler_init()) {
 		panic("Cannot initialize scheduler");
 	}
+
 #if CONFIG_DEBUGGER
 	dbg_enter();
 #endif
 	(void) scheduler_fini();
+	(void) interrupts_fini();
 	(void) timers_fini();
 
 	panic("This is a panic test ...");
