@@ -292,7 +292,7 @@ static dbg_result_t command_idt_on_execute(FILE* stream,
 	for (i = 0; i < IDT_ENTRIES; i++) {
 		if (idt_table[i].flags & IDT_PRESENT) {
 			fprintf(stream,
-				"  %d     0x04%x%04x / 0x%04x /0x%04x\n",
+				"  %d     0x04%x%04x/0x%04x/0x%04x\n",
 				i,
 				idt_table[i].offset31_16,
 				idt_table[i].offset15_0,
