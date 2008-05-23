@@ -29,7 +29,6 @@
 #include "core/arch/bios.h"
 #include "core/arch/cmos.h"
 #include "core/arch/i8253.h"
-#include "core/arch/i8259.h"
 
 #if CONFIG_ARCH_DEBUG
 #define dprintf(F,A...) printf("arch: " F,##A)
@@ -65,16 +64,9 @@ int arch_init(void)
 		panic("Cannot initialize IDT");
 	}
 
-	if (!i8259_init()) {
-		panic("Cannot initialize i8259");
-	}
-
 	if (!i8253_init()) {
 		panic("Cannot initialize i8253");
 	}
-	/* We can call delay() now */
-
-	i8259_enable(0);
 
 	if (!irq_init()) {
 		panic("Cannot initialize IRQs");
@@ -91,8 +83,6 @@ void arch_fini(void)
 {
 	irq_fini();
 	i8253_fini();
-	i8259_disable(0);
-	i8259_fini();
 	idt_fini();
 	gdt_fini();
 	cpus_fini();
