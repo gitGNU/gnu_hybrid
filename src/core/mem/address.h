@@ -26,6 +26,9 @@ __BEGIN_DECLS
 
 typedef uint_t addr_t;
 
+#define virt_to_phys(X) (X)
+#define phys_to_virt(X) (X)
+
 int valid_text_address(unsigned int addr);
 int valid_data_address(unsigned int addr);
 int valid_rodata_address(unsigned int addr);
