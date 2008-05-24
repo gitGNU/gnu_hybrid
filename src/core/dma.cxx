@@ -21,10 +21,14 @@
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
+#include "libc++/vector"
 #include "core/interrupt.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
+#include "core/dma.h"
+#include "core/interrupt.h"
+#include "core/mem/address.h"
 
 #if CONFIG_INTERRUPTS_DEBUG
 #define dprintf(F,A...) printf("dma: " F,##A)
@@ -32,11 +36,91 @@
 #define dprintf(F,A...)
 #endif
 
+struct dma {
+	bool in_use;
+};
+typedef struct dma dma_t;
+
+ktl::vector<struct dma> channels;
+
 int dma_init(void)
 {
+	channels.resize(arch_dma_channels(), dma_t());
 	return 1;
 }
 
 void dma_fini(void)
 {
+}
+
+bool dma_attach(dma_channel_t channel)
+{
+	assert(channel < channels.size());
+
+	interrupts_lock();
+
+	if (channels[channel].in_use) {
+		interrupts_unlock();
+		return false;
+	}
+
+	channels[channel].in_use = true;
+
+	interrupts_unlock();
+
+	return true;
+}
+
+void dma_detach(dma_channel_t channel)
+{
+	assert(channel < channels.size());
+
+	interrupts_lock();
+
+	if (channels[channel].in_use) {
+		dma_stop(channel);
+	}
+
+	channels[channel].in_use = false;
+
+	interrupts_unlock();
+}
+
+bool dma_start_read(dma_channel_t channel,
+		    addr_t        address,
+		    size_t        count)
+{
+	assert(channel < channels.size());
+
+	int retval;
+
+	interrupts_lock();
+	retval = arch_dma_start_read(channel, virt_to_phys(address), count);
+	interrupts_unlock();
+
+	return retval ? true : false;
+}
+
+bool dma_start_write(dma_channel_t channel,
+		     addr_t        address,
+		     size_t        count)
+{
+	assert(channel < channels.size());
+
+	int retval;
+
+	interrupts_lock();
+	retval = arch_dma_start_write(channel, virt_to_phys(address), count);
+	interrupts_unlock();
+
+	return retval ? true : false;
+}
+
+void dma_stop(dma_channel_t channel)
+{
+	assert(channel < channels.size());
+
+	interrupts_lock();
+	arch_dma_stop(channel);
+	interrupts_unlock();
 }
