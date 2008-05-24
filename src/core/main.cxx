@@ -1,21 +1,20 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
 
 #include "config/config.h"
 #include "libc/stdio.h"
@@ -25,6 +24,7 @@
 #include "core/dbg/debug.h"
 #include "core/timer.h"
 #include "core/interrupt.h"
+#include "core/dma.h"
 #include "core/scheduler.h"
 #include "core/boot/option.h"
 #include "core/build.h"
@@ -51,6 +51,10 @@ int main(int argc, char* argv[])
 		panic("Cannot initialize interrupts");
 	}
 
+	if (!dma_init()) {
+		panic("Cannot initialize interrupts");
+	}
+
 	if (!scheduler_init()) {
 		panic("Cannot initialize scheduler");
 	}
@@ -59,6 +63,7 @@ int main(int argc, char* argv[])
 	dbg_enter();
 #endif
 	(void) scheduler_fini();
+	(void) dma_fini();
 	(void) interrupts_fini();
 	(void) timers_fini();
 
