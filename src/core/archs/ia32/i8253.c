@@ -20,7 +20,6 @@
 #include "config/config.h"
 
 #include "libc/stdio.h"
-//#include "libc/time.h"
 #include "libc/string.h"
 #include "libc/stdint.h"
 

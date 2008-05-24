@@ -17,11 +17,10 @@
  *
  */
 
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef I8253_H
+#define I8253_H
 
 #include "config/config.h"
-#include "libc/stdint.h"
 
 __BEGIN_DECLS
 
@@ -30,4 +29,4 @@ int i8253_fini(void);
 
 __END_DECLS
 
-#endif /* TIMER_H */
+#endif /* I8253_H */
