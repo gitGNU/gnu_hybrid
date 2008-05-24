@@ -53,44 +53,44 @@ void dma_fini(void)
 {
 }
 
-bool dma_attach(dma_channel_t channel)
+size_t dma_channels(void)
 {
-	assert(channel < channels.size());
+	return channels.size();
+}
 
-	interrupts_lock();
-
-	if (channels[channel].in_use) {
-		interrupts_unlock();
+static bool attach(dma_channel_t channel)
+{
+	if (channel >= channels.size()) {
 		return false;
 	}
-
+	if (channels[channel].in_use) {
+		return false;
+	}
 	channels[channel].in_use = true;
-
-	interrupts_unlock();
 
 	return true;
 }
 
-void dma_detach(dma_channel_t channel)
+static bool detach(dma_channel_t channel)
 {
-	assert(channel < channels.size());
-
-	interrupts_lock();
-
-	if (channels[channel].in_use) {
-		dma_stop(channel);
+	if (channel >= channels.size()) {
+		return false;
 	}
-
+	if (!channels[channel].in_use) {
+		return false;
+	}
 	channels[channel].in_use = false;
 
-	interrupts_unlock();
+	return true;
 }
 
 bool dma_start_read(dma_channel_t channel,
 		    addr_t        address,
 		    size_t        count)
 {
-	assert(channel < channels.size());
+	if (!attach(channel)) {
+		return false;
+	}
 
 	int retval;
 
@@ -105,7 +105,9 @@ bool dma_start_write(dma_channel_t channel,
 		     addr_t        address,
 		     size_t        count)
 {
-	assert(channel < channels.size());
+	if (!attach(channel)) {
+		return false;
+	}
 
 	int retval;
 
@@ -116,11 +118,15 @@ bool dma_start_write(dma_channel_t channel,
 	return retval ? true : false;
 }
 
-void dma_stop(dma_channel_t channel)
+bool dma_stop(dma_channel_t channel)
 {
-	assert(channel < channels.size());
+	if (!detach(channel)) {
+		return false;
+	}
 
 	interrupts_lock();
 	arch_dma_stop(channel);
 	interrupts_unlock();
+
+	return true;
 }

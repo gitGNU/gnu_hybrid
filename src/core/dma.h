@@ -23,20 +23,19 @@
 #include "libc/stdint.h"
 #include "core/mem/address.h"
 
-int   dma_init(void);
-void  dma_fini(void);
+int    dma_init(void);
+void   dma_fini(void);
+size_t dma_channels(void);
 
 typedef uint_t dma_channel_t;
 
-bool  dma_attach(dma_channel_t);
-void  dma_detach(dma_channel_t);
 bool  dma_start_read(dma_channel_t channel,
 		     addr_t        address,
 		     size_t        count);
 bool  dma_start_write(dma_channel_t channel,
 		      addr_t        address,
 		      size_t        count);
-void  dma_stop(dma_channel_t channel);
+bool  dma_stop(dma_channel_t channel);
 
 __BEGIN_DECLS
 
