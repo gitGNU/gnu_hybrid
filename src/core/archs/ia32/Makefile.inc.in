@@ -44,7 +44,10 @@ arch_ia32_SRCS =				\
 	@reldir@/bios.c				\
 	@reldir@/i8259.h			\
 	@reldir@/i8259.c			\
+	@reldir@/i8253.h			\
 	@reldir@/i8253.c			\
+	@reldir@/i8237.h			\
+	@reldir@/i8237.c			\
 	@reldir@/idt.h				\
 	@reldir@/idt.c				\
 	@reldir@/isr.S				\
