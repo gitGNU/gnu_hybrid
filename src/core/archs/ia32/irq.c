@@ -27,6 +27,12 @@
 #include "core/arch/i8259.h"
 #include "core/arch/asm.h"
 
+#if CONFIG_IRQ_DEBUG
+#define dprintf(F,A...) printf("irq: " F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
 static irq_handler_t handlers[I8259_IRQS];
 
 void irq_handler_install(uint_t        irq,
@@ -35,12 +41,16 @@ void irq_handler_install(uint_t        irq,
 	assert(irq < I8259_IRQS);
 	assert(handler);
 
+	dprintf("Handler 0x%p installed to irq %d\n", handler, irq);
+
 	handlers[irq] = handler;
 }
 
 void irq_handler_uninstall(uint_t irq)
 {
 	assert(irq < I8259_IRQS);
+
+	dprintf("IRQ %d handler uninstalled\n", irq);
 
 	handlers[irq] = NULL;
 }

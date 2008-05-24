@@ -27,12 +27,18 @@
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
 
+#if CONFIG_INTERRUPTS_DEBUG
+#define dprintf(F,A...) printf("interrupts: " F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
 static int        nr_locks;
 arch_irqs_state_t state;
 
 int interrupts_init(void)
 {
-	nr_locks = 0;
+	nr_locks   = 0;
 	arch_irqs_enable();
 
 	return 1;
@@ -41,11 +47,13 @@ int interrupts_init(void)
 void interrupts_disable(void)
 {
 	arch_irqs_disable();
+	dprintf("Interrupts disabled\n");
 }
 
 void interrupts_enable(void)
 {
 	arch_irqs_enable();
+	dprintf("Interrupts enabled\n");
 }
 
 void interrupts_lock(void)
@@ -58,6 +66,7 @@ void interrupts_lock(void)
 	nr_locks++;
 	if (nr_locks == 1) {
 		state = curr_state;
+		dprintf("Interrupts locked\n");
 	}
 }
 
@@ -69,6 +78,7 @@ void interrupts_unlock(void)
 	if (nr_locks == 0) {
 		arch_irqs_state_set(&state);
 		arch_irqs_enable();
+		dprintf("Interrupts unlocked\n");
 	}
 }
 
