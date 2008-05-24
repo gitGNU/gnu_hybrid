@@ -26,6 +26,7 @@
 #include "core/arch/irq.h"
 #include "core/arch/arch.h"
 #include "core/archs/common/cpu.h"
+#include "core/mem/address.h"
 
 __BEGIN_DECLS
 
@@ -116,6 +117,15 @@ void              arch_irqs_state_set(arch_irqs_state_t * state);
 void              arch_delay_ms(uint32_t ms);
 void              arch_delay_us(uint32_t us);
 void              arch_delay_ns(uint32_t ns);
+
+size_t            arch_dma_channels(void);
+int               arch_dma_start_read(uint_t channel,
+				      addr_t address,
+				      size_t count);
+int               arch_dma_start_write(uint_t channel,
+				       addr_t address,
+				       size_t count);
+void              arch_dma_stop(uint_t channel);
 
 size_t            arch_timer_granularity(void);
 
