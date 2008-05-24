@@ -18,11 +18,10 @@
  */
 
 #include "config/config.h"
-
 #include "libc/stdio.h"
 #include "libc/string.h"
 #include "libc/stdint.h"
-
+#include "core/mem/address.h"
 #include "core/arch/cpu.h"
 #include "core/arch/port.h"
 #include "core/archs/common/cpu.h"
@@ -34,6 +33,69 @@
 #define dprintf(F,A...)
 #endif
 
+#define NR_DMAS         7
+#define DMA_MAX         (1024 * 64)
+#define DMA_MASK        (DMA_MAX - 1)
+#define DMA_ALIGN(n)    ((((addr_t)(n)) + DMA_MASK) & ~DMA_MASK)
+
+struct dma_port {
+	int mask;
+	int mode;
+	int clear;
+	int addr;
+	int count;
+	int page;
+};
+
+static const struct dma_port dma_regs[] = {
+	{0x0a, 0x0b, 0x0c, 0x00, 0x01, 0x87}, /* Channel 0 */
+	{0x0a, 0x0b, 0x0c, 0x02, 0x03, 0x83}, /* Channel 1 */
+	{0x0a, 0x0b, 0x0c, 0x04, 0x05, 0x81}, /* Channel 2 */
+	{0x0a, 0x0b, 0x0c, 0x06, 0x07, 0x82}, /* Channel 3 */
+	{0xd4, 0xd6, 0xd8, 0xc0, 0xc2, 0x8f}, /* Channel 4 (n/a) */
+	{0xd4, 0xd6, 0xd8, 0xc4, 0xc6, 0x8b}, /* Channel 5 */
+	{0xd4, 0xd6, 0xd8, 0xc8, 0xca, 0x89}, /* Channel 6 */
+	{0xd4, 0xd6, 0xd8, 0xcc, 0xce, 0x8a}, /* Channel 7 */
+};
+
+#define CHANNEL2BITS(C) (((C) < 4) ? (C) : (C) >> 2)
+
+int i8237_start(uint_t chan,
+		addr_t addr,
+		size_t count,
+		int    read)
+{
+	const struct dma_port * regs;
+	uint_t                  bits, mode;
+
+	assert(chan != 4);
+	assert(addr < 0xffffff);
+
+	regs = &dma_regs[chan];
+	bits = CHANNEL2BITS(chan);
+	mode = read ? 0x44 : 0x48;
+	count--;
+
+	port_out8(regs->mask,  bits | 0x04);
+	port_out8(regs->clear, 0x00);
+	port_out8(regs->mode,  bits | mode);
+	port_out8(regs->addr,  addr >> 0);
+	port_out8(regs->addr,  addr >> 8);
+	port_out8(regs->page,  addr >> 16);
+	port_out8(regs->clear, 0x00);
+	port_out8(regs->count, count >> 0);
+	port_out8(regs->count, count >> 8);
+	port_out8(regs->mask,  bits);
+
+	return 1;
+}
+
+void i8237_stop(uint_t chan)
+{
+	assert(chan != 4);
+	port_out8(dma_regs[chan].mask, CHANNEL2BITS(chan) | 0x04);
+}
+
 int i8237_init(void)
 {
 	return 1;
@@ -42,4 +104,36 @@ int i8237_init(void)
 int i8237_fini(void)
 {
 	return 1;
+}
+
+size_t arch_dma_channels(void)
+{
+	return NR_DMAS;
+}
+
+int arch_dma_start_read(uint_t channel,
+			addr_t address,
+			size_t count)
+{
+	assert(channel < NR_DMAS);
+
+	return i8237_start((channel >= 4) ? (channel + 1) : channel,
+			   address, count, 1);
+}
+
+int arch_dma_start_write(uint_t channel,
+			 addr_t address,
+			 size_t count)
+{
+	assert(channel < NR_DMAS);
+
+	return i8237_start((channel >= 4) ? (channel + 1) : channel,
+			   address, count, 0);
+}
+
+void arch_dma_stop(uint_t channel)
+{
+	assert(channel < NR_DMAS);
+
+	return i8237_stop((channel >= 4) ? (channel + 1) : channel);
 }

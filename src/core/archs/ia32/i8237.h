@@ -21,11 +21,20 @@
 #define I8237_H
 
 #include "config/config.h"
+#include "core/mem/address.h"
+#include "libc/stdint.h"
 
 __BEGIN_DECLS
 
 int i8237_init(void);
 int i8237_fini(void);
+
+void i8237_start(uint_t chan,
+		 addr_t addr,
+		 size_t count,
+		 int    read);
+
+void i8237_stop(uint_t chan);
 
 __END_DECLS
 
