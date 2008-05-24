@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 		panic("Cannot initialize timers");
 	}
 
-	if (!timers_init()) {
+	if (!interrupts_init()) {
 		panic("Cannot initialize interrupts");
 	}
 
