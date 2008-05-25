@@ -25,9 +25,36 @@
 #include "core/process.h"
 #include "core/thread.h"
 
+#define BANNER          "process: "
+
+#if CONFIG_PROCESS_DEBUG
+#define dprintf(F,A...) printf(BANNER F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
 /* CONFIG_MAX_THREADS_PER_PROCESS */
 
+process::process(pid_t id) : id_(id)
+{
+	threads_.clear();
+
+	dprintf("Process initialized\n");
+}
+
+process::~process()
+{
+	ktl::list<thread *>::iterator iter;
+	for (iter = threads_.begin(); iter != threads_.end(); iter++) {
+		delete *iter;
+	}
+
+	dprintf("Process finalized\n");
+
+}
+
 #if CONFIG_DEBUGGER
+#if 0
 static dbg_result_t command_threads_on_execute(FILE* stream,
 					       int   argc,
 					       char* argv[])
@@ -54,4 +81,5 @@ DBG_COMMAND_DECLARE(threads,
 		    NULL,
 		    command_threads_on_execute,
 		    NULL);
+#endif // 0
 #endif

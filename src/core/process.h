@@ -28,13 +28,16 @@
 typedef uint_t pid_t;
 
 class process {
- public:
+public:
 	process(pid_t id);
 	~process();
 
 	pid_t id(void) { return id_; };
 
- private:
+protected:
+	process();
+
+private:
 	pid_t               id_;
 	ktl::string         name_;
 	ktl::list<thread *> threads_;
