@@ -21,13 +21,14 @@
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
+#include "core/process.h"
 #include "libc++/cstdio"
 #include "libc++/list"
 
 #define BANNER          "scheduler: "
 
 #if CONFIG_SCHEDULER_DEBUG
-#define dprintf(F,A...) ktl::printf(BANNER F,##A)
+#define dprintf(F,A...) printf(BANNER F,##A)
 #else
 #define dprintf(F,A...)
 #endif
