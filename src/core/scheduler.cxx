@@ -23,6 +23,7 @@
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
+#include "core/scheduler.h"
 #include "core/process.h"
 #include "core/thread.h"
 
@@ -34,42 +35,35 @@
 #define dprintf(F,A...)
 #endif
 
-static ktl::list<process *> processes;
-
-int scheduler_init(void)
+scheduler::scheduler()
 {
-	dprintf("Initializing scheduler\n");
+	processes_.clear();
 
-	processes.clear();
-
-	dprintf("Initialized\n");
-
-	return 1;
+	dprintf("Scheduler initialized\n");
 }
 
-void scheduler_run(void)
+scheduler::~scheduler()
 {
-	process * & process = processes.front();
+	ktl::list<process *>::iterator iter;
+	for (iter = processes_.begin(); iter != processes_.end(); iter++) {
+		delete *iter;
+	}
+
+	dprintf("Scheduler finalized\n");
+}
+
+void scheduler::run()
+{
+	process * & process = processes_.front();
 	assert(process);
 
-	processes.pop_front();
+	processes_.pop_front();
 
 	dprintf("Scheduling process %d\n", process->id());
 }
 
-int scheduler_fini(void)
-{
-	dprintf("Finalizing schedulers\n");
-
-	if (!processes.empty()) {
-		dprintf("Processess list not empty\n");
-		return 0;
-	}
-
-	return 1;
-}
-
 #if CONFIG_DEBUGGER
+#if 0
 static dbg_result_t command_processes_on_execute(FILE* stream,
 						 int   argc,
 						 char* argv[])
@@ -101,4 +95,5 @@ DBG_COMMAND_DECLARE(processes,
 		    NULL,
 		    command_processes_on_execute,
 		    NULL);
+#endif // 0
 #endif

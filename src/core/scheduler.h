@@ -21,13 +21,17 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
+#include "core/process.h"
 
-__BEGIN_DECLS
+class scheduler {
+public:
+	scheduler();
+	~scheduler();
 
-int  scheduler_init(void);
-void scheduler_run(void);
-int  scheduler_fini(void);
+	void run();
 
-__END_DECLS
+private:
+	ktl::list<process *> processes_;
+};
 
 #endif // CORE_SCHEDULER_H

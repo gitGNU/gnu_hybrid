@@ -55,17 +55,15 @@ int main(int argc, char* argv[])
 		panic("Cannot initialize interrupts");
 	}
 
-	if (!scheduler_init()) {
-		panic("Cannot initialize scheduler");
-	}
+	scheduler * sched;
+
+	sched = new scheduler();
 
 #if CONFIG_DEBUGGER
 	dbg_enter();
 #endif
-	(void) scheduler_fini();
-	(void) dma_fini();
-	(void) interrupts_fini();
-	(void) timers_fini();
+
+	delete sched;
 
 	panic("This is a panic test ...");
 
