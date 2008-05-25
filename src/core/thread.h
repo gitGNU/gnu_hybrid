@@ -20,14 +20,21 @@
 #define CORE_THREAD_H
 
 #include "config/config.h"
-#include "libc/stdint.h"
+#include "libc++/string"
 
-__BEGIN_DECLS
+class thread {
+ public:
+	typedef enum state {
+		THREAD_CREATED,
+		THREAD_READY,
+		THREAD_RUNNING,
+		THREAD_BLOCKED,
+		THREAD_ZOMBIE
+	};
 
-typedef struct {
-	uint_t id;
-} thread_t;
-
-__END_DECLS
+ private:
+	ktl::string name_;
+	state       state_;
+};
 
 #endif // CORE_THREAD_H
