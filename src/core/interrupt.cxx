@@ -15,13 +15,12 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-//
 
 #include "config/config.h"
 #include "core/archs/arch.h"
 #include "libc/stdint.h"
-#include "libc/stdio.h"
 #include "libc/stddef.h"
+#include "libc++/cstdio"
 #include "core/interrupt.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
