@@ -21,14 +21,23 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
+#include "libc++/string"
+#include "libc++/list"
+#include "core/thread.h"
 
-__BEGIN_DECLS
+typedef uint_t pid_t;
 
-struct process {
-	uint_t id;
+class process {
+ public:
+	process(pid_t id);
+	~process();
+
+	pid_t id(void) { return id_; };
+
+ private:
+	pid_t               id_;
+	ktl::string         name_;
+	ktl::list<thread *> threads_;
 };
-typedef struct process process_t;
-
-__END_DECLS
 
 #endif // CORE_PROCESS_H

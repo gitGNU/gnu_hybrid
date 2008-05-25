@@ -17,13 +17,14 @@
 //
 
 #include "config/config.h"
+#include "libc++/cstdio"
+#include "libc++/list"
 #include "core/scheduler.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/process.h"
-#include "libc++/cstdio"
-#include "libc++/list"
+#include "core/thread.h"
 
 #define BANNER          "scheduler: "
 
@@ -33,7 +34,7 @@
 #define dprintf(F,A...)
 #endif
 
-static ktl::list<process_t *> processes;
+static ktl::list<process *> processes;
 
 int scheduler_init(void)
 {
@@ -48,12 +49,12 @@ int scheduler_init(void)
 
 void scheduler_run(void)
 {
-	process_t * & process = processes.front();
+	process * & process = processes.front();
 	assert(process);
 
 	processes.pop_front();
 
-	dprintf("Scheduling process $d\n", process->id);
+	dprintf("Scheduling process %d\n", process->id());
 }
 
 int scheduler_fini(void)
@@ -84,11 +85,11 @@ static dbg_result_t command_processes_on_execute(FILE* stream,
 
 	fprintf(stream, "Processes:\n");
 
-	ktl::list<process_t *>::iterator iter;
+	ktl::list<process *>::iterator iter;
 	for (iter = processes.begin(); iter != processes.end(); iter++) {
 		fprintf(stream, "  0x%p %d\n",
 			(*iter),
-			(*iter)->id);
+			(*iter)->id());
 	}
 
 	return DBG_RESULT_OK;
