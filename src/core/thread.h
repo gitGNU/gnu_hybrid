@@ -26,13 +26,13 @@
 typedef uint_t tid_t;
 
 class thread {
- public:
+public:
 	thread();
 	~thread();
 
 	tid_t id(void) { return id_; };
 
- private:
+private:
 	tid_t       id_;
 	ktl::string name_;
 };

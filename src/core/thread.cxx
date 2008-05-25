@@ -26,3 +26,20 @@
 /* CONFIG_MULTITHREADING */
 /* CONFIG_MAX_THREADS_PER_PROCESS */
 
+#define BANNER          "thread: "
+
+#if CONFIG_PROCESS_DEBUG
+#define dprintf(F,A...) printf(BANNER F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
+thread::thread()
+{
+	dprintf("Thread initialized\n");
+}
+
+thread::~thread()
+{
+	dprintf("Thread finalized\n");
+}
