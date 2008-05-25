@@ -8,6 +8,7 @@
 ARCH_DEBUG=y
 I8253_DEBUG=y
 I8259_DEBUG=y
+I8237_DEBUG=y
 IRQ_DEBUG=y
 CMOS_DEBUG=y
 BIOS_DEBUG=y
@@ -138,13 +139,19 @@ AOUT=y
 #
 
 #
-# Processes
+# Scheduler
 #
 SCHEDULER_DEBUG=y
 
 #
+# Processes
+#
+PROCESS_DEBUG=y
+
+#
 # Threads
 #
+THREAD_DEBUG=y
 LOG_SIZE=4096
 MODULES=y
 MODULES_DEBUG=y
