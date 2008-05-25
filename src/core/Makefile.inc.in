@@ -46,8 +46,10 @@ core_SRCS =					\
 	@reldir@/power.c			\
 	@reldir@/resource.h			\
 	@reldir@/resource.c			\
+	@reldir@/process.h			\
+	@reldir@/process.cxx			\
 	@reldir@/thread.h			\
-	@reldir@/thread.c			\
+	@reldir@/thread.cxx			\
 	@reldir@/semaphore.h			\
 	@reldir@/semaphore.c			\
 	@reldir@/mutex.h			\
