@@ -16,18 +16,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef CORE_THREAD_H
-#define CORE_THREAD_H
-
 #include "config/config.h"
-#include "libc/stdint.h"
+#include "libc/stdio.h"
+#include "libc/stddef.h"
+#include "core/dbg/debug.h"
+#include "core/dbg/debugger/debugger.h"
+#include "core/thread.h"
 
-__BEGIN_DECLS
-
-typedef struct {
-	uint_t id;
-} thread_t;
-
-__END_DECLS
-
-#endif // CORE_THREAD_H
+/* CONFIG_MULTITHREADING */
+/* CONFIG_MAX_THREADS_PER_PROCESS */
