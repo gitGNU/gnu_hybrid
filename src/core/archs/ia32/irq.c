@@ -71,7 +71,7 @@ void irq_handler(regs_t * regs)
 	vector = regs->isr_no - I8259_IDT_BASE_INDEX;
 	assert((vector >= 0) && (vector < I8259_IRQS));
 
-	printf("IRQ %d!\n", vector);
+	printf("IRQ %d/%d\n", vector, I8259_IRQS);
 	idt_frame_dump(regs);
 
 	prio_old = irq_level;
