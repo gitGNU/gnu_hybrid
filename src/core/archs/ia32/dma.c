@@ -47,19 +47,17 @@ int arch_dma_start_read(uint_t channel,
 			addr_t address,
 			size_t count)
 {
-	return i8237_start((channel >= 4) ? (channel + 1) : channel,
-			   address, count, 1);
+	return i8237_start(channel, address, count, 1);
 }
 
 int arch_dma_start_write(uint_t channel,
 			 addr_t address,
 			 size_t count)
 {
-	return i8237_start((channel >= 4) ? (channel + 1) : channel,
-			   address, count, 0);
+	return i8237_start(channel, address, count, 0);
 }
 
 int arch_dma_stop(uint_t channel)
 {
-	return i8237_stop((channel >= 4) ? (channel + 1) : channel);
+	return i8237_stop(channel);
 }

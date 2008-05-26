@@ -68,8 +68,11 @@ int i8237_start(uint_t chan,
 	const struct dma_port * regs;
 	uint_t                  bits, mode;
 
-	assert(chan != 4);
 	assert(chan < NR_DMAS);
+
+	chan = ((chan >= 4) ? (chan + 1) : chan);
+
+	assert(chan != 4);
 	assert(addr < 0xffffff);
 
 	regs = &dma_regs[chan];
@@ -94,6 +97,9 @@ int i8237_start(uint_t chan,
 int i8237_stop(uint_t chan)
 {
 	assert(chan < NR_DMAS);
+
+	chan = ((chan >= 4) ? (chan + 1) : chan);
+
 	assert(chan != 4);
 
 	port_out8(dma_regs[chan].mask, CHANNEL2BITS(chan) | 0x04);
@@ -103,7 +109,7 @@ int i8237_stop(uint_t chan)
 
 size_t i8327_channels(void)
 {
-	return NR_DMAS;
+	return NR_DMAS - 1;
 }
 
 int i8237_init(void)
