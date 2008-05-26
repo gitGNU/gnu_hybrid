@@ -17,7 +17,12 @@
  *
  */
 
-#ifndef DMA_H
-#define DMA_H
+#ifndef ARCH_DMA_H
+#define ARCH_DMA_H
 
-#endif /* DMA_H */
+#include "config/config.h"
+
+int  dma_init(void);
+void dma_fini(void);
+
+#endif /* ARCH_DMA_H */
