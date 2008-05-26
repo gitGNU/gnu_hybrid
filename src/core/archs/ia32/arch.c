@@ -29,7 +29,7 @@
 #include "core/arch/bios.h"
 #include "core/arch/cmos.h"
 #include "core/arch/i8253.h"
-#include "core/arch/i8237.h"
+#include "core/arch/dma.h"
 
 #if CONFIG_ARCH_DEBUG
 #define dprintf(F,A...) printf("arch: " F,##A)
@@ -75,8 +75,8 @@ int arch_init(void)
 
 	sti();
 
-	if (!i8237_init()) {
-		panic("Cannot initialize i8237");
+	if (!dma_init()) {
+		panic("Cannot initialize DMAs");
 	}
 
 	dprintf("Architecture initialized\n");
@@ -86,7 +86,7 @@ int arch_init(void)
 
 void arch_fini(void)
 {
-	i8237_fini();
+	dma_fini();
 	irq_fini();
 	i8253_fini();
 	idt_fini();
