@@ -58,7 +58,7 @@
 
 .macro IRQ_ENTRY INDEX ISR_INDEX
 	.global irq_\INDEX
-	.align 4,0x90
+	.align 4,0x90 // 0x90 == NOP
 irq_\INDEX :
 	pushl  $0
 	pushl  $\ISR_INDEX
@@ -102,6 +102,7 @@ irq_common:
 
 .macro TRAP_ENTRY INDEX ISR_INDEX
 	.global trap_\INDEX
+	.align 4,0x90 // 0x90 == NOP
 trap_\INDEX :
 	pushl  $0
 	pushl  $\ISR_INDEX
