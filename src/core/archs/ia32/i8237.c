@@ -69,6 +69,7 @@ int i8237_start(uint_t chan,
 	uint_t                  bits, mode;
 
 	assert(chan != 4);
+	assert(chan < NR_DMAS);
 	assert(addr < 0xffffff);
 
 	regs = &dma_regs[chan];
@@ -90,10 +91,19 @@ int i8237_start(uint_t chan,
 	return 1;
 }
 
-void i8237_stop(uint_t chan)
+int i8237_stop(uint_t chan)
 {
+	assert(chan < NR_DMAS);
 	assert(chan != 4);
+
 	port_out8(dma_regs[chan].mask, CHANNEL2BITS(chan) | 0x04);
+
+	return 1;
+}
+
+size_t i8327_channels(void)
+{
+	return NR_DMAS;
 }
 
 int i8237_init(void)
@@ -104,36 +114,4 @@ int i8237_init(void)
 int i8237_fini(void)
 {
 	return 1;
-}
-
-size_t arch_dma_channels(void)
-{
-	return NR_DMAS;
-}
-
-int arch_dma_start_read(uint_t channel,
-			addr_t address,
-			size_t count)
-{
-	assert(channel < NR_DMAS);
-
-	return i8237_start((channel >= 4) ? (channel + 1) : channel,
-			   address, count, 1);
-}
-
-int arch_dma_start_write(uint_t channel,
-			 addr_t address,
-			 size_t count)
-{
-	assert(channel < NR_DMAS);
-
-	return i8237_start((channel >= 4) ? (channel + 1) : channel,
-			   address, count, 0);
-}
-
-void arch_dma_stop(uint_t channel)
-{
-	assert(channel < NR_DMAS);
-
-	return i8237_stop((channel >= 4) ? (channel + 1) : channel);
 }
