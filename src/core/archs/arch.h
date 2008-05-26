@@ -125,7 +125,7 @@ int               arch_dma_start_read(uint_t channel,
 int               arch_dma_start_write(uint_t channel,
 				       addr_t address,
 				       size_t count);
-void              arch_dma_stop(uint_t channel);
+int               arch_dma_stop(uint_t channel);
 
 size_t            arch_timer_granularity(void);
 
