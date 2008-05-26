@@ -59,11 +59,11 @@
 
 /* Modes */
 #define PIT_MODE_0	0x0	/* One shot */
-#define PIT_MODE_1	0x2	/* Not working */
-#define PIT_MODE_2	0x4	/* Forever */
-#define PIT_MODE_3	0x6	/* Forever */
-#define PIT_MODE_4	0x8	/* Not working */
-#define PIT_MODE_5	0xA	/* Not working */
+#define PIT_MODE_1	0x2	/* Hardware retriggerable one shot */
+#define PIT_MODE_2	0x4	/* Rate generator */
+#define PIT_MODE_3	0x6	/* Square wave mode */
+#define PIT_MODE_4	0x8	/* Software strobe */
+#define PIT_MODE_5	0xA	/* Hardware strobe */
 
 #define PIT_LATCH	0x00
 #define PIT_BCD		0x01
@@ -89,81 +89,6 @@ static inline void delay_loops(uint32_t loops)
 			  : "0" (loops));
 }
 
-#if 0
-static void set_timer_chan_oneshot(uint16_t hz, uint8_t chan)
-{
-	int divisor;
-
-	divisor = PIT_SECOND / hz;
-
-	port_out8(TMR_PORT,      (chan * 0x40) | PIT_BOTH | PIT_MODE_0);
-	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
-	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
-}
-
-static void set_timer_chan_forever(uint16_t hz, uint8_t chan)
-{
-	int divisor;
-
-	divisor = PIT_SECOND / hz;
-
-	port_out8(TMR_PORT,	 (chan * 0x40) | PIT_BOTH | PIT_MODE_3);
-	port_out8((0x40 + chan), (uint8_t)(divisor & 0xFF));
-	port_out8((0x40 + chan), (uint8_t)(divisor >> 8));
-}
-
-static uint32_t get_timer_chan(uint8_t chan, int reset)
-{
-	uint32_t x;
-
-	port_out8(TMR_PORT, (chan * 0x40) | (reset)? 0x0 : PIT_LATCH);
-	x  = port_in8(0x40 + chan);
-	x += (port_in8(0x40 + chan) << 8);
-
-	return x;
-}
-
-static void calibrate_delay_loop(void)
-{
-	uint32_t lb, lp = 8;
-
-	printf("Calibrating delay loop\n");
-
-	/* Coarse calibration */
-	__this_cpu->arch.loops_ms = (1 << 12);
-	while (__this_cpu->arch.loops_ms <<= 1) {
-		set_timer_chan_oneshot(0xFFFF, 0);
-		delay_loops(__this_cpu->arch.loops_ms);
-		if (get_timer_chan(0, 1) < 64000) {
-			break;
-		}
-	}
-
-	__this_cpu->arch.loops_ms >>= 1;
-	lb = __this_cpu->arch.loops_ms;
-
-	/* Precision calculation */
-	while (lp-- && (lb >>= 1)) {
-		__this_cpu->arch.loops_ms |= lb;
-		set_timer_chan_oneshot(0xFFFF, 0);
-		delay_loops(__this_cpu->arch.loops_ms);
-		if (get_timer_chan(0, 1) < 64000) {
-			__this_cpu->arch.loops_ms &= ~lb;
-		}
-
-	}
-
-	/* Normalise the results */
-	__this_cpu->arch.loops_ms *= PIT_SECOND / (65535 - 64000);
-	__this_cpu->arch.loops_ms /= 1000;
-	printf("Loops per ms %d\n", __this_cpu->arch.loops_ms);
-
-	/* Dump the ferequency infos */
-	printf("Frequency %u.%uMHz\n",
-	       ((__this_cpu->arch.loops_ms * 10) / 5000),
-	       ((__this_cpu->arch.loops_ms * 10) / 50) % 100);
-}
-#endif
 
 int i8254_frequency_set(uint32_t freq)
 {
@@ -182,8 +107,10 @@ int i8254_frequency_set(uint32_t freq)
 		tick = 0;
 	}
 
+	dprintf("Setting tock to %d\n", tick);
+
 	/* Configure timer0 in mode 2, as a rate generator */
-	port_out8(TMR_PORT, 0x34);
+	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_3);
 
 	/* Send counter LSB first, then MSB */
 	port_out8(COUNTER_0, tick & 0xFF);
@@ -223,8 +150,6 @@ int i8253_init(void)
 	if (!i8254_frequency_set(frequency)) {
 		return 0;
 	}
-
-	//	calibrate_delay_loop();
 
 	return 1;
 }
