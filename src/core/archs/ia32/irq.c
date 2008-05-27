@@ -18,7 +18,6 @@
  */
 
 #include "config/config.h"
-#include "core/arch/idt.h"
 #include "core/arch/irq.h"
 #include "core/arch/port.h"
 #include "core/arch/idt.h"
