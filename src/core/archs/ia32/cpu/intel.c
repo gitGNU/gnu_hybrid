@@ -24,19 +24,19 @@
 #include "core/arch/asm.h"
 #include "core/dbg/debug.h"
 
-#if CONFIG_CPU_DEBUG
+#if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("intel: " F,##A)
 #else
 #define dprintf(F,A...)
 #endif
 
-#if CONFIG_CPU_VERBOSE
+#if CONFIG_ARCH_CPU_VERBOSE
 #define cprintf(C,F,A...) printf("CPU%d: " F,(C)->index,##A)
 #else
 #define cprintf(C,F,A...)
 #endif
 
-#if CONFIG_CPU_INTEL
+#if CONFIG_ARCH_CPU_INTEL
 
 #define LVL_1_INST      1
 #define LVL_1_DATA      2
@@ -299,4 +299,4 @@ void intel_cpu_fini(arch_cpu_t* cpu)
 {
 	assert(cpu);
 }
-#endif /* CONFIG_CPU_INTEL */
+#endif /* CONFIG_ARCH_CPU_INTEL */

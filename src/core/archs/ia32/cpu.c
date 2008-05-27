@@ -26,41 +26,41 @@
 #include "libc/string.h"
 #include "core/dbg/debug.h"
 
-#if CONFIG_CPU_DEBUG
+#if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("CPU: " F,##A)
 #else
 #define dprintf(F,A...)
 #endif
 
-#if CONFIG_CPU_VERBOSE
+#if CONFIG_ARCH_CPU_VERBOSE
 #define cprintf(C,F,A...) printf("CPU%d: " F,(C)->index,##A)
 #else
 #define cprintf(C,F,A...)
 #endif
 
-#if CONFIG_CPU_INTEL
+#if CONFIG_ARCH_CPU_INTEL
 extern int  intel_infos(arch_cpu_t* cpu);
 extern int  intel_cpu_init(arch_cpu_t* cpu);
 extern void intel_cpu_fini(arch_cpu_t* cpu);
 extern int  intel_cache_init(arch_cpu_t* cpu);
 extern void intel_cache_fini(arch_cpu_t* cpu);
-#endif /* CONFIG_CPU_INTEL */
+#endif /* CONFIG_ARCH_CPU_INTEL */
 
-#if CONFIG_CPU_AMD
+#if CONFIG_ARCH_CPU_AMD
 extern int  amd_infos(arch_cpu_t* cpu);
 extern int  amd_cpu_init(arch_cpu_t* cpu);
 extern void amd_cpu_fini(arch_cpu_t* cpu);
 extern int  amd_cache_init(arch_cpu_t* cpu);
 extern void amd_cache_fini(arch_cpu_t* cpu);
-#endif /* CONFIG_CPU_AMD */
+#endif /* CONFIG_ARCH_CPU_AMD */
 
-#if CONFIG_CPU_GENERIC
+#if CONFIG_ARCH_CPU_GENERIC
 extern int  generic_infos(arch_cpu_t* cpu);
 extern int  generic_cpu_init(arch_cpu_t* cpu);
 extern void generic_cpu_fini(arch_cpu_t* cpu);
 extern int  generic_cache_init(arch_cpu_t* cpu);
 extern void generic_cache_fini(arch_cpu_t* cpu);
-#endif /* CONFIG_CPU_GENERIC */
+#endif /* CONFIG_ARCH_CPU_GENERIC */
 
 typedef struct {
 	char*     ident;
@@ -69,7 +69,7 @@ typedef struct {
 } cpu_descriptor_t;
 
 cpu_descriptor_t cpu_descriptors[] = {
-#if CONFIG_CPU_INTEL
+#if CONFIG_ARCH_CPU_INTEL
 	{
 		"GenuineIntel",
 		"Intel",
@@ -85,8 +85,8 @@ cpu_descriptor_t cpu_descriptors[] = {
 			NULL,
 		}
 	},
-#endif /* CONFIG_CPU_INTEL */
-#if CONFIG_CPU_AMD
+#endif /* CONFIG_ARCH_CPU_INTEL */
+#if CONFIG_ARCH_CPU_AMD
 	{
 		"AuthenticAMD",
 		"AMD",
@@ -102,8 +102,8 @@ cpu_descriptor_t cpu_descriptors[] = {
 			NULL,
 		}
 	},
-#endif /* CONFIG_CPU_AMD */
-#if CONFIG_CPU_GENERIC
+#endif /* CONFIG_ARCH_CPU_AMD */
+#if CONFIG_ARCH_CPU_GENERIC
 	{
 		NULL /* This is the fall-back case, it must be the last one */,
 		"Generic",
@@ -119,40 +119,40 @@ cpu_descriptor_t cpu_descriptors[] = {
 			NULL,
 		}
 	}
-#endif /* CONFIG_CPU_GENERIC */
+#endif /* CONFIG_ARCH_CPU_GENERIC */
 };
 
 /* Per CPU initializer */
 int cpu_init(int indx)
 {
-        char              ident[13];
-        unsigned int      eax, ebx, ecx, edx;
+	char              ident[13];
+	unsigned int      eax, ebx, ecx, edx;
 	cpu_t*            cpu;
 	cpu_descriptor_t* descriptor;
 
-	assert(indx >= 0 && indx < CONFIG_MAX_CPU_COUNT); 
+	assert(indx >= 0 && indx < CONFIG_MAX_CPU_COUNT);
 
 	/* Get the CPU descriptor and fill its index */
 	cpu        = &cpus[indx];
 	cpu->index = indx;
-	
-        /* Get level and manufacturer identifier string */
-        cpuid(0, &eax, &ebx, &ecx, &edx);
+
+	/* Get level and manufacturer identifier string */
+	cpuid(0, &eax, &ebx, &ecx, &edx);
 
 	/* Fill CPU level */
-        cpu->arch.level = eax;
+	cpu->arch.level = eax;
 	if (cpu->arch.level < 1) {
 		cprintf(cpu, "CPU level %d not supported ...\n",
 			cpu->arch.level);
 		return 0;
 	}
-        cprintf(cpu, "CPU level %d ok\n", cpu->arch.level);
+	cprintf(cpu, "CPU level %d ok\n", cpu->arch.level);
 
 	/* Look for manufacturer identifier */
-        memcpy(ident    , &ebx, 4);
-        memcpy(ident + 4, &edx, 4);
-        memcpy(ident + 8, &ecx, 4);
-        ident[sizeof(ident) - 1 /* 12 */] = 0; /* String terminator ;-) */
+	memcpy(ident    , &ebx, 4);
+	memcpy(ident + 4, &edx, 4);
+	memcpy(ident + 8, &ecx, 4);
+	ident[sizeof(ident) - 1 /* 12 */] = 0; /* String terminator ;-) */
 	cprintf(cpu, "Manufacturer string is '%s'\n", ident);
 
 	/* Now that we have the CPU identifier let us find the descriptor */
@@ -162,12 +162,12 @@ int cpu_init(int indx)
 	descriptor = NULL;
 	if (sizeof(cpu_descriptors) != 0) {
 		size_t i;
-		
+
 		i = 0;
 		for (;
 		     i  < (sizeof(cpu_descriptors) / sizeof(cpu_descriptor_t));
 		     i++) {
-			
+
 			if ( cpu_descriptors[i].ident == NULL ||
 			     !strcmp(cpu_descriptors[i].ident, ident)) {
 				dprintf("Matching CPU descriptor found!\n");
@@ -207,13 +207,13 @@ int cpu_init(int indx)
 		cprintf(cpu, "Cannot get CPU infos\n");
 		return 0;
 	}
-        cprintf(cpu, "family %d, model %d, stepping %d\n",
+	cprintf(cpu, "family %d, model %d, stepping %d\n",
 		cpu->arch.infos.family,
 		cpu->arch.infos.model,
 		cpu->arch.infos.stepping);
 
-#if 0		
-        cprintf(cpu,
+#if 0
+	cprintf(cpu,
 		"CPU%d %08x %08x %08x %08x %08x %08x %08x\n",
 		cpu->arch.infos.features[0],
 		cpu->arch.infos.features[1],
@@ -225,7 +225,7 @@ int cpu_init(int indx)
 		cpu->arch.infos.features[7]);
 #endif
 
-        cprintf(cpu,
+	cprintf(cpu,
 		"caps = "
 		"%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
 		(cpu_has_fpu(cpu)            ? "fpu "            : ""),
@@ -264,7 +264,7 @@ int cpu_init(int indx)
 	cpu->arch.caches.l1i.size     = 0;
 	cpu->arch.caches.l1d.size     = 0;
 	cpu->arch.caches.l2.size      = 0;
-        cpu->arch.caches.l3.size      = 0;
+	cpu->arch.caches.l3.size      = 0;
 
 	/* Call the cache initialization */
 	if (cpu->arch.ops->cache_init) {
@@ -279,7 +279,7 @@ int cpu_init(int indx)
 			cprintf(cpu, "Cannot initialize cache\n");
 		}
 	}
-	
+
 	cprintf(cpu,
 		"Cache: Trace %dK, L1-I %dK, L1-D %dK, L2 %dK, L3 %dK\n",
 		cpu->arch.caches.trace.size,
@@ -339,11 +339,11 @@ int cpus_init(void)
 		cpus[i].online = 1;
 		o++;
 	}
-	
+
 	dprintf("%d/%d CPUs initialized successfully\n", o, i);
 
 	/* Enable write protection from kernel code */
-	cr0_set(cr0_get() | CR0_WP); 
+	cr0_set(cr0_get() | CR0_WP);
 
 	/*
 	 * NOTE:
@@ -351,7 +351,7 @@ int cpus_init(void)
 	 *         Interrupt disable, clear direction,
 	 *         clear nested task, I/O privilege 0
 	 */
-        eflags_set(eflags_get() & ~(EFLAGS_IF |
+	eflags_set(eflags_get() & ~(EFLAGS_IF |
 				    EFLAGS_DF |
 				    EFLAGS_NT |
 				    EFLAGS_IOPL));
@@ -364,7 +364,7 @@ int cpus_init(void)
 void cpus_fini(void)
 {
 	unsigned int i, o;
-	
+
 	o = 0;
 	for (i = 0; i < CONFIG_MAX_CPU_COUNT; i++) {
 		/* Finalize only the online CPUs */

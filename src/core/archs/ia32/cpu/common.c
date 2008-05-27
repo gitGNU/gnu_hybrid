@@ -23,13 +23,13 @@
 #include "core/arch/asm.h"
 #include "core/dbg/debug.h"
 
-#if CONFIG_CPU_DEBUG
+#if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("common: " F,##A)
 #else
 #define dprintf(F,A...)
 #endif
 
-#if CONFIG_CPU_VERBOSE
+#if CONFIG_ARCH_CPU_VERBOSE
 #define cprintf(C,F,A...) printf("CPU%d: " F,(C)->index,##A)
 #else
 #define cprintf(C,F,A...)
@@ -38,31 +38,31 @@
 #if 0
 static unsigned int phys_pkg_id(int index_msb)
 {
-        uint32_t ebx;
+	uint32_t ebx;
 
-        ebx = cpuid_ebx(1);
-        return ((ebx >> 24) & 0xFF) >> index_msb;
+	ebx = cpuid_ebx(1);
+	return ((ebx >> 24) & 0xFF) >> index_msb;
 }
 
 /* Returns the number of cores detected */
 static int detect_ht(cpu_t* cpu)
 {
-        uint32_t eax, ebx, ecx, edx;
-        int      index_lsb, index_msb, tmp;
+	uint32_t eax, ebx, ecx, edx;
+	int      index_lsb, index_msb, tmp;
 	uint32_t siblings;
 	int      cores;
 
-        if (!cpu_has(X86_FEATURE_HT)) {
+	if (!cpu_has(X86_FEATURE_HT)) {
 		cprintf(cpu, "No Hyper-Threading support\n");
-                return 0;
+		return 0;
 	}
 
-        cpuid(1, &eax, &ebx, &ecx, &edx);
-        siblings = (ebx & 0xff0000) >> 16;
-        if (siblings == 1) {
-                cprintf(cpu, "Hyper-Threading disabled\n");
+	cpuid(1, &eax, &ebx, &ecx, &edx);
+	siblings = (ebx & 0xff0000) >> 16;
+	if (siblings == 1) {
+		cprintf(cpu, "Hyper-Threading disabled\n");
 		return 0;
-        }
+	}
 
 	index_lsb = 0;
 	index_msb = 31;
@@ -91,7 +91,7 @@ static int detect_ht(cpu_t* cpu)
 
 	cores = phys_pkg_id(index_msb); /* Hmmm ... */
 	cprintf(cpu, "Physical cores %d\n", cores);
-	
+
 	return cores;
 }
 #endif /* 0 */

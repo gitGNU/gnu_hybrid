@@ -24,19 +24,19 @@
 #include "core/arch/asm.h"
 #include "core/dbg/debug.h"
 
-#if CONFIG_CPU_DEBUG
+#if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("generic: " F,##A)
 #else
 #define dprintf(F,A...)
 #endif
 
-#if CONFIG_CPU_VERBOSE
+#if CONFIG_ARCH_CPU_VERBOSE
 #define cprintf(C,F,A...) printf("CPU%d: " F,(C)->index,##A)
 #else
 #define cprintf(C,F,A...)
 #endif
 
-#if CONFIG_CPU_GENERIC
+#if CONFIG_ARCH_CPU_GENERIC
 
 int generic_cache_init(arch_cpu_t* cpu)
 {
@@ -49,14 +49,14 @@ int generic_cache_init(arch_cpu_t* cpu)
 		cprintf(cpu, "CPU has L1 cache\n");
 
 		cpuid(0x80000005, &dummy1, &dummy2, &ecx, &edx);
-                cpu->caches.l1i.size  = edx >> 24;
+		cpu->caches.l1i.size  = edx >> 24;
 		cpu->caches.l1d.size  = ecx >> 24;
 	} else {
 		cprintf(cpu, "CPU has no L1 cache\n");
 	}
 
 	/* L2 */
-        if (n < 0x80000006) {
+	if (n < 0x80000006) {
 		/* Some chips just have a large L1 */
 		cprintf(cpu, "CPU has no L2 cache\n");
 	} else {
@@ -104,15 +104,15 @@ int generic_infos(arch_cpu_t* cpu)
 
 	/* Clear the features */
 	memset(cpu->infos.features, 0, sizeof(cpu->infos.features));
-	
+
 	/* Get features and other infos */
-        cpuid(1, &eax, &ebx, &ecx, &edx);
-        cpu->infos.family      = (eax >> 8) & 0xf;
-        cpu->infos.model       = (eax >> 4) & 0xf;
-        cpu->infos.stepping    = (eax     ) & 0xf;
-        cpu->infos.features[0] = edx;
+	cpuid(1, &eax, &ebx, &ecx, &edx);
+	cpu->infos.family      = (eax >> 8) & 0xf;
+	cpu->infos.model       = (eax >> 4) & 0xf;
+	cpu->infos.stepping    = (eax     ) & 0xf;
+	cpu->infos.features[0] = edx;
 
 	return 1;
 }
 
-#endif /* CONFIG_CPU_GENERIC */
+#endif /* CONFIG_ARCH_CPU_GENERIC */

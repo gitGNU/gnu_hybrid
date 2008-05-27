@@ -22,19 +22,19 @@
 #include "libc/stdio.h"
 #include "core/dbg/debug.h"
 
-#if CONFIG_CPU_DEBUG
+#if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("amd: " F,##A)
 #else
 #define dprintf(F,A...)
 #endif
 
-#if CONFIG_CPU_VERBOSE
+#if CONFIG_ARCH_CPU_VERBOSE
 #define cprintf(C,F,A...) printf("CPU%d: " F,(C)->index,##A)
 #else
 #define cprintf(C,F,A...)
 #endif
 
-#if CONFIG_CPU_AMD
+#if CONFIG_ARCH_CPU_AMD
 int amd_infos(arch_cpu_t* cpu)
 {
 	unused_argument(cpu);
@@ -72,4 +72,4 @@ void amd_cpu_fini(arch_cpu_t* cpu)
 
 	missing();
 }
-#endif /* CONFIG_CPU_AMD */
+#endif /* CONFIG_ARCH_CPU_AMD */
