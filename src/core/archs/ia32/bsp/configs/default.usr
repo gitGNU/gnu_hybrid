@@ -16,7 +16,7 @@ BIOS_DEBUG=y
 IDT_DEBUG=y
 GDT_DEBUG=y
 MAX_CPU_COUNT=1
-# CPU_DEBUG is not set
+CPU_DEBUG=y
 # CPU_VERBOSE is not set
 
 #
