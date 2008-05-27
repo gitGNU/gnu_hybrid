@@ -29,7 +29,7 @@
 #include "core/dma.h"
 #include "core/mem/address.h"
 
-#if CONFIG_INTERRUPTS_DEBUG
+#if CONFIG_DMA_DEBUG
 #define dprintf(F,A...) printf("dma: " F,##A)
 #else
 #define dprintf(F,A...)
@@ -58,14 +58,18 @@ int dma_init(void)
 		size_t size;
 
 		size = arch_dma_channel_size(index);
-		if (size) {
+		if (size == 0) {
 			printf("Hardware failed to setup "
 			       "channel %d correctly\n", index);
 			index++;
 		}
+
+		(*iter).size   = size;
 		(*iter).index  = index;
 		(*iter).in_use = false;
-		(*iter).size   = size;
+
+		dprintf("DMA channel %d, max size 0x%x\n", index, size);
+
 		index++;
 		count++;
 	}
