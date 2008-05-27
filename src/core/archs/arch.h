@@ -119,6 +119,7 @@ void              arch_delay_us(uint32_t us);
 void              arch_delay_ns(uint32_t ns);
 
 size_t            arch_dma_channels(void);
+size_t            arch_dma_channel_size(uint_t channel);
 int               arch_dma_start_read(uint_t channel,
 				      addr_t address,
 				      size_t count);
