@@ -25,6 +25,7 @@
 #include "core/timer.h"
 #include "core/interrupt.h"
 #include "core/dma.h"
+#include "core/cpu.h"
 #include "core/scheduler.h"
 #include "core/boot/option.h"
 #include "core/build.h"
