@@ -18,6 +18,13 @@
 
 #include "config/config.h"
 #include "core/cpu.h"
+#include "libc++/vector"
+
+#if CONFIG_CPU_DEBUG
+#define dprintf(F,A...) printf("cpu: " F,##A)
+#else
+#define dprintf(F,A...)
+#endif
 
 cpu::cpu()
 {

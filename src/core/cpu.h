@@ -35,7 +35,7 @@ private:
 	bool online_;
 };
 
-// Singleton for all the CPUs on the system
+// Singleton for all CPUs on the system
 class cpus {
 public:
 	static cpus * instance();
@@ -46,7 +46,8 @@ protected:
 	cpus & operator= (const cpus &);
 
 private:
-	static cpus * instance_;
+	static cpus *             instance_;
+	static ktl::vector<cpu *> cpus_;
 };
 
 #endif /* CORE_CPU_H */
