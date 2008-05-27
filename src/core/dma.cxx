@@ -27,7 +27,6 @@
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/dma.h"
-#include "core/interrupt.h"
 #include "core/mem/address.h"
 
 #if CONFIG_INTERRUPTS_DEBUG

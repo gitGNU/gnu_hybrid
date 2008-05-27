@@ -19,7 +19,6 @@
 #include "config/config.h"
 #include "libc++/cstdio"
 #include "libc++/list"
-#include "core/scheduler.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
