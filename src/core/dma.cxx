@@ -82,6 +82,14 @@ int dma_init(void)
 
 void dma_fini(void)
 {
+	ktl::vector<struct dma>::iterator iter;
+	for (iter  = channels.begin();
+	     iter != channels.end();
+	     iter++) {
+		dprintf("Channel %d still in use ...\n", (*iter).in_use);
+
+		// XXX FIXME: Should we wait for the on-going operation ?
+	}
 }
 
 size_t dma_channels(void)
