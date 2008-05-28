@@ -74,21 +74,7 @@
 #define PIT_CNT		0x20
 #define PIT_READ	0xF0
 
-/* Delay loop  */
-static inline void delay_loops(uint32_t loops)
-{
-	int d0;
-
-	__asm__ volatile ("	     jmp 1f \n"
-			  ".align 16	    \n"
-			  "1:     jmp 2f    \n"
-			  ".align 16	    \n"
-			  "2:     decl %0   \n"
-			  "	  jns 2b    \n"
-			  : "=&a" (d0)
-			  : "0" (loops));
-}
-
+static uint32_t frequency;
 
 int i8254_frequency_set(uint32_t freq)
 {
@@ -119,39 +105,20 @@ int i8254_frequency_set(uint32_t freq)
 	return 1;
 }
 
-/* millisecond delay */
-void arch_delay_ms(uint32_t ms)
-{
-	delay_loops(ms * __this_cpu->arch.loops_ms);
-}
-
-/* microsecond delay */
-void arch_delay_us(uint32_t us)
-{
-	delay_loops((us * __this_cpu->arch.loops_ms) / 1024);
-}
-
-/* nanosecond delay */
-void arch_delay_ns(uint32_t ms)
-{
-	delay_loops((ms * __this_cpu->arch.loops_ms) / (1024 * 1024));
-}
-
-static uint32_t frequency;
-
-size_t arch_timer_granularity(void)
-{
-	return frequency;
-}
-
 int i8253_init(void)
 {
-	frequency = HZ;
-	if (!i8254_frequency_set(frequency)) {
+	frequency = 0;
+	if (!i8254_frequency_set(HZ)) {
 		return 0;
 	}
+	frequency = HZ;
 
 	return 1;
+}
+
+uint32_t i8253_frequency(void)
+{
+	return frequency;
 }
 
 int i8253_fini(void)

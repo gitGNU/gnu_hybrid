@@ -21,11 +21,13 @@
 #define I8253_H
 
 #include "config/config.h"
+#include "libc/stdint.h"
 
 __BEGIN_DECLS
 
-int i8253_init(void);
-int i8253_fini(void);
+int      i8253_init(void);
+uint32_t i8253_frequency(void);
+int      i8253_fini(void);
 
 __END_DECLS
 
