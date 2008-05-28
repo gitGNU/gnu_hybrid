@@ -30,55 +30,55 @@
 int arch_atomic_add(int* pointer,
 		    int  delta)
 {
-        int r;
+	int r;
 
-        __asm__ volatile (LOCK "xaddl %%eax, (%%ebx)"
+	__asm__ volatile (LOCK "xaddl %%eax, (%%ebx)"
 			  :"=a" (r)
 			  :"0" (delta), "b" ((int) pointer));
 
-        return r;
+	return r;
 }
 
 int arch_atomic_sub(int* pointer,
 		    int  delta)
 {
-        int r;
+	int r;
 
-        __asm__ volatile (LOCK "xaddl %%eax, (%%ebx)"
+	__asm__ volatile (LOCK "xaddl %%eax, (%%ebx)"
 			  :"=a" (r)
 			  :"0" (-delta), "b" ((int) pointer));
 
-        return r;
+	return r;
 }
 
 int arch_atomic_exchange(int* pointer,
 			 int  new_value)
 {
-        int old_value;
-        
+	int old_value;
+
 	__asm__ volatile ("xchgl (%1), %0"
 			  : "=r" (old_value)
 			  : "0"  (new_value), "r" ((int) pointer)
 			  : "memory");
 
-        return old_value;
+	return old_value;
 }
 
 int arch_atomic_test_and_set(int* pointer)
 {
-        int r;
-        
+	int r;
+
 	__asm__ volatile (LOCK "bts $0, (%1)\n"
 			  "xorl %%eax, %%eax\n"
 			  "setc %%al\n"
 			  : "=a" (r)
 			  : "r" ((int) pointer));
 
-        return r;
+	return r;
 }
 
 int arch_atomic_set(int* pointer,
 		    int  value)
 {
-        return arch_atomic_exchange(pointer, value);
+	return arch_atomic_exchange(pointer, value);
 }
