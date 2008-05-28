@@ -16,15 +16,21 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef LIBS_TIME_H
-#define LIBS_TIME_H
-
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "core/archs/arch.h"
+#include "arch/arch.h"
 
-void delay_ms(uint32_t ms);
-void delay_us(uint32_t us);
-void delay_ns(uint32_t ns);
+void delay_ms(uint32_t ms)
+{
+	arch_delay_ms(ms);
+}
 
-#endif // LIBS_TIME_H
+void delay_us(uint32_t us)
+{
+	arch_delay_us(us);
+}
+
+void delay_ns(uint32_t ns)
+{
+	arch_delay_ns(ns);
+}
