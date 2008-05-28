@@ -23,8 +23,12 @@
 #include "libc/stdint.h"
 #include "core/archs/arch.h"
 
+__BEGIN_DECLS
+
 void delay_ms(uint32_t ms);
 void delay_us(uint32_t us);
 void delay_ns(uint32_t ns);
+
+__END_DECLS
 
 #endif // LIBS_TIME_H
