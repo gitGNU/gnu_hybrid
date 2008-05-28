@@ -159,11 +159,6 @@ void gdt_fini(void)
 	missing();
 }
 
-int arch_vm_pagesize(void)
-{
-	return CONFIG_PAGE_SIZE;
-}
-
 #if CONFIG_DEBUGGER
 static dbg_result_t command_gdt_on_execute(FILE* stream,
 					   int   argc,
