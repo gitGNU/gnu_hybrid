@@ -19,7 +19,6 @@
 
 #include "config/config.h"
 #include "arch/idt.h"
-#include "arch/trap.h"
 #include "core/dbg/debug.h"
 
 static char * exception_messages[] = {
@@ -57,11 +56,14 @@ static char * exception_messages[] = {
 	"Reserved Exception"
 };
 
+/* Lame but ... better than hardwiring a constant value */
+#define KNOWN_EXCEPTIONS (sizeof(exception_messages) / sizeof(char *))
+
 void trap_handler(regs_t * regs)
 {
 	assert(regs);
 
-	if (regs->isr_no < 32) {
+	if (regs->isr_no < KNOWN_EXCEPTIONS) {
 		panic("%s\n", exception_messages[regs->isr_no]);
 		idt_frame_dump(regs);
 	}
