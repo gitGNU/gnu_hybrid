@@ -21,7 +21,6 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "core/archs/arch.h"
 
 __BEGIN_DECLS
 

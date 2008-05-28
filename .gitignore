@@ -43,7 +43,7 @@ src/config/userconfig.h
 src/core/syscalls.h
 src/rules.pkg
 
-src/core/arch
+src/arch
 src/core/build.h
 
 docs/hybrid.info

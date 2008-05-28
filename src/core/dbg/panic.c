@@ -23,7 +23,7 @@
 #include "libc/stdio.h"
 #include "libc/stdarg.h"
 #include "libc/unistd.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/backtrace.h"
 #include "core/dbg/debugger/debugger.h"

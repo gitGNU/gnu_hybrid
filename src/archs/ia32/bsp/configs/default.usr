@@ -1,0 +1,173 @@
+#
+# Automatically generated make config, don't edit
+#
+
+#
+# Intel ia-32 architecture
+#
+ARCH_DEBUG=y
+I8253_DEBUG=y
+I8259_DEBUG=y
+I8237_DEBUG=y
+ARCH_IRQ_DEBUG=y
+ARCH_DMA_DEBUG=y
+CMOS_DEBUG=y
+BIOS_DEBUG=y
+IDT_DEBUG=y
+GDT_DEBUG=y
+MAX_CPU_COUNT=1
+# ARCH_CPU_DEBUG is not set
+# ARCH_CPU_VERBOSE is not set
+
+#
+# Specific CPU support
+#
+ARCH_CPU_INTEL=y
+ARCH_CPU_AMD=y
+ARCH_CPU_GENERIC=y
+# BOCHS_DEBUGGER is not set
+# RS232_DEBUGGER is not set
+HOSTED_DEBUGGER=y
+
+#
+# RS232 parameters
+#
+
+#
+# Hosted debugger parameters
+#
+VGA_DEBUGGER_BASE=0x000B8000
+VGA_DEBUGGER_ROWS=25
+VGA_DEBUGGER_COLUMNS=80
+# VGA_DEBUG is not set
+# ATKBD_SCANCODES_DEBUG is not set
+
+#
+# Boot settings
+#
+BOOT_SANITY=y
+MULTIBOOT_VERBOSE=y
+MULTIBOOT_MEM_VERBOSE=y
+
+#
+# Board Support
+#
+ARCH_PC=y
+
+#
+# Boot related settings
+#
+OPTIONS=y
+# OPTIONS_DEBUG is not set
+# BOOTSTRAP_DEBUG is not set
+BOOTINFO_MEM_REGIONS=32
+BOOTINFO_ARGS_SIZE=256
+BOOTINFO_MODULES=64
+
+#
+# Debugging
+#
+DEBUG=y
+
+#
+# Debugging options
+#
+EXPECT=y
+CHECK_MEMORY=y
+FOOLISH_MEM_CHECKS=y
+CHECK_STACK=y
+# REGRESSION is not set
+DEBUGGER=y
+
+#
+# Integrated debugger
+#
+GDB=y
+DEBUGGER_LINE_LENGTH=512
+DEBUGGER_HISTORY=y
+DEBUGGER_HISTORY_LINES=16
+DEBUGGER_COMPLETION=y
+DEBUGGER_OPTIONS=y
+# DEBUGGER_DEBUG is not set
+
+#
+# Panics
+#
+MAX_STACK_LEVELS=16
+# DEBUGGER_ON_PANIC is not set
+HALT_ON_PANIC=y
+# REBOOT_ON_PANIC is not set
+MORSE=y
+MORSE_VISIBLE=y
+MORSE_AUDIBLE=y
+
+#
+# Memory
+#
+LMA=0x00100000
+VMA=0xC0000000
+PAGE_SIZE=4096
+BSS_DEBUG=y
+# VMM_DEBUG is not set
+# PMM_DEBUG is not set
+# PMM_MEMORY_TEST is not set
+# DEBUG_HEAP is not set
+# DEBUG_FIT is not set
+
+#
+# Binary formats
+#
+# DLFNC_DEBUG is not set
+# BFD_DEBUG is not set
+
+#
+# ELF format
+#
+ELF=y
+# ELF_DEBUG is not set
+
+#
+# A.OUT format
+#
+AOUT=y
+# AOUT_DEBUG is not set
+
+#
+# Libraries
+#
+# DEBUG_LIST is not set
+# DEBUG_HASH is not set
+# DEBUG_QUEUE is not set
+# DEBUG_BITMAP is not set
+
+#
+# Core
+#
+
+#
+# Scheduler
+#
+SCHEDULER_DEBUG=y
+
+#
+# Processes
+#
+PROCESS_DEBUG=y
+
+#
+# Threads
+#
+THREAD_DEBUG=y
+LOG_SIZE=4096
+MODULES=y
+MODULES_DEBUG=y
+CPU_DEBUG=y
+DMA_DEBUG=y
+INTERRUPTS_DEBUG=y
+TIMERS_DEBUG=y
+RSRC_DEBUG=y
+LOG_DEBUG=y
+SPINLOCK_DEBUG=y
+MUTEX_DEBUG=y
+SEMAPHORE_DEBUG=y
+POSIX=y

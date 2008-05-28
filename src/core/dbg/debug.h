@@ -21,7 +21,6 @@
 #define CORE_DBG_DEBUG_H
 
 #include "config/config.h"
-#include "elklib.h"
 #include "libc/stdio.h"
 #include "libc/assert.h"
 #include "libcompiler/macro.h"

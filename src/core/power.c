@@ -20,7 +20,7 @@
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "core/syscall.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"

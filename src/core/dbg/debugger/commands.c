@@ -20,7 +20,7 @@
 #include "config/config.h"
 #include "libc/stddef.h"
 #include "libc/string.h"
-#include "core/archs/linker.h"
+#include "archs/linker.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 
@@ -135,9 +135,9 @@ int dbg_commands_config(dbg_command_t** start,
 		assert(tmp);
 
 		dprintf("Command (0x%x)\n", *tmp);
-		
+
 		assert((*tmp)->name);
-		
+
 		dprintf("  Name      = '%s'\n",
 			(*tmp)->name);
 		dprintf("  Short     = '%s'\n",
@@ -148,13 +148,13 @@ int dbg_commands_config(dbg_command_t** start,
 			(*tmp)->actions.on_enter,
 			(*tmp)->actions.on_execute,
 			(*tmp)->actions.on_leave);
-		
+
 		if (!dbg_command_add(*tmp)) {
 			dprintf("Cannot add debugger command '%s'",
 				(*tmp)->name);
 			return 0;
 		}
-		
+
 		tmp++;
 	}
 

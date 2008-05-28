@@ -17,7 +17,7 @@
 //
 
 #include "config/config.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc++/cstdio"

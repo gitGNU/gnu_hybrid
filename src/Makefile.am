@@ -26,6 +26,7 @@ include $(srcdir)/Makefile.def
 include $(srcdir)/config/Makefile.inc
 include $(srcdir)/libs/Makefile.inc
 include $(srcdir)/core/Makefile.inc
+include $(srcdir)/archs/Makefile.inc
 
 ##
 ## Configuration related targets
@@ -36,7 +37,7 @@ CFG_USER = $(USERCONFIG)
 CFG_CLEANFILES           = $(CFG_ALL)
 CFG_MAINTAINERCLEANFILES = $(CFG_ALL) $(CFG_USER) $(CFG_USER).old $(CFG_USER).new
 
-DEFAULT_CFG = $(top_srcdir)/src/core/archs/$(architecture)/bsp/configs/default.usr
+DEFAULT_CFG = $(top_srcdir)/src/archs/$(architecture)/bsp/configs/default.usr
 CURRENT_CFG = $(CFG_USER)
 
 default-config-load:
@@ -55,7 +56,7 @@ pre-config:
 	$(MAKE) all -C $(top_builddir)/tools
 
 $(CFG_ALL): $(CFG_FILES)
-	$(PACKRULES) $(PACKRULES_FLAGS) -p $(top_srcdir)/src -i core/archs/$(architecture)/rules.cfg -o $(CFG_ALL) || {	\
+	$(PACKRULES) $(PACKRULES_FLAGS) -p $(top_srcdir)/src -i archs/$(architecture)/rules.cfg -o $(CFG_ALL) || {	\
 		rm -f $(CFG_ALL) ;											\
 		exit 1;													\
 	}
@@ -161,7 +162,7 @@ kernel_CXXFLAGS     = $(KERNELCXXFLAGS)
 ##
 SYMSFILE    = all.syms
 CLEANFILES += $(SYMSFILE)
-WORDSIZE    = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_srcdir)/src/core/archs/$(architecture)/libs/c/bits/wordsize.h -s __WORDSIZE -V -D`
+WORDSIZE    = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_srcdir)/src/archs/$(architecture)/libs/c/bits/wordsize.h -s __WORDSIZE -V -D`
 $(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(ELF2SYMSTAB)
 	$(ELF2SYMSTAB) $(ELF2SYMSTAB_FLAGS) -m -X -w $(WORDSIZE) -n -o $(SYMSFILE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || { rm -f $(SYMSFILE) ; exit 1 ; } 
 
@@ -259,13 +260,13 @@ install-exec-hook:
 ## maintainer-clean target related
 ##
 maintainer-clean-local:
-	rm -f core/arch
+	rm -f arch
 
 ##
 ## dist target related
 ##
 dist-hook:
-	rm -f $(distdir)/core/arch
+	rm -f $(distdir)/arch
 	rm -f $(BUILD_FILE)
 
 ##

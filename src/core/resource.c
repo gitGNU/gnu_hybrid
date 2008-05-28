@@ -22,7 +22,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
-#include "core/archs/linker.h"
+#include "archs/linker.h"
 #include "core/resource.h"
 #include "core/mem/address.h"
 #include "core/dbg/debug.h"
@@ -164,15 +164,15 @@ int resources_config(resource_t** start,
 			(*tmp)->start,
 			(*tmp)->stop);
 #endif
-		
+
 		if (!resource_add(*tmp)) {
 			dprintf("Cannot add resource '%s'", (*tmp)->name);
 			return 0;
 		}
-		
+
 		tmp++;
 	}
-	
+
 	return 1;
 }
 
@@ -197,10 +197,10 @@ int resources_unconfig(resource_t** start,
 			dprintf("Cannot remove resource '%s'", (*tmp)->name);
 			return 0;
 		}
-		
+
 		tmp++;
 	}
-	
+
 	return 1;
 }
 

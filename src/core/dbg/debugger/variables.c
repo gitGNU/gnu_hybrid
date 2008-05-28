@@ -20,7 +20,7 @@
 #include "config/config.h"
 #include "libc/stddef.h"
 #include "libc/string.h"
-#include "core/archs/linker.h"
+#include "archs/linker.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 
@@ -178,7 +178,7 @@ dbg_result_t dbg_variable_set(const char* string, int value)
 int dbg_variables_config(dbg_variable_t** start,
 			 dbg_variable_t** stop)
 {
-	dbg_variable_t** tmp;	
+	dbg_variable_t** tmp;
 
 	assert(start);
 	assert(stop);
@@ -195,7 +195,7 @@ int dbg_variables_config(dbg_variable_t** start,
 		dprintf("Variable (0x%x)\n", *tmp);
 
 		assert((*tmp)->name);
-		
+
 		dprintf("  Name          = '%s'\n",
 			(*tmp)->name);
 #if 0
@@ -219,7 +219,7 @@ int dbg_variables_config(dbg_variable_t** start,
 				(*tmp)->name);
 			return 0;
 		}
-		
+
 		tmp++;
 	}
 

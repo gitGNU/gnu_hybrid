@@ -22,7 +22,7 @@
 #include "libc/stddef.h"
 #include "libcompiler/compiler.h"
 #include "libcompiler/demangle.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "core/bfd/bfd.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
@@ -74,7 +74,7 @@ void backtrace_show(FILE* stream)
 					      MAX_SYMBOL_LENGTH,
 					      &base)) {
 			unsigned delta;
-			
+
 			/*
 			 * NOTE:
 			 *     Start from the mangled symbol, if we got the
@@ -97,7 +97,7 @@ void backtrace_show(FILE* stream)
 			 *     mangled one ...
 			 */
 #endif /* ELKLIB_SYMBOLS_DEMANGLING */
-			
+
 			/*
 			 * NOTE:
 			 *     Compute the difference between backtrace
@@ -129,7 +129,7 @@ static dbg_result_t command_backtrace_on_execute(FILE* stream,
 	assert(argc >= 0);
 
 	if (argc != 0) {
-		return 	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
 
 	unused_argument(argv);

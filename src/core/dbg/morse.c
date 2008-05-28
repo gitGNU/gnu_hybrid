@@ -21,7 +21,7 @@
 #include "core/time.h"
 #include "libc/ctype.h"
 #include "libc/unistd.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 

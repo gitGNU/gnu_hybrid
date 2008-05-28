@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "core/dbg/debug.h"
 #include "core/mem/pmm.h"
 #include "core/boot/bootinfo.h"

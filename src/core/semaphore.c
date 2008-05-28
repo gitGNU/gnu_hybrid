@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "core/archs/arch.h"
+#include "archs/arch.h"
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
@@ -90,7 +90,7 @@ static dbg_result_t command_semaphores_on_execute(FILE* stream,
 	assert(argc >= 0);
 
 	if (argc != 0) {
-		return 	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
 	}
 
 	unused_argument(argv);

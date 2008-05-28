@@ -33,7 +33,7 @@ BUILT_SOURCES +=				\
 #     The following rule must not depend on Makefile (it should be run one
 #     time only ...
 $(USERCONFIG):
-	cp $(top_srcdir)/src/core/archs/$(architecture)/bsp/configs/default.usr $(USERCONFIG) || exit 1
+	cp $(top_srcdir)/src/archs/$(architecture)/bsp/configs/default.usr $(USERCONFIG) || exit 1
 
 @reldir@/rules.all: Makefile $(CFG_FILES) $(RULES2SYMS)
 	$(RULES2SYMS) $(RULES2SYMS_FLAGS) -o @reldir@/rules.all -- $(CFG_FILES) || { rm -f @reldir@/rules.all ; exit 1 ; }

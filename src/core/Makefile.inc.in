@@ -18,7 +18,6 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
-include @reldir@/archs/Makefile.inc
 include @reldir@/bfd/Makefile.inc
 include @reldir@/boot/Makefile.inc
 include @reldir@/dbg/Makefile.inc

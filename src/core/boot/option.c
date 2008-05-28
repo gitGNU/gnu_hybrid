@@ -23,7 +23,7 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "libc/stdlib.h"
-#include "core/archs/linker.h"
+#include "archs/linker.h"
 #include "core/mem/heap.h"
 #include "core/boot/option.h"
 #include "core/dbg/debug.h"

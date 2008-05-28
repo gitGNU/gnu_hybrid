@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "core/archs/linker.h"
+#include "archs/linker.h"
 #include "libc/ctype.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"

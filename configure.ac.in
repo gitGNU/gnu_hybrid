@@ -719,9 +719,11 @@ AC_CONFIG_FILES([
 	src/config/version.h
 ])
 
-# Then build the correct link to the choosen target architecture. This solution
-# is not portable so it should be removed ASAP !
-AC_CONFIG_LINKS(src/core/arch:src/core/archs/$architecture)
+#
+# XXX FIXME:
+#     Build the correct link to the choosen target architecture. This solution
+#     is not portable so it should be removed ASAP !
+AC_CONFIG_LINKS(src/arch:src/archs/$architecture)
 
 AC_OUTPUT
 

@@ -111,7 +111,7 @@ USERCONFIG   = $(top_builddir)/src/config/rules.usr
 ##         gcc-3.3.4: -Wextra
 ##
 COMMONLDSCRIPT =						\
-        $(top_srcdir)/src/core/archs/$(architecture)/kernel.ld
+        $(top_srcdir)/src/archs/$(architecture)/kernel.ld
 
 #COMMONLDFLAGS =					\
 #	-XCClinker -nostartfiles		\

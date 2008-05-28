@@ -23,9 +23,9 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "libc/bits/byteswap.h"
-#include "core/archs/linker.h"
+#include "archs/linker.h"
+#include "arch/dbg/debugger/gdb.h"
 #include "core/dbg/debug.h"
-#include "core/arch/dbg/debugger/gdb.h"
 #include "core/dbg/debugger/debugger.h"
 
 #if CONFIG_GDB
@@ -198,7 +198,7 @@ static int gdb_parse_command(unsigned int* regfile)
 	} else {
 		gdb_ack();
 	}
-	
+
 	switch (cmd[0]) {
 	case 'H':
 		/*
@@ -266,12 +266,12 @@ static int gdb_parse_command(unsigned int* regfile)
 		 */
 		gdb_regreply(regfile, GDB_REGISTER_FILE_COUNT);
 		break;
-	
+
 	case 'm': {
 		char*    ptr;
 		unsigned address;
 		unsigned len;
-		
+
 		/*
 		 * The 'm' command has the form mAAA,LLL
 		 * where AAA is the address and LLL is the
@@ -285,7 +285,7 @@ static int gdb_parse_command(unsigned int* regfile)
 			address += parse_nibble(*ptr);
 			ptr     += 1;
 		}
-			
+
 		if (*ptr== ',') {
 			ptr += 1;
 		}
@@ -313,8 +313,8 @@ static int gdb_parse_command(unsigned int* regfile)
 
 		break;
 	}
-	
-	case 'k': 
+
+	case 'k':
 		/*
 		 * Command 'k' actual semantics is 'kill the damn thing'.
 		 * However gdb sends that command when you disconnect
@@ -325,12 +325,12 @@ static int gdb_parse_command(unsigned int* regfile)
 		 * kernel debugger command prompt.
 		 */
 		return GDB_QUIT;
-	
+
 	default:
 		gdb_reply("E01");
 		break;
 	}
-	
+
 	return GDB_WAITACK;
 }
 
@@ -405,7 +405,7 @@ static int gdb_cksum1_handler(int input, unsigned int *regfile)
 static int gdb_cksum2_handler(int input, unsigned int *regfile)
 {
 	int nibble;
-	
+
 	nibble = parse_nibble(input);
 	if (nibble == 0xff) {
 #if 0
@@ -428,7 +428,7 @@ static int gdb_cksum2_handler(int input, unsigned int *regfile)
 
 static int gdb_waitack_handler(int input, unsigned int *regfile)
 {
-       	(void)(regfile);
+	(void)(regfile);
 
 	switch(input) {
 	case '+':
@@ -508,7 +508,7 @@ static dbg_result_t command_gdb_on_execute(FILE* stream,
 	if (!gdb_run()) {
 		return DBG_RESULT_ERROR;
 	}
-	
+
 	return DBG_RESULT_OK;
 }
 

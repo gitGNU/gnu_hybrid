@@ -22,7 +22,7 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "core/arch/boot/bootinfo.h"
+#include "arch/boot/bootinfo.h"
 
 __BEGIN_DECLS
 
@@ -37,7 +37,7 @@ __BEGIN_DECLS
 
 /* Some consistency checks dudes ... ;-) */
 #if (BOOTINFO_ARGS_SIZE < 1)
-#error BOOTINFO_ARGS_SIZE must be >= 1 
+#error BOOTINFO_ARGS_SIZE must be >= 1
 #endif
 
 typedef enum {
@@ -47,7 +47,7 @@ typedef enum {
 } bi_mem_t;
 
 /* Update the following defines accordingly to bi_mem_t typedef ... */
-#define BOOTINFO_MEMTYPE_MIN BOOTINFO_MEM_RAM 
+#define BOOTINFO_MEMTYPE_MIN BOOTINFO_MEM_RAM
 #define BOOTINFO_MEMTYPE_MAX BOOTINFO_MEM_ROM
 
 /* Update the following define accordingly to bi_mem_t typedef ... */
