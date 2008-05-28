@@ -118,32 +118,3 @@ void irq_fini(void)
 {
 	i8259_fini();
 }
-
-void arch_irqs_enable(void)
-{
-	i8259_enable(0);
-	irqs_enabled = 1;
-}
-
-int arch_irqs_enabled(void)
-{
-	return irqs_enabled;
-}
-
-void arch_irqs_disable(void)
-{
-	i8259_disable(0);
-	irqs_enabled = 0;
-}
-
-arch_irqs_state_t arch_irqs_state_get(void)
-{
-	return i8259_mask_get();
-}
-
-void arch_irqs_state_set(arch_irqs_state_t * state)
-{
-	assert(state);
-
-	i8259_mask_set(*state);
-}
