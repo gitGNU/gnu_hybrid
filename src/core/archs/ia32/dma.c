@@ -37,32 +37,3 @@ void dma_fini(void)
 {
 	i8237_fini();
 }
-
-size_t arch_dma_channels(void)
-{
-	return i8327_channels();
-}
-
-size_t arch_dma_channel_size(uint_t channel)
-{
-	return i8327_channel_size(channel);
-}
-
-int arch_dma_start_read(uint_t channel,
-			addr_t address,
-			size_t count)
-{
-	return i8237_start(channel, address, count, 1);
-}
-
-int arch_dma_start_write(uint_t channel,
-			 addr_t address,
-			 size_t count)
-{
-	return i8237_start(channel, address, count, 0);
-}
-
-int arch_dma_stop(uint_t channel)
-{
-	return i8237_stop(channel);
-}
