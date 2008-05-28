@@ -63,7 +63,7 @@ core_SRCS =					\
 	@reldir@/timer.h			\
 	@reldir@/timer.cxx			\
 	@reldir@/time.h				\
-	@reldir@/time.c				\
+	@reldir@/time.cxx			\
 	@reldir@/log.h				\
 	@reldir@/log.c				\
 	@reldir@/scheduler.h			\

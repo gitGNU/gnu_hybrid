@@ -35,7 +35,6 @@ arch_ia32_SRCS =				\
 	@reldir@/keyboard.h			\
 	@reldir@/arch.h				\
 	@reldir@/arch.c				\
-	@reldir@/power.c			\
 	@reldir@/port.h				\
 	@reldir@/port.c				\
 	@reldir@/cmos.h				\
@@ -62,7 +61,6 @@ arch_ia32_SRCS =				\
 	@reldir@/atomic.c			\
 	@reldir@/asm.h				\
 	@reldir@/asm.c				\
-	@reldir@/context.c			\
 	@reldir@/cpu.h				\
 	@reldir@/cpu.c				\
 	$(arch_ia32_dbg_SRCS)			\

@@ -20,6 +20,7 @@
 
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
+	@reldir@/rules.cfg			\
 	@reldir@/configs
 
 arch_ia32_bsp_SRCS =				\
