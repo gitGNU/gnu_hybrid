@@ -42,17 +42,17 @@ core_SRCS =					\
 	$(core_scheduler_SRCS)			\
 	@reldir@/syscall.h			\
 	@reldir@/power.h			\
-	@reldir@/power.c			\
+	@reldir@/power.cxx			\
 	@reldir@/resource.h			\
-	@reldir@/resource.c			\
+	@reldir@/resource.cxx			\
 	@reldir@/process.h			\
 	@reldir@/process.cxx			\
 	@reldir@/thread.h			\
 	@reldir@/thread.cxx			\
 	@reldir@/semaphore.h			\
-	@reldir@/semaphore.c			\
+	@reldir@/semaphore.cxx			\
 	@reldir@/mutex.h			\
-	@reldir@/mutex.c			\
+	@reldir@/mutex.cxx			\
 	@reldir@/interrupt.h			\
 	@reldir@/interrupt.cxx			\
 	@reldir@/cpu.h				\
@@ -64,9 +64,7 @@ core_SRCS =					\
 	@reldir@/time.h				\
 	@reldir@/time.cxx			\
 	@reldir@/log.h				\
-	@reldir@/log.c				\
+	@reldir@/log.cxx			\
 	@reldir@/scheduler.h			\
 	@reldir@/scheduler.cxx			\
-	@reldir@/module.h			\
-	@reldir@/module.c			\
 	@reldir@/main.cxx
