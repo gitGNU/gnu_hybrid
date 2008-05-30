@@ -47,7 +47,7 @@ static void remap(uint_t idt_base)
 	port_out8(PIC_MASTER,     ICU_RESET);
 	port_out8(PIC_SLAVE,      ICU_RESET);
 
-	/* Send ICW2: controller base address (IDT indices) */
+	/* Send ICW2: controller base address (IDT base index) */
 	port_out8(PIC_MASTER + 1, idt_base);
 	port_out8(PIC_SLAVE + 1,  idt_base + 8);
 
