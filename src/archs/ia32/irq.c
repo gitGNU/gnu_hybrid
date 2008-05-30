@@ -34,15 +34,21 @@
 
 static irq_handler_t handlers[I8259_IRQS];
 
-void irq_handler_install(uint_t        irq,
-			 irq_handler_t handler)
+int irq_handler_install(uint_t        irq,
+			irq_handler_t handler)
 {
 	assert(irq < I8259_IRQS);
 	assert(handler);
 
 	dprintf("Handler 0x%p installed to irq %d\n", handler, irq);
 
+	if (handlers[irq]) {
+		dprintf("Handler is present on irq %d\n", irq);
+		return 0;
+	}
 	handlers[irq] = handler;
+
+	return 1;
 }
 
 void irq_handler_uninstall(uint_t irq)
@@ -70,7 +76,7 @@ void irq_handler(regs_t * regs)
 	vector = regs->isr_no - I8259_IDT_BASE_INDEX;
 	assert((vector >= 0) && (vector < I8259_IRQS));
 
-	printf("IRQ %d/%d\n", vector, I8259_IRQS);
+	dprintf("IRQ %d/%d/%d\n", regs->isr_no, vector, I8259_IRQS);
 	idt_frame_dump(regs);
 
 	prio_old = irq_level;
@@ -87,19 +93,24 @@ void irq_handler(regs_t * regs)
 		sti();
 		handler(regs);
 		cli();
+	} else {
+		dprintf("No handler installed for interrupt %d\n", vector);
 	}
 
 	irq_level = prio_old;
 	i8259_mask_set(mask_table[irq_level]);
+
+	sti();
 }
 
-static int irqs_enabled;
+static void timer(regs_t * regs)
+{
+	dprintf("TICKER (%p) !!!\n", regs);
+}
 
 int irq_init(void)
 {
 	int i;
-
-	irqs_enabled = 0;
 
 	for (i = 0; i < I8259_IRQS; i++) {
 		handlers[i]   = NULL;
@@ -109,6 +120,10 @@ int irq_init(void)
 
 	if (!i8259_init()) {
 		panic("Cannot initialize i8259");
+	}
+
+	if (!irq_handler_install(0, timer)) {
+		return 0;
 	}
 
 	return 1;
