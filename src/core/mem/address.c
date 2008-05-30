@@ -33,10 +33,6 @@ static int inrange(void* addr, void* start, void* end)
 		return 1;
 	}
 
-#if CONFIG_MODULES
-	/* No, is the address inside a module ? */
-#endif
-
 	/* No, it is elsewhere ... */
 	return 0;
 }
@@ -173,8 +169,8 @@ static dbg_result_t command_dump_on_execute(FILE* stream,
 		uint_t len;
 		int    words;
 
-		base  = atoi(argv[0]);
-		len   = atoi(argv[1]);
+		base = atoi(argv[0]);
+		len  = atoi(argv[1]);
 
 		words = 0;
 		if (argc >= 3) {
