@@ -28,6 +28,8 @@
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 
+__BEGIN_DECLS
+
 #define BANNER          "resource: "
 
 #if CONFIG_RSRC_DEBUG
@@ -41,10 +43,10 @@
  *     This is the head pointer, it is not static because it must be accessed
  *     by the debugger
  */
-static resource_t* resources = NULL;
+static resource_t * resources = NULL;
 
 /* Ordered add to the resources list */
-int resource_add(resource_t* res)
+int resource_add(resource_t * res)
 {
 	assert(res);
 
@@ -56,7 +58,7 @@ int resource_add(resource_t* res)
 	return 1;
 }
 
-int resource_remove(resource_t* res)
+int resource_remove(resource_t * res)
 {
 	assert(res);
 
@@ -67,14 +69,14 @@ int resource_remove(resource_t* res)
 	return 0;
 }
 
-resource_t* resource_new(const char*     name,
+resource_t * resource_new(const char*     name,
 			 resource_type_t type,
 			 uint_t          start,
 			 uint_t          stop)
 {
-	resource_t* res;
+	resource_t * res;
 
-	res = malloc(sizeof(resource_t));
+	res = static_cast<resource_t *>(malloc(sizeof(resource_t)));
 	if (!res) {
 		dprintf("Cannot allocate enough memory for resource '%s'\n",
 			name);
@@ -97,7 +99,7 @@ resource_t* resource_new(const char*     name,
 	return res;
 }
 
-void resource_delete(resource_t* res)
+void resource_delete(resource_t * res)
 {
 	assert(res);
 
@@ -127,7 +129,7 @@ int resource_request(resource_type_t type,
 	return 0;
 }
 
-void resource_release(resource_t* res)
+void resource_release(resource_t * res)
 {
 	assert(res);
 
@@ -138,10 +140,10 @@ void resource_release(resource_t* res)
 	missing();
 }
 
-int resources_config(resource_t** start,
-		     resource_t** stop)
+int resources_config(resource_t ** start,
+		     resource_t ** stop)
 {
-	resource_t** tmp;
+	resource_t ** tmp;
 
 	assert(start);
 	assert(stop);
@@ -176,10 +178,10 @@ int resources_config(resource_t** start,
 	return 1;
 }
 
-int resources_unconfig(resource_t** start,
-		       resource_t** stop)
+int resources_unconfig(resource_t ** start,
+		       resource_t ** stop)
 {
-	resource_t** tmp;
+	resource_t ** tmp;
 
 	assert(start);
 	assert(stop);
@@ -232,7 +234,7 @@ void resource_fini(void)
 }
 
 #if CONFIG_DEBUGGER
-static void dump_res(FILE* stream, resource_t* resource)
+static void dump_res(FILE* stream, resource_t * resource)
 {
 	assert(stream);
 
@@ -244,12 +246,12 @@ static void dump_res(FILE* stream, resource_t* resource)
 		resource->type);
 }
 
-static void walk_sibling(FILE* stream, resource_t* resource);
-static void walk_child(FILE* stream, resource_t* resource);
+static void walk_sibling(FILE* stream, resource_t * resource);
+static void walk_child(FILE* stream, resource_t * resource);
 
-static void walk_child(FILE* stream, resource_t* resource)
+static void walk_child(FILE* stream, resource_t * resource)
 {
-	resource_t* tmp;
+	resource_t * tmp;
 
 	assert(stream);
 
@@ -264,9 +266,9 @@ static void walk_child(FILE* stream, resource_t* resource)
 	}
 }
 
-static void walk_sibling(FILE* stream, resource_t* resource)
+static void walk_sibling(FILE* stream, resource_t * resource)
 {
-	resource_t* tmp;
+	resource_t * tmp;
 
 	assert(stream);
 
@@ -305,3 +307,5 @@ DBG_COMMAND_DECLARE(resources,
 		    command_resources_on_execute,
 		    NULL);
 #endif
+
+__END_DECLS
