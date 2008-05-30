@@ -16,8 +16,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef LIBS_TIME_H
-#define LIBS_TIME_H
+#ifndef LIBS_DELAY_H
+#define LIBS_DELAY_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -30,4 +30,4 @@ void delay_ns(uint32_t ns);
 
 __END_DECLS
 
-#endif // LIBS_TIME_H
+#endif // LIBS_DELAY_H

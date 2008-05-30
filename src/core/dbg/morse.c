@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "core/time.h"
+#include "core/delay.h"
 #include "libc/ctype.h"
 #include "libc/unistd.h"
 #include "archs/arch.h"
