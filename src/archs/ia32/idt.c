@@ -126,17 +126,15 @@ static void idt_trap_set(uint32_t i,
 	idt_gate_set(i, IDT_TRAP, (uint32_t) addr);
 }
 
-static void idt_load(idt_entry_t * table,
-		     size_t        entries)
+static void idt_load(void)
 {
 	idt_pointer_t idt_p;
 
-	assert(entries <= IDT_ENTRIES);
+	idt_p.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
+	idt_p.base  = (uint32_t) idt_table;
 
-	idt_p.limit = (sizeof(idt_entry_t) * entries) - 1;
-	idt_p.base  = (uint32_t) table;
-
-	dprintf("Loading IDT table at 0x%p (%d entries)\n", table, entries);
+	dprintf("Loading IDT table at 0x%p (%d entries)\n",
+		idt_table, IDT_ENTRIES);
 	lidt(&idt_p.limit);
 }
 
@@ -213,7 +211,7 @@ extern void irq_13(void);
 extern void irq_14(void);
 extern void irq_15(void);
 
-int idt_init(void)
+void idt_clear(void)
 {
 	int i;
 
@@ -221,6 +219,11 @@ int idt_init(void)
 	for (i = 0; i < IDT_ENTRIES; i++) {
 		idt_gate_clear(i);
 	}
+}
+
+int idt_init(void)
+{
+	idt_clear();
 
 	idt_trap_set(0,  trap_00);
 	idt_trap_set(1,  trap_01);
@@ -271,14 +274,15 @@ int idt_init(void)
 	idt_interrupt_set(45, irq_14);
 	idt_interrupt_set(46, irq_15);
 
-	idt_load(idt_table, IDT_ENTRIES);
+	idt_load();
 
 	return 1;
 }
 
 void idt_fini(void)
 {
-	missing();
+	idt_clear();
+	idt_load();
 }
 
 #if CONFIG_DEBUGGER
