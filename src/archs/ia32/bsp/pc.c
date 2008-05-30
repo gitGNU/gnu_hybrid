@@ -23,6 +23,7 @@
 #include "archs/arch.h"
 #include "arch/asm.h"
 #include "arch/port.h"
+#include "arch/idt.h"
 #include "arch/i8259.h"
 #include "arch/i8237.h"
 #include "arch/i8253.h"
@@ -46,20 +47,13 @@ void arch_poweroff(void)
 
 void arch_reset(void)
 {
-	uint8_t temp;
-
 	cli();
+	idt_clear();
+	sti();
 
-	/* flush the keyboard controller */
-	do {
-		temp = port_in8(0x64);
-		if (temp & 1) {
-			port_in8(0x60);
-		}
-	} while (temp & 2);
+	__asm__ volatile ("int $0x03\n");
 
-	/* send the CPU reset line */
-	port_out8(0x64, 0xFE);
+	arch_halt();
 }
 
 void arch_irqs_enable(void)
@@ -90,33 +84,34 @@ void arch_irqs_state_set(arch_irqs_state_t * state)
 }
 
 /* Delay loop  */
-static inline void delay_loops(uint32_t loops)
+void delay_loops(uint32_t loops)
 {
-	int d0;
-
-	__asm__ volatile ("	     jmp 1f \n"
-			  ".align 16	    \n"
-			  "1:     jmp 2f    \n"
-			  ".align 16	    \n"
-			  "2:     decl %0   \n"
-			  "	  jns 2b    \n"
-			  : "=&a" (d0)
-			  : "0" (loops));
+	(void) loops;
+#if 0
+	__asm__ volatile ("   movl %0, %1\n\t"
+			  "0: lahf\n\t"
+			  "   dec  %1\n\t"
+			  "   jnz  0b\n\t"
+			  :
+			  : "r" (loops)
+			  : "0"
+			  );
+#endif
 }
 
 void arch_delay_ms(uint32_t ms)
 {
-	delay_loops(100 * ms); //ms * __this_cpu->arch.loops_ms);
+	delay_loops(ms * __this_cpu->arch.loops_ms);
 }
 
 void arch_delay_us(uint32_t us)
 {
-	delay_loops(10 * us); //(us * __this_cpu->arch.loops_ms) / 1024);
+	delay_loops((us * __this_cpu->arch.loops_ms) / 1024);
 }
 
 void arch_delay_ns(uint32_t ns)
 {
-	delay_loops(1 * ns); //(ms * __this_cpu->arch.loops_ms) / (1024 * 1024));
+	delay_loops((ns * __this_cpu->arch.loops_ms) / (1024 * 1024));
 }
 
 int arch_vm_pagesize(void)

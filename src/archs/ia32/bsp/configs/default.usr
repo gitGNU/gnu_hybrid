@@ -133,14 +133,6 @@ AOUT=y
 # AOUT_DEBUG is not set
 
 #
-# Libraries
-#
-# DEBUG_LIST is not set
-# DEBUG_HASH is not set
-# DEBUG_QUEUE is not set
-# DEBUG_BITMAP is not set
-
-#
 # Core
 #
 
@@ -159,8 +151,6 @@ PROCESS_DEBUG=y
 #
 THREAD_DEBUG=y
 LOG_SIZE=4096
-MODULES=y
-MODULES_DEBUG=y
 CPU_DEBUG=y
 DMA_DEBUG=y
 INTERRUPTS_DEBUG=y
