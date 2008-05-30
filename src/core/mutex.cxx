@@ -1,21 +1,20 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
 
 #include "config/config.h"
 #include "archs/arch.h"
@@ -28,7 +27,7 @@
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
 
-int mutex_init(mutex_t* mutex)
+int mutex_init(mutex_t * mutex)
 {
 	assert(mutex);
 
@@ -39,7 +38,7 @@ int mutex_init(mutex_t* mutex)
 	return 1;
 }
 
-int mutex_fini(mutex_t* mutex)
+int mutex_fini(mutex_t * mutex)
 {
 	assert(mutex);
 
@@ -48,9 +47,9 @@ int mutex_fini(mutex_t* mutex)
 	return 1;
 }
 
-mutex_t* mutex_new(void)
+mutex_t * mutex_new(void)
 {
-	mutex_t* tmp;
+	mutex_t * tmp;
 
 	tmp = (mutex_t *) malloc(sizeof(mutex_t));
 	if (!tmp) {
@@ -65,7 +64,7 @@ mutex_t* mutex_new(void)
 	return tmp;
 }
 
-void mutex_delete(mutex_t* mutex)
+void mutex_delete(mutex_t * mutex)
 {
 	assert(mutex);
 
@@ -73,21 +72,21 @@ void mutex_delete(mutex_t* mutex)
 	free(mutex);
 }
 
-void mutex_lock(mutex_t* mutex)
+void mutex_lock(mutex_t * mutex)
 {
 	assert(mutex);
 
 	semaphore_acquire(&mutex->semaphore);
 }
 
-void mutex_unlock(mutex_t* mutex)
+void mutex_unlock(mutex_t * mutex)
 {
 	assert(mutex);
 
 	semaphore_release(&mutex->semaphore);
 }
 
-int mutex_locked(mutex_t* mutex)
+int mutex_locked(mutex_t * mutex)
 {
 	assert(mutex);
 
@@ -96,7 +95,7 @@ int mutex_locked(mutex_t* mutex)
 	return 1;
 }
 
-int mutex_trylock(mutex_t* mutex)
+int mutex_trylock(mutex_t * mutex)
 {
 	assert(mutex);
 
