@@ -22,6 +22,7 @@
 #include "libc/string.h"
 #include "libc/stdint.h"
 #include "arch/cpu.h"
+#include "arch/asm.h"
 #include "arch/port.h"
 #include "archs/common/cpu.h"
 #include "core/dbg/debug.h"
@@ -31,8 +32,6 @@
 #else
 #define dprintf(F,A...)
 #endif
-
-#define __this_cpu      (&cpus[0])
 
 #define PIT_SECOND	1193180
 #define HZ		100
@@ -91,7 +90,7 @@ int i8254_frequency_set(uint32_t freq)
 		tick = 0;
 	}
 
-	dprintf("Setting tock to %d\n", tick);
+	dprintf("Setting tick to %d\n", tick);
 
 	/* Configure timer0 in mode 2, as a rate generator */
 	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_3);
@@ -103,8 +102,86 @@ int i8254_frequency_set(uint32_t freq)
 	return 1;
 }
 
+#define CALIBRATE_MAGIC 1194
+#define CALIBRATE_LOOPS 150000
+#define CALIBRATE_SHIFT 11
+
+extern void delay_loops(uint32_t loops);
+
+int i8254_delay_calibrate(void)
+{
+	uint64_t clk1, clk2;
+	uint32_t t1, t2, o1, o2;
+	uint8_t  not_ok;
+
+	if (!cpu_has_tsc(__this_cpu)) {
+		return 0;
+	}
+
+	dprintf("CPU has TSC, good ...\n");
+
+	/*
+	 * One-shot timer, count-down from 0xffff at 1193180Hz. MAGIC_1MS is
+	 * the magic value for 1ms
+	 */
+	port_out8(0x30, TMR_PORT);
+	port_out8(0xff, COUNTER_0);
+	port_out8(0xff, COUNTER_0);
+	do {
+		/* Read both status and count */
+		port_out8(0xc2, TMR_PORT);
+		not_ok = (uint8_t) ((port_in8(COUNTER_0) >> 6) & 1);
+		t1     = port_in8(COUNTER_0);
+		t1    |= port_in8(COUNTER_0) << 8;
+	} while (not_ok);
+
+	delay_loops(CALIBRATE_LOOPS);
+
+	port_out8(0xd2, TMR_PORT);
+	t2  = port_in8(COUNTER_0);
+	t2 |= port_in8(COUNTER_0) << 8;
+
+	dprintf("Determining calibration overhead\n");
+	port_out8(0xd2, TMR_PORT);
+	o1  = port_in8(COUNTER_0);
+	o1 |= port_in8(COUNTER_0) << 8;
+
+	delay_loops(CALIBRATE_LOOPS);
+
+	port_out8(0xd2, TMR_PORT);
+	o2  = port_in8(COUNTER_0);
+	o2 |= port_in8(COUNTER_0) << 8;
+
+	__this_cpu->arch.loops_ms =
+		(((CALIBRATE_MAGIC * CALIBRATE_LOOPS) / 1000) /
+		 ((t1 - t2) - (o1 - o2))) +
+		(((CALIBRATE_MAGIC * CALIBRATE_LOOPS) / 1000) %
+		 ((t1 - t2) - (o1 - o2)) ? 1 : 0);
+
+	clk1 = rdtsc();
+	delay_loops(CALIBRATE_LOOPS);
+	clk2 = rdtsc();
+
+	__this_cpu->arch.freq_mhz = (clk2 - clk1) >> CALIBRATE_SHIFT;
+
+	dprintf("Loops per ms %d\n", __this_cpu->arch.loops_ms);
+	dprintf("Mhz %d\n",          __this_cpu->arch.freq_mhz);
+
+	return 1;
+}
+
 int i8253_init(void)
 {
+	if (!i8254_delay_calibrate()) {
+		dprintf("Cannot calibrate delay loop\n");
+		return 0;
+	}
+
+#if CONFIG_DEBUGGER
+#include "core/dbg/debugger/debugger.h"
+	dbg_enter();
+#endif
+
 	frequency = 0;
 	if (!i8254_frequency_set(HZ)) {
 		return 0;
