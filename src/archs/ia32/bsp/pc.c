@@ -86,17 +86,14 @@ void arch_irqs_state_set(arch_irqs_state_t * state)
 /* Delay loop  */
 void delay_loops(uint32_t loops)
 {
-	(void) loops;
-#if 0
-	__asm__ volatile ("   movl %0, %1\n\t"
+	__asm__ volatile ("   movl %0, %%ecx\n\t"
 			  "0: lahf\n\t"
-			  "   dec  %1\n\t"
+			  "   dec  %%ecx\n\t"
 			  "   jnz  0b\n\t"
 			  :
 			  : "r" (loops)
-			  : "0"
+			  : "%ecx"
 			  );
-#endif
 }
 
 void arch_delay_ms(uint32_t ms)
