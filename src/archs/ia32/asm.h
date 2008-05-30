@@ -109,14 +109,14 @@ __BEGIN_DECLS
 #define X86_FEATURE_CMP_LEGACY  (5*32+ 1) /* If yes HyperThreading not valid */
 
 #define cpu_has(CPU,BIT)					\
-	isset((unsigned char *) (CPU)->infos.features, (BIT))
+	isset((unsigned char *) (CPU)->arch.infos.features, (BIT))
 
 #define cpu_has_fpu(CPU)            cpu_has((CPU),X86_FEATURE_FPU)
 #define cpu_has_vme(CPU)            cpu_has((CPU),X86_FEATURE_VME)
 #define cpu_has_de(CPU)             cpu_has((CPU),X86_FEATURE_DE)
 #define cpu_has_pse(CPU)            cpu_has((CPU),X86_FEATURE_PSE)
 #define cpu_has_tsc(CPU)            cpu_has((CPU),X86_FEATURE_TSC)
-#define cpu_has_msr(CPU)            cpu_has((CPU),X86_FEATURE_MSR) /* Added */
+#define cpu_has_msr(CPU)            cpu_has((CPU),X86_FEATURE_MSR)
 #define cpu_has_pae(CPU)            cpu_has((CPU),X86_FEATURE_PAE)
 #define cpu_has_pge(CPU)            cpu_has((CPU),X86_FEATURE_PGE)
 #define cpu_has_apic(CPU)           cpu_has((CPU),X86_FEATURE_APIC)
@@ -139,11 +139,11 @@ __BEGIN_DECLS
 #define cpu_has_xcrypt_enabled(CPU) cpu_has((CPU),X86_FEATURE_XCRYPT_EN)
 
 int           have_cpuid(void);
-void          cpuid(unsigned int  op,
-		    unsigned int* eax,
-		    unsigned int* ebx,
-		    unsigned int* ecx,
-		    unsigned int* edx);
+void          cpuid(unsigned int   op,
+		    unsigned int * eax,
+		    unsigned int * ebx,
+		    unsigned int * ecx,
+		    unsigned int * edx);
 unsigned int  cpuid_eax(unsigned int op);
 unsigned int  cpuid_ebx(unsigned int op);
 unsigned int  cpuid_ecx(unsigned int op);
@@ -230,6 +230,8 @@ void          ldt_set(uint16_t ldt);
 
 uint16_t      tr_get(void);
 void          tr_set(uint16_t tr);
+
+uint64_t      rdtsc(void);
 
 __END_DECLS
 

@@ -256,6 +256,17 @@ void clts(void)
 }
 #endif
 
+uint64_t rdtsc(void)
+{
+	uint64_t v;
+
+	asm volatile("rdtsc\n"
+		     : "=A" (v)
+		     );
+
+	return v;
+}
+
 uint16_t ldt_get(void)
 {
 	uint16_t ldt;
