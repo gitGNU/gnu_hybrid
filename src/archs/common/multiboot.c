@@ -43,7 +43,6 @@
 
 static bootinfo_t bootinfo;
 
-#if CONFIG_MODULES
 static int multiboot_modules(multiboot_info_t* mbi,
 			     bootinfo_t*       bi)
 {
@@ -105,7 +104,6 @@ static int multiboot_modules(multiboot_info_t* mbi,
 
 	return 1;
 }
-#endif /* CONFIG_MODULES */
 
 static int multiboot_kernel(multiboot_info_t* mbi,
 			    bootinfo_t*       bi)
@@ -430,11 +428,9 @@ void multiboot(unsigned long magic, unsigned long addr)
 		panic("Cannot scan image info correctly");
 	}
 
-#if CONFIG_MODULES
 	if (!multiboot_modules(mbi, &bootinfo)) {
 		panic("Cannot scan modules infos correctly");
 	}
-#endif /* CONFIG_MODULES */
 
 	if (!multiboot_memory(mbi, &bootinfo)) {
 		panic("Cannot scan memory infos correctly");

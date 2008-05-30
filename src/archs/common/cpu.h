@@ -28,6 +28,9 @@ typedef struct {
 	int        online; /* CPU is ok (no problems detected) */
 } cpu_t;
 
+/* XXX FIXME: This is temp */
+#define __this_cpu (&cpus[0])
+
 extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
 
 int arch_cpu_count(void);
