@@ -459,7 +459,7 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 						char* argv[])
 {
 	bootinfo_t* bi;
-#if CONFIG_MODULES
+#if CONFIG_BOOTINFO_MODULES
 	int         i;
 #endif
 
@@ -496,7 +496,7 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 	fprintf(stream, "   kernel  = '%s'\n",
 		BOOTINFO_IMAGETYPE2STRING(bi->kernel.type));
 
-#if CONFIG_MODULES
+#if CONFIG_BOOTINFO_MODULES
 	for (i = 0; i < BOOTINFO_MODULES; i++) {
 		if (mod_valid(bi, i)) {
 			bi_section_type_t type;
