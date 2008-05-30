@@ -61,7 +61,7 @@
 	.align 4,0x90 // 0x90 == NOP
 irq_\INDEX :
 	pushl  $0
-	pushl  $\ISR_INDEX
+	pushl  $(\ISR_INDEX - 1)
 	jmp    irq_common
 .endm
 
@@ -92,7 +92,7 @@ irq_common:
 	call  EXT_C(irq_handler)
 	movl  %ebp, %esp
 	REGS_RESTORE_ALL
-	addl  $8, %esp
+	addl  $8, %esp // Clear arguments from stack
 	iret
 
 
@@ -156,7 +156,7 @@ trap_common:
 	SEGMENT_SETUP
 	pushl %esp
 	call EXT_C(trap_handler)
-	addl  $5, %esp
+	addl  $5, %esp // Clear arguments from stack
 trap_return:
 	REGS_RESTORE_ALL
 	addl $8, %ebp
