@@ -90,17 +90,15 @@ static void gdt_segment_clear(uint32_t i)
 }
 #endif
 
-static void gdt_load(gdt_entry_t * table,
-		     size_t        entries)
+static void gdt_load(void)
 {
 	gdt_pointer_t gdt_p;
 
-	assert(entries <= GDT_ENTRIES);
+	gdt_p.limit = (sizeof(gdt_entry_t) * GDT_ENTRIES) - 1;
+	gdt_p.base  = (uint32_t) gdt_table;
 
-	gdt_p.limit = (sizeof(gdt_entry_t) * entries) - 1;
-	gdt_p.base  = (uint32_t) table;
-
-	dprintf("Loading GDT table at 0x%p (%d entries)\n", table, entries);
+	dprintf("Loading GDT table at 0x%p (%d entries)\n",
+		gdt_table, GDT_ENTRIES);
 	lgdt(&gdt_p.limit);
 }
 
@@ -148,8 +146,7 @@ int gdt_init(void)
 
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
-
-	gdt_load(gdt_table, GDT_ENTRIES);
+	gdt_load();
 
 	return 1;
 }

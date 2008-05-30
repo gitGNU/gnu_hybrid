@@ -84,8 +84,8 @@
 #ifndef ASM
 __BEGIN_DECLS
 
-int      gdt_init(void);
-void     gdt_fini(void);
+int  gdt_init(void);
+void gdt_fini(void);
 
 __END_DECLS
 #endif
