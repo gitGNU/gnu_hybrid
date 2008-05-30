@@ -28,12 +28,7 @@ __BEGIN_DECLS
 
 #define BOOTINFO_ARGS_SIZE   CONFIG_BOOTINFO_ARGS_SIZE
 #define BOOTINFO_MEM_REGIONS CONFIG_BOOTINFO_MEM_REGIONS
-
-#if CONFIG_MODULES
 #define BOOTINFO_MODULES     CONFIG_BOOTINFO_MODULES
-#else
-#define BOOTINFO_MODULES     0
-#endif
 
 /* Some consistency checks dudes ... ;-) */
 #if (BOOTINFO_ARGS_SIZE < 1)
@@ -114,10 +109,7 @@ typedef struct {
 	bi_region_t     mem[BOOTINFO_MEM_REGIONS];
 
 	bi_image_t      kernel;
-
-#if CONFIG_MODULES
 	bi_image_t      modules[BOOTINFO_MODULES];
-#endif /* CONFIG_MODULES */
 
 	/* Architecture dependent infos */
 	arch_bootinfo_t arch;

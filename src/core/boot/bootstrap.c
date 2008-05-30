@@ -32,7 +32,6 @@
 #include "core/boot/bootstrap.h"
 #include "core/log.h"
 #include "core/resource.h"
-#include "core/module.h"
 #include "core/semaphore.h"
 #include "core/mutex.h"
 #include "core/mem/heap.h"
@@ -241,13 +240,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 		/* This check could be a warning ... */
 	}
 
-#if CONFIG_MODULES
-	if (!module_init(bootinfo)) {
-		panic("Cannot initialize modules");
-	}
-	/* From this point on we should be able to load and unload modules */
-#endif /* CONFIG_MODULES */
-
 	/* C library (glue) startup */
 	_init();
 	/* We have malloc(), free() ... now */
@@ -267,10 +259,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 
 	/* C (glue) Shutdown */
 	_fini();
-
-#if CONFIG_MODULES
-	module_fini();
-#endif /* CONFIG_MODULES */
 
 #if CONFIG_OPTIONS
 	option_fini();
