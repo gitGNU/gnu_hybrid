@@ -34,24 +34,25 @@ typedef struct {
 
 typedef struct {
 	struct {                  /* Infos gathered by infos() */
-		uint8_t family;
-		uint8_t model;
-		uint8_t stepping;
-		int     features[NCAPINTS];
+		uint8_t  family;
+		uint8_t  model;
+		uint8_t  stepping;
+		int      features[NCAPINTS];
 	} infos;
 
 	struct {                  /* Infos gathered by cache_init() */
-		cache_t trace;    /* trace */
-		cache_t l1d;      /* L1 data */
-		cache_t l1i;      /* L1 instructions */
-		cache_t l2;       /* L2 */
-		cache_t l3;       /* L3 */
+		cache_t  trace;    /* trace */
+		cache_t  l1d;      /* L1 data */
+		cache_t  l1i;      /* L1 instructions */
+		cache_t  l2;       /* L2 */
+		cache_t  l3;       /* L3 */
 	} caches;
 
-	int             level;
-	uint8_t         cores;    /* Num cores in HyperThreaded CPUs */
-	uint32_t        loops_ms;
-	struct cpu_ops* ops;      /* Vendor specific code */
+	int              level;
+	uint8_t          cores;    /* Num cores in HyperThreaded CPUs */
+	uint32_t         loops_ms;
+	uint32_t         freq_mhz;
+	struct cpu_ops * ops;      /* Vendor specific code */
 } arch_cpu_t;
 
 struct cpu_ops {
