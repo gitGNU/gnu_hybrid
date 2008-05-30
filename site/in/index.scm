@@ -16,7 +16,7 @@
     (li "Memory partitions")
     (li "Kernel console")
     (li "Keyboard support")
-    (li "IDT/GDT/BIOS/IRQs/TRAPs")
+    (li "IDT/GDT/BIOS/IRQs/TRAPs/DMA")
     )
    )
 
