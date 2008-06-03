@@ -1,21 +1,20 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
 
 #include "config/config.h"
 #include "archs/linker.h"
@@ -28,14 +27,16 @@
 
 static int inrange(void* addr, void* start, void* end)
 {
-	/* Is address inside range ? */
+	// Is address inside range ?
 	if ((addr >= start) && (addr <= end)) {
 		return 1;
 	}
 
-	/* No, it is elsewhere ... */
+	// No, it is elsewhere ...
 	return 0;
 }
+
+__BEGIN_DECLS
 
 int valid_text_address(unsigned int addr)
 {
@@ -61,6 +62,8 @@ int valid_debug_address(unsigned int addr)
 {
 	return (inrange((void *) addr, (void *) &_debug, (void *) &_edebug));
 }
+
+__END_DECLS
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_regions_on_execute(FILE* stream,
@@ -116,7 +119,7 @@ static void dump(FILE* stream, void* base, void* buf, uint_t len, int words)
 	}
 
 	for (i = 0; i < len; i += 16) {
-		fprintf(stream, "%08x      ", (unsigned int)(base + i));
+		fprintf(stream, "%08x      ", ((unsigned int) base + i));
 		for (j = i; j < i + 16; j++) {
 			if (j % 4 == 0) {
 				fprintf(stream, " ");
