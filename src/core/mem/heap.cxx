@@ -1,21 +1,20 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -60,22 +59,22 @@ struct heap_bin {
 };
 
 static struct heap_bin bins[] = {
-	{ 0x00010, 0, 0, 0, 0, 0, 0 }, /* 16 bytes */
-	{ 0x00020, 0, 0, 0, 0, 0, 0 }, /* 32 bytes */
-	{ 0x00040, 0, 0, 0, 0, 0, 0 }, /* 64 bytes */
-	{ 0x00080, 0, 0, 0, 0, 0, 0 }, /* 128 bytes */
-	{ 0x00100, 0, 0, 0, 0, 0, 0 }, /* 256 bytes */
-	{ 0x00200, 0, 0, 0, 0, 0, 0 }, /* 512 bytes */
-	{ 0x00400, 0, 0, 0, 0, 0, 0 }, /* 1 KB */
-	{ 0x00800, 0, 0, 0, 0, 0, 0 }, /* 2 KB */
-	{ 0x01000, 0, 0, 0, 0, 0, 0 }, /* 4 KB */
-	{ 0x02000, 0, 0, 0, 0, 0, 0 }, /* 8 KB */
+	{ 0x00010, 0, 0, 0, 0, 0, 0 }, // 16 bytes
+	{ 0x00020, 0, 0, 0, 0, 0, 0 }, // 32 bytes
+	{ 0x00040, 0, 0, 0, 0, 0, 0 }, // 64 bytes
+	{ 0x00080, 0, 0, 0, 0, 0, 0 }, // 128 bytes
+	{ 0x00100, 0, 0, 0, 0, 0, 0 }, // 256 bytes
+	{ 0x00200, 0, 0, 0, 0, 0, 0 }, // 512 bytes
+	{ 0x00400, 0, 0, 0, 0, 0, 0 }, // 1 KB
+	{ 0x00800, 0, 0, 0, 0, 0, 0 }, // 2 KB
+	{ 0x01000, 0, 0, 0, 0, 0, 0 }, // 4 KB
+	{ 0x02000, 0, 0, 0, 0, 0, 0 }, // 8 KB
 	{ 0x03000, 0, 0, 0, 0, 0, 0 },
-	{ 0x04000, 0, 0, 0, 0, 0, 0 }, /* 16 KB */
+	{ 0x04000, 0, 0, 0, 0, 0, 0 }, // 16 KB
 	{ 0x05000, 0, 0, 0, 0, 0, 0 },
 	{ 0x06000, 0, 0, 0, 0, 0, 0 },
 	{ 0x07000, 0, 0, 0, 0, 0, 0 },
-	{ 0x08000, 0, 0, 0, 0, 0, 0 }, /* 32 KB */
+	{ 0x08000, 0, 0, 0, 0, 0, 0 }, // 32 KB
 	{ 0x09000, 0, 0, 0, 0, 0, 0 },
 	{ 0x0a000, 0, 0, 0, 0, 0, 0 },
 	{ 0x0b000, 0, 0, 0, 0, 0, 0 },
@@ -83,13 +82,13 @@ static struct heap_bin bins[] = {
 	{ 0x0d000, 0, 0, 0, 0, 0, 0 },
 	{ 0x0e000, 0, 0, 0, 0, 0, 0 },
 	{ 0x0f000, 0, 0, 0, 0, 0, 0 },
-	{ 0x10000, 0, 0, 0, 0, 0, 0 }  /* 64 KB */
+	{ 0x10000, 0, 0, 0, 0, 0, 0 }  // 64 KB
 };
 
 #define bin_count (sizeof(bins) / sizeof(struct heap_bin))
 
-#if 0 /* CONFIG_DEBUG_HEAP */
-/* NOTE: This function is needed only for debugging purposes */
+#if 0 // CONFIG_DEBUG_HEAP
+// NOTE: This function is needed only for debugging purposes
 static void dump_bin(size_t indx)
 {
 	struct heap_bin* bin;
@@ -126,7 +125,7 @@ static void dump_bin(size_t indx)
 #endif
 }
 
-/* NOTE: This function is needed only for debugging purposes */
+// NOTE: This function is needed only for debugging purposes
 static void dump_bin_list(void)
 {
 	size_t i;
@@ -137,19 +136,21 @@ static void dump_bin_list(void)
 		dump_bin(i);
 	}
 }
-#endif /* 0 */ /* CONFIG_DEBUG_HEAP */
+#endif // CONFIG_DEBUG_HEAP */
+
+__BEGIN_DECLS
 
 int heap_initialized(void)
 {
 	return initialized ? 1 : 0;
 }
 
-/*
- * NOTE:
- *     This function should be called at VM init time. The heap should already
- *     be mapped-in at this point, we just do a little housekeeping to set
- *     up the data structures.
- */
+//
+// NOTE:
+//     This function should be called at VM init time. The heap should already
+//     be mapped-in at this point, we just do a little housekeeping to set
+//     up the data structures.
+//
 int heap_init(addr_t base,
 	      size_t size)
 {
@@ -157,7 +158,7 @@ int heap_init(addr_t base,
 	uint_t       max_grow;
 	unsigned int page_entries;
 
-	/* Inizialize the bins */
+	// Inizialize the bins
 	dprintf("Initializing %d bins (threshold %d bytes)\n",
 		bin_count, CONFIG_PAGE_SIZE);
 	for (i = 0; i < bin_count; i++) {
@@ -172,7 +173,7 @@ int heap_init(addr_t base,
 	page_entries     = CONFIG_PAGE_SIZE / sizeof(struct heap_page);
 	heap_alloc_table = (struct heap_page *) base;
 
-	/* XXX: The formula was: size > (sqr(CONFIG_PAGE_SIZE) / 2) */
+	// XXX: The formula was: size > (sqr(CONFIG_PAGE_SIZE) / 2)
 	if (size > (CONFIG_PAGE_SIZE * CONFIG_PAGE_SIZE / 2)) {
 		heap_size = ((addr_t) size * page_entries /
 			     (page_entries + 1)) & ~(CONFIG_PAGE_SIZE - 1);
@@ -189,7 +190,7 @@ int heap_init(addr_t base,
 		heap_base,
 		heap_size);
 
-	/* zero out the heap alloc table at the base of the heap */
+	// zero out the heap alloc table at the base of the heap
 	memset((void *) heap_alloc_table,
 	       0,
 	       (heap_size / CONFIG_PAGE_SIZE) * sizeof(struct heap_page));
@@ -208,6 +209,8 @@ void heap_fini(void)
 	dprintf("Disposing heap\n");
 	initialized = 0;
 }
+
+__END_DECLS
 
 static char* raw_alloc(unsigned int size,
 		       size_t       bin_index)
@@ -246,6 +249,8 @@ static char* raw_alloc(unsigned int size,
 
 	return retval;
 }
+
+__BEGIN_DECLS
 
 void * arch_heap_alloc(unsigned int size)
 {
@@ -365,11 +370,11 @@ void arch_heap_free(void * address)
 	}
 
 #if CONFIG_DEBUG_HEAP_PARANOID
-	/*
-	 * NOTE:
-	 *     Walk the free list on this bin to make sure this address
-	 *     doesn't exist already ...
-	 */
+	//
+	// NOTE:
+	//     Walk the free list on this bin to make sure this address
+	//     doesn't exist already ...
+	//
 	{
 		unsigned int *temp;
 		for (temp = bin->free_list;
@@ -381,17 +386,19 @@ void arch_heap_free(void * address)
 			}
 		}
 	}
-#endif /* CONFIG_DEBUG_HEAP_PARANOID */
+#endif // CONFIG_DEBUG_HEAP_PARANOID
 
 #if CONFIG_DEBUG_HEAP_SIGNATURE
 	memset(address, 0x99, bin->element_size);
-#endif /* CONFIG_DEBUG_HEAP_SIGNATURE */
+#endif
 
 	*(unsigned int *) address = (unsigned int) bin->free_list;
 	bin->free_list = address;
 	bin->alloc_count--;
 	bin->free_count++;
 }
+
+__END_DECLS
 
 #if CONFIG_DEBUGGER
 static FILE* heap_stream;
@@ -405,11 +412,11 @@ static int heap_iterator(uint_t bin_index,
 {
 	assert(heap_stream);
 
-	/*
-	 * NOTE:
-	 *     heap_foreach() calls us for-each region, even for those with
-	 *     0 length ... so we need to remove the useless ones.
-	 */
+	//
+	// NOTE:
+	//     heap_foreach() calls us for-each region, even for those with
+	//     0 length ... so we need to remove the useless ones.
+	//
 	fprintf(heap_stream,
 		"  %2d   0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n",
 		bin_index,
