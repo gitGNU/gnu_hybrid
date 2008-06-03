@@ -83,6 +83,7 @@ int i8254_frequency_set(uint32_t freq)
 
 	/* Counter must be between 1 and 65536 */
 	if ((tick <= 0) || (tick > 65536)) {
+		dprintf("Tick out of range (%d)\n", tick);
 		return 0;
 	}
 
@@ -90,7 +91,8 @@ int i8254_frequency_set(uint32_t freq)
 		tick = 0;
 	}
 
-	dprintf("Setting tick to %d\n", tick);
+	dprintf("Frequency %dhz, setting tick to %d (0x%x)\n",
+		freq, tick, tick);
 
 	/* Configure timer0 in mode 2, as a rate generator */
 	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_3);
@@ -141,16 +143,22 @@ int i8254_delay_calibrate(void)
 	t2  = port_in8(COUNTER_0);
 	t2 |= port_in8(COUNTER_0) << 8;
 
+	dprintf("t1 = %d, t2 = %d, t1 - t2 = %d\n",
+		t1, t2, t1 - t2);
+
 	dprintf("Determining calibration overhead\n");
 	port_out8(0xd2, TMR_PORT);
 	o1  = port_in8(COUNTER_0);
 	o1 |= port_in8(COUNTER_0) << 8;
 
-	delay_loops(CALIBRATE_LOOPS);
+	delay_loops(1);
 
 	port_out8(0xd2, TMR_PORT);
 	o2  = port_in8(COUNTER_0);
 	o2 |= port_in8(COUNTER_0) << 8;
+
+	dprintf("o1 = %d, o2 = %d, o1 - o2 = %d\n",
+		o1, o2, o1 - o2);
 
 	__this_cpu->arch.loops_ms =
 		(((CALIBRATE_MAGIC * CALIBRATE_LOOPS) / 1000) /
@@ -159,8 +167,11 @@ int i8254_delay_calibrate(void)
 		 ((t1 - t2) - (o1 - o2)) ? 1 : 0);
 
 	clk1 = rdtsc();
-	delay_loops(CALIBRATE_LOOPS);
+	delay_loops(1 << CALIBRATE_SHIFT);
 	clk2 = rdtsc();
+
+	dprintf("clk1 = %ld, clk2 = %ld, clk2 - clk1 = %ld\n",
+		clk1, clk2, clk2 - clk1);
 
 	__this_cpu->arch.freq_mhz = (clk2 - clk1) >> CALIBRATE_SHIFT;
 
@@ -172,6 +183,12 @@ int i8254_delay_calibrate(void)
 
 int i8253_init(void)
 {
+	frequency = 0;
+	if (!i8254_frequency_set(HZ)) {
+		return 0;
+	}
+	frequency = HZ;
+
 	if (!i8254_delay_calibrate()) {
 		dprintf("Cannot calibrate delay loop\n");
 		return 0;
@@ -181,12 +198,6 @@ int i8253_init(void)
 #include "core/dbg/debugger/debugger.h"
 	dbg_enter();
 #endif
-
-	frequency = 0;
-	if (!i8254_frequency_set(HZ)) {
-		return 0;
-	}
-	frequency = HZ;
 
 	return 1;
 }
