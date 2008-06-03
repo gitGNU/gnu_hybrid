@@ -1,21 +1,20 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
 
 #include "config/config.h"
 #include "libcompiler/cdefs.h"
@@ -36,15 +35,15 @@
 #define dprintf(F,A...)
 #endif
 
-/*
- * NOTE:
- *     We don't have a valid heap when pmm_init() is called so we need
- *     static allocation of this structure ...
- *
- * NOTE:
- *     The BOOTINFO_MEM_REGIONS should be enough (because they contain not only
- *     RAM ...)
- */
+//
+// NOTE:
+//     We don't have a valid heap when pmm_init() is called so we need
+//     static allocation of this structure ...
+//
+// NOTE:
+//     The BOOTINFO_MEM_REGIONS should be enough (because they contain not only
+//     RAM ...)
+//
 #define PMM_MAX_REGIONS BOOTINFO_MEM_REGIONS
 
 typedef struct {
@@ -58,21 +57,21 @@ pmm_region_t regions[PMM_MAX_REGIONS];
 #define FLAG_TEST(INDEX,FLAG)					\
 	(regions[(INDEX)].flags & __CONCAT(PMM_FLAG_,FLAG))
 
-/* Test macros */
+// Test macros */
 #define RGN_VALID(INDEX)       FLAG_TEST(INDEX,VALID)
 #define RGN_USED(INDEX)        FLAG_TEST(INDEX,USED)
 #define RGN_TESTED(INDEX)      FLAG_TEST(INDEX,TESTED)
 #define RGN_ENABLED(INDEX)     FLAG_TEST(INDEX,ENABLED)
 
-/* Access macros */
+// Access macros */
 #define RGN_START(INDEX)       regions[INDEX].start
 #define RGN_STOP(INDEX)        regions[INDEX].stop
 #define RGN_FLAGS(INDEX)       regions[INDEX].flags
 
-/* Utility macros */
+// Utility macros */
 #define RGN_SIZE(INDEX)        (regions[INDEX].stop - regions[INDEX].start)
 
-#if CONFIG_DEBUGGER /* XXX FIXME: Nobody else needs these functions ? */
+#if CONFIG_DEBUGGER // XXX FIXME: Nobody else needs these functions ?
 int pmm_foreach(int (* callback)(uint_t     start,
 				 uint_t     stop,
 				 pmm_type_t flags))
@@ -95,7 +94,7 @@ int pmm_foreach(int (* callback)(uint_t     start,
 
 	return 1;
 }
-#endif /* CONFIG_DEBUGGER */
+#endif // CONFIG_DEBUGGER
 
 static int pmm_compare(const void* a, const void* b)
 {
@@ -108,7 +107,7 @@ static int pmm_compare(const void* a, const void* b)
 	ra = (pmm_region_t *) a;
 	rb = (pmm_region_t *) b;
 
-	/* Place empty regions at the array bottom */
+	// Place empty regions at the array bottom
 	if (((ra->stop - ra->start) == 0) &&
 	    ((rb->stop - rb->start) != 0)) {
 		return 1;
@@ -118,16 +117,15 @@ static int pmm_compare(const void* a, const void* b)
 		return -1;
 	}
 
-	/* Handle correct regions */
+	// Handle correct regions
 	if (ra->start < rb->start) {
 		return -1;
 	} else if (ra->start > rb->start) {
 		return 1;
-	} else {
-		return 0;
 	}
 
-	bug(); /* We shouldn't reach this point ... */
+	// Regions are equal
+	return 0;
 }
 
 #if CONFIG_PMM_DUMPS_DEBUG
@@ -146,7 +144,7 @@ static void pmm_dump(void)
 		}
 	}
 }
-#endif /* CONFIG_PMM_DUMPS_DEBUG */
+#endif // CONFIG_PMM_DUMPS_DEBUG
 
 #if CONFIG_PMM_MEMORY_TEST
 static int region_test_pattern(pmm_region_t* region,
@@ -198,7 +196,7 @@ int region_test(pmm_region_t* region)
 
 	return 1;
 }
-#endif /* CONFIG_PMM_MEMORY_TEST */
+#endif // CONFIG_PMM_MEMORY_TEST
 
 static void pmm_reorder(void)
 {
@@ -217,13 +215,13 @@ int pmm_init(bootinfo_t* bi)
 
 	dprintf("Initializing physical memory manager\n");
 
-	/* Invalidate all regions */
+	// Invalidate all regions
 	memset(regions, 0, sizeof(regions));
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		RGN_FLAGS(i) &= ~PMM_FLAG_VALID;
 	}
 
-	/* Copy usable RAM regions infos */
+	// Copy usable RAM regions infos
 
 #if PMM_MAX_REGIONS < BOOTINFO_MEM_REGIONS
 #error Wrong settings, PMM_MAX_REGIONS must be >= BOOTINFO_MEM_REGIONS !!!
@@ -231,10 +229,10 @@ int pmm_init(bootinfo_t* bi)
 
 	j = 0;
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
-		/* Gather only clean regions (type == ram && length != 0) */
+		// Gather only clean regions (type == ram && length != 0)
 		if ((bi->mem[i].type == BOOTINFO_MEM_RAM) &&
 		    (bi->mem[i].size != 0)) {
-			/* Got it, copy it */
+			// Got it, copy it
 			RGN_START(j) = bi->mem[i].base;
 			RGN_STOP(j)  = bi->mem[i].base + bi->mem[i].size;
 			RGN_FLAGS(j) = PMM_FLAG_VALID;
@@ -243,12 +241,12 @@ int pmm_init(bootinfo_t* bi)
 		}
 	}
 
-	/*
-	 * NOTE:
-	 *     bootinfo mem structures are already ordered by their base
-	 *     addresses (whichever type they are) and they do not overlaps so
-	 *     pmm structures are ordered and don't overlap either !!!
-	 */
+	//
+	// NOTE:
+	//     bootinfo mem structures are already ordered by their base
+	//     addresses (whichever type they are) and they do not overlaps so
+	//     pmm structures are ordered and don't overlap either !!!
+	//
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (!RGN_VALID(i)) {
 			continue;
@@ -271,7 +269,7 @@ int pmm_init(bootinfo_t* bi)
 	}
 
 #if CONFIG_PMM_MEMORY_TEST
-	/* Test each valid region, removing invalid ones */
+	// Test each valid region, removing invalid ones
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_VALID(i)) {
 			if (!region_test(&regions[i])) {
@@ -279,9 +277,9 @@ int pmm_init(bootinfo_t* bi)
 			}
 		}
 	}
-#endif /* CONFIG_PMM_MEMORY_TEST */
+#endif // CONFIG_PMM_MEMORY_TEST
 
-	/* Enable all good regions */
+	// Enable all good regions
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		pmm_type_t test;
 
@@ -289,19 +287,19 @@ int pmm_init(bootinfo_t* bi)
 		test = PMM_FLAG_VALID | PMM_FLAG_TESTED;
 #else
 		test = PMM_FLAG_VALID;
-#endif /* CONFIG_PMM_MEMORY_TEST */
+#endif // CONFIG_PMM_MEMORY_TEST
 
 		if (RGN_FLAGS(i) & test) {
 			RGN_FLAGS(i) |= PMM_FLAG_ENABLED;
 		}
 	}
 
-	/* Finally reorder them */
+	// Finally reorder them
 	pmm_reorder();
 
 #if CONFIG_PMM_DUMPS_DEBUG
 	pmm_dump();
-#endif /* CONFIG_PMM_DUMPS_DEBUG */
+#endif // CONFIG_PMM_DUMPS_DEBUG
 
 	dprintf("Physical memory initialized successfully\n");
 
@@ -335,7 +333,7 @@ uint_t pmm_reserve(uint_t size)
 	dprintf("Allocating %d\n", size);
 
 	if (size == 0) {
-		/* Silly request */
+		// Silly request
 		return ((uint_t) -1);
 	}
 
@@ -347,55 +345,55 @@ uint_t pmm_reserve(uint_t size)
 			continue;
 		}
 
-		/* Region i is valid, not used and enabled */
+		// Region i is valid, not used and enabled
 		assert(RGN_VALID(i));
 		assert(!RGN_USED(i));
 		assert(RGN_ENABLED(i));
 
 		assert(RGN_START(i) < RGN_STOP(i));
 
-		/* Can this region contains the requested one ? */
+		// Can this region contains the requested one ?
 		if (RGN_SIZE(i) < size) {
-			/* No ... */
+			// No ...
 			continue;
 		}
 
-		/* dprintf("Region %d will be used\n", i); */
+		// dprintf("Region %d will be used\n", i);
 
-		/* Yes, so mark it as used */
+		// Yes, so mark it as used
 		RGN_FLAGS(i) |= PMM_FLAG_USED;
 
-		/* Split region if it is larger than requested one */
+		// Split region if it is larger than requested one
 		if (RGN_SIZE(i) > size) {
 			int j;
 
-			/* Find an empty slot */
+			// Find an empty slot
 			for (j = 0; j < PMM_MAX_REGIONS; j++) {
 				if (!RGN_VALID(j)) {
-					/* Found ! */
+					// Found !
 					break;
 				}
 			}
 			if (j < PMM_MAX_REGIONS) {
-				/* Found it */
+				// Found it
 
-				/* dprintf("Region %d will be used\n", j); */
+				// dprintf("Region %d will be used\n", j);
 
 				assert(!RGN_VALID(j));
 
-				/* Copy that region over the free entry */
+				// Copy that region over the free entry
 				memcpy(&regions[j],
 				       &regions[i],
 				       sizeof(pmm_region_t));
 
-				/* Rearrange region j (start) */
+				// Rearrange region j (start)
 				RGN_START(j) = RGN_START(i) + size + 1;
 				RGN_STOP(j)  = RGN_STOP(i);
 
-				/* Mark-back region j as free */
+				// Mark-back region j as free
 				RGN_FLAGS(j) &= ~PMM_FLAG_USED;
 
-				/* Resize region i */
+				// Resize region i
 				RGN_STOP(i) = RGN_START(i) + size;
 
 				pmm_reorder();
@@ -412,10 +410,10 @@ static void pmm_merge(void)
 {
 	int i;
 
-	/* We need ordered regions to simplify our lifes ... */
+	// We need ordered regions to simplify our lifes ...
 	pmm_reorder();
 
-	/* Try to merge all valid, unused and enabled regions */
+	// Try to merge all valid, unused and enabled regions
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		int j;
 
@@ -433,7 +431,7 @@ static void pmm_merge(void)
 		assert(!RGN_USED(i));
 		assert(RGN_ENABLED(i));
 
-		/* Find a merging pair */
+		// Find a merging pair
 		for (j = i +  1; j < PMM_MAX_REGIONS; j++) {
 			if (!RGN_VALID(j)) {
 				continue;
@@ -450,13 +448,13 @@ static void pmm_merge(void)
 			assert(RGN_ENABLED(j));
 		}
 		if (j >= PMM_MAX_REGIONS) {
-			/* Not found */
+			// Not found
 			break;
 		}
 
-		/* Do the i and j regions represent a contiguous space ? */
+		// Do the i and j regions represent a contiguous space ?
 		if (RGN_STOP(i) + 1 == RGN_START(j)) {
-			/* Yeah, merge them ! */
+			// Yeah, merge them !
 			RGN_STOP(i) =
 				RGN_START(i) +
 				RGN_SIZE(i)  +
@@ -490,7 +488,7 @@ void pmm_release(uint_t start)
 		return;
 	}
 
-	/* Got it */
+	// Got it
 	assert(RGN_VALID(i));
 	assert(RGN_USED(i));
 	assert(RGN_ENABLED(i));
