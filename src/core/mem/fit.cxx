@@ -1,21 +1,20 @@
-/*
- * Copyright (C) 2008 Francesco Salvestrini
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
+//
+// Copyright (C) 2008 Francesco Salvestrini
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+//
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -42,7 +41,7 @@ typedef struct fit_block {
 fit_block_t* used_list;
 fit_block_t* free_list;
 
-/* Best fit alloc */
+// Best fit alloc
 static void* bfit_alloc(size_t size)
 {
 	size_t       required_size;
@@ -55,7 +54,7 @@ static void* bfit_alloc(size_t size)
 	required_size = size + sizeof(fit_block_t);
 	target        = NULL;
 
-	/* Find a free block with the minimum slack */
+	// Find a free block with the minimum slack
 	for (prev = NULL, curr = free_list;
 	     curr != NULL;
 	     prev = curr, curr = curr->next) {
@@ -69,35 +68,35 @@ static void* bfit_alloc(size_t size)
 		return NULL;
 	}
 
-	/* Split the block if it is too big */
+	// Split the block if it is too big
 	if (target->size > required_size) {
 		fit_block_t* tmp;
 
-		/* Fix the list */
+		// Fix the list
 		tmp = target + required_size;
 		tmp->next    = target->next;
 		target->next = tmp;
 
-		/* Fix the sizes */
+		// Fix the sizes
 		tmp->size    = target->size - required_size;
 		target->size = required_size;
 	}
 
-	/* Remove the selected block from free list */
+	// Remove the selected block from free list
 	if (prev) {
 		prev->next = target->next;
 	} else {
 		free_list = target->next;
 	}
 
-	/* Add it to the used list (unordered) */
+	// Add it to the used list (unordered)
 	target->next = used_list;
 	used_list    = target;
 
 	return NULL;
 }
 
-/* Worst fit alloc */
+// Worst fit alloc
 static void* wfit_alloc(size_t size)
 {
 	unused_argument(size);
@@ -105,7 +104,7 @@ static void* wfit_alloc(size_t size)
 	return NULL;
 }
 
-/* First fit alloc */
+// First fit alloc
 static void* ffit_alloc(size_t size)
 {
 	unused_argument(size);
@@ -113,7 +112,7 @@ static void* ffit_alloc(size_t size)
 	return NULL;
 }
 
-/* Common fit free */
+// Common fit free
 static void cfit_free(void* ptr)
 {
 	fit_block_t* curr;
@@ -127,18 +126,18 @@ static void cfit_free(void* ptr)
 	     curr != NULL;
 	     prev = curr, curr = curr->next) {
 
-		/* ucurr points to the block that must be released */
+		// ucurr points to the block that must be released
 		if ((curr - sizeof(fit_block_t)) == ptr) {
 			target = curr;
 			break;
 		}
 	}
 	if (!target) {
-		/* Not found */
+		// Not found
 		return;
 	}
 
-	/* Add it to the free list (ordered) */
+	// Add it to the free list (ordered)
 	for (prev = NULL, curr = free_list;
 	     curr != NULL;
 	     prev = curr, curr = curr->next) {
@@ -147,19 +146,18 @@ static void cfit_free(void* ptr)
 		}
 	}
 	if (prev == NULL) {
-		/* No blocks on list */
+		// No blocks on list
 		target->next = free_list;
 		free_list    = target;
 	} else {
-		/* Some blocks already there */
+		// Some blocks already there
 		target->next = curr;
 		prev->next   = target;
 	}
 
-	/* Coalesce the block if needed */
+	// Coalesce the block if needed
 	if (target + target->size == target->next) {
-		/* Yes we can */
-
+		// Yes we can
 	}
 }
 
@@ -222,7 +220,7 @@ void* fit_alloc(size_t size)
 	assert(fit_alloc_cb);
 	assert(size);
 
-	/* Useless if we pass from malloc() */
+	// Useless if we pass from malloc()
 	if (size == 0) {
 		return NULL;
 	}
@@ -235,7 +233,7 @@ void fit_free(void* ptr)
 	assert(fit_free_cb);
 	assert(ptr);
 
-	/* Useless if we pass from free() */
+	// Useless if we pass from free()
 	if (!ptr) {
 		return;
 	}
