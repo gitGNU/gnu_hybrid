@@ -29,7 +29,5 @@ core_dbg_SRCS =					\
 	@reldir@/panic.h			\
 	@reldir@/backtrace.c			\
 	@reldir@/backtrace.h			\
-	@reldir@/morse.c			\
-	@reldir@/morse.h			\
 	@reldir@/debug.h			\
 	$(core_dbg_debugger_SRCS)

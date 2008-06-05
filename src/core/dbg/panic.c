@@ -29,7 +29,6 @@
 #include "core/dbg/debugger/debugger.h"
 #include "core/interrupt.h"
 #include "core/power.h"
-#include "core/dbg/morse.h"
 
 #if CONFIG_REBOOT_ON_PANIC
 static int panic_timeout = PANIC_TIMEOUT;
@@ -81,8 +80,6 @@ void arch_panic(const char* message)
 
 	/* We could panic again here ... is it correct ? */
 	panic_in_progress--;
-
-	morse("SOS");
 
 	/* Reenable the interrupts to let other entities complete their work */
 	interrupts_enable();
