@@ -76,7 +76,8 @@ void irq_handler(regs_t * regs)
 	vector = regs->isr_no - I8259_IDT_BASE_INDEX;
 	assert((vector >= 0) && (vector < I8259_IRQS));
 
-	dprintf("IRQ %d/%d/%d\n", regs->isr_no, vector, I8259_IRQS);
+	dprintf("IRQ %d/%d/%d (mask = 0x%x)\n",
+		regs->isr_no, vector, I8259_IRQS, i8259_mask_get());
 	idt_frame_dump(regs);
 
 	prio_old = irq_level;
@@ -99,8 +100,6 @@ void irq_handler(regs_t * regs)
 
 	irq_level = prio_old;
 	i8259_mask_set(mask_table[irq_level]);
-
-	sti();
 }
 
 static void timer(regs_t * regs)
@@ -112,14 +111,17 @@ int irq_init(void)
 {
 	int i;
 
+	irq_level = 0;
+
 	for (i = 0; i < I8259_IRQS; i++) {
 		handlers[i]   = NULL;
 		prio_table[i] = 0;
-		mask_table[i] = 0xFFFB;
+		mask_table[i] = 0xFFFB;	/* Disable all, except the cascade */
 	}
 
 	if (!i8259_init()) {
-		panic("Cannot initialize i8259");
+		dprintf("Cannot initialize i8259");
+		return 0;
 	}
 
 	if (!irq_handler_install(0, timer)) {

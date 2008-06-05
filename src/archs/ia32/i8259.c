@@ -60,34 +60,22 @@ static void remap(uint_t idt_base)
 	port_out8(PIC_MASTER + 1, 0x01);
 	port_out8(PIC_SLAVE + 1,  0x01);
 
+#if 0
 	/* Send OCW1: Disable all IRQs except the cascade */
 	port_out8(PIC_SLAVE + 1,  0xFF);
 	port_out8(PIC_MASTER + 1, 0xFB);
+#endif
 }
 
 void i8259_eoi(uint_t irq)
 {
 	if (irq >= 8) {
 		dprintf("Sending EOI to slave\n");
-		port_out8(PIC_MASTER, 0x20);
+		port_out8(PIC_SLAVE, 0x20);
 	}
 
 	dprintf("Sending EOI to master\n");
 	port_out8(PIC_MASTER, 0x20);
-}
-
-int i8259_init(void)
-{
-	dprintf("Initializing\n");
-
-	remap(I8259_IDT_BASE_INDEX);
-
-	return 1;
-}
-
-void i8259_fini(void)
-{
-	dprintf("Finalizing\n");
 }
 
 #define CHECK_IRQ_INDEX(X) assert(X < I8259_IRQS)
@@ -138,6 +126,25 @@ void i8259_mask_set(i8259_mask_t mask)
 
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
+
+	assert(i8259_mask_get() == mask);
+}
+
+int i8259_init(void)
+{
+	dprintf("Initializing\n");
+
+	remap(I8259_IDT_BASE_INDEX);
+
+	/* Disable all IRQs except the cascade */
+	i8259_mask_set(0xFFFB);
+
+	return 1;
+}
+
+void i8259_fini(void)
+{
+	dprintf("Finalizing\n");
 }
 
 #if CONFIG_DEBUGGER
