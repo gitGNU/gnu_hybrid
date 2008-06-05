@@ -94,10 +94,8 @@ int i8254_frequency_set(uint32_t freq)
 	dprintf("Frequency %dhz, setting tick to %d (0x%x)\n",
 		freq, tick, tick);
 
-	/* Configure timer0 in mode 2, as a rate generator */
-	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_3);
-
-	/* Send counter LSB first, then MSB */
+	/* Configure timer0 as a rate generator. LSB first, then MSB */
+	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_2);
 	port_out8(COUNTER_0, tick & 0xFF);
 	port_out8(COUNTER_0, (tick >> 8) & 0xFF);
 
