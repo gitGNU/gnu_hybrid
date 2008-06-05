@@ -97,9 +97,6 @@ MAX_STACK_LEVELS=16
 # DEBUGGER_ON_PANIC is not set
 HALT_ON_PANIC=y
 # REBOOT_ON_PANIC is not set
-MORSE=y
-MORSE_VISIBLE=y
-MORSE_AUDIBLE=y
 
 #
 # Memory
@@ -117,7 +114,6 @@ BSS_DEBUG=y
 #
 # Binary formats
 #
-# DLFNC_DEBUG is not set
 # BFD_DEBUG is not set
 
 #
