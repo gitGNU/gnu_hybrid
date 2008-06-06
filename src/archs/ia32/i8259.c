@@ -39,36 +39,12 @@
 #define PIC_MASTER 0x20
 #define PIC_SLAVE  0xA0
 
-static void remap(uint_t idt_base)
-{
-	dprintf("Remapping to idt-base %d\n", idt_base);
-
-	/* Send ICW1: reset */
-	port_out8(PIC_MASTER,     ICU_RESET);
-	port_out8(PIC_SLAVE,      ICU_RESET);
-
-	/* Send ICW2: controller base address (IDT base index) */
-	port_out8(PIC_MASTER + 1, idt_base);
-	port_out8(PIC_SLAVE + 1,  idt_base + 8);
-
-	/* Send ICW3 master: mask where slave is connected to master */
-	port_out8(PIC_MASTER + 1, 0x04);
-	/* Send ICW3 slave: index where the slave is connected on master */
-	port_out8(PIC_SLAVE + 1,  0x02);
-
-	/* Send ICW4: 8086 mode, fully nested, not bufferd, no implicit EOI */
-	port_out8(PIC_MASTER + 1, 0x01);
-	port_out8(PIC_SLAVE + 1,  0x01);
-
-#if 0
-	/* Send OCW1: Disable all IRQs except the cascade */
-	port_out8(PIC_SLAVE + 1,  0xFF);
-	port_out8(PIC_MASTER + 1, 0xFB);
-#endif
-}
+#define CHECK_IRQ_INDEX(X) assert(X < I8259_IRQS)
 
 void i8259_eoi(uint_t irq)
 {
+	CHECK_IRQ_INDEX(irq);
+
 	if (irq >= 8) {
 		dprintf("Sending EOI to slave\n");
 		port_out8(PIC_SLAVE, 0x20);
@@ -77,8 +53,6 @@ void i8259_eoi(uint_t irq)
 	dprintf("Sending EOI to master\n");
 	port_out8(PIC_MASTER, 0x20);
 }
-
-#define CHECK_IRQ_INDEX(X) assert(X < I8259_IRQS)
 
 void i8259_enable(uint_t irq)
 {
@@ -134,7 +108,25 @@ int i8259_init(void)
 {
 	dprintf("Initializing\n");
 
-	remap(I8259_IDT_BASE_INDEX);
+	/* Send ICW1: reset */
+	dprintf("Resetting\n");
+	port_out8(PIC_MASTER, ICU_RESET);
+	port_out8(PIC_SLAVE,  ICU_RESET);
+
+	/* Send ICW2: controller base address (IDT base index) */
+	dprintf("Remapping to idt-base %d\n", I8259_IDT_BASE_INDEX);
+	port_out8(PIC_MASTER + 1, I8259_IDT_BASE_INDEX);
+	port_out8(PIC_SLAVE + 1,  I8259_IDT_BASE_INDEX + 8);
+
+	/* Send ICW3 master: mask where slave is connected to master */
+	port_out8(PIC_MASTER + 1, 0x04);
+	/* Send ICW3 slave: index where the slave is connected on master */
+	port_out8(PIC_SLAVE + 1,  0x02);
+
+	dprintf("Setting mode\n");
+	/* Send ICW4: 8086 mode, fully nested, not bufferd, no implicit EOI */
+	port_out8(PIC_MASTER + 1, 0x01);
+	port_out8(PIC_SLAVE + 1,  0x01);
 
 	/* Disable all IRQs except the cascade */
 	i8259_mask_set(0xFFFB);
@@ -145,6 +137,9 @@ int i8259_init(void)
 void i8259_fini(void)
 {
 	dprintf("Finalizing\n");
+
+	port_out8(PIC_MASTER, ICU_RESET);
+	port_out8(PIC_SLAVE,  ICU_RESET);
 }
 
 #if CONFIG_DEBUGGER
