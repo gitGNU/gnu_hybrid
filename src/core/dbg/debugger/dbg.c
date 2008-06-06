@@ -22,6 +22,7 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "libc/ctype.h"
+#include "core/interrupt.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 
@@ -506,6 +507,8 @@ int dbg_enter(void)
 		return 0;
 	}
 
+	interrupts_lock();
+
 	/* First execute the on-enter actions */
 	fprintf(stddbg_out, "Entering integrated debugger\n");
 
@@ -604,6 +607,8 @@ int dbg_enter(void)
 		}
 		temp_cmd = temp_cmd->next;
 	}
+
+	interrupts_unlock();
 
 	return 1;
 }
