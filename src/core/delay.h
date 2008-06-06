@@ -16,18 +16,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef LIBS_DELAY_H
-#define LIBS_DELAY_H
+#ifndef CORE_DELAY_H
+#define CORE_DELAY_H
 
 #include "config/config.h"
-#include "libc/stdint.h"
-
-__BEGIN_DECLS
+#include "libc/stdio.h"
 
 void delay_ms(uint32_t ms);
 void delay_us(uint32_t us);
 void delay_ns(uint32_t ns);
 
-__END_DECLS
-
-#endif // LIBS_DELAY_H
+#endif // CORE_DELAY_H

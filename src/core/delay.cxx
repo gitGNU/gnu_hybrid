@@ -20,8 +20,6 @@
 #include "libc/stdint.h"
 #include "archs/arch.h"
 
-__BEGIN_DECLS
-
 void delay_ms(uint32_t ms)
 {
 	arch_delay_ms(ms);
@@ -36,5 +34,3 @@ void delay_ns(uint32_t ns)
 {
 	arch_delay_ns(ns);
 }
-
-__END_DECLS
