@@ -24,17 +24,15 @@
 #include "libc/stdint.h"
 
 int   interrupts_init(void);
-
-void  interrupts_lock(void);
-void  interrupts_unlock(void);
-
 void  interrupts_fini(void);
 
 __BEGIN_DECLS
 
+void  interrupts_lock(void);
+void  interrupts_unlock(void);
 void  interrupts_disable(void);
 void  interrupts_enable(void);
 
 __END_DECLS
 
-#endif /* CORE_INTERRUPT_H */
+#endif // CORE_INTERRUPT_H

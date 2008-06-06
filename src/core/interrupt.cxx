@@ -37,8 +37,7 @@ arch_irqs_state_t state;
 
 int interrupts_init(void)
 {
-	nr_locks   = 0;
-	arch_irqs_enable();
+	nr_locks = 0;
 
 	return 1;
 }
