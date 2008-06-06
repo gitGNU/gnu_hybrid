@@ -50,4 +50,4 @@ private:
 	static ktl::vector<cpu *> cpus_;
 };
 
-#endif /* CORE_CPU_H */
+#endif // CORE_CPU_H
