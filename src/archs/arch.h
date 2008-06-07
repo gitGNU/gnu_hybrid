@@ -108,7 +108,6 @@ uint_t            arch_backtrace_store(uint_t * backtrace,
 				       uint_t   max_len);
 
 void	          arch_irqs_enable(void);
-int	          arch_irqs_enabled(void);
 void	          arch_irqs_disable(void);
 arch_irqs_state_t arch_irqs_state_get(void);
 void              arch_irqs_state_set(arch_irqs_state_t * state);
