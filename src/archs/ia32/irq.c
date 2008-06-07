@@ -40,13 +40,15 @@ int irq_handler_install(uint_t        irq,
 	assert(irq < I8259_IRQS);
 	assert(handler);
 
-	dprintf("Handler 0x%p installed to irq %d\n", handler, irq);
-
 	if (handlers[irq]) {
-		dprintf("Handler is present on irq %d\n", irq);
+		dprintf("Handler 0x%p present on irq %d\n", handlers[irq], irq);
 		return 0;
 	}
+
 	handlers[irq] = handler;
+	i8259_enable(irq);
+
+	dprintf("Handler 0x%p installed to irq %d\n", handlers[irq], irq);
 
 	return 1;
 }
@@ -55,9 +57,9 @@ void irq_handler_uninstall(uint_t irq)
 {
 	assert(irq < I8259_IRQS);
 
-	dprintf("IRQ %d handler uninstalled\n", irq);
-
+	i8259_disable(irq);
 	handlers[irq] = NULL;
+	dprintf("IRQ %d handler uninstalled\n", irq);
 }
 
 static int          irq_level;
@@ -109,28 +111,12 @@ static void timer(regs_t * regs)
 
 void irq_enable(void)
 {
-	int i;
-
-	for (i = 0; i < I8259_IRQS; i++) {
-		if (handlers[i]) {
-			i8259_enable(i);
-		}
-	}
-
 	sti();
 }
 
 void irq_disable(void)
 {
-	int i;
-
 	cli();
-
-	for (i = 0; i < I8259_IRQS; i++) {
-		if (handlers[i]) {
-			i8259_disable(i);
-		}
-	}
 }
 
 arch_irqs_state_t irq_state_get(void)
@@ -169,5 +155,11 @@ int irq_init(void)
 
 void irq_fini(void)
 {
+	int i;
+
+	for (i = 0; i < I8259_IRQS; i++) {
+		irq_handler_uninstall(i);
+	}
+
 	i8259_fini();
 }
