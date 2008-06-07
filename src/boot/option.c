@@ -24,8 +24,8 @@
 #include "libc/string.h"
 #include "libc/stdlib.h"
 #include "archs/linker.h"
-#include "core/mem/heap.h"
-#include "core/boot/option.h"
+#include "mem/heap.h"
+#include "boot/option.h"
 #include "core/dbg/debug.h"
 
 #if CONFIG_OPTIONS
