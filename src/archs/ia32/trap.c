@@ -63,9 +63,10 @@ void trap_handler(regs_t * regs)
 {
 	assert(regs);
 
+	/* idt_frame_dump(regs); */
+
 	if (regs->isr_no < KNOWN_EXCEPTIONS) {
 		panic("%s", exception_messages[regs->isr_no]);
-		idt_frame_dump(regs);
 	}
 
 	panic("Unknown trap no %d", regs->isr_no);
