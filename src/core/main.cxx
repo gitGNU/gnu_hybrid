@@ -32,7 +32,7 @@
 #include "libc++/cstdlib"
 
 /* We reach this point from init() */
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
 	printf("Entering main(argc = %d, argv = %p)\n", argc, argv);
 
@@ -61,7 +61,8 @@ int main(int argc, char* argv[])
 
 	sched = new scheduler();
 
-#if 1
+#define TEST 1
+#if TEST
 #include "core/delay.h"
 	while (1 != 0) {
 		delay_ms(1000);
