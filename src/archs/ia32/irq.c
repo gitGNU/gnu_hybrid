@@ -107,6 +107,28 @@ static void timer(regs_t * regs)
 	dprintf("TICKER (%p) !!!\n", regs);
 }
 
+void irq_enable(void)
+{
+	i8259_enable(0);
+	sti();
+}
+
+void irq_disable(void)
+{
+	cli();
+	i8259_disable(0);
+}
+
+arch_irqs_state_t irq_state_get(void)
+{
+	return i8259_mask_get();
+}
+
+void irq_state_set(arch_irqs_state_t * state)
+{
+	i8259_mask_set(*state);
+}
+
 int irq_init(void)
 {
 	int i;

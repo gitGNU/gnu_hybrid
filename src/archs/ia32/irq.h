@@ -23,11 +23,16 @@
 #include "config/config.h"
 #include "libc/stddef.h"
 #include "arch/idt.h"
+#include "archs/arch.h"
 
 typedef void (* irq_handler_t)(regs_t * regs);
 
 int  irq_init(void);
 void irq_fini(void);
+void irq_enable(void);
+void irq_disable(void);
+arch_irqs_state_t irq_state_get(void);
+void              irq_state_set(arch_irqs_state_t * state);
 int  irq_handler_install(uint_t        irq,
 			 irq_handler_t handler);
 void irq_handler_uninstall(uint_t irq);
