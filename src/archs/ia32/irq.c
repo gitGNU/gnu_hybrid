@@ -109,14 +109,28 @@ static void timer(regs_t * regs)
 
 void irq_enable(void)
 {
-	i8259_enable(0);
+	int i;
+
+	for (i = 0; i < I8259_IRQS; i++) {
+		if (handlers[i]) {
+			i8259_enable(i);
+		}
+	}
+
 	sti();
 }
 
 void irq_disable(void)
 {
+	int i;
+
 	cli();
-	i8259_disable(0);
+
+	for (i = 0; i < I8259_IRQS; i++) {
+		if (handlers[i]) {
+			i8259_disable(i);
+		}
+	}
 }
 
 arch_irqs_state_t irq_state_get(void)
