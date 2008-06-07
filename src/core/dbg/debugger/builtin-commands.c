@@ -24,7 +24,7 @@
 #include "libc/string.h"
 #include "libc/ctype.h"
 #include "core/bfd/bfd.h"
-#include "core/boot/option.h"
+#include "boot/option.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/backtrace.h"
 #include "core/dbg/debugger/debugger.h"

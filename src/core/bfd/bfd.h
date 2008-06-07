@@ -22,7 +22,7 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "core/boot/bootinfo.h"
+#include "boot/bootinfo.h"
 
 __BEGIN_DECLS
 

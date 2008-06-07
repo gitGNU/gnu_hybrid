@@ -27,7 +27,7 @@
 #include "core/dma.h"
 #include "core/cpu.h"
 #include "core/scheduler.h"
-#include "core/boot/option.h"
+#include "boot/option.h"
 #include "core/build.h"
 #include "libc++/cstdlib"
 
@@ -51,6 +51,7 @@ int main(int argc, char* argv[])
 	if (!interrupts_init()) {
 		panic("Cannot initialize interrupts");
 	}
+	interrupts_enable();
 
 	if (!dma_init()) {
 		panic("Cannot initialize interrupts");
@@ -59,6 +60,14 @@ int main(int argc, char* argv[])
 	scheduler * sched;
 
 	sched = new scheduler();
+
+#if 1
+#include "core/delay.h"
+	while (1 != 0) {
+		delay_ms(1000);
+		printf("A");
+	}
+#endif
 
 #if CONFIG_DEBUGGER
 	dbg_enter();

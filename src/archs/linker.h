@@ -21,7 +21,7 @@
 #define LINKER_H
 
 #include "config/config.h"
-#include "core/boot/option.h"
+#include "boot/option.h"
 #include "core/resource.h"
 #include "core/dbg/debugger/debugger.h"
 

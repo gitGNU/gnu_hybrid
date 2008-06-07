@@ -21,7 +21,7 @@
 #define I8237_H
 
 #include "config/config.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 #include "libc/stdint.h"
 
 __BEGIN_DECLS

@@ -21,7 +21,7 @@
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "archs/arch.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 
 uint_t arch_backtrace_store(uint_t* backtrace,
 			    uint_t  max_len)

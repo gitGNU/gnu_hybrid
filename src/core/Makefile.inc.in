@@ -19,9 +19,7 @@
 ##
 
 include @reldir@/bfd/Makefile.inc
-include @reldir@/boot/Makefile.inc
 include @reldir@/dbg/Makefile.inc
-include @reldir@/mem/Makefile.inc
 
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
@@ -36,9 +34,7 @@ CLEANFILES += @reldir@/syscalls.h
 
 core_SRCS =					\
 	$(core_bfd_SRCS)			\
-	$(core_boot_SRCS)			\
 	$(core_dbg_SRCS)			\
-	$(core_mem_SRCS)			\
 	$(core_scheduler_SRCS)			\
 	@reldir@/syscall.h			\
 	@reldir@/power.h			\

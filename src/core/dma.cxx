@@ -27,7 +27,7 @@
 #include "core/dbg/panic.h"
 #include "core/dbg/debugger/debugger.h"
 #include "core/dma.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 
 #if CONFIG_DMA_DEBUG
 #define dprintf(F,A...) printf("dma: " F,##A)

@@ -21,7 +21,7 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 
 int    dma_init(void);
 void   dma_fini(void);

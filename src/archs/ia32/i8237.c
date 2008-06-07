@@ -25,7 +25,7 @@
 #include "arch/port.h"
 #include "archs/common/cpu.h"
 #include "core/dbg/debug.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 
 #if CONFIG_I8237_DEBUG
 #define dprintf(F,A...) printf("i8237: " F,##A)

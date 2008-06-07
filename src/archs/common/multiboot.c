@@ -25,11 +25,11 @@
 #include "archs/common/multiboot.h"
 #include "archs/common/asm.h"
 #include "arch/asm.h"
-#include "core/boot/bootinfo.h"
-#include "core/boot/bootstrap.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
-#include "core/mem/pmm.h"
+#include "boot/bootinfo.h"
+#include "boot/bootstrap.h"
+#include "mem/pmm.h"
 
 #define BANNER          "multiboot: "
 #if CONFIG_MULTIBOOT_VERBOSE

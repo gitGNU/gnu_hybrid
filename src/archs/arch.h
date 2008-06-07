@@ -25,7 +25,7 @@
 #include "libc/stdlib.h"
 #include "arch/arch.h"
 #include "archs/common/cpu.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 
 __BEGIN_DECLS
 

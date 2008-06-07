@@ -29,8 +29,8 @@
 #include "core/bfd/formats/aout-format.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
-#include "core/mem/heap.h"
-#include "core/boot/bootinfo.h"
+#include "mem/heap.h"
+#include "boot/bootinfo.h"
 
 #define BANNER          "bfd: "
 
