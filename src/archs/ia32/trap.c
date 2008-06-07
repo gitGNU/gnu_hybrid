@@ -59,12 +59,15 @@ static char * exception_messages[] = {
 /* Lame but ... better than hardwiring a constant value */
 #define KNOWN_EXCEPTIONS (sizeof(exception_messages) / sizeof(char *))
 
+#define FRAME_DUMP_ON_TRAP 1
+
 void trap_handler(regs_t * regs)
 {
 	assert(regs);
 
-	/* idt_frame_dump(regs); */
-
+#if FRAME_DUMP_ON_TRAP
+	idt_frame_dump(regs);
+#endif
 	if (regs->isr_no < KNOWN_EXCEPTIONS) {
 		panic("%s", exception_messages[regs->isr_no]);
 	}
