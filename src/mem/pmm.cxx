@@ -23,8 +23,8 @@
 #include "libc/stdlib.h"
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
-#include "core/mem/pmm.h"
-#include "core/boot/bootinfo.h"
+#include "mem/pmm.h"
+#include "boot/bootinfo.h"
 #include "core/dbg/debugger/debugger.h"
 
 #define BANNER          "pmm: "

@@ -22,7 +22,7 @@ EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
 
-core_mem_SRCS =					\
+mem_SRCS =					\
 	@reldir@/address.cxx			\
 	@reldir@/address.h			\
 	@reldir@/bss.cxx			\

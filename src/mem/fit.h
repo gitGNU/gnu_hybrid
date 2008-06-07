@@ -21,7 +21,7 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "core/mem/address.h"
+#include "mem/address.h"
 
 __BEGIN_DECLS
 

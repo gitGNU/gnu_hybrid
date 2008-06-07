@@ -16,18 +16,22 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef CORE_MEM_VMM_H
-#define CORE_MEM_VMM_H
+#ifndef CORE_MEM_HEAP_H
+#define CORE_MEM_HEAP_H
 
 #include "config/config.h"
-#include "core/boot/bootinfo.h"
+#include "libc/stdint.h"
+#include "mem/address.h"
 
 __BEGIN_DECLS
 
-int  vmm_init(bootinfo_t* bi);
-int  vmm_pagesize(void);
-void vmm_fini(void);
+int   heap_init(addr_t base,
+		size_t size);
+int   heap_initialized(void);
+void* heap_alloc(size_t size);
+void  heap_free(void *ptr);
+void  heap_fini(void);
 
 __END_DECLS
 
-#endif // CORE_MEM_VMM_H
+#endif // CORE_MEM_HEAP_H

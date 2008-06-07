@@ -21,7 +21,7 @@
 #include "libc/string.h"
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
-#include "core/mem/heap.h"
+#include "mem/heap.h"
 #include "core/dbg/debugger/debugger.h"
 
 #define BANNER          "heap: "
