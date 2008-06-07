@@ -26,7 +26,11 @@ include $(srcdir)/Makefile.def
 include $(srcdir)/config/Makefile.inc
 include $(srcdir)/libs/Makefile.inc
 include $(srcdir)/core/Makefile.inc
+include $(srcdir)/mem/Makefile.inc
+include $(srcdir)/boot/Makefile.inc
 include $(srcdir)/archs/Makefile.inc
+
+EXTRA_DIST += rules.cfg
 
 ##
 ## Configuration related targets
@@ -123,6 +127,8 @@ MAINTAINERCLEANFILES += $(BUILD_FILE)
 kernel_SOURCES      =				\
 	$(arch_multiboot_SRCS)			\
 	$(arch_SRCS)				\
+	$(boot_SRCS)				\
+	$(mem_SRCS)				\
 	$(libs_SRCS)				\
 	$(core_SRCS)
 kernel_LDADD        = $(MODULES_BUILTIN) $(ELKLIB_LDADD)

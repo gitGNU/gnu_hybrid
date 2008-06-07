@@ -78,7 +78,7 @@ CLHANDLER_FLAGS     = $(TOOL_FLAGS)
 # Useful binaries
 CHOOSE             = $(CHOOSEDIR)/choose
 CHOOSE_FLAGS       = $(TOOL_FLAGS)
-PACKRULES          = $(CHOOSEDIR)/packrules/packrules
+PACKRULES          = $(CHOOSEDIR)/packrules/packrules -v
 PACKRULES_FLAGS    = $(TOOL_FLAGS)
 
 # Directories
