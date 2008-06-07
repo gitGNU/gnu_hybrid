@@ -74,8 +74,6 @@ int arch_init(void)
 		panic("Cannot initialize IRQs");
 	}
 
-	sti();
-
 	if (!dma_init()) {
 		panic("Cannot initialize DMAs");
 	}
