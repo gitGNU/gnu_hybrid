@@ -150,14 +150,14 @@ void idt_frame_dump(regs_t * regs)
 		esp = (uint_t) regs;
 	}
 
-	printf("Frame 0x%x (isr %d)\n", regs, regs->isr_no);
-	printf(" eax 0x%08x ebx 0x%08x ecx 0x%08x edx 0x%08x\n",
+	printf("Frame dump (isr %d):\n", regs->isr_no);
+	printf("  eax 0x%08x ebx 0x%08x ecx 0x%08x edx 0x%08x\n",
 	       regs->eax, regs->ebx, regs->ecx, regs->edx);
-	printf(" esi 0x%08x edi 0x%08x\n",
+	printf("  esi 0x%08x edi 0x%08x\n",
 	       regs->esi, regs->edi);
-	printf(" eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
+	printf("  eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
 	       regs->eip, esp, regs->ebp, regs->eflags);
-	printf(" cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
+	printf("  cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
 	       regs->cs, ss, regs->ds, regs->es);
 }
 
