@@ -24,7 +24,7 @@
 #include "arch/asm.h"
 #include "arch/port.h"
 #include "arch/idt.h"
-#include "arch/i8259.h"
+#include "arch/irq.h"
 #include "arch/i8237.h"
 #include "arch/i8253.h"
 #include "core/dbg/panic.h"
@@ -34,7 +34,8 @@
 
 void arch_halt(void)
 {
-	cli();
+	irq_disable();
+
 	hlt();
 }
 
@@ -47,10 +48,11 @@ void arch_poweroff(void)
 
 void arch_reset(void)
 {
-	cli();
+	irq_disable();
 	idt_clear();
-	sti();
+	irq_enable();
 
+	/* Are we ready for the triple-fault ? */
 	__asm__ volatile ("int $0x03\n");
 
 	arch_halt();
@@ -58,29 +60,24 @@ void arch_reset(void)
 
 void arch_irqs_enable(void)
 {
-	i8259_enable(0);
-}
-
-int arch_irqs_enabled(void)
-{
-	return (i8259_mask_get() ? 1 : 0);
+	irq_enable();
 }
 
 void arch_irqs_disable(void)
 {
-	i8259_disable(0);
+	irq_disable();
 }
 
 arch_irqs_state_t arch_irqs_state_get(void)
 {
-	return i8259_mask_get();
+	return irq_state_get();
 }
 
 void arch_irqs_state_set(arch_irqs_state_t * state)
 {
 	assert(state);
 
-	i8259_mask_set(*state);
+	irq_state_set(state);
 }
 
 /* Delay loop  */
