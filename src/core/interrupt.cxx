@@ -58,6 +58,8 @@ void interrupts_lock(void)
 {
 	arch_irqs_state_t curr_state;
 
+	dprintf("Locking interrupts\n");
+
 	curr_state = arch_irqs_state_get();
 	arch_irqs_disable();
 
@@ -72,10 +74,11 @@ void interrupts_unlock(void)
 {
 	assert(nr_locks > 0);
 
+	dprintf("Unocking interrupts\n");
+
 	nr_locks--;
 	if (nr_locks == 0) {
 		arch_irqs_state_set(&state);
-		arch_irqs_enable();
 		dprintf("Interrupts unlocked\n");
 	}
 }
