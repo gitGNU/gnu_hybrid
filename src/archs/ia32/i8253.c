@@ -55,12 +55,12 @@
 #define PIT_BOTH	0x30
 
 /* Modes */
-#define PIT_MODE_0	0x0	/* One shot */
+#define PIT_MODE_0	0x0	/* One shot (interrupt on termination) */
 #define PIT_MODE_1	0x2	/* Hardware retriggerable one shot */
 #define PIT_MODE_2	0x4	/* Rate generator */
 #define PIT_MODE_3	0x6	/* Square wave mode */
-#define PIT_MODE_4	0x8	/* Software strobe */
-#define PIT_MODE_5	0xA	/* Hardware strobe */
+#define PIT_MODE_4	0x8	/* Software trigger strobe */
+#define PIT_MODE_5	0xA	/* Hardware trigger strobe */
 
 #define PIT_LATCH	0x00
 #define PIT_BCD		0x01
@@ -73,14 +73,17 @@
 
 static uint32_t frequency;
 
-int i8254_frequency_set(uint32_t freq)
+static int i8254_frequency_set(uint32_t freq)
 {
-	uint16_t ticks;
+	uint_t ticks;
 
 	assert(freq > 0);
 
 	ticks = ((PIT_TICKS_SEC + (freq / 2)) / freq);
-
+	if (ticks > 65535) {
+		dprintf("Cannot setup timer for %dHz, too many ticks\n", freq);
+		return 0;
+	}
 	dprintf("Setting frequency to %dHz (%d ticks)\n", freq, ticks);
 
 	/* Configure timer0 as a rate generator. LSB first, then MSB */
@@ -89,7 +92,6 @@ int i8254_frequency_set(uint32_t freq)
 	port_out8(COUNTER_0, (ticks >> 8) & 0xFF);
 
 	frequency = freq;
-
 	return 1;
 }
 
@@ -106,6 +108,7 @@ int i8254_delay_calibrate(void)
 	uint8_t  not_ok;
 
 	if (!cpu_has_tsc(__this_cpu)) {
+		dprintf("CPU has no TSC support ...\n");
 		return 0;
 	}
 
@@ -173,7 +176,6 @@ int i8254_delay_calibrate(void)
 int i8253_init(void)
 {
 	if (!i8254_delay_calibrate()) {
-		dprintf("Cannot calibrate delay loop\n");
 		return 0;
 	}
 
