@@ -33,8 +33,8 @@
 #define dprintf(F,A...)
 #endif
 
-#define PIT_SECOND	1193180
-#define HZ		100
+/* PIT ticks per second */
+#define PIT_TICKS_SEC   1193180
 
 /* I/O port for 8254 commands */
 #define TMR_PORT	0x43
@@ -75,29 +75,20 @@ static uint32_t frequency;
 
 int i8254_frequency_set(uint32_t freq)
 {
-	unsigned int tick;
+	uint16_t ticks;
 
 	assert(freq > 0);
 
-	tick = PIT_SECOND / freq;
+	ticks = ((PIT_TICKS_SEC + (freq / 2)) / freq);
 
-	/* Counter must be between 1 and 65536 */
-	if ((tick <= 0) || (tick > 65536)) {
-		dprintf("Tick out of range (%d)\n", tick);
-		return 0;
-	}
-
-	if (tick == 65536) {
-		tick = 0;
-	}
-
-	dprintf("Frequency %dhz, setting tick to %d (0x%x)\n",
-		freq, tick, tick);
+	dprintf("Setting frequency to %dHz (%d ticks)\n", freq, ticks);
 
 	/* Configure timer0 as a rate generator. LSB first, then MSB */
 	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_2);
-	port_out8(COUNTER_0, tick & 0xFF);
-	port_out8(COUNTER_0, (tick >> 8) & 0xFF);
+	port_out8(COUNTER_0, ticks & 0xFF);
+	port_out8(COUNTER_0, (ticks >> 8) & 0xFF);
+
+	frequency = freq;
 
 	return 1;
 }
@@ -181,14 +172,12 @@ int i8254_delay_calibrate(void)
 
 int i8253_init(void)
 {
-	frequency = 0;
-	if (!i8254_frequency_set(HZ)) {
-		return 0;
-	}
-	frequency = HZ;
-
 	if (!i8254_delay_calibrate()) {
 		dprintf("Cannot calibrate delay loop\n");
+		return 0;
+	}
+
+	if (!i8254_frequency_set(CONFIG_HZ)) {
 		return 0;
 	}
 
