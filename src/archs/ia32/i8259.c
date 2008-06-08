@@ -40,7 +40,7 @@
 #define PIC_SLAVE  0xA0
 #define PIC_ELCONF 0x4D0 /* Edge/Level control register */
 
-#define CHECK_IRQ_INDEX(X) assert(X < I8259_IRQS)
+#define CHECK_IRQ_INDEX(IDX) assert((IDX) < I8259_IRQS)
 
 void i8259_eoi(uint_t irq)
 {

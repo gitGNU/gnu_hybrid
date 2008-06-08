@@ -125,6 +125,8 @@ void irq_handler(regs_t * regs)
 	if (prio_new > prio_old) {
 		prio_current = prio_new;
 	}
+
+	/* Deassert before acknowledging, in order to avoid spurious */
 	i8259_mask_set(mask_table[prio_current]);
 
 	/* Acknowledge PIC */
@@ -142,13 +144,6 @@ void irq_handler(regs_t * regs)
 	/* Restore interrupt level */
 	prio_current = prio_old;
 	i8259_mask_set(mask_table[prio_current]);
-}
-
-static void timer(regs_t * regs)
-{
-	static int ticks = 0;
-
-	dprintf("TICKER (%p / %d) !!!\n", regs, ticks++);
 }
 
 void irq_enable(void)
@@ -169,6 +164,16 @@ arch_irqs_state_t irq_state_get(void)
 void irq_state_set(arch_irqs_state_t * state)
 {
 	i8259_mask_set(*state);
+}
+
+static void timer(regs_t * regs)
+{
+	dprintf("TIMER (0x%p)\n", regs);
+}
+
+static void keyboard(regs_t * regs)
+{
+	dprintf("KEYBOARD (0x%p)\n", regs);
 }
 
 int irq_init(void)
@@ -193,7 +198,12 @@ int irq_init(void)
 	if (!irq_handler_install(0, timer)) {
 		return 0;
 	}
-	irq_unmask(0, 1);
+	irq_unmask(0, 10);
+
+	if (!irq_handler_install(1, keyboard)) {
+		return 0;
+	}
+	irq_unmask(1, 9);
 
 	return 1;
 }
@@ -203,6 +213,7 @@ void irq_fini(void)
 	int i;
 
 	for (i = 0; i < I8259_IRQS; i++) {
+		irq_mask(i);
 		irq_handler_uninstall(i);
 	}
 
