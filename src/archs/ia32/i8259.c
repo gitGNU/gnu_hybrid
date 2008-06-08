@@ -38,6 +38,7 @@
 #define ICU_RESET  0x11
 #define PIC_MASTER 0x20
 #define PIC_SLAVE  0xA0
+#define PIC_ELCONF 0x4D0 /* Edge/Level control register */
 
 #define CHECK_IRQ_INDEX(X) assert(X < I8259_IRQS)
 
@@ -88,6 +89,32 @@ void i8259_disable(uint_t irq)
 	}
 }
 
+void i8259_setup(uint_t       irq,
+		 i8259_type_t mode)
+{
+	uint16_t port;
+	uint8_t  value;
+	uint8_t  bit;
+
+	CHECK_IRQ_INDEX(irq);
+
+	if (irq < 8) {
+		port = PIC_ELCONF;
+	} else {
+		port = PIC_ELCONF + 1;
+	}
+	bit = (uint_t)(1 << (irq & 7));
+
+	value = port_in8(port);
+	if (mode) {
+		value |= bit;
+	} else {
+		value &= ~bit;
+	}
+
+	port_out8(port, value);
+}
+
 i8259_mask_t i8259_mask_get(void)
 {
 	return (port_in8(PIC_SLAVE + 1) << 8 |
@@ -96,7 +123,8 @@ i8259_mask_t i8259_mask_get(void)
 
 void i8259_mask_set(i8259_mask_t mask)
 {
-	dprintf("Setting irq mask to 0x%x\n", mask);
+	dprintf("Changing irq mask (0x%x -> 0x%x)\n",
+		i8259_mask_get(), mask);
 
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);

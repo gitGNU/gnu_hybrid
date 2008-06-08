@@ -26,8 +26,14 @@
 __BEGIN_DECLS
 
 #define I8259_IRQS 16
+#define I8259_PRIO 12
 
 typedef uint16_t i8259_mask_t;
+
+typedef enum {
+	I8259_TYPE_LEVEL,
+	I8259_TYPE_TRIGGER
+} i8259_type_t;
 
 int          i8259_init(void);
 void         i8259_fini(void);
@@ -35,6 +41,8 @@ i8259_mask_t i8259_mask_get(void);
 void         i8259_mask_set(i8259_mask_t mask);
 void         i8259_enable(uint_t irq);
 void         i8259_disable(uint_t irq);
+void         i8259_setup(uint_t       irq,
+			 i8259_type_t level);
 void         i8259_eoi(uint_t irq);
 
 __END_DECLS
