@@ -192,11 +192,6 @@ int i8253_init(void)
 		return 0;
 	}
 
-#if CONFIG_DEBUGGER
-#include "core/dbg/debugger/debugger.h"
-	dbg_enter();
-#endif
-
 	return 1;
 }
 
