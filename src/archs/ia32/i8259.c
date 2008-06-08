@@ -46,12 +46,13 @@ void i8259_eoi(uint_t irq)
 {
 	CHECK_IRQ_INDEX(irq);
 
+	/* dprintf("Sending EOI for irq %d\n", irq); */
 	if (irq >= 8) {
-		dprintf("Sending EOI to slave\n");
+		/* dprintf("Sending EOI to slave\n"); */
 		port_out8(PIC_SLAVE, 0x20);
 	}
 
-	dprintf("Sending EOI to master\n");
+	/* dprintf("Sending EOI to master\n"); */
 	port_out8(PIC_MASTER, 0x20);
 }
 
@@ -123,9 +124,10 @@ i8259_mask_t i8259_mask_get(void)
 
 void i8259_mask_set(i8259_mask_t mask)
 {
+#if 0
 	dprintf("Changing irq mask (0x%x -> 0x%x)\n",
 		i8259_mask_get(), mask);
-
+#endif
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
 
