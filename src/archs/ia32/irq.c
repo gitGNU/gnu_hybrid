@@ -113,7 +113,8 @@ void irq_handler(regs_t * regs)
 
 	dprintf("IRQ %d/%d/%d (mask = 0x%x)\n",
 		regs->isr_no, vector, I8259_IRQS, i8259_mask_get());
-	idt_frame_dump(regs);
+
+	/* idt_frame_dump(regs); */
 
 	assert((vector >= 0) && (vector < I8259_IRQS));
 
@@ -145,7 +146,9 @@ void irq_handler(regs_t * regs)
 
 static void timer(regs_t * regs)
 {
-	dprintf("TICKER (%p) !!!\n", regs);
+	static int ticks = 0;
+
+	dprintf("TICKER (%p / %d) !!!\n", regs, ticks++);
 }
 
 void irq_enable(void)
