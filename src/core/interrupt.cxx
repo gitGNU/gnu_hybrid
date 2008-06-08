@@ -50,8 +50,8 @@ void interrupts_disable(void)
 
 void interrupts_enable(void)
 {
+	dprintf("Enabling interrupts\n");
 	arch_irqs_enable();
-	dprintf("Interrupts enabled\n");
 }
 
 void interrupts_lock(void)
