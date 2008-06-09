@@ -24,7 +24,9 @@
 #include "libc/string.h"
 #include "libc/bits/byteswap.h"
 #include "archs/linker.h"
-#include "arch/dbg/debugger/gdb.h"
+#if ARCH_IA32
+#include "archs/ia32/dbg/debugger/gdb.h"
+#endif
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 
