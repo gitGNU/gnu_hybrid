@@ -19,8 +19,8 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "arch/cpu.h"
-#include "arch/asm.h"
+#include "archs/ia32/cpu.h"
+#include "archs/ia32/asm.h"
 #include "core/dbg/debug.h"
 
 #if CONFIG_ARCH_CPU_DEBUG

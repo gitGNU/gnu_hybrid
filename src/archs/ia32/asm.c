@@ -19,8 +19,8 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "arch/asm.h"
-#include "arch/gdt.h"
+#include "archs/ia32/asm.h"
+#include "archs/ia32/gdt.h"
 
 /* Function to see if a specific flag is changeable */
 static int is_flag_changeable(uint32_t flag)

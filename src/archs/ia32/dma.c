@@ -18,8 +18,8 @@
  */
 
 #include "config/config.h"
-#include "arch/i8237.h"
-#include "arch/dma.h"
+#include "archs/ia32/i8237.h"
+#include "archs/ia32/dma.h"
 #include "core/dbg/debug.h"
 
 #if CONFIG_ARCH_DMA_DEBUG

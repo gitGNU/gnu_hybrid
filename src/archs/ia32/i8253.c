@@ -21,9 +21,9 @@
 #include "libc/stdio.h"
 #include "libc/string.h"
 #include "libc/stdint.h"
-#include "arch/cpu.h"
-#include "arch/asm.h"
-#include "arch/port.h"
+#include "archs/ia32/cpu.h"
+#include "archs/ia32/asm.h"
+#include "archs/ia32/port.h"
 #include "archs/common/cpu.h"
 #include "core/dbg/debug.h"
 

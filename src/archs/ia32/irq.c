@@ -18,12 +18,12 @@
  */
 
 #include "config/config.h"
-#include "arch/irq.h"
-#include "arch/port.h"
-#include "arch/idt.h"
-#include "arch/arch.h"
-#include "arch/i8259.h"
-#include "arch/asm.h"
+#include "archs/ia32/irq.h"
+#include "archs/ia32/port.h"
+#include "archs/ia32/idt.h"
+#include "archs/ia32/arch.h"
+#include "archs/ia32/i8259.h"
+#include "archs/ia32/asm.h"
 #include "core/dbg/debug.h"
 
 #if CONFIG_ARCH_IRQ_DEBUG

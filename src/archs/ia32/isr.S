@@ -20,7 +20,7 @@
 #define ASM	1
 #include "config/config.h"
 #include "archs/common/asm.h"
-#include "arch/gdt.h"
+#include "archs/ia32/gdt.h"
 
 .macro REGS_SAVE_ALL
 	pushl %es

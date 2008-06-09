@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "arch/idt.h"
+#include "archs/ia32/idt.h"
 #include "core/dbg/debug.h"
 
 static char * exception_messages[] = {

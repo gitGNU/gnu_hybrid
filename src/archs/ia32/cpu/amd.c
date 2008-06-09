@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "arch/cpu.h"
+#include "archs/ia32/cpu.h"
 #include "libc/stdio.h"
 #include "core/dbg/debug.h"
 

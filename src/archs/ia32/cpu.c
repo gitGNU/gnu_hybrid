@@ -18,8 +18,8 @@
  */
 
 #include "config/config.h"
-#include "arch/asm.h"
-#include "arch/cpu.h"
+#include "archs/ia32/asm.h"
+#include "archs/ia32/cpu.h"
 #include "archs/common/cpu.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"

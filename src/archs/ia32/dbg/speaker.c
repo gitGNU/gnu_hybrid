@@ -19,7 +19,7 @@
 
 #include "config/config.h"
 #include "archs/arch.h"
-#include "arch/port.h"
+#include "archs/ia32/port.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
 

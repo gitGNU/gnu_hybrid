@@ -23,7 +23,7 @@
 #include "libc/string.h"
 #include "libc/stddef.h"
 #include "libc/ctype.h"
-#include "arch/port.h"
+#include "archs/ia32/port.h"
 #include "core/resource.h"
 #include "core/dbg/debug.h"
 

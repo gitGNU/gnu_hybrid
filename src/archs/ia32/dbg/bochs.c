@@ -19,7 +19,7 @@
 
 #include "config/config.h"
 #include "libc/stdio.h"
-#include "arch/port.h"
+#include "archs/ia32/port.h"
 #include "core/resource.h"
 
 #if CONFIG_BOCHS_DEBUGGER

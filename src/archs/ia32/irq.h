@@ -22,8 +22,10 @@
 
 #include "config/config.h"
 #include "libc/stddef.h"
-#include "arch/idt.h"
-#include "archs/arch.h"
+#if ARCH_IA32
+#include "archs/ia32/arch.h"
+#include "archs/ia32/idt.h"
+#endif
 
 typedef void (* irq_handler_t)(regs_t * regs);
 

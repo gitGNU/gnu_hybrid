@@ -21,9 +21,9 @@
 #include "libc/stdio.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
-#include "arch/idt.h"
-#include "arch/gdt.h"
-#include "arch/asm.h"
+#include "archs/ia32/idt.h"
+#include "archs/ia32/gdt.h"
+#include "archs/ia32/asm.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/debugger/debugger.h"
 

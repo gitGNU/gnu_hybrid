@@ -21,7 +21,7 @@
 #define ARCH_ARCH_H
 
 #include "config/config.h"
-#include "arch/i8259.h"
+#include "archs/ia32/i8259.h"
 
 typedef i8259_mask_t arch_irqs_state_t;
 
