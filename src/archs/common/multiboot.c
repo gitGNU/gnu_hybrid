@@ -24,7 +24,7 @@
 #include "libc/ctype.h"
 #include "archs/common/multiboot.h"
 #include "archs/common/asm.h"
-#include "arch/asm.h"
+#include "archs/ia32/asm.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
 #include "boot/bootinfo.h"

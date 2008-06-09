@@ -20,7 +20,9 @@
 #ifndef ARCHS_COMMON_CPU_H
 #define ARCHS_COMMON_CPU_H
 
-#include "arch/cpu.h"
+#if ARCH_IA32
+#include "archs/ia32/cpu.h"
+#endif
 
 typedef struct {
 	int        index;  /* CPU id */

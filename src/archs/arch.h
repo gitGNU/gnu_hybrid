@@ -23,7 +23,9 @@
 #include "config/config.h"
 #include "libc/stdint.h"
 #include "libc/stdlib.h"
-#include "arch/arch.h"
+#if ARCH_IA32
+#include "archs/ia32/arch.h"
+#endif
 #include "archs/common/cpu.h"
 #include "mem/address.h"
 
