@@ -21,7 +21,7 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #if CONFIG_DEBUGGER_HISTORY
 

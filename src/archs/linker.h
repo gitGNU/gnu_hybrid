@@ -23,7 +23,7 @@
 #include "config/config.h"
 #include "boot/option.h"
 #include "core/resource.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 __BEGIN_DECLS
 

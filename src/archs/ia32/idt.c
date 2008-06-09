@@ -27,7 +27,7 @@
 #include "archs/ia32/i8259.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #if CONFIG_IDT_DEBUG
 #define dprintf(F,A...) printf("idt: " F,##A)

@@ -25,7 +25,7 @@
 #include "archs/ia32/asm.h"
 #include "archs/ia32/port.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "libs/bcd.h"
 
 #if CONFIG_CMOS_DEBUG

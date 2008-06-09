@@ -27,7 +27,7 @@
 #include "archs/linker.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "boot/bootinfo.h"
 
 #define BANNER          "bootinfo: "

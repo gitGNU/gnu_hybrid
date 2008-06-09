@@ -24,7 +24,7 @@
 #include "libc/param.h"
 #include "core/dbg/debug.h"
 #include "core/log.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 __BEGIN_DECLS
 

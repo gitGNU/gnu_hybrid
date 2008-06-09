@@ -26,7 +26,7 @@
 #include "core/bfd/bfd.h"
 #include "core/dbg/panic.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "boot/option.h"
 #include "boot/bootinfo.h"
 #include "boot/bootstrap.h"

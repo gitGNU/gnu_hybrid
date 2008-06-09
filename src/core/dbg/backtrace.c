@@ -25,7 +25,7 @@
 #include "archs/arch.h"
 #include "core/bfd/bfd.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 static unsigned     backtrace[CONFIG_MAX_STACK_LEVELS];
 

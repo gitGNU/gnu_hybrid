@@ -22,7 +22,7 @@
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
 #include "mem/heap.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #define BANNER          "heap: "
 

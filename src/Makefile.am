@@ -29,6 +29,7 @@ include $(srcdir)/core/Makefile.inc
 include $(srcdir)/mem/Makefile.inc
 include $(srcdir)/boot/Makefile.inc
 include $(srcdir)/archs/Makefile.inc
+include $(srcdir)/dbg/Makefile.inc
 
 EXTRA_DIST += rules.cfg
 
@@ -130,7 +131,8 @@ kernel_SOURCES      =				\
 	$(boot_SRCS)				\
 	$(mem_SRCS)				\
 	$(libs_SRCS)				\
-	$(core_SRCS)
+	$(core_SRCS)				\
+	$(dbg_SRCS)
 kernel_LDADD        = $(MODULES_BUILTIN) $(ELKLIB_LDADD)
 kernel_DEPENDENCIES = $(kernel_LDSCRIPT) $(CFG_ALL)
 kernel_LDFLAGS      = $(KERNELLDFLAGS)

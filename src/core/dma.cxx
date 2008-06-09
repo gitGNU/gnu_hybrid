@@ -25,7 +25,7 @@
 #include "core/interrupt.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "core/dma.h"
 #include "mem/address.h"
 

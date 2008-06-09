@@ -20,7 +20,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "libc/string.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "core/dbg/debug.h"
 #include "core/timer.h"
 #include "core/interrupt.h"
@@ -60,13 +60,18 @@ int main(int argc, char * argv[])
 	scheduler * sched;
 
 	sched = new scheduler();
+	assert(sched);
 
 #define TEST 1
 #if TEST
 #include "core/delay.h"
 	while (1 != 0) {
-		delay_ms(1000);
-		printf("A");
+		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+		printf("\n");
 	}
 #endif
 

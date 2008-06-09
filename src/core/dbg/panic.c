@@ -26,7 +26,7 @@
 #include "archs/arch.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/backtrace.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "core/interrupt.h"
 #include "core/power.h"
 

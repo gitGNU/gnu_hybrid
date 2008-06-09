@@ -24,7 +24,7 @@
 #include "core/interrupt.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #if CONFIG_INTERRUPTS_DEBUG
 #define dprintf(F,A...) printf("interrupts: " F,##A)

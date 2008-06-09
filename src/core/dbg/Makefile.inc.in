@@ -18,8 +18,6 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
-include @reldir@/debugger/Makefile.inc
-
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
@@ -29,5 +27,4 @@ core_dbg_SRCS =					\
 	@reldir@/panic.h			\
 	@reldir@/backtrace.c			\
 	@reldir@/backtrace.h			\
-	@reldir@/debug.h			\
-	$(core_dbg_debugger_SRCS)
+	@reldir@/debug.h

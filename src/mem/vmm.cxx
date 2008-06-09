@@ -23,7 +23,7 @@
 #include "boot/bootinfo.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #define BANNER          "vmm: "
 

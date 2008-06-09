@@ -23,7 +23,7 @@
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
 #include "mem/fit.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #define BANNER          "fit: "
 

@@ -22,14 +22,14 @@ EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
 
-core_dbg_debugger_SRCS =		\
-	@reldir@/dbg.c			\
-	@reldir@/gdb.c			\
-	@reldir@/gdb.h			\
-	@reldir@/debugger.h		\
-	@reldir@/commands.c		\
-	@reldir@/variables.c		\
-	@reldir@/history.c		\
-	@reldir@/completion.c		\
-	@reldir@/builtin-commands.c	\
+dbg_SRCS =					\
+	@reldir@/dbg.c				\
+	@reldir@/gdb.c				\
+	@reldir@/gdb.h				\
+	@reldir@/debugger.h			\
+	@reldir@/commands.c			\
+	@reldir@/variables.c			\
+	@reldir@/history.c			\
+	@reldir@/completion.c			\
+	@reldir@/builtin-commands.c		\
 	@reldir@/builtin-variables.c

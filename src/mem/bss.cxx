@@ -24,7 +24,7 @@
 #include "libc/stdlib.h"
 #include "mem/address.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "core/power.h"
 #include "core/bfd/bfd.h"
 

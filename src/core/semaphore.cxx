@@ -24,7 +24,7 @@
 #include "core/semaphore.h"
 #include "core/dbg/debug.h"
 #include "core/dbg/panic.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 int semaphore_init(semaphore_t* semaphore,
 		   int          count)

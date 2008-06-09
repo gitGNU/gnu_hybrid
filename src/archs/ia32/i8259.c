@@ -27,7 +27,7 @@
 #include "archs/ia32/arch.h"
 #include "archs/ia32/idt.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #if CONFIG_I8259_DEBUG
 #define dprintf(F,A...) printf("i8259: " F,##A)

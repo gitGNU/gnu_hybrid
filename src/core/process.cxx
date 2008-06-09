@@ -20,7 +20,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "core/process.h"
 #include "core/thread.h"
 

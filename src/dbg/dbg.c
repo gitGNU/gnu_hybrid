@@ -24,7 +24,7 @@
 #include "libc/ctype.h"
 #include "core/interrupt.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #if CONFIG_DEBUGGER
 

@@ -25,7 +25,7 @@
 #include "archs/ia32/gdt.h"
 #include "archs/ia32/asm.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 #if CONFIG_GDT_DEBUG
 #define dprintf(F,A...) printf("gdt: " F,##A)

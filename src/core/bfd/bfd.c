@@ -28,7 +28,7 @@
 #include "core/bfd/formats/aout.h"
 #include "core/bfd/formats/aout-format.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 #include "mem/heap.h"
 #include "boot/bootinfo.h"
 

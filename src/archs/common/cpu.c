@@ -22,7 +22,7 @@
 #include "libc/stddef.h"
 #include "archs/common/cpu.h"
 #include "core/dbg/debug.h"
-#include "core/dbg/debugger/debugger.h"
+#include "dbg/debugger.h"
 
 cpu_t cpus[CONFIG_MAX_CPU_COUNT]; /* Placeholder of all CPUs data */
 
