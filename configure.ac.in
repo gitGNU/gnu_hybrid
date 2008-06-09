@@ -370,13 +370,13 @@ AC_SUBST(AX_CONFIG_CXXFLAGS)
 AC_PROG_RANLIB
 #AC_PROG_LIBTOOL
 
-AC_PROG_LN_S
-AX_CHECK_VPATH_BUILD([
-  AX_CHECK_SYMBOLIC_LINKS([],[
-    AC_MSG_ERROR([you are building in a separate directory than the source directory but your system does not support symbolic links ...])
-  ])
-],[
-])
+#AC_PROG_LN_S
+#AX_CHECK_VPATH_BUILD([
+#  AX_CHECK_SYMBOLIC_LINKS([],[
+#    AC_MSG_ERROR([you are building in a separate directory than the source directory but your system does not support symbolic links ...])
+#  ])
+#],[
+#])
 
 #
 # Libraries
@@ -723,7 +723,7 @@ AC_CONFIG_FILES([
 # XXX FIXME:
 #     Build the correct link to the choosen target architecture. This solution
 #     is not portable so it should be removed ASAP !
-AC_CONFIG_LINKS(src/arch:src/archs/$architecture)
+#AC_CONFIG_LINKS(src/arch:src/archs/$architecture)
 
 AC_OUTPUT
 
