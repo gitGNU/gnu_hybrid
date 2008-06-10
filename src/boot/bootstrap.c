@@ -23,7 +23,7 @@
 #include "libc/stddef.h"
 #include "archs/linker.h"
 #include "archs/arch.h"
-#include "core/bfd/bfd.h"
+#include "libs/bfd/bfd.h"
 #include "core/panic.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"

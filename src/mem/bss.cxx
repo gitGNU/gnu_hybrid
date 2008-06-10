@@ -26,7 +26,7 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "core/power.h"
-#include "core/bfd/bfd.h"
+#include "libs/bfd/bfd.h"
 
 #define BANNER          "bss: "
 

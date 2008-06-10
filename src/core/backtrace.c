@@ -23,7 +23,7 @@
 #include "libcompiler/compiler.h"
 #include "libcompiler/demangle.h"
 #include "archs/arch.h"
-#include "core/bfd/bfd.h"
+#include "libs/bfd/bfd.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 

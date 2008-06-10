@@ -66,41 +66,6 @@ BOOTINFO_ARGS_SIZE=256
 BOOTINFO_MODULES=64
 
 #
-# Memory
-#
-LMA=0x00100000
-VMA=0xC0000000
-PAGE_SIZE=4096
-BSS_DEBUG=y
-# VMM_DEBUG is not set
-# PMM_DEBUG is not set
-# PMM_MEMORY_TEST is not set
-# DEBUG_HEAP is not set
-# DEBUG_FIT is not set
-
-#
-# Debugging
-#
-DEBUG=y
-
-#
-# Debugging options
-#
-EXPECT=y
-CHECK_MEMORY=y
-FOOLISH_MEM_CHECKS=y
-CHECK_STACK=y
-# REGRESSION is not set
-
-#
-# Panics
-#
-MAX_STACK_LEVELS=16
-# DEBUGGER_ON_PANIC is not set
-HALT_ON_PANIC=y
-# REBOOT_ON_PANIC is not set
-
-#
 # Binary formats
 #
 # BFD_DEBUG is not set
@@ -116,6 +81,19 @@ ELF=y
 #
 AOUT=y
 # AOUT_DEBUG is not set
+
+#
+# Memory
+#
+LMA=0x00100000
+VMA=0xC0000000
+PAGE_SIZE=4096
+BSS_DEBUG=y
+# VMM_DEBUG is not set
+# PMM_DEBUG is not set
+# PMM_MEMORY_TEST is not set
+# DEBUG_HEAP is not set
+# DEBUG_FIT is not set
 
 #
 # Core
@@ -146,6 +124,28 @@ SPINLOCK_DEBUG=y
 MUTEX_DEBUG=y
 SEMAPHORE_DEBUG=y
 POSIX=y
+
+#
+# Debugging
+#
+DEBUG=y
+
+#
+# Debugging options
+#
+EXPECT=y
+CHECK_MEMORY=y
+FOOLISH_MEM_CHECKS=y
+CHECK_STACK=y
+# REGRESSION is not set
+
+#
+# Panics
+#
+MAX_STACK_LEVELS=16
+# DEBUGGER_ON_PANIC is not set
+HALT_ON_PANIC=y
+# REBOOT_ON_PANIC is not set
 
 #
 # Integrated debugger

@@ -18,8 +18,6 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
-include @reldir@/bfd/Makefile.inc
-
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
@@ -32,9 +30,6 @@ BUILT_SOURCES += 				\
 CLEANFILES += @reldir@/syscalls.h
 
 core_SRCS =					\
-	$(core_bfd_SRCS)			\
-	$(core_dbg_SRCS)			\
-	$(core_scheduler_SRCS)			\
 	@reldir@/syscall.h			\
 	@reldir@/power.h			\
 	@reldir@/power.cxx			\

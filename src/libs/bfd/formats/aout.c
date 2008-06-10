@@ -23,8 +23,8 @@
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
 #include "libc/string.h"
-#include "core/bfd/formats/aout.h"
-#include "core/bfd/formats/aout-format.h"
+#include "libs/bfd/formats/aout.h"
+#include "libs/bfd/formats/aout-format.h"
 #include "libs/debug.h"
 
 #if CONFIG_AOUT
@@ -75,7 +75,7 @@ int aout_init(aout_info_t*  kernel_image,
 	unused_argument(num);
 	unused_argument(strsize);
 	unused_argument(addr);
-	
+
 	return 1;
 }
 
