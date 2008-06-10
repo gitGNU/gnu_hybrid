@@ -27,7 +27,7 @@
 #include "core/bfd/formats/elf-format.h"
 #include "core/bfd/formats/aout.h"
 #include "core/bfd/formats/aout-format.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "mem/heap.h"
 #include "boot/bootinfo.h"

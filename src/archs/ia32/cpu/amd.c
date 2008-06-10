@@ -20,7 +20,7 @@
 #include "config/config.h"
 #include "archs/ia32/cpu.h"
 #include "libc/stdio.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("amd: " F,##A)

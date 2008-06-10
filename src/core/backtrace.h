@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef CORE_DBG_BACKTRACE_H
-#define CORE_DBG_BACKTRACE_H
+#ifndef CORE_BACKTRACE_H
+#define CORE_BACKTRACE_H
 
 #include "config/config.h"
 #include "libc/stdio.h"
@@ -31,4 +31,4 @@ void backtrace_show(FILE* stream);
 
 __END_DECLS
 
-#endif /* CORE_DBG_BACKTRACE_H */
+#endif /* CORE_BACKTRACE_H */

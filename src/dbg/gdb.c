@@ -27,7 +27,7 @@
 #if ARCH_IA32
 #include "archs/ia32/dbg/debugger/gdb.h"
 #endif
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_GDB

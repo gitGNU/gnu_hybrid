@@ -20,7 +20,7 @@
 #include "config/config.h"
 #include "archs/ia32/i8237.h"
 #include "archs/ia32/dma.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_ARCH_DMA_DEBUG
 #define dprintf(F,A...) printf("dma: " F,##A)

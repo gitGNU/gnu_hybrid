@@ -22,8 +22,8 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "core/semaphore.h"
-#include "core/dbg/debug.h"
-#include "core/dbg/panic.h"
+#include "libs/debug.h"
+#include "core/panic.h"
 #include "dbg/debugger.h"
 
 int semaphore_init(semaphore_t* semaphore,

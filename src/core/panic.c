@@ -18,14 +18,13 @@
  */
 
 #include "config/config.h"
-#include "debug.h"
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stdarg.h"
 #include "libc/unistd.h"
 #include "archs/arch.h"
-#include "core/dbg/debug.h"
-#include "core/dbg/backtrace.h"
+#include "libs/debug.h"
+#include "core/backtrace.h"
 #include "dbg/debugger.h"
 #include "core/interrupt.h"
 #include "core/power.h"

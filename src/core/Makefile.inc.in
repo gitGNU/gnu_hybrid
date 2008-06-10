@@ -19,7 +19,6 @@
 ##
 
 include @reldir@/bfd/Makefile.inc
-include @reldir@/dbg/Makefile.inc
 
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
@@ -63,4 +62,8 @@ core_SRCS =					\
 	@reldir@/log.cxx			\
 	@reldir@/scheduler.h			\
 	@reldir@/scheduler.cxx			\
+	@reldir@/panic.c			\
+	@reldir@/panic.h			\
+	@reldir@/backtrace.c			\
+	@reldir@/backtrace.h			\
 	@reldir@/main.cxx

@@ -22,7 +22,7 @@
 #include "libc/stdio.h"
 #include "archs/ia32/cpu.h"
 #include "archs/ia32/asm.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("intel: " F,##A)

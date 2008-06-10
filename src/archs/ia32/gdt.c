@@ -24,7 +24,7 @@
 #include "archs/ia32/idt.h"
 #include "archs/ia32/gdt.h"
 #include "archs/ia32/asm.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_GDT_DEBUG

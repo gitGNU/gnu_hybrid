@@ -19,7 +19,7 @@
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "core/thread.h"
 

@@ -25,8 +25,8 @@
 #include "libc/param.h"
 #include "archs/arch.h"
 #include "archs/linker.h"
-#include "core/dbg/panic.h"
-#include "core/dbg/debug.h"
+#include "core/panic.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "boot/bootinfo.h"
 

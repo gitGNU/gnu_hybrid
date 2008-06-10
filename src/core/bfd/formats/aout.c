@@ -25,7 +25,7 @@
 #include "libc/string.h"
 #include "core/bfd/formats/aout.h"
 #include "core/bfd/formats/aout-format.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_AOUT
 

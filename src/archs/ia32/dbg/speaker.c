@@ -20,8 +20,8 @@
 #include "config/config.h"
 #include "archs/arch.h"
 #include "archs/ia32/port.h"
-#include "core/dbg/panic.h"
-#include "core/dbg/debug.h"
+#include "core/panic.h"
+#include "libs/debug.h"
 
 #define CLK_FREQ 1193180L
 #define PIO      0x61

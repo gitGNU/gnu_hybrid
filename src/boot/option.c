@@ -26,7 +26,7 @@
 #include "archs/linker.h"
 #include "mem/heap.h"
 #include "boot/option.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_OPTIONS
 

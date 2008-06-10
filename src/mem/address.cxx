@@ -22,7 +22,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 static int inrange(void* addr, void* start, void* end)

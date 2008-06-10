@@ -27,8 +27,8 @@
 #include "archs/ia32/irq.h"
 #include "archs/ia32/i8237.h"
 #include "archs/ia32/i8253.h"
-#include "core/dbg/panic.h"
-#include "core/dbg/debug.h"
+#include "core/panic.h"
+#include "libs/debug.h"
 
 #if CONFIG_ARCH_PC
 

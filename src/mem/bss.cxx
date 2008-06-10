@@ -23,7 +23,7 @@
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
 #include "mem/address.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "core/power.h"
 #include "core/bfd/bfd.h"

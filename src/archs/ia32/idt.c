@@ -25,8 +25,8 @@
 #include "archs/ia32/gdt.h"
 #include "archs/ia32/asm.h"
 #include "archs/ia32/i8259.h"
-#include "core/dbg/panic.h"
-#include "core/dbg/debug.h"
+#include "core/panic.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_IDT_DEBUG

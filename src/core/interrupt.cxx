@@ -22,8 +22,8 @@
 #include "libc/stddef.h"
 #include "libc++/cstdio"
 #include "core/interrupt.h"
-#include "core/dbg/debug.h"
-#include "core/dbg/panic.h"
+#include "libs/debug.h"
+#include "core/panic.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_INTERRUPTS_DEBUG

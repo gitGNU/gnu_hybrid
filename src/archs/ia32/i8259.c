@@ -26,7 +26,7 @@
 #include "archs/ia32/i8259.h"
 #include "archs/ia32/arch.h"
 #include "archs/ia32/idt.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_I8259_DEBUG

@@ -22,7 +22,7 @@
 #include "libc/stddef.h"
 #include "libc/ctype.h"
 #include "libc/param.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "core/log.h"
 #include "dbg/debugger.h"
 

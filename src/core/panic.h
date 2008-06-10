@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef CORE_DBG_PANIC_H
-#define CORE_DBG_PANIC_H
+#ifndef CORE_PANIC_H
+#define CORE_PANIC_H
 
 #include "config/config.h"
 
@@ -28,4 +28,4 @@ void arch_panic(const char* message);
 
 __END_DECLS
 
-#endif /* CORE_DBG_PANIC_H */
+#endif /* CORE_PANIC_H */

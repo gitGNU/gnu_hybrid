@@ -25,7 +25,7 @@
 #include "archs/linker.h"
 #include "core/resource.h"
 #include "mem/address.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 __BEGIN_DECLS

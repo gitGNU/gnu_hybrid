@@ -23,7 +23,7 @@
 #include "libc/string.h"
 #include "libc/ctype.h"
 #include "core/interrupt.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_DEBUGGER

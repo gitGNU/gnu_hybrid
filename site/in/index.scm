@@ -42,6 +42,14 @@
 (p "Sorry, no public release available at the moment.")
 
 (h3 "MAILING LISTS")
+;(p "Hybrid has several moderated mailing lists, each with an archive.
+; For general Hybrid discussions, use <hybrid-user AT nongnu.org>.
+; Email bug reports to <hybrid-bug AT nongnu.org>. For more information on
+; submitting bugs, please see the section Report a Bug below.
+; If you have a patch for a bug in Hybrid that hasn't yet been fixed in the
+; latest repository sources, please send the patch (made for the git sources,
+; not the release sources) to <hybrid-patch AT nongnu.org>."
+; )
 (p "Hybrid has several moderated mailing lists, each with an archive.
  For general Hybrid discussions, use <hybrid-user AT nongnu.org>.
  Email bug reports to <hybrid-bug AT nongnu.org>. For more information on

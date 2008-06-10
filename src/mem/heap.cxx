@@ -20,7 +20,7 @@
 #include "libc/stdint.h"
 #include "libc/string.h"
 #include "libc/stddef.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "mem/heap.h"
 #include "dbg/debugger.h"
 

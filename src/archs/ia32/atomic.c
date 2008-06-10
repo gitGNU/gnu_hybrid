@@ -18,7 +18,7 @@
  */
 
 #include "config/config.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 /* For atomicity, we only need to lock the bus on SMP systems */
 #if CONFIG_MAX_CPU_COUNT > 1

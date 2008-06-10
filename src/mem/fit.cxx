@@ -21,7 +21,7 @@
 #include "libc/string.h"
 #include "libc/stdlib.h"
 #include "libc/stddef.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 #include "mem/fit.h"
 #include "dbg/debugger.h"
 

@@ -26,7 +26,7 @@
 #include "archs/ia32/port.h"
 #include "archs/ia32/keyboard.h"
 #include "core/resource.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_HOSTED_DEBUGGER
 

@@ -19,7 +19,7 @@
 
 #include "config/config.h"
 #include "archs/ia32/idt.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 static char * exception_messages[] = {
 	"Division By Zero Exception",

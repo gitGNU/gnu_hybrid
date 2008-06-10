@@ -25,7 +25,7 @@
 #include "libc/string.h"
 #include "core/bfd/formats/elf.h"
 #include "core/bfd/formats/elf-format.h"
-#include "core/dbg/debug.h"
+#include "libs/debug.h"
 
 #if CONFIG_ELF
 

@@ -23,4 +23,5 @@ EXTRA_DIST +=					\
 	@reldir@/rules.cfg
 
 libs_SRCS =					\
-	@reldir@/bcd.h
+	@reldir@/bcd.h				\
+	@reldir@/debug.h
