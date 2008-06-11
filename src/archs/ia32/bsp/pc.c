@@ -48,6 +48,7 @@ void arch_poweroff(void)
 
 void arch_reset(void)
 {
+	/* Clean-up the IDT in order to cause a triple-fault */
 	irq_disable();
 	idt_clear();
 	irq_enable();
@@ -55,6 +56,7 @@ void arch_reset(void)
 	/* Are we ready for the triple-fault ? */
 	__asm__ volatile ("int $0x03\n");
 
+	/* We shouldn't reach this point ... */
 	arch_halt();
 }
 
