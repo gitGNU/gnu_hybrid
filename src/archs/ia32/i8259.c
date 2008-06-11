@@ -125,9 +125,12 @@ i8259_mask_t i8259_mask_get(void)
 void i8259_mask_set(i8259_mask_t mask)
 {
 #if 0
-	dprintf("Changing irq mask (0x%x -> 0x%x)\n",
-		i8259_mask_get(), mask);
+	dprintf("Changing irq mask (0x%x -> 0x%x)\n", i8259_mask_get(), mask);
 #endif
+	if (mask & ~0xFFFB) {
+		dprintf("Never disable the cascade !\n");
+		mask &= 0xFFFB;
+	}
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
 
@@ -148,7 +151,7 @@ int i8259_init(void)
 	port_out8(PIC_MASTER + 1, I8259_IDT_BASE_INDEX);
 	port_out8(PIC_SLAVE + 1,  I8259_IDT_BASE_INDEX + 8);
 
-	/* Send ICW3 master: mask where slave is connected to master */
+	/* Send ICW3 master: mask where the slave is connected to master */
 	port_out8(PIC_MASTER + 1, 0x04);
 	/* Send ICW3 slave: index where the slave is connected on master */
 	port_out8(PIC_SLAVE + 1,  0x02);
@@ -158,7 +161,7 @@ int i8259_init(void)
 	port_out8(PIC_MASTER + 1, 0x01);
 	port_out8(PIC_SLAVE + 1,  0x01);
 
-	/* Disable all IRQs except the cascade */
+	/* Disable all IRQs except the cascade (IRQ2) */
 	i8259_mask_set(0xFFFB);
 
 	return 1;

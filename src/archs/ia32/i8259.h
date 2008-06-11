@@ -32,7 +32,7 @@ typedef uint16_t i8259_mask_t;
 
 typedef enum {
 	I8259_TYPE_LEVEL,
-	I8259_TYPE_TRIGGER
+	I8259_TYPE_EDGE
 } i8259_type_t;
 
 int          i8259_init(void);
