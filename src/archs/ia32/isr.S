@@ -84,17 +84,31 @@ irq_\INDEX :
 	IRQ_ENTRY 14,46
 	IRQ_ENTRY 15,47
 
+	.section .bss
+irq_nesting:
+	.long 0
+
+	.section .text
+
 irq_common:
 	REGS_SAVE_ALL
 	SEGMENT_SETUP
-	mov   %esp, %ebp
-	pushl %ebp
-	call  EXT_C(irq_handler)
-	movl  %ebp, %esp
-	REGS_RESTORE_ALL
-	addl  $8, %esp // Clear arguments from stack
-	iret
 
+	incl  irq_nesting
+	cmpl  $1, irq_nesting
+	jne   irq_nested
+
+	mov   %esp, %ebp // Save current stack
+	pushl %ebp       // Push ISR frame
+	call  EXT_C(irq_handler)
+	movl  %ebp, %esp // Restore original stack
+
+irq_nested:
+	decl  irq_nesting
+irq_return:
+	REGS_RESTORE_ALL
+	addl  $8, %esp   // Clear arguments from stack
+	iret
 
 	//
 	// TRAPs
