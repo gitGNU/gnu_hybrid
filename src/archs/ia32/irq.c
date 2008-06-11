@@ -33,45 +33,20 @@
 #endif
 
 static irq_handler_t handlers[I8259_IRQS];
-static int           prio_current;
-static int           prio_table[I8259_IRQS]; /* Vector -> Priority */
-static i8259_mask_t  mask_table[I8259_PRIO]; /* Priority -> Mask */
 
-void irq_unmask(uint_t irq,
-		int    level)
+void irq_unmask(uint_t irq)
 {
-	int    i;
-	uint_t unmask;
-
-	unmask = (uint_t) ~(1 << irq);
-
-	prio_table[irq] = level;
-
-	for (i = 0; i < level; i++) {
-		mask_table[i] &= unmask;
-	}
-
-	i8259_mask_set(mask_table[prio_current]);
+	i8259_mask_set(i8259_mask_get() & ((uint_t) ~(1 << irq)));
 }
 
 void irq_mask(uint_t irq)
 {
-	int    i, prio;
-	uint_t mask;
-
-	mask = (uint_t)(1 << irq);
-
-	prio = prio_table[irq];
-	for (i = 0; i < prio; i++) {
-		mask_table[i] |= mask;
-	}
-	prio_table[irq] = 0;
-
-	i8259_mask_set(mask_table[prio_current]);
+	i8259_mask_set(i8259_mask_get() & ((uint_t) (1 << irq)));
 }
 
 int irq_handler_install(uint_t        irq,
-			irq_handler_t handler)
+			irq_handler_t handler,
+			int           shared)
 {
 	assert(irq < I8259_IRQS);
 	assert(handler);
@@ -82,11 +57,10 @@ int irq_handler_install(uint_t        irq,
 	}
 
 	handlers[irq] = handler;
-
-	i8259_setup(irq, I8259_TYPE_TRIGGER);
+	i8259_setup(irq, shared ? I8259_TYPE_LEVEL : I8259_TYPE_EDGE);
 	i8259_enable(irq);
 
-	dprintf("Handler 0x%p installed to irq %d\n", handlers[irq], irq);
+	dprintf("Handler 0x%p installed on irq %d\n", handlers[irq], irq);
 
 	return 1;
 }
@@ -97,53 +71,7 @@ void irq_handler_uninstall(uint_t irq)
 
 	i8259_disable(irq);
 	handlers[irq] = NULL;
-	dprintf("IRQ %d handler uninstalled\n", irq);
-}
-
-void irq_handler(regs_t * regs)
-{
-	irq_handler_t handler;
-	int           prio_old;
-	int           prio_new;
-	int           vector;
-
-	assert(regs);
-
-	vector = regs->isr_no - I8259_IDT_BASE_INDEX;
-
-	dprintf("IRQ %d/%d/%d (mask = 0x%x)\n",
-		regs->isr_no, vector, I8259_IRQS, i8259_mask_get());
-
-	/* idt_frame_dump(regs); */
-
-	assert((vector >= 0) && (vector < I8259_IRQS));
-
-	prio_old = prio_current;
-	prio_new = prio_table[vector];
-
-	/* Ignore spurious interrupt */
-	if (prio_new > prio_old) {
-		prio_current = prio_new;
-	}
-
-	/* Deassert before acknowledging, in order to avoid spurious */
-	i8259_mask_set(mask_table[prio_current]);
-
-	/* Acknowledge PIC */
-	i8259_eoi(vector);
-
-	handler = handlers[vector];
-	if (handler) {
-		sti();
-		handler(regs);
-		cli();
-	} else {
-		dprintf("No handler installed for interrupt %d\n", vector);
-	}
-
-	/* Restore interrupt level */
-	prio_current = prio_old;
-	i8259_mask_set(mask_table[prio_current]);
+	dprintf("Handler for irq %d uninstalled\n", irq);
 }
 
 void irq_enable(void)
@@ -154,6 +82,38 @@ void irq_enable(void)
 void irq_disable(void)
 {
 	cli();
+}
+
+void irq_handler(regs_t * regs)
+{
+	irq_handler_t handler;
+	int           irq;
+
+	/* NOTE: We reach this point with interrupts disabled */
+	assert(regs);
+
+	irq = regs->isr_no - I8259_IDT_BASE_INDEX;
+
+	dprintf("IRQ %d/%d/%d (mask = 0x%x)\n",
+		regs->isr_no, irq, I8259_IRQS, i8259_mask_get());
+	idt_frame_dump(regs);
+
+	assert((irq >= 0) && (irq < I8259_IRQS));
+
+	/* Deassert before acknowledging, in order to avoid spurious */
+	irq_unmask(irq);
+
+	/* Acknowledge PIC */
+	i8259_eoi(irq);
+
+	handler = handlers[irq];
+	if (handler) {
+		handler(regs);
+	} else {
+		dprintf("No handler installed for interrupt %d\n", irq);
+	}
+
+	irq_mask(irq);
 }
 
 arch_irqs_state_t irq_state_get(void)
@@ -182,12 +142,6 @@ int irq_init(void)
 
 	for (i = 0; i < I8259_IRQS; i++) {
 		handlers[i]   = NULL;
-		mask_table[i] = 0xFFFB;	/* Disable all, except the cascade */
-	}
-
-	prio_current = 0;
-	for (i = 0; i < I8259_PRIO; i++) {
-		prio_table[i] = 0;
 	}
 
 	if (!i8259_init()) {
@@ -195,15 +149,17 @@ int irq_init(void)
 		return 0;
 	}
 
-	if (!irq_handler_install(0, timer)) {
+	if (!irq_handler_install(0, timer, 0)) {
 		return 0;
 	}
-	irq_unmask(0, 10);
+	irq_unmask(0);
 
-	if (!irq_handler_install(1, keyboard)) {
+	if (!irq_handler_install(1, keyboard, 0)) {
 		return 0;
 	}
-	irq_unmask(1, 9);
+	irq_unmask(1);
+
+	irq_disable();
 
 	return 1;
 }
@@ -212,8 +168,10 @@ void irq_fini(void)
 {
 	int i;
 
+	irq_disable();
+
 	for (i = 0; i < I8259_IRQS; i++) {
-		irq_mask(i);
+		/* irq_mask(i); */
 		irq_handler_uninstall(i);
 	}
 
