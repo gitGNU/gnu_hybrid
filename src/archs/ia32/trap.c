@@ -21,6 +21,12 @@
 #include "archs/ia32/idt.h"
 #include "libs/debug.h"
 
+#if CONFIG_TRAP_DEBUG
+#define dprintf(F,A...) printf("trap: " F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
 static char * exception_messages[] = {
 	"Division By Zero Exception",
 	"Debug Exception",
@@ -59,13 +65,11 @@ static char * exception_messages[] = {
 /* Lame but ... better than hardwiring a constant value */
 #define KNOWN_EXCEPTIONS (sizeof(exception_messages) / sizeof(char *))
 
-#define FRAME_DUMP_ON_TRAP 1
-
 void trap_handler(regs_t * regs)
 {
 	assert(regs);
 
-#if FRAME_DUMP_ON_TRAP
+#if CONFIG_TRAP_DUMP
 	idt_frame_dump(regs);
 #endif
 	if (regs->isr_no < KNOWN_EXCEPTIONS) {
