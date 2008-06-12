@@ -27,16 +27,16 @@ static int is_flag_changeable(uint32_t flag)
 {
 	uint32_t f1, f2;
 
-	__asm__("pushfl\n\t"
-		"pushfl\n\t"
-		"popl %0\n\t"
-		"movl %0,%1\n\t"
-		"xorl %2,%0\n\t"
-		"pushl %0\n\t"
-		"popfl\n\t"
-		"pushfl\n\t"
-		"popl %0\n\t"
-		"popfl\n\t"
+	__asm__("pushfl;"
+		"pushfl;"
+		"popl %0;"
+		"movl %0,%1;"
+		"xorl %2,%0;"
+		"pushl %0;"
+		"popfl;"
+		"pushfl;"
+		"popl %0;"
+		"popfl;"
 		: "=&r" (f1), "=&r" (f2)
 		: "ir" (flag));
 
@@ -138,30 +138,40 @@ unsigned long eflags_get(void)
 
 void eflags_set(unsigned long value)
 {
-	__asm__ volatile ("\tpushl %0\n"
-			  "\tpopfl\n"
+	__asm__ volatile ("pushl %0;"
+			  "popfl"
 			  :
 			  :"r" (value));
 }
 
 void lidt(void * idt_ptr)
 {
-	__asm__ volatile ("\tlidt (%%eax)\n"
+	__asm__ volatile ("lidt (%%eax)"
 			  :
 			  :"a" (idt_ptr));
 }
 
+void ltr(uint16_t sel)
+{
+	__asm__ __volatile__(
+			     "ltr %%ax;"
+			     "jmp 1f;"
+			     "1:"
+			     :
+			     :"a" (sel));
+}
+
 void lgdt(void * gdt_ptr)
 {
-	__asm__ volatile ("\tlgdt (%%eax)\n"
-			  "\tjmp %1, $1f\n"
-			  "\t1:\n"
-			  "\tmovw %2,   %%ax\n"
-			  "\tmovw %%ax, %%ss\n"
-			  "\tmovw %%ax, %%ds\n"
-			  "\tmovw %%ax, %%es\n"
-			  "\tmovw %%ax, %%fs\n"
-			  "\tmovw %%ax, %%gs\n"
+	__asm__ volatile ("lgdt (%%eax);"
+			  "jmp %1, $1f;"
+			  "1:;"
+			  "movw %2,   %%ax;"
+			  "movw %%ax, %%ss;"
+			  "movw %%ax, %%ds;"
+			  "movw %%ax, %%es;"
+			  "movw %%ax, %%fs;"
+			  "movw %%ax, %%gs;"
 			  :
 			  :"a" (gdt_ptr),
 			  "i" (SEGMENT_BUILDER(0, 0, SEGMENT_KERNEL_CODE)),
@@ -239,58 +249,13 @@ void hlt(void)
 	__asm__ ("hlt" : : );
 }
 
-#if 0 /* Reenable when needed ... */
-void  cld(void)
-{
-	__asm__ ("cld" : : );
-}
-
-void std(void)
-{
-	__asm__ ("std" : : );
-}
-
-void clts(void)
-{
-	__asm__ ("clts" : : );
-}
-#endif
-
 uint64_t rdtsc(void)
 {
 	uint64_t v;
 
-	asm volatile("rdtsc\n"
+	asm volatile("rdtsc"
 		     : "=A" (v)
 		     );
 
 	return v;
-}
-
-uint16_t ldt_get(void)
-{
-	uint16_t ldt;
-
-	__asm__ ("sldt %0" : "=rm" (ldt));
-
-	return ldt;
-}
-
-void ldt_set(uint16_t ldt)
-{
-	__asm__ ("lldt %0" : : "rm" (ldt));
-}
-
-uint16_t tr_get(void)
-{
-	uint16_t tr;
-
-	__asm__ ("str %0" : "=rm" (tr));
-
-	return tr;
-}
-
-void tr_set(uint16_t tr)
-{
-	__asm__ ("ltr %0" : : "rm" (tr));
 }

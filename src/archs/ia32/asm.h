@@ -217,19 +217,11 @@ void          lidt(void * idt_ptr);
 void          lgdt(void * gdt_ptr);
 void          lgdt_commit(void);
 
+void          ltr(uint16_t selector);
+
 void          cli(void);
 void          sti(void);
 void          hlt(void);
-
-void          cld(void);
-void          std(void);
-void          clts(void);
-
-uint16_t      ldt_get(void);
-void          ldt_set(uint16_t ldt);
-
-uint16_t      tr_get(void);
-void          tr_set(uint16_t tr);
 
 uint64_t      rdtsc(void);
 
