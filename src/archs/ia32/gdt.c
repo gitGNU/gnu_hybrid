@@ -153,12 +153,16 @@ int gdt_init(void)
 			(uint32_t) &tss, (uint16_t) sizeof(tss_t) - 1,
 
 			GDT_P_PRESENT | GDT_DPL_3 | GDT_DT_APP |
-			GDT_TYPE_DATA | GDT_TYPE_WRITABLE,
+			GDT_TYPE_TSS,
 
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
 
 	gdt_load();
+
+	/* Fix TSS */
+	gdt_table[SEGMENT_TSS].flags1 =
+		gdt_table[SEGMENT_TSS].flags1 & ~GDT_TYPE_TSS_BUSY;
 
 	return 1;
 }

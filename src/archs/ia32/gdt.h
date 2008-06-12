@@ -50,8 +50,8 @@
 
 /* FLAGS1:DPL */
 #define GDT_DPL_3           0x60
-#define GDT_DPL_1           0x20
 #define GDT_DPL_2           0x40
+#define GDT_DPL_1           0x20
 #define GDT_DPL_0           0x00
 
 /* FLAGS1:DT */
@@ -62,6 +62,8 @@
 #define GDT_TYPE_ACCESSED   0x01
 #define GDT_TYPE_DATA       0x00
 #define GDT_TYPE_CODE       0x08
+#define GDT_TYPE_TSS        0x09 /* ? */
+#define GDT_TYPE_TSS_BUSY   0x02 /* ? TSS-only */
 
 /* FLAGS1:TYPE=DATA */
 #define GDT_TYPE_WRITABLE   0x02
