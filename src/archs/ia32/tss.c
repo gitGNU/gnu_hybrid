@@ -36,9 +36,17 @@
 
 tss_t tss;
 
+extern uint32_t stack;
+
 int tss_init(void)
 {
 	memset(&tss, 0, sizeof(tss_t));
+	tss.ss0       = SEGMENT_BUILDER(0, 0, SEGMENT_KERNEL_DATA);
+	tss.esp0      = stack;
+	tss.cs        = SEGMENT_BUILDER(3, 0, SEGMENT_USER_CODE);
+	tss.ds        = tss.es = tss.ss = tss.fs = tss.gs =
+		SEGMENT_BUILDER(3, 0, SEGMENT_USER_CODE);
+	tss.iomapbase = 0x8000; /* Invalid bitmap */
 	ltr(SEGMENT_TSS);
 
 	return 1;

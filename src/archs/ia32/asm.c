@@ -161,6 +161,7 @@ void ltr(uint16_t sel)
 			     :"a" (sel));
 }
 
+/* XXX FIXME: Add cs and ds as parameters */
 void lgdt(void * gdt_ptr)
 {
 	__asm__ volatile ("lgdt (%%eax);"
