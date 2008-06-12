@@ -84,7 +84,8 @@ static int i8254_frequency_set(uint32_t freq)
 		dprintf("Cannot setup timer for %dHz, too many ticks\n", freq);
 		return 0;
 	}
-	dprintf("Setting frequency to %dHz (%d ticks)\n", freq, ticks);
+	dprintf("Setting frequency to %dHz (%d ticks = %dHz)\n",
+		freq, ticks, ((2 * PIT_TICKS_SEC) / (2 * ticks - 1)));
 
 	/* Configure timer0 as a rate generator. LSB first, then MSB */
 	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_2);

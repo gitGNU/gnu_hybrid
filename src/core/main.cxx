@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 	if (!interrupts_init()) {
 		panic("Cannot initialize interrupts");
 	}
-	interrupts_enable();
+	//	interrupts_enable();
 
 	if (!dma_init()) {
 		panic("Cannot initialize interrupts");
@@ -66,12 +66,14 @@ int main(int argc, char * argv[])
 #if TEST
 #include "core/delay.h"
 	while (1 != 0) {
+#if 1
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("\n");
+#endif
 	}
 #endif
 

@@ -25,6 +25,7 @@
 #include "archs/ia32/port.h"
 #include "archs/ia32/cpu.h"
 #include "archs/ia32/gdt.h"
+#include "archs/ia32/tss.h"
 #include "archs/ia32/idt.h"
 #include "archs/ia32/bios.h"
 #include "archs/ia32/cmos.h"
@@ -66,6 +67,10 @@ int arch_init(void)
 		panic("Cannot initialize IDT");
 	}
 
+	if (!tss_init()) {
+		panic("Cannot initialize TSS");
+	}
+
 	if (!i8253_init()) {
 		panic("Cannot initialize i8253");
 	}
@@ -88,6 +93,7 @@ void arch_fini(void)
 	dma_fini();
 	irq_fini();
 	i8253_fini();
+	tss_fini();
 	idt_fini();
 	gdt_fini();
 	cpus_fini();

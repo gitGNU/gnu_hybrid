@@ -97,7 +97,7 @@ int               arch_atomic_sub(int * pointer, int delta);
 int               arch_atomic_exchange(int * pointer, int new_value);
 int               arch_atomic_test_and_set(int * pointer);
 
-/* XXX FIXME: Fix the uint_t* ... they should e addr_t* */
+/* XXX FIXME: Fix all uint_t * ... they should be addr_t* */
 void              arch_context_switch(uint_t * old_stack,
 				      uint_t * new_stack,
 				      uint_t * new_mm);
