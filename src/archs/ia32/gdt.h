@@ -39,9 +39,9 @@
 #define SEGMENT_KERNEL_DATA 2
 #define SEGMENT_USER_CODE   3
 #define SEGMENT_USER_DATA   4
+#define SEGMENT_TSS         5
 
-/* GDT */
-#define GDT_ENTRIES     5
+#define GDT_ENTRIES     6
 
 /* FLAGS1 = P:1 | DPL:2 | DT:1 | TYPE:4 */
 

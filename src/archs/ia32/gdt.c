@@ -23,6 +23,7 @@
 #include "libc/stddef.h"
 #include "archs/ia32/idt.h"
 #include "archs/ia32/gdt.h"
+#include "archs/ia32/tss.h"
 #include "archs/ia32/asm.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
@@ -102,6 +103,8 @@ static void gdt_load(void)
 	lgdt(&gdt_p.limit);
 }
 
+extern tss_t tss;
+
 int gdt_init(void)
 {
 	gdt_segment_set(SEGMENT_NULL,
@@ -118,7 +121,6 @@ int gdt_init(void)
 
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
-
 	/* 4GB flat data at 0x0 */
 	gdt_segment_set(SEGMENT_KERNEL_DATA,
 			0, 0xFFFF,
@@ -146,6 +148,16 @@ int gdt_init(void)
 
 			GDT_G_4KB | GDT_D_USE32 | 0x0F
 			);
+	/* 4GB flat data at 0x0 */
+	gdt_segment_set(SEGMENT_TSS,
+			(uint32_t) &tss, (uint16_t) sizeof(tss_t) - 1,
+
+			GDT_P_PRESENT | GDT_DPL_3 | GDT_DT_APP |
+			GDT_TYPE_DATA | GDT_TYPE_WRITABLE,
+
+			GDT_G_4KB | GDT_D_USE32 | 0x0F
+			);
+
 	gdt_load();
 
 	return 1;
