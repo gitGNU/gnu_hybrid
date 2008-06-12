@@ -17,14 +17,33 @@
  *
  */
 
-#ifndef CORE_BFD_FORMATS_AOUT_FORMAT_H
-#define	CORE_BFD_FORMATS_AOUT_FORMAT_H
+#ifndef LIBS_BFD_AOUT_H
+#define LIBS_BFD_AOUT_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
+#include "libs/bfd/aout/aout-format.h"
 
 __BEGIN_DECLS
 
+typedef struct {
+	int num;
+} aout_info_t;
+
+int  aout_init(aout_info_t*  kernel_image,
+	       unsigned long num,
+	       unsigned long strsize,
+	       unsigned long addr);
+int  aout_symbol_reverse_lookup(aout_info_t* image,
+				void*        address,
+				char*        buffer,
+				size_t       length,
+				void**       base);
+int  aout_symbols_foreach(aout_info_t* image,
+			  int          (* callback)(const char*   name,
+						    unsigned long address));
+void aout_fini(void);
+
 __END_DECLS
 
-#endif	/* CORE_BFD_FORMATS_AOUT_FORMAT_H */
+#endif /* LIBS_BFD_AOUT_H */

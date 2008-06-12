@@ -23,8 +23,8 @@
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
 #include "libc/string.h"
-#include "libs/bfd/formats/elf.h"
-#include "libs/bfd/formats/elf-format.h"
+#include "libs/bfd/elf/elf.h"
+#include "libs/bfd/elf/elf-format.h"
 #include "libs/debug.h"
 
 #if CONFIG_ELF

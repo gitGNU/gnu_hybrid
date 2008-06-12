@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef CORE_BFD_BFD_H
-#define CORE_BFD_BFD_H
+#ifndef LIBS_BFD_H
+#define LIBS_BFD_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -43,4 +43,4 @@ void bfd_fini(void);
 
 __END_DECLS
 
-#endif /* CORE_BFD_BFD_H */
+#endif /* LIBS_BFD_H */

@@ -17,42 +17,14 @@
  *
  */
 
-#ifndef CORE_BFD_FORMATS_ELF_H
-#define CORE_BFD_FORMATS_ELF_H
+#ifndef LIBS_BFD__AOUT_FORMAT_H
+#define	LIBS_BFD__AOUT_FORMAT_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "libs/bfd/formats/elf-format.h"
 
 __BEGIN_DECLS
 
-typedef struct {
-	Elf32_Shdr* sh;
-	int         num;
-	int         shndx;
-
-	Elf32_Sym*  symtab_start;
-	Elf32_Sym*  symtab_end;
-
-	char*       strtab_start;
-	char*       strtab_end;
-} elf_info_t;
-
-int elf_init(elf_info_t*   kernel_image,
-	     unsigned long num,
-	     unsigned long size,
-	     unsigned long addr,
-	     unsigned long shndx);
-int  elf_symbol_reverse_lookup(elf_info_t* image,
-			       void*       address,
-			       char*       buffer,
-			       size_t      length,
-			       void**      base);
-int  elf_symbols_foreach(elf_info_t* image,
-			 int         (* callback)(const char*   name,
-						  unsigned long address));
-void elf_fini(void);
-
 __END_DECLS
 
-#endif /* CORE_BFD_FORMATS_ELF_H */
+#endif	/* LIBS_BFD_AOUT_FORMAT_H */
