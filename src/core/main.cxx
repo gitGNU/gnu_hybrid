@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 	if (!interrupts_init()) {
 		panic("Cannot initialize interrupts");
 	}
-	//	interrupts_enable();
+	interrupts_enable();
 
 	if (!dma_init()) {
 		panic("Cannot initialize interrupts");
