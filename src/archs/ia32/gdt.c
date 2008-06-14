@@ -52,6 +52,28 @@ typedef struct gdt_pointer gdt_pointer_t;
 
 static gdt_entry_t gdt_table[GDT_ENTRIES];
 
+#if CONFIG_GDT_DEBUG
+static void gdt_dump(void)
+{
+	int i;
+
+	for (i = 0; i < GDT_ENTRIES; i++) {
+		dprintf("segment %d: "
+			"base=0x%02x%02x%04x, "
+			"length=0x%04x, "
+			"flags1=0x%02x, "
+			"flags2=0x%02x\n",
+			i,
+			gdt_table[i].base31_24,
+			gdt_table[i].base23_16,
+			gdt_table[i].base15_0,
+			gdt_table[i].len15_0,
+			gdt_table[i].flags1,
+			gdt_table[i].flags2);
+	}
+}
+#endif
+
 static void gdt_segment_set(uint32_t i,
 			    uint32_t base,
 			    uint16_t len,
@@ -64,19 +86,6 @@ static void gdt_segment_set(uint32_t i,
 	gdt_table[i].len15_0   = len;
 	gdt_table[i].flags1    = flags1;
 	gdt_table[i].flags2    = flags2;
-
-	dprintf("segment %d: "
-		"base=0x%02x%02x%04x, "
-		"length=0x%04x, "
-		"flags1=0x%02x, "
-		"flags2=0x%02x\n",
-		i,
-		gdt_table[i].base31_24,
-		gdt_table[i].base23_16,
-		gdt_table[i].base15_0,
-		gdt_table[i].len15_0,
-		gdt_table[i].flags1,
-		gdt_table[i].flags2);
 }
 
 #if 0
@@ -98,8 +107,13 @@ static void gdt_load(void)
 	gdt_p.limit = (sizeof(gdt_entry_t) * GDT_ENTRIES) - 1;
 	gdt_p.base  = (uint32_t) gdt_table;
 
+#if CONFIG_GDT_DEBUG
+	gdt_dump();
+#endif
+
 	dprintf("Loading GDT table at 0x%p (%d entries)\n",
 		gdt_table, GDT_ENTRIES);
+
 	lgdt(&gdt_p.limit);
 }
 
