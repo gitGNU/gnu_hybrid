@@ -23,6 +23,7 @@
 #include "libc/stddef.h"
 #include "archs/ia32/idt.h"
 #include "archs/ia32/gdt.h"
+#include "archs/ia32/tss.h"
 #include "archs/ia32/asm.h"
 #include "archs/ia32/i8259.h"
 #include "core/panic.h"
@@ -171,7 +172,7 @@ void idt_frame_dump(regs_t * regs)
 	printf("  eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
 	       regs->eip, esp, regs->ebp, regs->eflags);
 	printf("  cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
-	       regs->cs, ss, regs->ds, regs->es);
+	       regs->cs, ss, regs->ds, regs->es, tss_get());
 }
 
 extern void trap_00(void);
