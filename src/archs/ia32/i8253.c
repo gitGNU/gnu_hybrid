@@ -102,6 +102,7 @@ static int i8254_frequency_set(uint32_t freq)
 
 extern void delay_loops(uint32_t loops);
 
+#if 0
 int i8254_delay_calibrate(void)
 {
 	uint64_t clk1, clk2;
@@ -173,12 +174,15 @@ int i8254_delay_calibrate(void)
 
 	return 1;
 }
+#endif
 
 int i8253_init(void)
 {
+#if 0
 	if (!i8254_delay_calibrate()) {
 		return 0;
 	}
+#endif
 
 	if (!i8254_frequency_set(CONFIG_HZ)) {
 		return 0;
