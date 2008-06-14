@@ -75,6 +75,31 @@ typedef struct idt_pointer idt_pointer_t;
 
 static idt_entry_t idt_table[IDT_ENTRIES];
 
+#if CONFIG_IDT_DEBUG
+static void idt_dump(void)
+{
+	int i;
+
+	for (i = 0; i < IDT_ENTRIES; i++) {
+		if (idt_table[i].flags & IDT_PRESENT) {
+			dprintf("gate %03d: "
+				"offset=0x%04x%04x "
+				"segment=0x%04x, "
+				"flags=0x%04x, "
+				"%s\n",
+				i,
+				idt_table[i].offset31_16,
+				idt_table[i].offset15_0,
+				idt_table[i].segment,
+				idt_table[i].flags,
+				((idt_table[i].flags & IDT_INT) ? "IRQ" :
+				 ((idt_table[i].flags & IDT_TRAP) ? "TRAP" :
+				  "?")));
+		}
+	}
+}
+#endif
+
 static void idt_gate_set(uint32_t i,
 			 uint16_t flags,
 			 uint32_t offset)
@@ -85,23 +110,6 @@ static void idt_gate_set(uint32_t i,
 	idt_table[i].flags       = flags | IDT_PRESENT | IDT_DPL0 | IDT_32;
 	idt_table[i].offset31_16 = (offset >> 16) & 0xFFFF;
 	idt_table[i].offset15_0  = offset & 0xFFFF;
-
-#if 1
-	if (idt_table[i].flags & IDT_PRESENT) {
-		dprintf("gate %03d: "
-			"offset=0x%04x%04x "
-			"segment=0x%04x, "
-			"flags=0x%04x, "
-			"%s\n",
-			i,
-			idt_table[i].offset31_16, idt_table[i].offset15_0,
-			idt_table[i].segment,
-			idt_table[i].flags,
-			((flags & IDT_INT) ? "IRQ" :
-			 ((flags & IDT_TRAP) ? "TRAP" :
-			  "?")));
-	}
-#endif
 }
 
 static void idt_gate_clear(uint32_t i)
@@ -133,8 +141,13 @@ static void idt_load(void)
 	idt_p.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
 	idt_p.base  = (uint32_t) idt_table;
 
+#if CONFIG_IDT_DEBUG
+	idt_dump();
+#endif
+
 	dprintf("Loading IDT table at 0x%p (%d entries)\n",
 		idt_table, IDT_ENTRIES);
+
 	lidt(&idt_p.limit);
 }
 
