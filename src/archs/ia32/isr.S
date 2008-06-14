@@ -23,6 +23,7 @@
 #include "archs/ia32/gdt.h"
 
 .macro REGS_SAVE_ALL
+	cld
 	pushl %es
 	pushl %ds
 	pushl %eax
@@ -61,7 +62,7 @@
 	.align 4,0x90 // 0x90 == NOP
 irq_\INDEX :
 	pushl  $0
-	pushl  $(\ISR_INDEX - 1)
+	pushl  $(\ISR_INDEX)
 	jmp    irq_common
 .endm
 
