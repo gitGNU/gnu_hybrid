@@ -42,8 +42,9 @@ struct tss {
 } ATTRIBUTE(packed);
 typedef struct tss tss_t;
 
-int  tss_init(void);
-void tss_fini(void);
+int      tss_init(void);
+uint32_t tss_get(void);
+void     tss_fini(void);
 
 __END_DECLS
 

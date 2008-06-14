@@ -54,6 +54,11 @@ int tss_init(void)
 	return 1;
 }
 
+uint32_t tss_get(void)
+{
+	return tss.esp0;
+}
+
 void tss_fini(void)
 {
 }
