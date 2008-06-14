@@ -140,6 +140,8 @@ int irq_init(void)
 {
 	int i;
 
+	irq_disable();
+
 	for (i = 0; i < I8259_IRQS; i++) {
 		handlers[i]   = NULL;
 	}
@@ -158,8 +160,6 @@ int irq_init(void)
 		return 0;
 	}
 	irq_unmask(1);
-
-	irq_disable();
 
 	return 1;
 }
