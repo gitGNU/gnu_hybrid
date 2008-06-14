@@ -34,22 +34,28 @@
 
 static int        nr_locks;
 arch_irqs_state_t state;
+static int        initialized;
 
 int interrupts_init(void)
 {
-	nr_locks = 0;
+	nr_locks    = 0;
+	initialized = 1;
 
 	return 1;
 }
 
 void interrupts_disable(void)
 {
+	assert(initialized);
+
 	arch_irqs_disable();
 	dprintf("Interrupts disabled\n");
 }
 
 void interrupts_enable(void)
 {
+	assert(initialized);
+
 	dprintf("Enabling interrupts\n");
 	arch_irqs_enable();
 }
@@ -57,6 +63,9 @@ void interrupts_enable(void)
 void interrupts_lock(void)
 {
 	arch_irqs_state_t curr_state;
+
+	assert(initialized);
+	assert(nr_locks >= 0);
 
 	dprintf("Locking interrupts\n");
 
@@ -72,6 +81,7 @@ void interrupts_lock(void)
 
 void interrupts_unlock(void)
 {
+	assert(initialized);
 	assert(nr_locks > 0);
 
 	dprintf("Unocking interrupts\n");
@@ -85,6 +95,10 @@ void interrupts_unlock(void)
 
 void interrupts_fini(void)
 {
+	assert(initialized);
+
 	nr_locks = 0;
 	arch_irqs_disable();
+
+	initialized = 0;
 }
