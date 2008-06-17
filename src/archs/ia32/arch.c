@@ -54,10 +54,6 @@ int arch_init(void)
 	if (!cpus_init()) {
 		panic("Cannot initialize CPU(s)");
 	}
-	/* We know CPU capabilities now */
-
-	/* Turn IRQ off before initializing GDT */
-	cli();
 
 	if (!gdt_init()) {
 		panic("Cannot initialize GDT");
@@ -71,12 +67,17 @@ int arch_init(void)
 		panic("Cannot initialize TSS");
 	}
 
+	if (!irq_init()) {
+		panic("Cannot initialize IRQs");
+	}
+	/* IRQs initialized but still disabled */
+
 	if (!i8253_init()) {
 		panic("Cannot initialize i8253");
 	}
 
-	if (!irq_init()) {
-		panic("Cannot initialize IRQs");
+	if (!irq_handlers_install()) {
+		panic("Cannot install IRQ handlers");
 	}
 
 	if (!dma_init()) {
