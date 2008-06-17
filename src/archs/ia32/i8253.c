@@ -89,8 +89,8 @@ static int i8254_frequency_set(uint32_t freq)
 
 	/* Configure timer0 as a rate generator. LSB first, then MSB */
 	port_out8(TMR_PORT, PIT_BOTH | PIT_MODE_2);
-	port_out8(COUNTER_0, ticks & 0xFF);
-	port_out8(COUNTER_0, (ticks >> 8) & 0xFF);
+	port_out8(COUNTER_0, ticks & 0xFF);        /* LSB */
+	port_out8(COUNTER_0, (ticks >> 8) & 0xFF); /* MSB */
 
 	frequency = freq;
 	return 1;
