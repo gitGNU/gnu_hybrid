@@ -40,13 +40,16 @@
 #define PIC_SLAVE  0xA0
 #define PIC_ELCONF 0x4D0 /* Edge/Level control register */
 
+#define IRQ_CASCADE     2
+#define PROTECT_CASCADE 1
+
 #define CHECK_IRQ_INDEX(IDX) assert((IDX) < I8259_IRQS)
 
 void i8259_eoi(uint_t irq)
 {
 	CHECK_IRQ_INDEX(irq);
 
-	/* dprintf("Sending EOI for irq %d\n", irq); */
+	dprintf("Sending EOI for irq %d\n", irq);
 	if (irq >= 8) {
 		/* dprintf("Sending EOI to slave\n"); */
 		port_out8(PIC_SLAVE, 0x20);
@@ -61,6 +64,13 @@ void i8259_enable(uint_t irq)
 	CHECK_IRQ_INDEX(irq);
 
 	dprintf("Enabling irq %d\n", irq);
+
+#if PROTECT_CASCADE
+	if (irq == IRQ_CASCADE) {
+		dprintf("Never enable the cascade!\n");
+		return;
+	}
+#endif
 
 	if (irq < 8) {
 		/* IRQ on master PIC */
@@ -79,6 +89,13 @@ void i8259_disable(uint_t irq)
 
 	dprintf("Disabling irq %d\n", irq);
 
+#if PROTECT_CASCADE
+	if (irq == IRQ_CASCADE) {
+		dprintf("Never disable the cascade!\n");
+		return;
+	}
+#endif
+
 	if (irq < 8) {
 		/* IRQ on master PIC */
 		port_out8(PIC_MASTER + 1,
@@ -90,32 +107,6 @@ void i8259_disable(uint_t irq)
 	}
 }
 
-void i8259_setup(uint_t       irq,
-		 i8259_type_t mode)
-{
-	uint16_t port;
-	uint8_t  value;
-	uint8_t  bit;
-
-	CHECK_IRQ_INDEX(irq);
-
-	if (irq < 8) {
-		port = PIC_ELCONF;
-	} else {
-		port = PIC_ELCONF + 1;
-	}
-	bit = (uint_t)(1 << (irq & 7));
-
-	value = port_in8(port);
-	if (mode) {
-		value |= bit;
-	} else {
-		value &= ~bit;
-	}
-
-	port_out8(port, value);
-}
-
 i8259_mask_t i8259_mask_get(void)
 {
 	return (port_in8(PIC_SLAVE + 1) << 8 |
@@ -124,13 +115,13 @@ i8259_mask_t i8259_mask_get(void)
 
 void i8259_mask_set(i8259_mask_t mask)
 {
-#if 0
 	dprintf("Changing irq mask (0x%x -> 0x%x)\n", i8259_mask_get(), mask);
-#endif
+#if PROTECT_CASCADE
 	if (mask & ~0xFFFB) {
-		dprintf("Never disable the cascade !\n");
+		dprintf("Never disable the cascade!\n");
 		mask &= 0xFFFB;
 	}
+#endif
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
 
@@ -173,6 +164,9 @@ void i8259_fini(void)
 
 	port_out8(PIC_MASTER, ICU_RESET);
 	port_out8(PIC_SLAVE,  ICU_RESET);
+
+	/* Disable all IRQs */
+	i8259_mask_set(0xFFFF);
 }
 
 #if CONFIG_DEBUGGER

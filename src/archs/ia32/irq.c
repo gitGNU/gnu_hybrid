@@ -34,19 +34,26 @@
 
 static irq_handler_t handlers[I8259_IRQS];
 
+/*
+ * NOTE on masking and unmasking:
+ *     A high value prevents the interrupt, a low value allows the interrupt
+ */
 void irq_unmask(uint_t irq)
 {
-	i8259_mask_set(i8259_mask_get() & ((uint_t) ~(1 << irq)));
+	dprintf("Unmasking irq %d\n", irq);
+	i8259_enable(irq);
+	//i8259_mask_set(i8259_mask_get() & ((i8259_mask_t) ~(1 << irq)));
 }
 
 void irq_mask(uint_t irq)
 {
-	i8259_mask_set(i8259_mask_get() & ((uint_t) (1 << irq)));
+	dprintf("Masking irq %d\n", irq);
+	i8259_disable(irq);
+	//i8259_mask_set(i8259_mask_get() | ((i8259_mask_t) (1 << irq)));
 }
 
 int irq_handler_install(uint_t        irq,
-			irq_handler_t handler,
-			int           shared)
+			irq_handler_t handler)
 {
 	assert(irq < I8259_IRQS);
 	assert(handler);
@@ -57,8 +64,8 @@ int irq_handler_install(uint_t        irq,
 	}
 
 	handlers[irq] = handler;
-	i8259_setup(irq, shared ? I8259_TYPE_LEVEL : I8259_TYPE_EDGE);
-	i8259_enable(irq);
+	//i8259_enable(irq);
+	//irq_unmask(irq);
 
 	dprintf("Handler 0x%p installed on irq %d\n", handlers[irq], irq);
 
@@ -69,7 +76,8 @@ void irq_handler_uninstall(uint_t irq)
 {
 	assert(irq < I8259_IRQS);
 
-	i8259_disable(irq);
+	//i8259_disable(irq);
+	//irq_mask(irq);
 	handlers[irq] = NULL;
 	dprintf("Handler for irq %d uninstalled\n", irq);
 }
@@ -94,14 +102,14 @@ void irq_handler(regs_t * regs)
 
 	irq = regs->isr_no - I8259_IDT_BASE_INDEX;
 
-	dprintf("IRQ %d/%d/%d (mask = 0x%x)\n",
+	dprintf("Handler running for IRQ %d/%d/%d (mask = 0x%x)\n",
 		regs->isr_no, irq, I8259_IRQS, i8259_mask_get());
 	idt_frame_dump(regs);
 
 	assert((irq >= 0) && (irq < I8259_IRQS));
 
 	/* Deassert before acknowledging, in order to avoid spurious */
-	irq_unmask(irq);
+	irq_mask(irq);
 
 	/* Acknowledge PIC */
 	i8259_eoi(irq);
@@ -113,7 +121,7 @@ void irq_handler(regs_t * regs)
 		dprintf("No handler installed for interrupt %d\n", irq);
 	}
 
-	irq_mask(irq);
+	irq_unmask(irq);
 }
 
 arch_irqs_state_t irq_state_get(void)
@@ -131,10 +139,12 @@ static void timer(regs_t * regs)
 	dprintf("TIMER (0x%p)\n", regs);
 }
 
+#if 0
 static void keyboard(regs_t * regs)
 {
 	dprintf("KEYBOARD (0x%p)\n", regs);
 }
+#endif
 
 int irq_init(void)
 {
@@ -151,15 +161,32 @@ int irq_init(void)
 		return 0;
 	}
 
-	if (!irq_handler_install(0, timer, 0)) {
+	dprintf("Current mask 0x%x\n", i8259_mask_get());
+	for (i = 0; i < I8259_IRQS; i++) {
+		irq_mask(i);
+	}
+	dprintf("Current mask 0x%x\n", i8259_mask_get());
+
+	return 1;
+}
+
+int irq_handlers_install(void)
+{
+	irq_disable();
+
+	if (!irq_handler_install(0, timer)) {
 		return 0;
 	}
 	irq_unmask(0);
 
-	if (!irq_handler_install(1, keyboard, 0)) {
+#if 0
+	if (!irq_handler_install(1, keyboard)) {
 		return 0;
 	}
 	irq_unmask(1);
+#endif
+
+	irq_enable();
 
 	return 1;
 }
