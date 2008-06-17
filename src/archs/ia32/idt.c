@@ -223,7 +223,6 @@ extern void irq_11(void);
 extern void irq_12(void);
 extern void irq_13(void);
 extern void irq_14(void);
-extern void irq_15(void);
 
 void idt_clear(void)
 {
@@ -272,21 +271,21 @@ int idt_init(void)
 	idt_trap_set(30, trap_30);
 	idt_trap_set(31, trap_31);
 
-	idt_interrupt_set(32, irq_01);
-	idt_interrupt_set(33, irq_02);
-	idt_interrupt_set(34, irq_03);
-	idt_interrupt_set(35, irq_04);
-	idt_interrupt_set(36, irq_05);
-	idt_interrupt_set(37, irq_06);
-	idt_interrupt_set(38, irq_07);
-	idt_interrupt_set(39, irq_08);
-	idt_interrupt_set(40, irq_09);
-	idt_interrupt_set(41, irq_10);
-	idt_interrupt_set(42, irq_11);
-	idt_interrupt_set(43, irq_12);
-	idt_interrupt_set(44, irq_13);
-	idt_interrupt_set(45, irq_14);
-	idt_interrupt_set(46, irq_15);
+	idt_interrupt_set(32, irq_00);
+	idt_interrupt_set(33, irq_01);
+	idt_interrupt_set(34, irq_02);
+	idt_interrupt_set(35, irq_03);
+	idt_interrupt_set(36, irq_04);
+	idt_interrupt_set(37, irq_05);
+	idt_interrupt_set(38, irq_06);
+	idt_interrupt_set(39, irq_07);
+	idt_interrupt_set(40, irq_08);
+	idt_interrupt_set(41, irq_09);
+	idt_interrupt_set(42, irq_10);
+	idt_interrupt_set(43, irq_11);
+	idt_interrupt_set(44, irq_12);
+	idt_interrupt_set(45, irq_13);
+	idt_interrupt_set(46, irq_14);
 
 	idt_load();
 

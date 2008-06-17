@@ -23,7 +23,6 @@
 #include "archs/ia32/gdt.h"
 
 .macro REGS_SAVE_ALL
-	cld
 	pushl %es
 	pushl %ds
 	pushl %eax
@@ -83,7 +82,6 @@ irq_\INDEX :
 	IRQ_ENTRY 12,44
 	IRQ_ENTRY 13,45
 	IRQ_ENTRY 14,46
-	IRQ_ENTRY 15,47
 
 	.section .bss
 irq_nesting:
@@ -92,6 +90,8 @@ irq_nesting:
 	.section .text
 
 irq_common:
+	cli
+
 	REGS_SAVE_ALL
 	SEGMENT_SETUP
 
@@ -109,6 +109,8 @@ irq_nested:
 irq_return:
 	REGS_RESTORE_ALL
 	addl  $8, %esp   // Clear arguments from stack
+
+	sti
 	iret
 
 	//
