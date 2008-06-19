@@ -115,7 +115,6 @@ i8259_mask_t i8259_mask_get(void)
 
 void i8259_mask_set(i8259_mask_t mask)
 {
-	dprintf("Changing irq mask (0x%x -> 0x%x)\n", i8259_mask_get(), mask);
 #if PROTECT_CASCADE
 	if (mask & ~0xFFFB) {
 		dprintf("Never disable the cascade!\n");
@@ -124,8 +123,6 @@ void i8259_mask_set(i8259_mask_t mask)
 #endif
 	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
 	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
-
-	assert(i8259_mask_get() == mask);
 }
 
 int i8259_init(void)

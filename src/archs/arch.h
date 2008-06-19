@@ -114,6 +114,9 @@ void	          arch_irqs_disable(void);
 arch_irqs_state_t arch_irqs_state_get(void);
 void              arch_irqs_state_set(arch_irqs_state_t * state);
 
+typedef           void (* arch_irq_handler_t)(uint_t irq);
+int               arch_irq_handler_set(uint_t             irq,
+				       arch_irq_handler_t handler);
 void              arch_delay_ms(uint32_t ms);
 void              arch_delay_us(uint32_t us);
 void              arch_delay_ns(uint32_t ns);

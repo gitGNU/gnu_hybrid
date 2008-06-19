@@ -76,10 +76,6 @@ int arch_init(void)
 		panic("Cannot initialize i8253");
 	}
 
-	if (!irq_handlers_install()) {
-		panic("Cannot install IRQ handlers");
-	}
-
 	if (!dma_init()) {
 		panic("Cannot initialize DMAs");
 	}
