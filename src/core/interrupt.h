@@ -23,16 +23,27 @@
 #include "config/config.h"
 #include "libc/stdint.h"
 
-int   interrupts_init(void);
-void  interrupts_fini(void);
-
 __BEGIN_DECLS
 
-void  interrupts_lock(void);
-void  interrupts_unlock(void);
-void  interrupts_disable(void);
-void  interrupts_enable(void);
+void interrupts_disable(void);
+void interrupts_enable(void);
+void interrupts_lock(void);
+void interrupts_unlock(void);
 
 __END_DECLS
+
+#ifdef __cplusplus
+
+int  interrupts_init(void);
+void interrupts_fini(void);
+
+typedef void (* interrupt_handler_t)(void * opaque);
+
+bool interrupts_attach(uint_t              vector,
+		       interrupt_handler_t handler,
+		       void *              opaque);
+bool interrupts_detach(uint_t              vector,
+		       interrupt_handler_t handler);
+#endif
 
 #endif // CORE_INTERRUPT_H
