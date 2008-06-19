@@ -49,13 +49,13 @@ static addr_t            heap_base;
 static size_t            heap_size;
 
 struct heap_bin {
-	uint_t element_size;
-	uint_t grow_size;
-	uint_t alloc_count;
-	void*  free_list;
-	uint_t free_count;
-	char*  raw_list;
-	uint_t raw_count;
+	uint_t  element_size;
+	uint_t  grow_size;
+	uint_t  alloc_count;
+	void *  free_list;
+	uint_t  free_count;
+	char *  raw_list;
+	uint_t  raw_count;
 };
 
 static struct heap_bin bins[] = {
@@ -91,9 +91,9 @@ static struct heap_bin bins[] = {
 // NOTE: This function is needed only for debugging purposes
 static void dump_bin(size_t indx)
 {
-	struct heap_bin* bin;
+	struct heap_bin * bin;
 #if 0
-	unsigned int*    temp;
+	unsigned int *    temp;
 #endif
 	assert(indx < bin_count);
 
@@ -115,7 +115,7 @@ static void dump_bin(size_t indx)
 		bin->raw_list);
 #if 0
 	dprintf("free_list: ");
-	for (temp = bin->free_list;
+	for (temp = (unsigned int *) bin->free_list;
 	     temp != NULL;
 	     temp = (unsigned int *) *temp) {
 		dprintf("%p ", temp);
@@ -376,8 +376,8 @@ void arch_heap_free(void * address)
 	//     doesn't exist already ...
 	//
 	{
-		unsigned int *temp;
-		for (temp = bin->free_list;
+		unsigned int * temp;
+		for (temp = (unsigned int *) bin->free_list;
 		     temp != NULL;
 		     temp = (unsigned int *) *temp) {
 			if (temp == (unsigned int *) address) {
