@@ -24,6 +24,7 @@
 #include "core/mutex.h"
 #include "libs/debug.h"
 #include "core/panic.h"
+#include "core/interrupt.h"
 #include "dbg/debugger.h"
 #include "libc++/cstdio"
 #include "libc++/cstring"
@@ -40,8 +41,10 @@
 static ktl::list<timer_t *> timers;
 static size_t               granularity;
 
-void timers_update(void)
+void timers_update(void * unused)
 {
+	unused_argument(unused);
+
 	dprintf("Updating timers\n");
 
 	if (timers.empty()) {
@@ -80,7 +83,12 @@ int timers_init(void)
 	granularity = arch_timer_granularity();
 	assert(granularity > 0);
 
-	dprintf("Timers granularity %d\n", granularity);
+	dprintf("Timers granularity %dHz\n", granularity);
+
+	if (!interrupts_attach(0, timers_update, 0)) {
+		dprintf("Cannot attach timers update interrupt handler\n");
+		return 0;
+	}
 
 	dprintf("Initialized\n");
 
@@ -90,6 +98,11 @@ int timers_init(void)
 int timers_fini(void)
 {
 	dprintf("Finalizing timers\n");
+
+	if (!interrupts_detach(0, timers_update)) {
+		dprintf("Cannot detach timers update interrupt handler\n");
+		return 0;
+	}
 
 	if (!timers.empty()) {
 		dprintf("Timers list not empty\n");

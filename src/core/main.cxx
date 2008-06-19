@@ -44,13 +44,14 @@ int main(int argc, char * argv[])
 	       strlen(VERSION_EXTRA) ? "(" VERSION_EXTRA ")" : "",
 	       BUILD_NUMBER, BUILD_DATE);
 
+	if (!interrupts_init()) {
+		panic("Cannot initialize interrupts");
+	}
+
 	if (!timers_init()) {
 		panic("Cannot initialize timers");
 	}
 
-	if (!interrupts_init()) {
-		panic("Cannot initialize interrupts");
-	}
 	interrupts_enable();
 
 	if (!dma_init()) {
@@ -66,7 +67,7 @@ int main(int argc, char * argv[])
 #if TEST
 #include "core/delay.h"
 	while (1 != 0) {
-#if 1
+#if 0
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
