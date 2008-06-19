@@ -245,13 +245,13 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* We have malloc(), free() ... now */
 
 	/* C++ library (glue) startup */
-	/* __do_global_ctors_aux(); */
+	__do_global_ctors_aux();
 	/* We have new, delete ... now */
 
 	main(0, 0);
 
 	/* C++ (glue) Shutdown */
-	/* __do_global_dtors_aux(); */
+	__do_global_dtors_aux();
 
 #if CONFIG_DEBUGGER
 	dbg_fini();
