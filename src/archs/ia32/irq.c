@@ -21,9 +21,9 @@
 #include "archs/ia32/irq.h"
 #include "archs/ia32/port.h"
 #include "archs/ia32/idt.h"
-#include "archs/ia32/arch.h"
 #include "archs/ia32/i8259.h"
 #include "archs/ia32/asm.h"
+#include "archs/arch.h"
 #include "libs/debug.h"
 
 #if CONFIG_ARCH_IRQ_DEBUG
@@ -32,7 +32,7 @@
 #define dprintf(F,A...)
 #endif
 
-static irq_handler_t handlers[I8259_IRQS];
+static arch_irq_handler_t handlers[I8259_IRQS];
 
 /*
  * NOTE on masking and unmasking:
@@ -52,34 +52,54 @@ void irq_mask(uint_t irq)
 	//i8259_mask_set(i8259_mask_get() | ((i8259_mask_t) (1 << irq)));
 }
 
-int irq_handler_install(uint_t        irq,
-			irq_handler_t handler)
+static int handler_install(uint_t             irq,
+			   arch_irq_handler_t handler)
 {
 	assert(irq < I8259_IRQS);
 	assert(handler);
 
 	if (handlers[irq]) {
-		dprintf("Handler 0x%p present on irq %d\n", handlers[irq], irq);
+		dprintf("Handler already present on irq %d\n", irq);
 		return 0;
 	}
 
 	handlers[irq] = handler;
-	//i8259_enable(irq);
-	//irq_unmask(irq);
 
 	dprintf("Handler 0x%p installed on irq %d\n", handlers[irq], irq);
 
 	return 1;
 }
 
-void irq_handler_uninstall(uint_t irq)
+static int handler_uninstall(uint_t irq)
 {
 	assert(irq < I8259_IRQS);
 
-	//i8259_disable(irq);
-	//irq_mask(irq);
-	handlers[irq] = NULL;
-	dprintf("Handler for irq %d uninstalled\n", irq);
+	if (handlers[irq]) {
+		handlers[irq] = NULL;
+		dprintf("Handler for irq %d uninstalled\n", irq);
+	} else {
+		dprintf("No handler for irq %d to be uninstalled\n", irq);
+	}
+
+	return 1;
+}
+
+int arch_irq_handler_set(uint_t             irq,
+			 arch_irq_handler_t handler)
+{
+	int retval;
+
+	irq_mask(irq);
+
+	if (handler) {
+		return handler_install(irq, handler);
+	} else {
+		return handler_uninstall(irq);
+	}
+
+	irq_unmask(irq);
+
+	return retval;
 }
 
 void irq_enable(void)
@@ -94,8 +114,8 @@ void irq_disable(void)
 
 void irq_handler(regs_t * regs)
 {
-	irq_handler_t handler;
-	int           irq;
+	arch_irq_handler_t handler;
+	int                irq;
 
 	/* NOTE: We reach this point with interrupts disabled */
 	assert(regs);
@@ -116,7 +136,7 @@ void irq_handler(regs_t * regs)
 
 	handler = handlers[irq];
 	if (handler) {
-		handler(regs);
+		handler(irq);
 	} else {
 		dprintf("No handler installed for interrupt %d\n", irq);
 	}
@@ -133,18 +153,6 @@ void irq_state_set(arch_irqs_state_t * state)
 {
 	i8259_mask_set(*state);
 }
-
-static void timer(regs_t * regs)
-{
-	dprintf("TIMER (0x%p)\n", regs);
-}
-
-#if 0
-static void keyboard(regs_t * regs)
-{
-	dprintf("KEYBOARD (0x%p)\n", regs);
-}
-#endif
 
 int irq_init(void)
 {
@@ -170,27 +178,6 @@ int irq_init(void)
 	return 1;
 }
 
-int irq_handlers_install(void)
-{
-	irq_disable();
-
-	if (!irq_handler_install(0, timer)) {
-		return 0;
-	}
-	irq_unmask(0);
-
-#if 0
-	if (!irq_handler_install(1, keyboard)) {
-		return 0;
-	}
-	irq_unmask(1);
-#endif
-
-	irq_enable();
-
-	return 1;
-}
-
 void irq_fini(void)
 {
 	int i;
@@ -199,7 +186,7 @@ void irq_fini(void)
 
 	for (i = 0; i < I8259_IRQS; i++) {
 		/* irq_mask(i); */
-		irq_handler_uninstall(i);
+		handler_uninstall(i);
 	}
 
 	i8259_fini();
