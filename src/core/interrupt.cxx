@@ -56,8 +56,6 @@ void interrupts_handler(uint_t vector)
 {
 	dprintf("Executing interrupt handlers for vector %d\n", vector);
 
-	dprintf("******** &handlers[vector] = 0x%p\n", &handlers[vector]);
-
 	if (handlers[vector].empty()) {
 		dprintf("No handlers for vector %d\n", vector);
 		return;
@@ -158,8 +156,6 @@ bool interrupts_attach(uint_t              vector,
 	interrupts_unlock();
 
 	dprintf("Handler 0x%p attached to irq %d\n", handler, vector);
-
-	dprintf("******** &handlers[vector] = 0x%p\n", &handlers[vector]);
 
 	return true;
 }
