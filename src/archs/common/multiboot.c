@@ -211,17 +211,20 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 		}
 		printf("Total available memory = %uKB\n", lower + upper);
 
+		/* XXX FIXME: Mark lower memory as ROM */
 		base   = 0;
 		length = lower * 1024;
 #if CONFIG_MULTIBOOT_MEM_VERBOSE
 		dprintf("  mem-%02d:  0x%08x/0x%08x %s\n",
 			j, base, length, "(lower)");
 #endif
-		bi->mem[j].type = BOOTINFO_MEM_RAM;
+		bi->mem[j].type = BOOTINFO_MEM_ROM;
 		bi->mem[j].base = base;
 		bi->mem[j].size = length;
 
 		j++;
+
+		/* XXX FIXME: Mark upper memory as RAM */
 		base   = 1024 * 1024;
 		length = upper * 1024;
 #if CONFIG_MULTIBOOT_MEM_VERBOSE
@@ -307,25 +310,31 @@ static int multiboot_commandline(const multiboot_info_t* mbi,
 
 	/* Is the command line passed?  */
 	if (CHECK_FLAG(mbi->flags, 2)) {
-		const char* tmp;
+		const char * tmp;
+		size_t       count;
 
-		tmp = (char *) mbi->cmdline;
-		dprintf("Original cmdline = '%s'\n", tmp);
+		tmp   = (char *) mbi->cmdline;
+		count = strlen(tmp);
+		dprintf("Original cmdline = '%s' (%d chars)\n", tmp, count);
 
 		/* Skip kernel name */
-		while (!isspace(*tmp)) {
+		while (count && !isspace(*tmp)) {
 			tmp++;
+			count--;
 		}
 
 		/* Skip separator */
-		while (isspace(*tmp)) {
+		while (count && isspace(*tmp)) {
 			tmp++;
+			count--;
 		}
 
 		/* Then copy the rest of the command line */
-		strncpy(bi->args, tmp, BOOTINFO_ARGS_SIZE);
+		strncpy(bi->args, tmp, MIN(BOOTINFO_ARGS_SIZE, count));
 
-		/* Last but not least ... place the terminator at the end */
+		/* strncpy doesn't terminate the string, let us place the
+		 * terminator at the end
+		 */
 		bi->args[strnlen(bi->args, BOOTINFO_ARGS_SIZE)] = 0;
 
 	} else {
