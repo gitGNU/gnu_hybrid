@@ -133,7 +133,7 @@ static void pmm_dump(void)
 {
 	int i;
 
-	dprintf("PMM regions (ram):\n");
+	dprintf("Valid PMM regions:\n");
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_VALID(i)) {
 			dprintf(" reg-%02d 0x%08x-0x%08x (0x%x)\n",
@@ -221,6 +221,11 @@ int pmm_init(bootinfo_t* bi)
 		RGN_FLAGS(i) &= ~PMM_FLAG_VALID;
 	}
 
+#if CONFIG_PMM_DUMPS_DEBUG
+	dprintf("Regions at pass #1\n");
+	pmm_dump();
+#endif // CONFIG_PMM_DUMPS_DEBUG
+
 	// Copy usable RAM regions infos
 
 #if PMM_MAX_REGIONS < BOOTINFO_MEM_REGIONS
@@ -240,6 +245,11 @@ int pmm_init(bootinfo_t* bi)
 			j++;
 		}
 	}
+
+#if CONFIG_PMM_DUMPS_DEBUG
+	dprintf("Regions at pass #2\n");
+	pmm_dump();
+#endif // CONFIG_PMM_DUMPS_DEBUG
 
 	//
 	// NOTE:
@@ -268,6 +278,11 @@ int pmm_init(bootinfo_t* bi)
 
 	}
 
+#if CONFIG_PMM_DUMPS_DEBUG
+	dprintf("Regions at pass #3\n");
+	pmm_dump();
+#endif // CONFIG_PMM_DUMPS_DEBUG
+
 #if CONFIG_PMM_MEMORY_TEST
 	// Test each valid region, removing invalid ones
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
@@ -294,10 +309,16 @@ int pmm_init(bootinfo_t* bi)
 		}
 	}
 
+#if CONFIG_PMM_DUMPS_DEBUG
+	dprintf("Regions at pass #4\n");
+	pmm_dump();
+#endif // CONFIG_PMM_DUMPS_DEBUG
+
 	// Finally reorder them
 	pmm_reorder();
 
 #if CONFIG_PMM_DUMPS_DEBUG
+	dprintf("Regions at pass #5\n");
 	pmm_dump();
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
