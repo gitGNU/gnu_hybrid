@@ -170,97 +170,99 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 	return (bi->kernel.type != BOOTINFO_IMAGE_UNKNOWN) ? 1 : 0;
 }
 
+static void bootinfo_memory_records_clear(bootinfo_t* bi)
+{
+	int i;
+
+	assert(bi);
+
+	dprintf("Clearing bootinfo records\n");
+	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
+		bi->mem[i].type = BOOTINFO_MEM_UNKNOWN;
+		bi->mem[i].base = 0;
+		bi->mem[i].size = 0;
+	}
+}
+
+static void bootinfo_memory_records_dump(bootinfo_t* bi)
+{
+	int i;
+
+	assert(bi);
+
+	dprintf("Gathered bootinfo records:\n");
+	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
+		if (bi->mem[i].type != BOOTINFO_MEM_UNKNOWN) {
+			dprintf("  base = 0x%08x, size = 0x%08x, type = %s\n",
+				bi->mem[i].base,
+				bi->mem[i].size,
+				BOOTINFO_MEMTYPE2STRING(bi->mem[i].type));
+		}
+	}
+}
+
+/* XXX FIXME: This function is architecture specific !!! */
+static void bootinfo_memory_range_exclude(bootinfo_t*  bi,
+					  unsigned int base,
+					  unsigned int size)
+{
+	int i;
+
+	assert(bi);
+
+	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
+		if ((bi->mem[i].type == BOOTINFO_MEM_RAM) &&
+		    ((bi->mem[i].base >= base) &&
+		     (bi->mem[i].base <= base + size))) {
+			dprintf("Removing bootinfo record %d\n", i);
+			bi->mem[i].type = BOOTINFO_MEM_UNKNOWN;
+		}
+	}
+}
+
+/*
+ * NOTE:
+ *     We rely on the memory map (mmap fields), if the map is not provided we
+ *     simply bangs
+ *
+ * XXX FIXME:
+ *     The described procedure is awful and should be rearranged completely
+ */
 static int multiboot_memory(const multiboot_info_t* mbi,
 			    bootinfo_t*             bi)
 {
-	int j;
-	int mem_valid;
-	int map_valid;
+	unsigned int lower_base;
+	uint_t       lower_size;
+	unsigned int upper_base;
+	uint_t       upper_size;
+	size_t       regions;
 
 	assert(mbi);
 	assert(bi);
 
-	/* Clear all regions */
-	for (j = 0; j < BOOTINFO_MEM_REGIONS; j++) {
-		bi->mem[j].type = BOOTINFO_MEM_UNKNOWN;
-		bi->mem[j].base = 0;
-		bi->mem[j].size = 0;
-	}
-
-	j = 0;
-
-	/* Are mem_* valid?  */
-	if (CHECK_FLAG(mbi->flags, 0)) {
-		unsigned int lower;
-		unsigned int upper;
-
-		uint_t       base;
-		uint_t       length;
-
-		mem_valid = 1;
-
-		lower = (unsigned) mbi->mem_lower;
-		upper = (unsigned) mbi->mem_upper;
-
-		dprintf("mem_lower = %uKB, mem_upper = %uKB\n",
-			lower, upper);
-
-		if (lower > 640) {
-			printf("Huh ... too much low memory ...\n");
-			lower = 640;
-		}
-		printf("Total available memory = %uKB\n", lower + upper);
-
-		/* XXX FIXME: Mark lower memory as ROM */
-		base   = 0;
-		length = lower * 1024;
-#if CONFIG_MULTIBOOT_MEM_VERBOSE
-		dprintf("  mem-%02d:  0x%08x/0x%08x %s\n",
-			j, base, length, "(lower)");
-#endif
-		bi->mem[j].type = BOOTINFO_MEM_ROM;
-		bi->mem[j].base = base;
-		bi->mem[j].size = length;
-
-		j++;
-
-		/* XXX FIXME: Mark upper memory as RAM */
-		base   = 1024 * 1024;
-		length = upper * 1024;
-#if CONFIG_MULTIBOOT_MEM_VERBOSE
-		dprintf("  mem-%02d:  0x%08x/0x%08x %s\n",
-			j, base, length, "(upper)");
-#endif
-		bi->mem[j].type = BOOTINFO_MEM_RAM;
-		bi->mem[j].base = base;
-		bi->mem[j].size = length;
-
-	} else {
-		mem_valid = 0;
-		dprintf("No mem_* infos available in multiboot header\n");
-	}
+	bootinfo_memory_records_clear(bi);
 
 	/* Are mmap_* valid?  */
+	regions = 0;
 	if (CHECK_FLAG(mbi->flags, 6)) {
 		memory_map_t* mmap;
 		int           i;
+		int           j;
 
-		map_valid = 1;
-
+		dprintf("map infos available in multiboot header:\n");
 #if 0
-		dprintf("mmap_addr = 0x%08x, mmap_length = 0x%08x\n",
+		dprintf("  mmap_addr = 0x%08x, mmap_length = 0x%08x\n",
 			(unsigned) mbi->mmap_addr,
 			(unsigned) mbi->mmap_length);
 #endif
 
-		for (i = 0, mmap = (memory_map_t *) mbi->mmap_addr;
-		     (((unsigned long) mmap < (mbi->mmap_addr +
-					      mbi->mmap_length)) &&
-		      (j < BOOTINFO_MEM_REGIONS));
+		for (i = 0, j = 0, mmap = (memory_map_t *) mbi->mmap_addr;
+		     ((unsigned long) mmap < (mbi->mmap_addr +
+					       mbi->mmap_length));
 		     i++, mmap = (memory_map_t *)
 			     ((unsigned long) mmap
 			      + mmap->size + sizeof (mmap->size))) {
-			int    reject;
+			     int    reject;
 			uint_t base;
 			uint_t length;
 
@@ -270,7 +272,6 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 			    (mmap->type           != 1 /* reserved */)) {
 				reject = 1;
 			}
-
 #if CONFIG_MULTIBOOT_MEM_VERBOSE
 			dprintf("  mmap-%02d: "
 				"0x%08x%08x/0x%08x%08x/0x%x %s\n",
@@ -289,16 +290,62 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 				bi->mem[j].base = base;
 				bi->mem[j].size = length;
 				j++;
+
+				if (j >= BOOTINFO_MEM_REGIONS) {
+					dprintf("Too many map infos\n");
+					return 0;
+				}
 			}
 		}
 
+		regions = j;
 	} else {
-		map_valid = 0;
-		dprintf("No mmap_* infos available in multiboot header\n");
+		dprintf("No valid map infos available in multiboot header\n");
+		return 0;
 	}
 
-	dprintf("Analyzed %d memory regions\n", j);
-	return (mem_valid || map_valid);
+	dprintf("Filled %d bootinfo regions\n", regions);
+	if (regions == 0) {
+		dprintf("No regions available ?\n");
+		return 0;
+	}
+
+	bootinfo_memory_records_dump(bi);
+
+	/* Are mem_* valid?  */
+	if (CHECK_FLAG(mbi->flags, 0)) {
+		dprintf("mem infos available in multiboot header:\n");
+
+		/* Store values in order to use them later */
+
+		lower_base = 0;
+		lower_size = (unsigned) mbi->mem_lower;
+		upper_base = 1024 * 1024;
+		upper_size = (unsigned) mbi->mem_upper;
+
+		dprintf("  lower = (0x%08x, %uKB), upper = (0x%08x, %uKB)\n",
+			lower_base, lower_size,
+			upper_base, upper_size);
+
+		/* Fix-up junky infos */
+		if (lower_size > 640) {
+			printf("Too much low memory (%uKb), downgrading ...\n",
+			       lower_size);
+			lower_size = 640;
+		}
+#if 0
+		dprintf("Total available memory = %uKB\n",
+		       lower_size + upper_size);
+#endif
+		bootinfo_memory_range_exclude(bi, lower_base, lower_size);
+	} else {
+		dprintf("No mem infos available in multiboot header\n");
+		return 0;
+	}
+
+	bootinfo_memory_records_dump(bi);
+
+	return 1;
 }
 
 #if CONFIG_OPTIONS
