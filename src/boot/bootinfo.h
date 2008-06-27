@@ -49,9 +49,9 @@ typedef enum {
 
 /* Update the following define accordingly to bi_mem_t typedef ... */
 #define BOOTINFO_MEMTYPE2STRING(T)				\
-	(((T) == BOOTINFO_MEM_UNKNOWN     ) ? "unknown"      :	\
-	 ((T) == BOOTINFO_MEM_RAM         ) ? "ram"          :	\
-	 ((T) == BOOTINFO_MEM_ROM         ) ? "rom"          :	\
+	(((T) == BOOTINFO_MEM_UNKNOWN     ) ? "Unknown"      :	\
+	 ((T) == BOOTINFO_MEM_RAM         ) ? "RAM"          :	\
+	 ((T) == BOOTINFO_MEM_ROM         ) ? "ROM"          :	\
 	 "!!! BUG !!!")
 
 typedef	struct {

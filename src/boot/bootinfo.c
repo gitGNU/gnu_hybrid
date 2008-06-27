@@ -428,58 +428,17 @@ int bootinfo_mod_fix(bootinfo_t* bi)
 	return 1;
 }
 
-/* Entry-point */
-int bootinfo_fix(bootinfo_t* bi)
-{
-	assert(bi);
-
-	if (!bootinfo_args_fix(bi)) {
-		dprintf("Cannot fix bootinfo args ...\n");
-		return 0;
-	}
-
-	if (!bootinfo_mem_fix(bi)) {
-		dprintf("Cannot fix bootinfo memory regions ...\n");
-		return 0;
-	}
-
-	if (!bootinfo_mod_fix(bi)) {
-		dprintf("Cannot fix bootinfo modules ...\n");
-		return 0;
-	}
-
-	return 1;
-}
-
 #if CONFIG_BOOTINFO_DEBUG
-extern bootinfo_t* bootinfo_last;
-
-static dbg_result_t command_bootinfo_on_execute(FILE* stream,
-						int   argc,
-						char* argv[])
+void bootinfo_dump(bootinfo_t* bi,
+		   FILE*       stream)
 {
-	bootinfo_t* bi;
 #if CONFIG_BOOTINFO_MODULES
-	int         i;
+	int i;
 #endif
 
-	assert(stream);
-	assert(argc >= 0);
-
-	if (argc != 0) {
-		return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
-
-	unused_argument(argv);
-
-	bi = bootinfo_last;
-	if (!bi) {
-		fprintf(stream, "No bootinfos available\n");
-		return DBG_RESULT_OK;
-	}
+	assert(bi);
 
 	fprintf(stream, "Bootinfos:\n");
-
 	fprintf(stream, "   args    = '%s'\n", bi->args);
 
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
@@ -509,6 +468,67 @@ static dbg_result_t command_bootinfo_on_execute(FILE* stream,
 		}
 	}
 #endif
+}
+#endif
+
+/* Entry-point */
+int bootinfo_fix(bootinfo_t* bi)
+{
+	assert(bi);
+
+#if CONFIG_BOOTINFO_DEBUG
+	dprintf("Bootinfos pass #1\n");
+	bootinfo_dump(bi, stdout);
+#endif
+
+	if (!bootinfo_args_fix(bi)) {
+		dprintf("Cannot fix bootinfo args ...\n");
+		return 0;
+	}
+
+	if (!bootinfo_mem_fix(bi)) {
+		dprintf("Cannot fix bootinfo memory regions ...\n");
+		return 0;
+	}
+
+	if (!bootinfo_mod_fix(bi)) {
+		dprintf("Cannot fix bootinfo modules ...\n");
+		return 0;
+	}
+
+#if CONFIG_BOOTINFO_DEBUG
+	dprintf("Bootinfos pass #2\n");
+	bootinfo_dump(bi, stdout);
+#endif
+
+	return 1;
+}
+
+#if CONFIG_BOOTINFO_DEBUG
+extern bootinfo_t* bootinfo_last;
+
+static dbg_result_t command_bootinfo_on_execute(FILE* stream,
+						int   argc,
+						char* argv[])
+{
+	bootinfo_t* bi;
+
+	assert(stream);
+	assert(argc >= 0);
+
+	if (argc != 0) {
+		return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+	}
+
+	unused_argument(argv);
+
+	bi = bootinfo_last;
+	if (!bi) {
+		fprintf(stream, "No bootinfos available\n");
+		return DBG_RESULT_OK;
+	}
+
+	bootinfo_dump(bi, stream);
 
 	return DBG_RESULT_OK;
 }
