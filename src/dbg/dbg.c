@@ -69,12 +69,6 @@ int dbg_init(void)
 	}
 #endif
 
-#if CONFIG_DEBUGGER_COMPLETION
-	if (!dbg_completion_init()) {
-		panic("Cannot initialize debugger history");
-	}
-#endif
-
 	initialized = 1;
 
 	return 1;
@@ -616,10 +610,6 @@ int dbg_enter(void)
 void dbg_fini(void)
 {
 	assert(initialized);
-
-#if CONFIG_DEBUGGER_COMPLETION
-	dbg_completion_fini();
-#endif
 
 #if CONFIG_DEBUGGER_HISTORY
 	dbg_history_fini();

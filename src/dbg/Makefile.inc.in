@@ -30,6 +30,5 @@ dbg_SRCS =					\
 	@reldir@/commands.c			\
 	@reldir@/variables.c			\
 	@reldir@/history.c			\
-	@reldir@/completion.c			\
 	@reldir@/builtin-commands.c		\
 	@reldir@/builtin-variables.c
