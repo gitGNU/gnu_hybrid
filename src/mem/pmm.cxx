@@ -210,6 +210,7 @@ int pmm_init(bootinfo_t* bi)
 {
 	int i;
 	int j;
+	int good;
 
 	assert(bi);
 
@@ -295,6 +296,7 @@ int pmm_init(bootinfo_t* bi)
 #endif // CONFIG_PMM_MEMORY_TEST
 
 	// Enable all good regions
+	good = 0;
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		pmm_type_t test;
 
@@ -306,7 +308,13 @@ int pmm_init(bootinfo_t* bi)
 
 		if (RGN_FLAGS(i) & test) {
 			RGN_FLAGS(i) |= PMM_FLAG_ENABLED;
+			good++;
 		}
+	}
+
+	if (!good) {
+		dprintf("No good physical memory regions\n");
+		return 0;
 	}
 
 #if CONFIG_PMM_DUMPS_DEBUG
