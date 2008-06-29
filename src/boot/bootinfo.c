@@ -431,13 +431,17 @@ int bootinfo_mod_fix(bootinfo_t* bi)
 }
 
 #if CONFIG_BOOTINFO_DEBUG
-void bootinfo_mem_dump(bootinfo_t * bi)
+static void mem_dump(bootinfo_t * bi, char * comment)
 {
 	int i;
 
 	assert(bi);
 
-	dprintf("Bootinfo memory asset:\n");
+	if (comment) {
+		dprintf("Bootinfo memory asset (%s):\n", comment);
+	} else {
+		dprintf("Bootinfo memory asset:\n");
+	}
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		if (mem_valid(bi, i)) {
 			dprintf("  mem-%03d = 0x%08x-0x%08x (%s)\n",
@@ -499,7 +503,7 @@ int bootinfo_fix(bootinfo_t* bi)
 	assert(bi);
 
 #if CONFIG_BOOTINFO_DEBUG
-	bootinfo_mem_dump(bi);
+	mem_dump(bi, "initial values");
 #endif
 
 	if (!arch_bootinfo_fix(bi)) {
@@ -508,7 +512,7 @@ int bootinfo_fix(bootinfo_t* bi)
 	}
 
 #if CONFIG_BOOTINFO_DEBUG
-	bootinfo_mem_dump(bi);
+	mem_dump(bi, "after arch fixes");
 #endif
 
 	if (!bootinfo_args_fix(bi)) {
@@ -517,7 +521,7 @@ int bootinfo_fix(bootinfo_t* bi)
 	}
 
 #if CONFIG_BOOTINFO_DEBUG
-	bootinfo_mem_dump(bi);
+	mem_dump(bi, "after args fixes");
 #endif
 
 	if (!bootinfo_mod_fix(bi)) {
@@ -526,7 +530,7 @@ int bootinfo_fix(bootinfo_t* bi)
 	}
 
 #if CONFIG_BOOTINFO_DEBUG
-	bootinfo_mem_dump(bi);
+	mem_dump(bi, "after mods fixes");
 #endif
 
 	return 1;

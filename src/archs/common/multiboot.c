@@ -186,13 +186,14 @@ static void bootinfo_memory_records_clear(bootinfo_t* bi)
 	}
 }
 
+#if CONFIG_BOOTINFO_DEBUG
 static void bootinfo_memory_records_dump(bootinfo_t* bi)
 {
 	int i;
 
 	assert(bi);
 
-	dprintf("Gathered bootinfo records:\n");
+	dprintf("Bootinfo records:\n");
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		if (bi->mem[i].type != BOOTINFO_MEM_UNKNOWN) {
 			dprintf("  base = 0x%08x, size = 0x%08x, type = %s\n",
@@ -202,6 +203,7 @@ static void bootinfo_memory_records_dump(bootinfo_t* bi)
 		}
 	}
 }
+#endif
 
 static int multiboot_memory(const multiboot_info_t* mbi,
 			    bootinfo_t*             bi)
@@ -315,8 +317,9 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 		return 0;
 	}
 
+#if CONFIG_BOOTINFO_DEBUG
 	bootinfo_memory_records_dump(bi);
-
+#endif
 	return 1;
 }
 

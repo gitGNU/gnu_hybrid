@@ -106,11 +106,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 {
 	assert(bootinfo);
 
-#if CONFIG_BOOTINFO_DEBUG
-	/* Save last bootinfo structure for debugging purposes */
-	bootinfo_last = bootinfo;
-#endif /* CONFIG_BOOTINFO_DEBUG */
-
 	/*
 	 * NOTE:
 	 *     arch_dbg_init() has been called in early_init() so we can
@@ -118,12 +113,19 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	 */
 	dprintf("Bootstrapping the system ...\n");
 
-	dprintf("kernel  = 0x%08x-0x%08x\n", &_kernel, &_ekernel);
-	dprintf(".text   = 0x%08x-0x%08x\n", &_text,   &_etext);
-	dprintf(".data   = 0x%08x-0x%08x\n", &_data,   &_edata);
-	dprintf(".rodata = 0x%08x-0x%08x\n", &_rodata, &_erodata);
-	dprintf(".bss    = 0x%08x-0x%08x\n", &_bss,    &_ebss);
-	dprintf(".debug  = 0x%08x-0x%08x\n", &_debug,  &_edebug);
+#if CONFIG_BOOTINFO_DEBUG
+	/* Save last bootinfo structure for debugging purposes */
+	bootinfo_last = bootinfo;
+#endif /* CONFIG_BOOTINFO_DEBUG */
+
+	dprintf("Bootinfos at 0x%p\n", bootinfo);
+
+	dprintf("Kernel sections (0x%08x-0x%08x):\n", &_kernel, &_ekernel);
+	dprintf("  .text   = 0x%08x-0x%08x\n", &_text,   &_etext);
+	dprintf("  .data   = 0x%08x-0x%08x\n", &_data,   &_edata);
+	dprintf("  .rodata = 0x%08x-0x%08x\n", &_rodata, &_erodata);
+	dprintf("  .bss    = 0x%08x-0x%08x\n", &_bss,    &_ebss);
+	dprintf("  .debug  = 0x%08x-0x%08x\n", &_debug,  &_edebug);
 
 	/*
 	 * Some consistency checks ...
