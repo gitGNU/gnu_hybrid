@@ -32,6 +32,23 @@
 
 #if CONFIG_ARCH_PC
 
+int arch_bootinfo_fix(bootinfo_t * bi)
+{
+	int i;
+
+	assert(bi);
+
+	/* Remove lower memory */
+	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
+		if ((bi->mem[i].type == BOOTINFO_MEM_RAM) &&
+		    (bi->mem[i].base < 1024 * 1024)) {
+			bi->mem[i].type = BOOTINFO_MEM_UNKNOWN;
+		}
+	}
+
+	return 1;
+}
+
 void arch_halt(void)
 {
 	irq_disable();

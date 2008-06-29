@@ -26,6 +26,7 @@
 #if ARCH_IA32
 #include "archs/ia32/arch.h"
 #endif
+#include "boot/bootinfo.h"
 #include "archs/common/cpu.h"
 #include "mem/address.h"
 
@@ -56,6 +57,8 @@ __BEGIN_DECLS
  * NOTE:
  *     Each architecture MUST export the following functions
  */
+
+int               arch_bootinfo_fix(bootinfo_t * bi);
 
 /*
  * XXX FIXME:

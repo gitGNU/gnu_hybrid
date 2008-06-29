@@ -68,7 +68,7 @@ static int multiboot_modules(multiboot_info_t* mbi,
 		for (i = 0; i < mbi->mods_count; i++) {
 			assert(mod);
 
-			dprintf("   @0x%x: (0x%x-0x%x) '%s'\n",
+			dprintf("   0x%x: (0x%x-0x%x) '%s'\n",
 				mod,
 				(unsigned) mod->mod_start,
 				(unsigned) mod->mod_end,
@@ -123,17 +123,18 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 	if (CHECK_FLAG(mbi->flags, 4)) {
 		aout_symbol_table_t* aout_sym;
 
+		dprintf("aout section header table:\n");
+
 		aout_sym = &(mbi->u.aout_sym);
 
-		dprintf("aout_symbol_table: tabsize = 0x%0x, "
-			"strsize = 0x%x, addr = 0x%x\n",
+		dprintf("  tabsize = 0x%0x, strsize = 0x%x, addr = 0x%x\n",
 			(unsigned) aout_sym->tabsize,
 			(unsigned) aout_sym->strsize,
 			(unsigned) aout_sym->addr);
 
 		bi->kernel.type = BOOTINFO_IMAGE_AOUT;
 	} else {
-		dprintf("No aout infos in multiboot header\n");
+		dprintf("No aout section header table available\n");
 	}
 #endif /* CONFIG_AOUT */
 
@@ -146,13 +147,14 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 		unsigned                    addr;
 		unsigned                    shndx;
 
+		dprintf("elf section header table:\n");
+
 		elf_sec = &(mbi->u.elf_sec);
 		num   = (unsigned) elf_sec->num;
 		size  = (unsigned) elf_sec->size;
 		addr  = (unsigned) elf_sec->addr;
 		shndx = (unsigned) elf_sec->shndx;
 
-		dprintf("Sections infos:\n");
 		dprintf("  num = %u, size = 0x%x, addr = 0x%x, shndx = 0x%x\n",
 			num, size, addr, shndx);
 
@@ -163,7 +165,7 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 
 		bi->kernel.type           = BOOTINFO_IMAGE_ELF;
 	} else {
-		dprintf("No elf infos in multiboot header\n");
+		dprintf("No elf section header table available\n");
 	}
 #endif /* CONFIG_ELF */
 
@@ -201,33 +203,6 @@ static void bootinfo_memory_records_dump(bootinfo_t* bi)
 	}
 }
 
-/* XXX FIXME: This function is architecture specific !!! */
-static void bootinfo_memory_range_exclude(bootinfo_t*  bi,
-					  unsigned int base,
-					  unsigned int size)
-{
-	int i;
-
-	assert(bi);
-
-	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
-		if ((bi->mem[i].type == BOOTINFO_MEM_RAM) &&
-		    ((bi->mem[i].base >= base) &&
-		     (bi->mem[i].base <= base + size))) {
-			dprintf("Removing bootinfo record %d\n", i);
-			bi->mem[i].type = BOOTINFO_MEM_UNKNOWN;
-		}
-	}
-}
-
-/*
- * NOTE:
- *     We rely on the memory map (mmap fields), if the map is not provided we
- *     simply bangs
- *
- * XXX FIXME:
- *     The described procedure is awful and should be rearranged completely
- */
 static int multiboot_memory(const multiboot_info_t* mbi,
 			    bootinfo_t*             bi)
 {
@@ -306,11 +281,9 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 
 	dprintf("Filled %d bootinfo regions\n", regions);
 	if (regions == 0) {
-		dprintf("No regions available ?\n");
+		dprintf("No memory regions available ?\n");
 		return 0;
 	}
-
-	bootinfo_memory_records_dump(bi);
 
 	/* Are mem_* valid?  */
 	if (CHECK_FLAG(mbi->flags, 0)) {
@@ -337,7 +310,6 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 		dprintf("Total available memory = %uKB\n",
 		       lower_size + upper_size);
 #endif
-		bootinfo_memory_range_exclude(bi, lower_base, lower_size);
 	} else {
 		dprintf("No mem infos available in multiboot header\n");
 		return 0;

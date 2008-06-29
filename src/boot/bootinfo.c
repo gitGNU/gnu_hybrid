@@ -223,6 +223,8 @@ int bootinfo_mem_fix(bootinfo_t* bi)
 
 	assert(bi);
 
+	dprintf("Rearranging memory\n");
+
 	/* Remove invalid entries */
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		if ((MEM_TYPE(bi, i) < BOOTINFO_MEMTYPE_MIN) ||
@@ -477,7 +479,15 @@ int bootinfo_fix(bootinfo_t* bi)
 	assert(bi);
 
 #if CONFIG_BOOTINFO_DEBUG
-	dprintf("Bootinfos pass #1\n");
+	bootinfo_dump(bi, stdout);
+#endif
+
+	if (!arch_bootinfo_fix(bi)) {
+		dprintf("Cannot fix bootinfo memory regions ...\n");
+		return 0;
+	}
+
+#if CONFIG_BOOTINFO_DEBUG
 	bootinfo_dump(bi, stdout);
 #endif
 
@@ -486,10 +496,9 @@ int bootinfo_fix(bootinfo_t* bi)
 		return 0;
 	}
 
-	if (!bootinfo_mem_fix(bi)) {
-		dprintf("Cannot fix bootinfo memory regions ...\n");
-		return 0;
-	}
+#if CONFIG_BOOTINFO_DEBUG
+	bootinfo_dump(bi, stdout);
+#endif
 
 	if (!bootinfo_mod_fix(bi)) {
 		dprintf("Cannot fix bootinfo modules ...\n");
@@ -497,7 +506,6 @@ int bootinfo_fix(bootinfo_t* bi)
 	}
 
 #if CONFIG_BOOTINFO_DEBUG
-	dprintf("Bootinfos pass #2\n");
 	bootinfo_dump(bi, stdout);
 #endif
 
