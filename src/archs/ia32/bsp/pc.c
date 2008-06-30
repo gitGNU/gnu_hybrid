@@ -42,7 +42,8 @@ int arch_bootinfo_fix(bootinfo_t * bi)
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		if ((bi->mem[i].type == BOOTINFO_MEM_RAM) &&
 		    (bi->mem[i].base < 1024 * 1024)) {
-			bi->mem[i].type = BOOTINFO_MEM_UNKNOWN;
+			/* XXX FIXME: Awful hack */
+			bi->mem[i].type = BOOTINFO_MEM_ROM;
 		}
 	}
 
