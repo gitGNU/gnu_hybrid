@@ -99,8 +99,11 @@ bootinfo_t*   bootinfo_last = NULL;
 
 static uint_t heap_base;
 static uint_t heap_size;
+
+#if 0
 static uint_t bootmem_base;
 static uint_t bootmem_size;
+#endif
 
 void bootstrap_late(bootinfo_t* bootinfo)
 {
@@ -120,12 +123,19 @@ void bootstrap_late(bootinfo_t* bootinfo)
 
 	dprintf("Bootinfos at 0x%p\n", bootinfo);
 
-	dprintf("Kernel sections (0x%08x-0x%08x):\n", &_kernel, &_ekernel);
-	dprintf("  .text   = 0x%08x-0x%08x\n", &_text,   &_etext);
-	dprintf("  .data   = 0x%08x-0x%08x\n", &_data,   &_edata);
-	dprintf("  .rodata = 0x%08x-0x%08x\n", &_rodata, &_erodata);
-	dprintf("  .bss    = 0x%08x-0x%08x\n", &_bss,    &_ebss);
-	dprintf("  .debug  = 0x%08x-0x%08x\n", &_debug,  &_edebug);
+	dprintf("Kernel spans 0x%08x-0x%08x (%d)\n",
+		&_kernel, &_ekernel, &_ekernel - &_kernel);
+	dprintf("Sections:\n");
+	dprintf("  .text   = 0x%08x-0x%08x (%d)\n",
+		&_text,   &_etext,   &_etext - &_text);
+	dprintf("  .data   = 0x%08x-0x%08x (%d)\n",
+		&_data,   &_edata,   &_edata - &_data);
+	dprintf("  .rodata = 0x%08x-0x%08x (%d)\n",
+		&_rodata, &_erodata, &_erodata - &_rodata);
+	dprintf("  .bss    = 0x%08x-0x%08x (%d)\n",
+		&_bss,    &_ebss,    &_ebss - &_bss);
+	dprintf("  .debug  = 0x%08x-0x%08x (%d)\n",
+		&_debug,  &_edebug,  &_edebug - &_debug);
 
 	/*
 	 * Some consistency checks ...
@@ -189,6 +199,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	}
 	/* Physical memory initialized */
 
+#if 0
 	/* Initialize boot memory */
 	bootmem_size = CONFIG_PAGE_SIZE * 4;
 	bootmem_base = pmm_reserve(bootmem_size);
@@ -201,7 +212,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	assert(fit_initialized());
 
 	fit_fini();
-
+#endif
 	/* Initialize virtual memory */
 	if (!vmm_init(bootinfo)) {
 		panic("Cannot initialize virtual memory");
