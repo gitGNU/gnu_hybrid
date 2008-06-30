@@ -26,19 +26,23 @@
 __BEGIN_DECLS
 
 int    pmm_init(bootinfo_t* bi);
+void   pmm_fini(void);
 
 #define PMM_FLAG_VALID   0x01
 #define PMM_FLAG_USED    0x02
 #define PMM_FLAG_TESTED  0x04
 #define PMM_FLAG_ENABLED 0x08
+#define PMM_FLAG_ALL     0xFF
 
 typedef uint8_t pmm_type_t;
-int    pmm_foreach(int (* callback)(uint_t     start,
-				    uint_t     stop,
-				    pmm_type_t flags));
+int    pmm_foreach(pmm_type_t flags,
+		   int        (* callback)(uint_t     start,
+					   uint_t     stop,
+					   pmm_type_t flags));
 uint_t pmm_reserve(uint_t size);
+uint_t pmm_reserve_absolute(uint_t address,
+			    uint_t size);
 void   pmm_release(uint_t start);
-void   pmm_fini(void);
 
 __END_DECLS
 

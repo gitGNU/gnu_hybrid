@@ -25,8 +25,9 @@
 #include "mem/address.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
-#include "core/power.h"
 #include "libs/bfd/bfd.h"
+
+#include "libc++/cstring"
 
 #define BANNER          "bss: "
 
@@ -38,26 +39,43 @@
 
 __BEGIN_DECLS
 
+#define BSS_USE_MEMSET 1
+
 int bss_init(void)
 {
+#if !BSS_USE_MEMSET
 	char * bss;
+	size_t count;
+#endif
 
-	dprintf("Initializing BSS 0x%x:0x%x (%d bytes)\n",
+	dprintf("Initializing BSS 0x%p-0x%p (%d bytes)\n",
 		&_bss, &_ebss, &_ebss - &_bss);
 
 	if (&_bss > &_ebss) {
-		// Wrong bss addresses, let us return before wrecking
-		// the whole thing ...
+		// Wrong bss addresses, return before wrecking ...
 		return 0;
 	}
 
+#if BSS_USE_MEMSET
+	assert(valid_bss_address((unsigned int) &_bss));
+	assert(valid_bss_address((unsigned int) &_ebss));
+
+	dprintf("Clearing %d bytes\n", &_ebss - &_bss);
+	memset(&_bss, 0, &_ebss - &_bss);
+
+#else
+	count = 0;
 	for (bss = ((char *) &_bss); bss < ((char *) &_ebss); bss++) {
 		assert(valid_bss_address((unsigned int) bss));
 
 		// dprintf("  0x%x\n", bss);
 
 		*bss = 0;
+		count++;
 	}
+
+	dprintf("Zeroed count = %d\n", count);
+#endif
 
 	dprintf("BSS initialized\n");
 

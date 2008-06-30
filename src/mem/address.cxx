@@ -25,7 +25,7 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 
-static int inrange(void* addr, void* start, void* end)
+static int inrange(void * addr, void * start, void * end)
 {
 	// Is address inside range ?
 	if ((addr >= start) && (addr <= end)) {

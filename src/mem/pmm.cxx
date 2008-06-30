@@ -37,10 +37,6 @@
 
 //
 // NOTE:
-//     We don't have a valid heap when pmm_init() is called so we need
-//     static allocation of this structure ...
-//
-// NOTE:
 //     The BOOTINFO_MEM_REGIONS should be enough (because they contain not only
 //     RAM ...)
 //
@@ -52,29 +48,35 @@ typedef struct {
 	pmm_type_t flags;
 } pmm_region_t;
 
+//
+// NOTE:
+//     We don't have a valid heap when pmm_init() is called so we need
+//     static allocation of this structure ...
+//
 pmm_region_t regions[PMM_MAX_REGIONS];
 
 #define FLAG_TEST(INDEX,FLAG)					\
 	(regions[(INDEX)].flags & __CONCAT(PMM_FLAG_,FLAG))
 
 // Test macros */
-#define RGN_VALID(INDEX)       FLAG_TEST(INDEX,VALID)
-#define RGN_USED(INDEX)        FLAG_TEST(INDEX,USED)
-#define RGN_TESTED(INDEX)      FLAG_TEST(INDEX,TESTED)
-#define RGN_ENABLED(INDEX)     FLAG_TEST(INDEX,ENABLED)
+#define RGN_VALID(INDEX)   FLAG_TEST(INDEX,VALID)
+#define RGN_USED(INDEX)    FLAG_TEST(INDEX,USED)
+#define RGN_TESTED(INDEX)  FLAG_TEST(INDEX,TESTED)
+#define RGN_ENABLED(INDEX) FLAG_TEST(INDEX,ENABLED)
 
 // Access macros */
-#define RGN_START(INDEX)       regions[INDEX].start
-#define RGN_STOP(INDEX)        regions[INDEX].stop
-#define RGN_FLAGS(INDEX)       regions[INDEX].flags
+#define RGN_START(INDEX)   regions[INDEX].start
+#define RGN_STOP(INDEX)    regions[INDEX].stop
+#define RGN_FLAGS(INDEX)   regions[INDEX].flags
 
 // Utility macros */
-#define RGN_SIZE(INDEX)        (regions[INDEX].stop - regions[INDEX].start)
+#define RGN_SIZE(INDEX)    (regions[INDEX].stop - regions[INDEX].start)
 
 #if CONFIG_DEBUGGER // XXX FIXME: Nobody else needs these functions ?
-int pmm_foreach(int (* callback)(uint_t     start,
-				 uint_t     stop,
-				 pmm_type_t flags))
+int pmm_foreach(pmm_type_t flags,
+		int        (* callback)(uint_t     start,
+					uint_t     stop,
+					pmm_type_t flags))
 {
 	int i;
 
@@ -84,10 +86,12 @@ int pmm_foreach(int (* callback)(uint_t     start,
 		if (RGN_VALID(i)) {
 			assert(RGN_SIZE(i) != 0);
 
-			if (!callback(RGN_START(i),
-				      RGN_STOP(i),
-				      RGN_FLAGS(i))) {
-				return 0;
+			if (RGN_FLAGS(i) & flags) {
+				if (!callback(RGN_START(i),
+					      RGN_STOP(i),
+					      RGN_FLAGS(i))) {
+					return 0;
+				}
 			}
 		}
 	}
@@ -216,8 +220,10 @@ int pmm_init(bootinfo_t* bi)
 
 	dprintf("Initializing physical memory manager\n");
 
-	// Invalidate all regions
+	// Clear all records
 	memset(regions, 0, sizeof(regions));
+
+	// Invalidate them all
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		RGN_FLAGS(i) &= ~PMM_FLAG_VALID;
 	}
@@ -233,6 +239,7 @@ int pmm_init(bootinfo_t* bi)
 #error Wrong settings, PMM_MAX_REGIONS must be >= BOOTINFO_MEM_REGIONS !!!
 #endif
 
+	dprintf("Copying bootinfo records\n");
 	j = 0;
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		// Gather only clean regions (type == ram && length != 0)
@@ -276,7 +283,6 @@ int pmm_init(bootinfo_t* bi)
 		if (RGN_START(i) >= RGN_START(j)) {
 			panic("Wrong bootinfo structure");
 		}
-
 	}
 
 #if CONFIG_PMM_DUMPS_DEBUG
@@ -285,7 +291,7 @@ int pmm_init(bootinfo_t* bi)
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
 #if CONFIG_PMM_MEMORY_TEST
-	// Test each valid region, removing invalid ones
+	dprintf("Testing each valid region, removing invalid ones\n");
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_VALID(i)) {
 			if (!region_test(&regions[i])) {
@@ -355,6 +361,51 @@ void pmm_fini(void)
 	dprintf("Physical memory disposed\n");
 }
 
+uint_t pmm_reserve_absolute(uint_t address,
+			    uint_t size)
+{
+	dprintf("Allocating %d at 0x%p\n", size, address);
+
+	if (size == 0) {
+		// Silly request
+		return ((uint_t) -1);
+	}
+
+	for (i = 0; i < PMM_MAX_REGIONS; i++) {
+		if (!RGN_ENABLED(i)) {
+			continue;
+		}
+		if (RGN_USED(i)) {
+			continue;
+		}
+
+		// Region i is valid, not used and enabled
+		assert(RGN_VALID(i));
+		assert(!RGN_USED(i));
+		assert(RGN_ENABLED(i));
+
+		assert(RGN_START(i) < RGN_STOP(i));
+
+		// Can this region contains the requested one ?
+		if (RGN_START(i) < address) {
+			// No ...
+			continue;
+		}
+		if (RGN_SIZE(i) > size) {
+			// No ...
+			continue;
+		}
+
+		// Yes
+
+		panic("Missing code");
+
+		return RGN_START(i);
+	}
+
+	return -1;
+}
+
 uint_t pmm_reserve(uint_t size)
 {
 	int i;
@@ -392,7 +443,7 @@ uint_t pmm_reserve(uint_t size)
 		// Yes, so mark it as used
 		RGN_FLAGS(i) |= PMM_FLAG_USED;
 
-		// Split region if it is larger than requested one
+		// Split region if it is larger than requested
 		if (RGN_SIZE(i) > size) {
 			int j;
 
@@ -561,7 +612,7 @@ static dbg_result_t command_pmm_on_execute(FILE* stream,
 	fprintf(stream, "\n");
 	fprintf(stream, "  Start       Stop        Flags\n");
 
-	pmm_foreach(pmm_iterator);
+	pmm_foreach(PMM_FLAG_ALL, pmm_iterator);
 
 	fprintf(stream, "\n");
 
