@@ -15,6 +15,7 @@ SECTIONS {
 		_text = .; /* Text start address: used for backtraces */
 
 		*(.text)
+		*(.text.*)
 
 		_etext = .;  /* Text end address: used for backtraces */
 	}
@@ -32,6 +33,7 @@ SECTIONS {
 		_data = .;
 
 		*(.data)
+		*(.data.*)
 
 		/* C++ constructors */
 		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
