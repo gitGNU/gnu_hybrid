@@ -361,46 +361,14 @@ void pmm_fini(void)
 	dprintf("Physical memory disposed\n");
 }
 
-uint_t pmm_reserve_absolute(uint_t address,
-			    uint_t size)
+uint_t pmm_reserve_region(uint_t address,
+			  size_t size)
 {
-	dprintf("Allocating %d at 0x%p\n", size, address);
+	dprintf("Allocating %d bytes, starting from 0x%p\n", size, address);
 
 	if (size == 0) {
 		// Silly request
 		return ((uint_t) -1);
-	}
-
-	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (!RGN_ENABLED(i)) {
-			continue;
-		}
-		if (RGN_USED(i)) {
-			continue;
-		}
-
-		// Region i is valid, not used and enabled
-		assert(RGN_VALID(i));
-		assert(!RGN_USED(i));
-		assert(RGN_ENABLED(i));
-
-		assert(RGN_START(i) < RGN_STOP(i));
-
-		// Can this region contains the requested one ?
-		if (RGN_START(i) < address) {
-			// No ...
-			continue;
-		}
-		if (RGN_SIZE(i) > size) {
-			// No ...
-			continue;
-		}
-
-		// Yes
-
-		panic("Missing code");
-
-		return RGN_START(i);
 	}
 
 	return -1;
@@ -410,7 +378,7 @@ uint_t pmm_reserve(uint_t size)
 {
 	int i;
 
-	dprintf("Allocating %d\n", size);
+	dprintf("Allocating %d bytes\n", size);
 
 	if (size == 0) {
 		// Silly request
