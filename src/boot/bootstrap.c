@@ -199,6 +199,12 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	}
 	/* Physical memory initialized */
 
+	/* Mark kernel areas of physical memory as "used" */
+	if (pmm_reserve_region((uint_t) &_kernel, &_ekernel - &_kernel) ==
+	    ((uint_t) -1)) {
+		panic("Cannot mark kernel regions as used");
+	}
+
 #if 0
 	/* Initialize boot memory */
 	bootmem_size = CONFIG_PAGE_SIZE * 4;
