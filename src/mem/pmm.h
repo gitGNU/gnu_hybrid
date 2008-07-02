@@ -39,11 +39,8 @@ int    pmm_foreach(pmm_type_t flags,
 		   int        (* callback)(uint_t     start,
 					   uint_t     stop,
 					   pmm_type_t flags));
-int    pmm_reserve_region(uint_t address,
+uint_t pmm_reserve_region(uint_t address,
 			  size_t size);
-int    pmm_release_region(uint_t address,
-			  size_t size);
-
 uint_t pmm_reserve(uint_t size);
 void   pmm_release(uint_t start);
 
