@@ -50,7 +50,7 @@ typedef struct {
 
 //
 // NOTE:
-//     We don't have a valid heap when pmm_init() is called so we need
+//     We don't have an usable heap when pmm_init() is called so we need
 //     static allocation of this structure ...
 //
 pmm_region_t regions[PMM_MAX_REGIONS];
@@ -133,14 +133,16 @@ static int pmm_compare(const void* a, const void* b)
 }
 
 #if CONFIG_PMM_DUMPS_DEBUG
-static void pmm_dump(void)
+static void pmm_dump(char * comment)
 {
 	int i;
 
-	dprintf("Valid PMM regions:\n");
+	assert(comment);
+
+	dprintf("PMM regions (%s):\n", comment);
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_VALID(i)) {
-			dprintf(" reg-%02d 0x%08x-0x%08x (0x%x)\n",
+			dprintf("  reg-%02d 0x%p-0x%p (0x%x)\n",
 				i,
 				RGN_START(i),
 				RGN_STOP(i),
@@ -167,7 +169,7 @@ static int region_test_pattern(pmm_region_t* region,
 	     p++) {
 
 		if (*p != pattern) {
-			dprintf("Wrong pattern on region 0x%x-0x%x "
+			dprintf("Wrong pattern on region 0x%p-0x%p "
 				"at address 0x%x\n",
 				region->start, region->stop, p);
 			return 0;
@@ -228,11 +230,6 @@ int pmm_init(bootinfo_t* bi)
 		RGN_FLAGS(i) &= ~PMM_FLAG_VALID;
 	}
 
-#if CONFIG_PMM_DUMPS_DEBUG
-	dprintf("Regions at pass #1\n");
-	pmm_dump();
-#endif // CONFIG_PMM_DUMPS_DEBUG
-
 	// Copy usable RAM regions infos
 
 #if PMM_MAX_REGIONS < BOOTINFO_MEM_REGIONS
@@ -255,8 +252,7 @@ int pmm_init(bootinfo_t* bi)
 	}
 
 #if CONFIG_PMM_DUMPS_DEBUG
-	dprintf("Regions at pass #2\n");
-	pmm_dump();
+	pmm_dump("pass #1");
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
 	//
@@ -286,8 +282,7 @@ int pmm_init(bootinfo_t* bi)
 	}
 
 #if CONFIG_PMM_DUMPS_DEBUG
-	dprintf("Regions at pass #3\n");
-	pmm_dump();
+	pmm_dump("pass #2");
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
 #if CONFIG_PMM_MEMORY_TEST
@@ -324,16 +319,14 @@ int pmm_init(bootinfo_t* bi)
 	}
 
 #if CONFIG_PMM_DUMPS_DEBUG
-	dprintf("Regions at pass #4\n");
-	pmm_dump();
+	pmm_dump("pass #3");
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
 	// Finally reorder them
 	pmm_reorder();
 
 #if CONFIG_PMM_DUMPS_DEBUG
-	dprintf("Regions at pass #5\n");
-	pmm_dump();
+	pmm_dump("pass #4");
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
 	dprintf("Physical memory initialized successfully\n");
@@ -361,24 +354,72 @@ void pmm_fini(void)
 	dprintf("Physical memory disposed\n");
 }
 
-uint_t pmm_reserve_region(uint_t address,
-			  size_t size)
+static int pmm_region_split(int    i,
+			    size_t size)
 {
-	dprintf("Allocating %d bytes, starting from 0x%p\n", size, address);
+	dprintf("Splitting region %d, by %d (0x%x) bytes\n", i, size, size);
 
-	if (size == 0) {
-		// Silly request
-		return ((uint_t) -1);
+	if (RGN_SIZE(i) == size) {
+		return 1;
+	} else if (RGN_SIZE(i) > size) {
+		int j;
+
+		// Find an empty slot
+		for (j = 0; j < PMM_MAX_REGIONS; j++) {
+			if (!RGN_VALID(j)) {
+				dprintf("Got %d as a free region to use\n", j);
+				break;
+			}
+		}
+
+		if (j >=  PMM_MAX_REGIONS) {
+			dprintf("No space available to split region %d\n", i);
+			return 0;
+		}
+
+		// Found it
+
+		dprintf("Region %d will be used\n", j);
+
+		assert(!RGN_VALID(j));
+
+		// Copy that region over the free entry
+		memcpy(&regions[j], &regions[i], sizeof(pmm_region_t));
+
+		// Rearrange region j (start)
+		RGN_START(j) = RGN_START(i) + size;
+		RGN_STOP(j)  = RGN_STOP(i);
+
+		// Mark-back region j as free
+		RGN_FLAGS(j) &= ~PMM_FLAG_USED;
+
+		// Resize region i
+		RGN_STOP(i) = RGN_START(i) + size - 1;
+
+		pmm_reorder();
+
+		return 1;
 	}
 
-	return -1;
+	return 0;
 }
 
-uint_t pmm_reserve(uint_t size)
+int pmm_release_region(uint_t address,
+		       size_t size)
+{
+	unused_argument(address);
+	unused_argument(size);
+
+	return 0;
+}
+
+int pmm_reserve_region(uint_t address,
+		       size_t size)
 {
 	int i;
 
-	dprintf("Allocating %d bytes\n", size);
+	dprintf("Allocating %d (0x%x) bytes, starting from 0x%p\n",
+		size, size, address);
 
 	if (size == 0) {
 		// Silly request
@@ -393,60 +434,94 @@ uint_t pmm_reserve(uint_t size)
 			continue;
 		}
 
-		// Region i is valid, not used and enabled
+		// Region i must be: valid, not used and enabled
 		assert(RGN_VALID(i));
 		assert(!RGN_USED(i));
 		assert(RGN_ENABLED(i));
 
+		// Its bounds must be good ones
 		assert(RGN_START(i) < RGN_STOP(i));
 
-		// Can this region contains the requested one ?
+		// Could this region contain the requested one ?
+		if (RGN_START(i) > address) {
+			// No ...
+			continue;
+		}
+
+		if (RGN_SIZE(i) < size) {
+			// No ...
+			continue;
+		}
+
+		if (RGN_STOP(i) < address + size) {
+			// No ...
+			continue;
+		}
+
+		if (!pmm_region_split(i, size)) {
+			return 0;
+		}
+
+		// Yes, so mark it as used
+		RGN_FLAGS(i) |= PMM_FLAG_USED;
+
+#if CONFIG_PMM_DUMPS_DEBUG
+		pmm_dump("after reserving region");
+#endif
+		return 1;
+	}
+
+	dprintf("Cannot allocate %d bytes, starting from 0x%p\n",
+		size, address);
+
+	return 0;
+}
+
+uint_t pmm_reserve(uint_t size)
+{
+	int i;
+
+	dprintf("Allocating %d (0x%x) bytes\n", size, size);
+
+	if (size == 0) {
+		// Silly request
+		return ((uint_t) -1);
+	}
+
+	for (i = 0; i < PMM_MAX_REGIONS; i++) {
+		if (!RGN_ENABLED(i)) {
+			continue;
+		}
+		if (RGN_USED(i)) {
+			continue;
+		}
+
+		// Region i must be: valid, not used and enabled
+		assert(RGN_VALID(i));
+		assert(!RGN_USED(i));
+		assert(RGN_ENABLED(i));
+
+		// Its bounds must be good ones
+		assert(RGN_START(i) < RGN_STOP(i));
+
+		// Could this region contains the requested one ?
 		if (RGN_SIZE(i) < size) {
 			// No ...
 			continue;
 		}
 
 		// dprintf("Region %d will be used\n", i);
+		if (!pmm_region_split(i, size)) {
+			// No ...
+			continue;
+		}
 
 		// Yes, so mark it as used
 		RGN_FLAGS(i) |= PMM_FLAG_USED;
 
-		// Split region if it is larger than requested
-		if (RGN_SIZE(i) > size) {
-			int j;
-
-			// Find an empty slot
-			for (j = 0; j < PMM_MAX_REGIONS; j++) {
-				if (!RGN_VALID(j)) {
-					// Found !
-					break;
-				}
-			}
-			if (j < PMM_MAX_REGIONS) {
-				// Found it
-
-				// dprintf("Region %d will be used\n", j);
-
-				assert(!RGN_VALID(j));
-
-				// Copy that region over the free entry
-				memcpy(&regions[j],
-				       &regions[i],
-				       sizeof(pmm_region_t));
-
-				// Rearrange region j (start)
-				RGN_START(j) = RGN_START(i) + size + 1;
-				RGN_STOP(j)  = RGN_STOP(i);
-
-				// Mark-back region j as free
-				RGN_FLAGS(j) &= ~PMM_FLAG_USED;
-
-				// Resize region i
-				RGN_STOP(i) = RGN_START(i) + size;
-
-				pmm_reorder();
-			}
-		}
+#if CONFIG_PMM_DUMPS_DEBUG
+		pmm_dump("after allocating region");
+#endif
 
 		return RGN_START(i);
 	}
