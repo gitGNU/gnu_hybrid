@@ -200,8 +200,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* Physical memory initialized */
 
 	/* Mark kernel areas of physical memory as "used" */
-	if (pmm_reserve_region((uint_t) &_kernel, &_ekernel - &_kernel) ==
-	    ((uint_t) -1)) {
+	if (!pmm_reserve_region((uint_t) &_kernel, &_ekernel - &_kernel)) {
 		panic("Cannot mark kernel regions as used");
 	}
 
@@ -286,6 +285,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	heap_fini();
 	vmm_fini();
 	pmm_release(heap_base);
+	pmm_release_region((uint_t) &_kernel, &_ekernel - &_kernel);
 	pmm_fini();
 	arch_fini();
 	resource_fini();
