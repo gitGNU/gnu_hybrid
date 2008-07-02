@@ -60,12 +60,11 @@ pmm_region_t regions[PMM_MAX_REGIONS];
 // Test macros */
 #define RGN_VALID(INDEX)   FLAG_TEST(INDEX,VALID)
 #define RGN_USED(INDEX)    FLAG_TEST(INDEX,USED)
-#define RGN_TESTED(INDEX)  FLAG_TEST(INDEX,TESTED)
 #define RGN_ENABLED(INDEX) FLAG_TEST(INDEX,ENABLED)
 
 // Derived test macros
-#define RGN_USABLE(INDEX)  (RGN_VALID(INDEX)   && \
-			    RGN_ENABLED(INDEX) && \
+#define RGN_USABLE(INDEX)  (RGN_VALID(INDEX)   &&	\
+			    RGN_ENABLED(INDEX) &&	\
 			    !RGN_USED(INDEX))
 
 // Access macros */
@@ -156,58 +155,6 @@ static void regions_dump(char * comment)
 	}
 }
 #endif // CONFIG_PMM_DUMPS_DEBUG
-
-#if CONFIG_PMM_MEMORY_TEST
-static int region_test_pattern(pmm_region_t * region,
-			       uint8_t        pattern)
-{
-	uint8_t * p;
-
-	assert(region);
-
-	dprintf("Writing pattern 0x%02x\n", pattern);
-	memset((void *) region->start, pattern, region->stop - region->start);
-
-	dprintf("Reading pattern 0x%02x\n", pattern);
-	for (p = static_cast<uint8_t *>(region->start);
-	     p < static_cast<uint8_t *>(region->stop);
-	     p++) {
-
-		if (*p != pattern) {
-			dprintf("Wrong pattern on region 0x%p-0x%p "
-				"at address 0x%x\n",
-				region->start, region->stop, p);
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
-static int region_test(pmm_region_t * region)
-{
-	assert(region);
-
-	dprintf("Testing region 0x%p-0x%p\n", region->start, region->stop);
-
-	if (!region_test_pattern(region, 0xff)) {
-		return 0;
-	}
-	if (!region_test_pattern(region, 0xaa)) {
-		return 0;
-	}
-	if (!region_test_pattern(region, 0x55)) {
-		return 0;
-	}
-	if (!region_test_pattern(region, 0x00)) {
-		return 0;
-	}
-
-	region->flags |= PMM_FLAG_TESTED;
-
-	return 1;
-}
-#endif // CONFIG_PMM_MEMORY_TEST
 
 static void pmm_reorder(void)
 {
@@ -339,7 +286,7 @@ int pmm_init(bootinfo_t* bi)
 	dprintf("Copying bootinfo records\n");
 	j = 0;
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
-		// Gather only clean regions (type == ram && length != 0)
+		// Gather only good RAM regions
 		if ((bi->mem[i].type == BOOTINFO_MEM_RAM) &&
 		    (bi->mem[i].size != 0)) {
 			// Got it, copy it
@@ -361,6 +308,7 @@ int pmm_init(bootinfo_t* bi)
 	//     addresses (whichever type they are) and they do not overlaps so
 	//     pmm structures are ordered and don't overlap either !!!
 	//
+
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (!RGN_VALID(i)) {
 			continue;
@@ -385,34 +333,14 @@ int pmm_init(bootinfo_t* bi)
 	regions_dump("pass #2");
 #endif // CONFIG_PMM_DUMPS_DEBUG
 
-#if CONFIG_PMM_MEMORY_TEST
-	dprintf("Testing each valid region, removing invalid ones\n");
-	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (RGN_VALID(i)) {
-			if (!region_test(&regions[i])) {
-				RGN_FLAGS(i) &= ~PMM_FLAG_VALID;
-			}
-		}
-	}
-#endif // CONFIG_PMM_MEMORY_TEST
-
-	// Enable all good regions
+	// Enable all valid regions
 	good = 0;
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		pmm_type_t test;
-
-#if CONFIG_PMM_MEMORY_TEST
-		test = PMM_FLAG_VALID | PMM_FLAG_TESTED;
-#else
-		test = PMM_FLAG_VALID;
-#endif // CONFIG_PMM_MEMORY_TEST
-
-		if (RGN_FLAGS(i) & test) {
+		if (RGN_FLAGS(i) & PMM_FLAG_VALID) {
 			RGN_FLAGS(i) |= PMM_FLAG_ENABLED;
 			good++;
 		}
 	}
-
 	if (!good) {
 		dprintf("No good physical memory regions\n");
 		return 0;
@@ -611,11 +539,10 @@ static int pmm_iterator(uint_t     start,
 {
 	assert(pmm_stream);
 
-	fprintf(pmm_stream, "  0x%08x  0x%08x  0x%x (%c|%c|%c|%c)\n",
+	fprintf(pmm_stream, "  0x%08x  0x%08x  0x%x (%c|%c|%c)\n",
 		start, stop, flags,
 		(flags & PMM_FLAG_VALID   ? 'V' : ' '),
 		(flags & PMM_FLAG_USED    ? 'U' : ' '),
-		(flags & PMM_FLAG_TESTED  ? 'T' : ' '),
 		(flags & PMM_FLAG_ENABLED ? 'E' : ' '));
 
 	return 1;

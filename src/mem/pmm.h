@@ -30,8 +30,7 @@ void   pmm_fini(void);
 
 #define PMM_FLAG_VALID   0x01
 #define PMM_FLAG_USED    0x02
-#define PMM_FLAG_TESTED  0x04
-#define PMM_FLAG_ENABLED 0x08
+#define PMM_FLAG_ENABLED 0x04
 #define PMM_FLAG_ALL     0xFF
 
 typedef uint8_t pmm_type_t;
@@ -43,6 +42,7 @@ uint_t pmm_reserve_region(uint_t address,
 			  size_t size);
 uint_t pmm_reserve(uint_t size);
 void   pmm_release(uint_t start);
+int   pmm_test(void);
 
 __END_DECLS
 
