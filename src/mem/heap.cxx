@@ -130,7 +130,7 @@ static void dump_bin_list(void)
 {
 	size_t i;
 
-	dprintf("%d heap bins at %p:\n", bin_count, bins);
+	dprintf("%d heap bins at 0x%p:\n", bin_count, bins);
 
 	for (i = 0; i < bin_count; i++) {
 		dump_bin(i);
@@ -183,7 +183,7 @@ int heap_init(addr_t base,
 	heap_base     = ((unsigned int) heap_alloc_table +
 			 PAGE_ALIGN(heap_size / page_entries));
 	heap_base_ptr = heap_base;
-	dprintf("heap_alloc_table = %p, "
+	dprintf("heap_alloc_table = 0x%p, "
 		"heap_base = 0x%x, "
 		"heap_size = 0x%x\n",
 		heap_alloc_table,
@@ -313,7 +313,7 @@ void * arch_heap_alloc(unsigned int size)
 	}
 
 #if CONFIG_DEBUG_HEAP_NOISY
-	dprintf("Asked to allocate size %d, returning pointer %p\n",
+	dprintf("Asked to allocate size %d, returning pointer 0x%p\n",
 		size, address);
 #endif
 	return address;
@@ -332,11 +332,11 @@ void arch_heap_free(void * address)
 
 	if (((addr_t) address < heap_base) ||
 	    ((addr_t) address >= (heap_base + heap_size))) {
-		panic("Freeing invalid address %p", address);
+		panic("Freeing invalid address 0x%p", address);
 	}
 
 #if CONFIG_DEBUG_HEAP_NOISY
-	dprintf("arch_heap_free: freeing at address %p\n", address);
+	dprintf("arch_heap_free: freeing at address 0x%p\n", address);
 #endif
 
 	page = &heap_alloc_table[((unsigned) address - heap_base) /
@@ -356,7 +356,7 @@ void arch_heap_free(void * address)
 #if 0
 	if ((bin->element_size <= CONFIG_PAGE_SIZE) &&
 	    ((addr_t) address % bin->element_size != 0)) {
-		panic("Passed invalid pointer %p to heap_free, "
+		panic("Passed invalid pointer 0x%p to heap_free, "
 		      "it is supposed to be in bin for esize %d",
 		      address, bin->element_size);
 	}
@@ -381,7 +381,7 @@ void arch_heap_free(void * address)
 		     temp != NULL;
 		     temp = (unsigned int *) *temp) {
 			if (temp == (unsigned int *) address) {
-				panic("Address %p already exists in bin "
+				panic("Address 0x%p already exists in bin "
 				      "free list", address);
 			}
 		}
