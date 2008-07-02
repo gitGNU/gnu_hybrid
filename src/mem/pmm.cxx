@@ -37,10 +37,9 @@
 
 //
 // NOTE:
-//     The BOOTINFO_MEM_REGIONS should be enough (because they contain not only
-//     RAM ...)
+//     The double BOOTINFO_MEM_REGIONS count should be enough ...
 //
-#define PMM_MAX_REGIONS BOOTINFO_MEM_REGIONS
+#define PMM_MAX_REGIONS (2 * BOOTINFO_MEM_REGIONS)
 
 typedef struct {
 	uint_t     start;
@@ -63,6 +62,11 @@ pmm_region_t regions[PMM_MAX_REGIONS];
 #define RGN_USED(INDEX)    FLAG_TEST(INDEX,USED)
 #define RGN_TESTED(INDEX)  FLAG_TEST(INDEX,TESTED)
 #define RGN_ENABLED(INDEX) FLAG_TEST(INDEX,ENABLED)
+
+// Derived test macros
+#define RGN_USABLE(INDEX)  (RGN_VALID(INDEX)   && \
+			    RGN_ENABLED(INDEX) && \
+			    !RGN_USED(INDEX))
 
 // Access macros */
 #define RGN_START(INDEX)   regions[INDEX].start
@@ -240,19 +244,10 @@ static void regions_merge(void)
 
 		// Find a merging pair
 		for (j = i +  1; j < PMM_MAX_REGIONS; j++) {
-			if (!RGN_VALID(j)) {
-				continue;
+			if (RGN_USABLE(j)) {
+				// Found !
+				break;
 			}
-			if (RGN_USED(j)) {
-				continue;
-			}
-			if (!RGN_ENABLED(j)) {
-				continue;
-			}
-
-			assert(RGN_VALID(j));
-			assert(!RGN_USED(j));
-			assert(RGN_ENABLED(j));
 		}
 		if (j >= PMM_MAX_REGIONS) {
 			// Not found
@@ -286,38 +281,32 @@ static int region_split(int    i,
 		// Find an empty slot
 		for (j = 0; j < PMM_MAX_REGIONS; j++) {
 			if (!RGN_VALID(j)) {
-				dprintf("Got %d as a free region to use\n", j);
+				// Found
 				break;
 			}
 		}
+		if (j <  PMM_MAX_REGIONS) {
+			dprintf("Region %d will be used\n", j);
 
-		if (j >=  PMM_MAX_REGIONS) {
-			dprintf("No space available to split region %d\n", i);
-			return 0;
+			assert(!RGN_VALID(j));
+
+			// Copy that region over the free entry
+			memcpy(&regions[j], &regions[i], sizeof(pmm_region_t));
+
+			// Rearrange region j (start)
+			RGN_START(j) = RGN_START(i) + size;
+			RGN_STOP(j)  = RGN_STOP(i);
+
+			// Mark-back region j as free
+			RGN_FLAGS(j) &= ~PMM_FLAG_USED;
+
+			// Resize region i
+			RGN_STOP(i) = RGN_START(i) + size - 1;
+
+			pmm_reorder();
+
+			return 1;
 		}
-
-		// Found it
-
-		dprintf("Region %d will be used\n", j);
-
-		assert(!RGN_VALID(j));
-
-		// Copy that region over the free entry
-		memcpy(&regions[j], &regions[i], sizeof(pmm_region_t));
-
-		// Rearrange region j (start)
-		RGN_START(j) = RGN_START(i) + size;
-		RGN_STOP(j)  = RGN_STOP(i);
-
-		// Mark-back region j as free
-		RGN_FLAGS(j) &= ~PMM_FLAG_USED;
-
-		// Resize region i
-		RGN_STOP(i) = RGN_START(i) + size - 1;
-
-		pmm_reorder();
-
-		return 1;
 	}
 
 	return 0;
@@ -614,7 +603,7 @@ void pmm_release(uint_t start)
 }
 
 #if CONFIG_DEBUGGER
-static FILE* pmm_stream;
+static FILE * pmm_stream;
 
 static int pmm_iterator(uint_t     start,
 			uint_t     stop,
@@ -632,9 +621,9 @@ static int pmm_iterator(uint_t     start,
 	return 1;
 }
 
-static dbg_result_t command_pmm_on_execute(FILE* stream,
-					   int   argc,
-					   char* argv[])
+static dbg_result_t command_pmm_on_execute(FILE * stream,
+					   int    argc,
+					   char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
@@ -661,9 +650,9 @@ DBG_COMMAND_DECLARE(pmm,
 		    command_pmm_on_execute,
 		    NULL);
 
-static dbg_result_t command_pmm_reserve_on_execute(FILE* stream,
-						   int   argc,
-						   char* argv[])
+static dbg_result_t command_pmm_reserve_on_execute(FILE * stream,
+						   int    argc,
+						   char * argv[])
 {
 	uint_t size;
 
@@ -691,9 +680,9 @@ DBG_COMMAND_DECLARE(pmmreserve,
 		    command_pmm_reserve_on_execute,
 		    NULL);
 
-static dbg_result_t command_pmm_release_on_execute(FILE* stream,
-						   int   argc,
-						   char* argv[])
+static dbg_result_t command_pmm_release_on_execute(FILE * stream,
+						   int    argc,
+						   char * argv[])
 {
 	uint_t base;
 
