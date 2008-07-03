@@ -38,6 +38,8 @@
 static int                                           nr_locks;
 arch_irqs_state_t                                    state;
 static int                                           initialized;
+
+// XXX FIXME: Remove the hardwired constant
 ktl::vector<ktl::list<ktl::pair<interrupt_handler_t,
 				void *> > >          handlers(100);
 
