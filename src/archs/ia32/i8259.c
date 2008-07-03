@@ -63,7 +63,7 @@ void i8259_enable(uint_t irq)
 {
 	CHECK_IRQ_INDEX(irq);
 
-	dprintf("Enabling irq %d\n", irq);
+	/* dprintf("Enabling irq %d\n", irq); */
 
 #if PROTECT_CASCADE
 	if (irq == IRQ_CASCADE) {
@@ -87,7 +87,7 @@ void i8259_disable(uint_t irq)
 {
 	CHECK_IRQ_INDEX(irq);
 
-	dprintf("Disabling irq %d\n", irq);
+	/* dprintf("Disabling irq %d\n", irq); */
 
 #if PROTECT_CASCADE
 	if (irq == IRQ_CASCADE) {
