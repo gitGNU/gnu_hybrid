@@ -146,11 +146,12 @@ static void regions_dump(char * comment)
 	dprintf("PMM regions (%s):\n", comment);
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_VALID(i)) {
-			dprintf("  reg-%02d 0x%p-0x%p (0x%x)\n",
+			dprintf("  reg-%02d 0x%p-0x%p (0x%x) [%d bytes]\n",
 				i,
 				RGN_START(i),
 				RGN_STOP(i),
-				RGN_FLAGS(i));
+				RGN_FLAGS(i),
+				RGN_SIZE(i));
 		}
 	}
 }
