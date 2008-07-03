@@ -175,19 +175,9 @@ static void regions_merge(void)
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		int j;
 
-		if (!RGN_VALID(i)) {
+		if (!RGN_USABLE(i)) {
 			continue;
 		}
-		if (RGN_USED(i)) {
-			continue;
-		}
-		if (!RGN_ENABLED(i)) {
-			continue;
-		}
-
-		assert(RGN_VALID(i));
-		assert(!RGN_USED(i));
-		assert(RGN_ENABLED(i));
 
 		// Find a merging pair
 		for (j = i +  1; j < PMM_MAX_REGIONS; j++) {
@@ -212,6 +202,9 @@ static void regions_merge(void)
 
 			RGN_FLAGS(j) = 0;
 		}
+
+		assert(RGN_USABLE(i));
+		assert(!RGN_USABLE(j));
 	}
 }
 
@@ -233,8 +226,6 @@ static int region_split(int    i,
 			}
 		}
 		if (j <  PMM_MAX_REGIONS) {
-			dprintf("Region %d will be used\n", j);
-
 			assert(!RGN_VALID(j));
 
 			// Copy that region over the free entry
@@ -368,13 +359,12 @@ void pmm_fini(void)
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (RGN_ENABLED(i)) {
-
-			assert(RGN_VALID(i));
-
-			if (RGN_USED(i)) {
-				dprintf("Region 0x%08x-0x%08x "
-					"is still in use !!!\n",
-					RGN_START(i), RGN_STOP(i));
+			if (RGN_VALID(i)) {
+				if (RGN_USED(i)) {
+					dprintf("Region 0x%08x-0x%08x "
+						"is still in use !!!\n",
+						RGN_START(i), RGN_STOP(i));
+				}
 			}
 		}
 	}
@@ -396,20 +386,9 @@ uint_t pmm_reserve_region(uint_t address,
 	}
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (!RGN_ENABLED(i)) {
+		if (!RGN_USABLE(i)) {
 			continue;
 		}
-		if (RGN_USED(i)) {
-			continue;
-		}
-
-		// Region i must be: valid, not used and enabled
-		assert(RGN_VALID(i));
-		assert(!RGN_USED(i));
-		assert(RGN_ENABLED(i));
-
-		// Its bounds must be good ones
-		assert(RGN_START(i) < RGN_STOP(i));
 
 		// Could this region contain the requested one ?
 		if (RGN_START(i) > address) {
@@ -458,17 +437,9 @@ uint_t pmm_reserve(uint_t size)
 	}
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (!RGN_ENABLED(i)) {
+		if (!RGN_USABLE(i)) {
 			continue;
 		}
-		if (RGN_USED(i)) {
-			continue;
-		}
-
-		// Region i must be: valid, not used and enabled
-		assert(RGN_VALID(i));
-		assert(!RGN_USED(i));
-		assert(RGN_ENABLED(i));
 
 		// Its bounds must be good ones
 		assert(RGN_START(i) < RGN_STOP(i));
@@ -503,15 +474,6 @@ void pmm_release(uint_t start)
 	int i;
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (!RGN_ENABLED(i)) {
-			continue;
-		}
-		if (!RGN_USED(i)) {
-			continue;
-		}
-
-		assert(RGN_VALID(i));
-
 		if (RGN_START(i) == start) {
 			break;
 		}
@@ -520,11 +482,11 @@ void pmm_release(uint_t start)
 		return;
 	}
 
-	// Got it
-	assert(RGN_VALID(i));
-	assert(RGN_USED(i));
-	assert(RGN_ENABLED(i));
+	if (!(RGN_VALID(i) && RGN_USED(i) && RGN_ENABLED(i))) {
+		return;
+	}
 
+	// Got it
 	RGN_FLAGS(i) &= ~PMM_FLAG_USED;
 
 	regions_merge();
@@ -539,7 +501,7 @@ static int pmm_iterator(uint_t     start,
 {
 	assert(pmm_stream);
 
-	fprintf(pmm_stream, "  0x%08x  0x%08x  0x%x (%c|%c|%c)\n",
+	fprintf(pmm_stream, "  0x%p  0x%p  0x%x (%c|%c|%c)\n",
 		start, stop, flags,
 		(flags & PMM_FLAG_VALID   ? 'V' : ' '),
 		(flags & PMM_FLAG_USED    ? 'U' : ' '),
