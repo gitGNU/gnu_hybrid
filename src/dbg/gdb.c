@@ -214,6 +214,7 @@ static int gdb_parse_command(unsigned int* regfile)
 		break;
 
 	case 'q':
+		/* XXX FIXME: This is not true for us */
 		/*
 		 * There are several q commands:
 		 *
