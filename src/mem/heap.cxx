@@ -183,12 +183,9 @@ int heap_init(addr_t base,
 	heap_base     = ((unsigned int) heap_alloc_table +
 			 PAGE_ALIGN(heap_size / page_entries));
 	heap_base_ptr = heap_base;
-	dprintf("heap_alloc_table = 0x%p, "
-		"heap_base = 0x%x, "
-		"heap_size = 0x%x\n",
-		heap_alloc_table,
-		heap_base,
-		heap_size);
+
+	dprintf("alloc_table = 0x%p, base = 0x%p, size = 0x%x\n",
+		heap_alloc_table, heap_base, heap_size);
 
 	// zero out the heap alloc table at the base of the heap
 	memset((void *) heap_alloc_table,
