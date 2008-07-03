@@ -40,16 +40,16 @@ static arch_irq_handler_t handlers[I8259_IRQS];
  */
 void irq_unmask(uint_t irq)
 {
-	dprintf("Unmasking irq %d\n", irq);
+	/* dprintf("Unmasking irq %d\n", irq); */
 	i8259_enable(irq);
-	//i8259_mask_set(i8259_mask_get() & ((i8259_mask_t) ~(1 << irq)));
+	/* i8259_mask_set(i8259_mask_get() & ((i8259_mask_t) ~(1 << irq))); */
 }
 
 void irq_mask(uint_t irq)
 {
-	dprintf("Masking irq %d\n", irq);
+	/* dprintf("Masking irq %d\n", irq); */
 	i8259_disable(irq);
-	//i8259_mask_set(i8259_mask_get() | ((i8259_mask_t) (1 << irq)));
+	/* i8259_mask_set(i8259_mask_get() | ((i8259_mask_t) (1 << irq))); */
 }
 
 static int handler_install(uint_t             irq,
