@@ -33,6 +33,8 @@ entry_point:
 	/* Align 32 bits boundary.  */
 	.align	4
 
+	.section .multiboot
+
 	/* Multiboot header.  */
 multiboot_header:
 	/* magic */
@@ -45,14 +47,16 @@ multiboot_header:
 	/* header_addr */
 	.long	multiboot_header
 	/* load_addr */
-	.long	_start
+	.long	_kernel //entry_point
 	/* load_end_addr */
-	.long	_edata
+	.long	_ekernel //_edata
 	/* bss_end_addr */
-	.long	_end
+	.long	_ebss //_end
 	/* entry_addr */
 	.long	multiboot_entry
 #endif /* ! __ELF__ */
+
+	.section .text
 
 multiboot_entry:
 	/* Switch to our stack pointer.  */

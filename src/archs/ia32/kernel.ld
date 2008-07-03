@@ -6,14 +6,19 @@ ENTRY(entry_point)
 
 /* XXX FIXME: Should we use PROVIDE() for _data, _edata, _text ... ??? */
 /* XXX FIXME: Should we use KEEP() ??? */
+
+BASEADDR = 0x100000;
+
 SECTIONS {
-	. = 0x100000; /* High memory start (1 MB) */
+
+	. = BASEADDR; /* High memory start (1 MB) */
 
 	_kernel = .;
 
 	.text : {
 		_text = .; /* Text start address: used for backtraces */
 
+		*(.multiboot) /* XXX FIXME: Remove ASAP */
 		*(.text)
 		*(.text.*)
 
