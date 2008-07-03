@@ -38,10 +38,10 @@ int main(int argc, char * argv[])
 
 	printf("Welcome to Hybrid kernel "
 	       "v%d.%d.%d "
-	       "%s "
-	       "(build #%d, build on %s)\n",
+	       "%s"
+	       "(build #%d, built on %s)\n",
 	       VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO,
-	       strlen(VERSION_EXTRA) ? "(" VERSION_EXTRA ")" : "",
+	       strlen(VERSION_EXTRA) ? "(" VERSION_EXTRA ") " : "",
 	       BUILD_NUMBER, BUILD_DATE);
 
 	if (!interrupts_init()) {
