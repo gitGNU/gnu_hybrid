@@ -20,7 +20,6 @@
 #include "config/config.h"
 #include "archs/arch.h"
 #include "archs/ia32/port.h"
-#include "core/panic.h"
 #include "libs/debug.h"
 
 #define CLK_FREQ 1193180L

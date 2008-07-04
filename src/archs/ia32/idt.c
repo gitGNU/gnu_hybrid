@@ -26,7 +26,6 @@
 #include "archs/ia32/tss.h"
 #include "archs/ia32/asm.h"
 #include "archs/ia32/i8259.h"
-#include "core/panic.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 
