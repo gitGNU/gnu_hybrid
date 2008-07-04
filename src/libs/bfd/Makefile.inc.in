@@ -18,9 +18,6 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
-include @reldir@/aout/Makefile.inc
-include @reldir@/elf/Makefile.inc
-
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
@@ -28,5 +25,9 @@ EXTRA_DIST +=					\
 libs_bfd_SRCS =					\
 	@reldir@/bfd.c				\
 	@reldir@/bfd.h				\
-	$(libs_bfd_elf_SRCS)			\
-	$(libs_bfd_aout_SRCS)
+	@reldir@/aout.c				\
+	@reldir@/aout.h				\
+	@reldir@/aout-format.h			\
+	@reldir@/elf.c				\
+	@reldir@/elf.h				\
+	@reldir@/elf-format.h

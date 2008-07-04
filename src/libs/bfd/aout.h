@@ -22,7 +22,7 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#include "libs/bfd/aout/aout-format.h"
+#include "libs/bfd/aout-format.h"
 
 __BEGIN_DECLS
 

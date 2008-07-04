@@ -23,8 +23,8 @@
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
 #include "libc/string.h"
-#include "libs/bfd/aout/aout.h"
-#include "libs/bfd/aout/aout-format.h"
+#include "libs/bfd/aout.h"
+#include "libs/bfd/aout-format.h"
 #include "libs/debug.h"
 
 #if CONFIG_AOUT

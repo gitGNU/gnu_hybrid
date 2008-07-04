@@ -17,8 +17,8 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-#ifndef ELF_FORMAT_H
-#define	ELF_FORMAT_H
+#ifndef LIBS_BFD_ELF_FORMAT_H
+#define	LIBS_BFD_ELF_FORMAT_H
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -2566,4 +2566,4 @@ typedef Elf32_Addr Elf32_Conflict;
 
 __END_DECLS
 
-#endif	/* ELF_FORMAT_H */
+#endif	/* LIBS_BFD_ELF_FORMAT_H */
