@@ -24,6 +24,10 @@ EXTRA_DIST +=					\
 
 dbg_SRCS =					\
 	@reldir@/dbg.c				\
+	@reldir@/panic.c			\
+	@reldir@/panic.h			\
+	@reldir@/backtrace.c			\
+	@reldir@/backtrace.h			\
 	@reldir@/gdb.c				\
 	@reldir@/gdb.h				\
 	@reldir@/debugger.h			\

@@ -26,7 +26,7 @@
 #include "libs/bfd/bfd.h"
 #include "boot/option.h"
 #include "libs/debug.h"
-#include "core/backtrace.h"
+#include "dbg/backtrace.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_DEBUGGER
