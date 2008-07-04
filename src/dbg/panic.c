@@ -24,7 +24,7 @@
 #include "libc/unistd.h"
 #include "archs/arch.h"
 #include "libs/debug.h"
-#include "core/backtrace.h"
+#include "dbg/backtrace.h"
 #include "dbg/debugger.h"
 #include "core/interrupt.h"
 #include "core/power.h"
