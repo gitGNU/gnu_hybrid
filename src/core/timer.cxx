@@ -23,7 +23,6 @@
 #include "core/timer.h"
 #include "core/mutex.h"
 #include "libs/debug.h"
-#include "core/panic.h"
 #include "core/interrupt.h"
 #include "dbg/debugger.h"
 #include "libc++/cstdio"

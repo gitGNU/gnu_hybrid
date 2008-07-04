@@ -24,7 +24,6 @@
 #include "core/semaphore.h"
 #include "core/mutex.h"
 #include "libs/debug.h"
-#include "core/panic.h"
 #include "dbg/debugger.h"
 
 int mutex_init(mutex_t * mutex)

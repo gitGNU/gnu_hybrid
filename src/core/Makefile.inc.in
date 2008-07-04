@@ -57,8 +57,4 @@ core_SRCS =					\
 	@reldir@/log.cxx			\
 	@reldir@/scheduler.h			\
 	@reldir@/scheduler.cxx			\
-	@reldir@/panic.c			\
-	@reldir@/panic.h			\
-	@reldir@/backtrace.c			\
-	@reldir@/backtrace.h			\
 	@reldir@/main.cxx

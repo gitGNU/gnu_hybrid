@@ -24,7 +24,6 @@
 #include "libc++/vector"
 #include "core/interrupt.h"
 #include "libs/debug.h"
-#include "core/panic.h"
 #include "dbg/debugger.h"
 #include "core/dma.h"
 #include "mem/address.h"
