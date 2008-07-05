@@ -65,11 +65,11 @@ multiboot_entry:
 	/* Turn IRQs off */
 	cli
 
-#if 0
 	/* Reset EFLAGS to a known state */
 	pushl	$0
 	popf
-#endif
+
+	/* We should clean-up the .bss segment (in order to be sure ...) */
 
 	/* Push the pointer to the Multiboot information structure.  */
 	pushl	%ebx

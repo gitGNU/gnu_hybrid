@@ -39,12 +39,6 @@
 #include "mem/vmm.h"
 #include "mem/fit.h"
 
-#define BSS_CLEAR 1
-
-#if BSS_CLEAR
-#include "libc/string.h"
-#endif
-
 #define BANNER          "bootstrap: "
 
 #if CONFIG_BOOTSTRAP_DEBUG
@@ -64,51 +58,6 @@ extern void __do_global_dtors_aux(void);
 /* main entry point */
 extern int main(int argc, char* argv[]);
 
-#define BSS_USE_MEMSET 1
-
-#if BSS_CLEAR
-static int bss_clear(void)
-{
-#if !BSS_USE_MEMSET
-	char * bss;
-	size_t count;
-#endif
-
-	dprintf("Clearing BSS 0x%p-0x%p (%d bytes)\n",
-		&_bss, &_ebss, &_ebss - &_bss);
-
-	if (&_bss > &_ebss) {
-		// Wrong bss addresses, return before wrecking ...
-		return 0;
-	}
-
-#if BSS_USE_MEMSET
-	assert(valid_bss_address((unsigned int) &_bss));
-	assert(valid_bss_address((unsigned int) &_ebss));
-
-	dprintf("Clearing %d bytes\n", &_ebss - &_bss);
-	memset(&_bss, 0, &_ebss - &_bss);
-
-#else
-	count = 0;
-	for (bss = ((char *) &_bss); bss < ((char *) &_ebss); bss++) {
-		assert(valid_bss_address((unsigned int) bss));
-
-		// dprintf("  0x%x\n", bss);
-
-		*bss = 0;
-		count++;
-	}
-
-	dprintf("Zeroed count = %d\n", count);
-#endif
-
-	dprintf("BSS cleared\n");
-
-	return 1;
-}
-#endif
-
 /*
  * NOTE:
  *     This is the first stage init, we need this call in order to have
@@ -116,13 +65,6 @@ static int bss_clear(void)
  */
 void bootstrap_early(void)
 {
-#if BSS_CLEAR
-	if (!bss_clear()) {
-		/* This check cannot be a warning ... */
-		panic("Cannot clear bss");
-	}
-#endif
-
 #if CONFIG_DEBUG
 	if (arch_dbg_init()) {
 		FILE_set(stdin,  NULL, arch_dbg_getchar, NULL, NULL);

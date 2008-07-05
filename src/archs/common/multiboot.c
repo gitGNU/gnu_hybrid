@@ -24,12 +24,14 @@
 #include "libc/ctype.h"
 #include "archs/common/multiboot.h"
 #include "archs/common/asm.h"
+#include "archs/linker.h"
 #include "archs/ia32/asm.h"
 #include "dbg/panic.h"
 #include "libs/debug.h"
 #include "boot/bootinfo.h"
 #include "boot/bootstrap.h"
 #include "mem/pmm.h"
+#include "mem/address.h"
 
 #define BANNER          "multiboot: "
 #if CONFIG_MULTIBOOT_VERBOSE
@@ -406,18 +408,17 @@ static int multiboot_machine_state(void)
  *     info structure and we must transform that structure in a bootinfo
  *     structure.
  */
-void multiboot(unsigned long magic, unsigned long addr)
+void multiboot(unsigned long magic,
+	       unsigned long addr)
 {
 	multiboot_info_t* mbi;
 
 	bootstrap_early(); /* Add early support, call it as soon as possible */
 
 	/* Am I booted by a Multiboot-compliant boot loader?  */
-
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
 		panic("Invalid magic number: 0x%x", (unsigned) magic);
 	}
-
 	/* Yes, it seems so ... */
 
 #if 0
