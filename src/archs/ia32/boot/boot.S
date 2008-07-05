@@ -85,7 +85,7 @@ multiboot_entry:
 	shrl $2, %ecx
 	rep ; stosl
 #endif
-	
+
 	/* Call the entry point */
 	call    EXT_C(multiboot)
 

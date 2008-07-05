@@ -103,24 +103,25 @@ SECTIONS {
 		_debug = .;
 
 		*(.debug*)
-		*(.debug_pubnames)
-		*(.debug_abbrev)
-		*(.debug_aranges)
-		*(.debug_frame)
-		*(.debug_line)
-		*(.debug_str)
-		*(.debug_info)
 
 		_edebug = .;
+	}
+
+	.cxx : {
+		*(.eh_frame)
+		*(.gcc_except_table)
+	}
+
+	.syscall : {
+		*(.syscall)
 	}
 
 	_ekernel = .;
 
 	/* Discard unnecessary stuff */
 	/DISCARD/ : {
-		*(.comment)
-		*(.note)
-		*(.note.*)
-		*(.eh_frame) /* Unsupported at the moment */
+		/* *(.comment) */
+		/* *(.note*) */
+		/* *(.note.*) */
 	}
 }
