@@ -62,6 +62,12 @@ multiboot_entry:
 	/* Switch to our stack pointer.  */
 	movl	$(stack + STACK_SIZE), %esp
 
+	/* Save multiboot infos */
+	/* Push the pointer to the Multiboot information structure.  */
+	pushl	%ebx
+	/* Push the magic value.  */
+	pushl	%eax
+
 	/* Turn IRQs off */
 	cli
 
@@ -69,13 +75,18 @@ multiboot_entry:
 	pushl	$0
 	popf
 
-	/* We should clean-up the .bss segment (in order to be sure ...) */
-
-	/* Push the pointer to the Multiboot information structure.  */
-	pushl	%ebx
-	/* Push the magic value.  */
-	pushl	%eax
-	/* Gather multiboot infos */
+#if 0
+	/* Clean-up the .bss segment */
+	cld
+	xorl %eax, %eax
+	movl $_bss, %edi
+	movl $_ebss, %ecx
+	subl %edi, %ecx
+	shrl $2, %ecx
+	rep ; stosl
+#endif
+	
+	/* Call the entry point */
 	call    EXT_C(multiboot)
 
 	/* We shouldn't reach this point ... */
