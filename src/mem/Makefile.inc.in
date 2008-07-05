@@ -25,8 +25,6 @@ EXTRA_DIST +=					\
 mem_SRCS =					\
 	@reldir@/address.cxx			\
 	@reldir@/address.h			\
-	@reldir@/bss.cxx			\
-	@reldir@/bss.h				\
 	@reldir@/heap.cxx			\
 	@reldir@/heap.h				\
 	@reldir@/fit.h				\
