@@ -44,6 +44,8 @@ src/core/syscalls.h
 src/rules.pkg
 
 src/arch
+src/archs/*/kernel.ld
+src/archs/*/module.ld
 src/core/build.h
 
 docs/hybrid.info

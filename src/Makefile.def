@@ -110,14 +110,11 @@ USERCONFIG   = $(top_builddir)/src/config/rules.usr
 ##
 ##         gcc-3.3.4: -Wextra
 ##
-COMMONLDSCRIPT =						\
-        $(top_srcdir)/src/archs/$(architecture)/kernel.ld
 
 #COMMONLDFLAGS =					\
 #	-XCClinker -nostartfiles		\
 #	-XCClinker -nostdlib			\
 #	-XCClinker -nodefaultlibs		\
-#	-XCClinker -T $(COMMONLDSCRIPT)		\
 #	-XCClinker --warn-common		\
 #	-XCClinker --warn-section-align		\
 #	-XCClinker --no-gc-sections		\
@@ -128,7 +125,6 @@ COMMONLDFLAGS =					\
 	-nostartfiles				\
 	-nostdlib				\
 	-nodefaultlibs				\
-	-T $(COMMONLDSCRIPT)			\
 	--warn-common				\
 	--warn-section-align			\
 	--warn-constructors			\
@@ -164,7 +160,9 @@ KERNELCCASFLAGS    = $(COMMONCCASFLAGS)
 KERNELCPPFLAGS     = $(COMMONCPPFLAGS)
 KERNELCFLAGS       = $(COMMONCFLAGS)
 KERNELCXXFLAGS     = $(COMMONCXXFLAGS)
-KERNELLDFLAGS      = $(COMMONLDFLAGS) -static
+KERNELLDFLAGS      =				\
+	$(COMMONLDFLAGS) -static		\
+	-T $(KERNELLDSCRIPT)
 
 ##
 ## Modules related flags
@@ -173,4 +171,6 @@ MODULESCCASFLAGS    = $(COMMONCCASFLAGS)
 MODULESCPPFLAGS     = $(COMMONCPPFLAGS)
 MODULESCFLAGS       = $(COMMONCFLAGS)
 MODULESCXXFLAGS     = $(COMMONCXXFLAGS)
-MODULESLDFLAGS      = $(COMMONLDFLAGS) -shared
+MODULESLDFLAGS      =				\
+	$(COMMONLDFLAGS) -shared		\
+	-T $(MODULESLDSCRIPT)

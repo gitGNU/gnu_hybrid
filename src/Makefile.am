@@ -120,6 +120,37 @@ $(BUILD_FILE):
 BUILT_SOURCES        += $(BUILD_FILE)
 MAINTAINERCLEANFILES += $(BUILD_FILE)
 
+CONFIG_LMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_LMA -V -D`
+CONFIG_VMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_VMA -V -D`
+
+KERNELLDSCRIPT = $(top_builddir)/src/archs/$(architecture)/kernel.ld
+$(top_builddir)/src/archs/$(architecture)/kernel.ld: Makefile $(top_srcdir)/src/archs/$(architecture)/kernel.ld.in
+	( rm -f $@ $@.tmp && \
+	  $(SED) -e 's,[@]CONFIG_LMA[@],'$(CONFIG_LMA)',g' \
+		 -e 's,[@]CONFIG_VMA[@],'$(CONFIG_VMA)',g' \
+	  < $(top_srcdir)/src/archs/$(architecture)/kernel.ld.in > $@.tmp && \
+	  chmod -x $@.tmp && \
+	  chmod a-w $@.tmp && \
+	  mv -f $@.tmp $@ ) || { \
+	        rm -f $@ $@.tmp ; \
+	        exit 1 ; \
+	}
+CLEANFILES += $(KERNELLDSCRIPT)
+
+MODULESLDSCRIPT = $(top_builddir)/src/archs/$(architecture)/module.ld
+$(top_builddir)/src/archs/$(architecture)/module.ld: Makefile $(top_srcdir)/src/archs/$(architecture)/module.ld.in
+	( rm -f $@ $@.tmp && \
+	  $(SED) -e 's,[@]CONFIG_LMA[@],'$(CONFIG_LMA)',g' \
+		 -e 's,[@]CONFIG_VMA[@],'$(CONFIG_VMA)',g' \
+	  < $(top_srcdir)/src/archs/$(architecture)/module.ld.in > $@.tmp && \
+	  chmod -x $@.tmp && \
+	  chmod a-w $@.tmp && \
+	  mv -f $@.tmp $@ ) || { \
+	        rm -f $@ $@.tmp ; \
+	        exit 1 ; \
+	}
+CLEANFILES += $(MODULESLDSCRIPT)
+
 ##
 ## NOTE:
 ##    The arch multiboot sources must came first in order to have a multiboot
@@ -134,7 +165,7 @@ kernel_SOURCES      =				\
 	$(core_SRCS)				\
 	$(dbg_SRCS)
 kernel_LDADD        = $(MODULES_BUILTIN) $(ELKLIB_LDADD)
-kernel_DEPENDENCIES = $(kernel_LDSCRIPT) $(CFG_ALL)
+kernel_DEPENDENCIES = $(KERNELLDSCRIPT) $(CFG_ALL)
 kernel_LDFLAGS      = $(KERNELLDFLAGS)
 kernel_CCASFLAGS    = $(KERNELCCASFLAGS)
 kernel_CPPFLAGS     = $(KERNELCPPFLAGS)

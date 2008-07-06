@@ -10,7 +10,7 @@ ENTRY(entry_point)
 SECTIONS {
 
 	 /* NOTE: CONFIG_LMA and CONFIG_VMA extracted from src/mem/rules.cfg */
-	. = 0x00100000;
+	. = @CONFIG_LMA@;
 
 	_kernel = .;
 

@@ -1,4 +1,4 @@
-/* Linker scipt */
+/* Linker script for kernel */
 
 OUTPUT_FORMAT("elf32-i386", "elf32-i386", "elf32-i386")
 OUTPUT_ARCH(i386)
@@ -6,15 +6,20 @@ ENTRY(entry_point)
 
 /* XXX FIXME: Should we use PROVIDE() for _data, _edata, _text ... ??? */
 /* XXX FIXME: Should we use KEEP() ??? */
+
 SECTIONS {
-	. = 0x100000; /* High memory start (1 MB) */
+
+	 /* NOTE: CONFIG_LMA and CONFIG_VMA extracted from src/mem/rules.cfg */
+	. = @CONFIG_LMA@;
 
 	_kernel = .;
 
 	.text : {
 		_text = .; /* Text start address: used for backtraces */
 
+		*(.multiboot) /* XXX FIXME: Remove ASAP */
 		*(.text)
+		*(.text.*)
 
 		_etext = .;  /* Text end address: used for backtraces */
 	}
@@ -32,6 +37,7 @@ SECTIONS {
 		_data = .;
 
 		*(.data)
+		*(.data.*)
 
 		/* C++ constructors */
 		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
@@ -92,17 +98,20 @@ SECTIONS {
 		_ebss = .;
 	}
 
+	.cxx : {
+		*(.eh_frame)
+		*(.gcc_except_table)
+	}
+
+	.syscall : {
+		*(.syscall)
+	}
+
+	/* Other sections */
 	.debug : {
 		_debug = .;
 
 		*(.debug*)
-		*(.debug_pubnames)
-		*(.debug_abbrev)
-		*(.debug_aranges)
-		*(.debug_frame)
-		*(.debug_line)
-		*(.debug_str)
-		*(.debug_info)
 
 		_edebug = .;
 	}
@@ -111,9 +120,8 @@ SECTIONS {
 
 	/* Discard unnecessary stuff */
 	/DISCARD/ : {
-		*(.comment)
-		*(.note)
-		*(.note.*)
-		*(.eh_frame) /* Unsupported at the moment */
+		/* *(.comment) */
+		/* *(.note*) */
+		/* *(.note.*) */
 	}
 }

@@ -22,7 +22,7 @@
 ## NOTE:
 ##     Don't use `/' in the sed expression(s) since most likely the
 ##     variables we're using, such as `$(pkgdatadir)', will contain some ...
-do_subst = sed \
+do_subst = $(SED) \
   -e 's,[@]PACKAGE[@],$(PACKAGE),g' \
   -e 's,[@]PACKAGE_NAME[@],$(PACKAGE_NAME),g' \
   -e 's,[@]PACKAGE_BUGREPORT[@],$(PACKAGE_BUGREPORT),g' \
