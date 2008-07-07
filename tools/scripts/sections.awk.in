@@ -29,12 +29,13 @@ BEGIN {
 	dump_vma      = 0;
 	dump_lma      = 0;
 	dump_flags    = 0;
+	dump_percent  = 0;
 	zero          = 0;
 	fatal         = 0;
 	sections_list = "";
 	word_size     = 0;
 
-	opts   = "o:TSLVFzfvdh";
+	opts   = "o:TSLVFPzfvdh";
 	h_desc = "Retrieve object files sections";
 	h_note = "Place input files at last, using -- as separator";
 
@@ -43,6 +44,7 @@ BEGIN {
 	opt_desc["L"] = "display each section lma";
 	opt_desc["V"] = "display each section vma";
 	opt_desc["F"] = "display each section flags";
+	opt_desc["P"] = "display each section % size";
 	opt_desc["z"] = "warn on zero size sections";
 	opt_desc["f"] = "warnings are fatal";
 	opt_desc["o"] = "set the output file";
@@ -63,6 +65,8 @@ BEGIN {
 			dump_vma = 1;
 		} else if (c == "F") {
 			dump_flags = 1;
+		} else if (c == "P") {
+			dump_percent = 1;
 		} else if (c == "z") {
 			zero = 1;
 		} else if (c == "f") {
@@ -110,16 +114,17 @@ BEGIN {
 	}
 	debug("outfile = " outfile "\n");
 
-	if (!dump_total &&
-	    !dump_size  &&
-	    !dump_vma   &&
-	    !dump_lma   &&
-	    !dump_flags) {
+	if (!dump_total   &&
+	    !dump_size    &&
+	    !dump_vma     &&
+	    !dump_lma     &&
+	    !dump_flags   &&
+	    !dump_percent) {
 		hint("Missing display option");
 		exit(1);
 	}
 
-	if (dump_total &&
+	if ((dump_total) &&
 	    (dump_size || dump_vma || dump_lma || dump_flags)) {
 		hint("Conflicting options");
 		exit(1);
@@ -221,6 +226,17 @@ BEGIN {
 
 		# Dump sections list
 		if (!dump_total) {
+			total         = 0;
+			format_length = 0;
+
+			if (dump_percent) {
+				for (name in sections) {
+					total         = total + sizes[name];
+					format_length = max(format_length,
+							    length(name));
+				}
+			}
+
 			for (name in sections) {
 
 				printf("   ") > outfile;
@@ -240,11 +256,17 @@ BEGIN {
 					       vmas[name])  > outfile;
 				}
 
-				printf(" %s", name) > outfile;
+				printf(" %-" format_length "s", name) > outfile;
 
 				if (dump_flags) {
 					printf(" [ %s ]",
 					       flags[name]) > outfile;
+				}
+
+				if (dump_percent) {
+					printf(" [ %2.2f ]",
+					       sizes[name] / total * 100) \
+						> outfile;
 				}
 
 				printf("\n") > outfile;
@@ -256,9 +278,30 @@ BEGIN {
 
 	# Dump total section list
 	if (dump_total) {
+		printf("Grand-total:\n") > outfile;
+
+		total         = 0;
+		format_length = 0;
+
 		for (name in sections) {
-			printf("    0x%0" word_size "x %s\n",
+			total         = total + sizes_sum[name];
+			format_length = max(format_length,
+					    length(name));
+		}
+
+		for (name in sections) {
+			printf("    ") > outfile;
+
+			printf("0x%0" word_size "x %-" format_length "s ",
 			       sizes_sum[name], name) > outfile;
+
+			if (dump_percent) {
+				printf("[ %2.2f ]",
+				       sizes_sum[name] / total * 100) \
+					> outfile;
+			}
+
+			printf("\n") > outfile;
 		}
 	}
 

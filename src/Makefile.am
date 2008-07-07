@@ -249,7 +249,7 @@ check-stack: Makefile
 	$(STACKCHECK) $(STACKCHECK_FLAGS) -a $(architecture) -s $(STACKSIZE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 check-sections: Makefile
-	$(SECTIONS) $(SECTIONS_FLAGS) -S -L -V -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+	$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 check-boot: Makefile
 	$(BOOTCHECK) $(BOOTCHECK_FLAGS) -a $(architecture) -i $(KERNEL_OBJ) || exit 1
