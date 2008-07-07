@@ -50,17 +50,23 @@ EXTRA_DIST =					\
 	$(awk_libs_SRCS)
 
 ##
-## NOTE:
-##     Don't leave white spaces before the parentheses in user functions
-##     calls; GNU awk will reject it (XXX-FIXME: Add check)
+## Maintainer related targets
 ##
-check-whitespaces: Makefile $(awk_libs_SRCS)
+
+##
+## XXX FIXME:
+##     Don't leave white spaces before the parentheses in user functions
+##     calls; GNU awk will reject it. Add a check in order to detect such
+##     condition
+##
+maintainer-check-whitespaces: Makefile $(awk_libs_SRCS)
+	$(WHITESPACE_DETECT) $(awk_libs_SRCS)
 
 ##
 ## NOTE:
 ##     Don't use unsupported functions (portability problems)
 ##
-check-unallowed-function: Makefile $(awk_libs_SRCS)
+maintainer-check-unallowed-function: Makefile $(awk_libs_SRCS)
 	FUNCTIONS="asort asorti" ; \
 	for l in $(awk_libs_SRCS) ; do \
 		echo @ECHO_N@ "Checking $$l for unallowed functions: " ; \
@@ -79,7 +85,7 @@ check-unallowed-function: Makefile $(awk_libs_SRCS)
 ##     All libraries must provide a _<library>_init and a _<library>_fini
 ##     function
 ##
-check-init-fini-functions: Makefile $(awk_libs_SRCS)
+maintainer-check-init-fini-functions: Makefile $(awk_libs_SRCS)
 	for l in $(awk_libs_SRCS) ; do \
 		name=`echo $$l | $(SED) -e 's,^.*lib,,' -e 's,\\..*$$,,'` ; \
 		if test "x$$name" = "xcore" ; then \
@@ -103,7 +109,7 @@ check-init-fini-functions: Makefile $(awk_libs_SRCS)
 		fi ; \
 	done
 
-check-local: check-whitespaces check-init-fini-functions check-unallowed-function
+maintainer-check-local: maintainer-check-whitespaces maintainer-check-init-fini-functions maintainer-check-unallowed-function
 
 ##
 ## Maintainer related targets

@@ -53,7 +53,7 @@ int main(int argc, char * argv[])
 	}
 
 	interrupts_unlock();
-	
+
 	if (!dma_init()) {
 		panic("Cannot initialize interrupts");
 	}

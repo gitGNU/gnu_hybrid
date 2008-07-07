@@ -22,8 +22,7 @@ include $(top_srcdir)/Makefile.sub
 
 SUBDIRS =					\
 	sh					\
-	awk					\
-	perl
+	awk
 
 ##
 ## Maintainer related targets
