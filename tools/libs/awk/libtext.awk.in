@@ -75,7 +75,7 @@ function c_footer(file, str)
 
 	printf("\n")              > file;
 	printf("/* %s */\n", str) > file;
-}	
+}
 
 function c_guard_header(file, guard)
 {

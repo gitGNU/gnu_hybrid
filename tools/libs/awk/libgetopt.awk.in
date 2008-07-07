@@ -30,9 +30,9 @@ function _getopt_fini()
 }
 
 #
-# Stolen and modified version of getopt.awk, originally by 
+# Stolen and modified version of getopt.awk, originally by
 # Arnold Robbins <arnold@gnu.org>
-# We have rearranged this function to act even if 
+# We have rearranged this function to act even if
 # LINT="fatal" is set.
 #
 function getopt(optargc, optargv, options)
@@ -53,12 +53,12 @@ function getopt(optargc, optargv, options)
 	if ((optind >= optargc) || (optargc == 1)) {
 		return -1;
 	}
-	
+
 	if (optargv[optind] !~ /^-[^: [:space:]]/) {
 		_opti = 0;
 		return -1;
 	}
-	
+
 #	if (length(optargv[optind]) > 2) {
 #		optind++
 #		return "?";
@@ -73,7 +73,7 @@ function getopt(optargc, optargv, options)
 	if (_opti == 0) {
 		_opti = 2;
 	}
-	
+
 	thisopt = substr(optargv[optind], _opti, 1);
 	optopt  = thisopt;
 	i       = index(options, thisopt);
@@ -103,7 +103,7 @@ function getopt(optargc, optargv, options)
 				if (substr(options, 1, 1) == ":") {
 					return ":";
 				}
-				
+
 				if (printerrors) {
 					error("Option requires an argument " \
 					      "-- " optopt "\n");

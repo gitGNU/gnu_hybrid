@@ -36,7 +36,7 @@ function _trace_fini()
 		printf("") > "/dev/stdout";
 		close("/dev/stdout");
 	}
-	    
+
 	if (_stderr_used) {
 		# Be sure to have stderr open before closing it ... someone
 		# could have closed it meanwhile ...

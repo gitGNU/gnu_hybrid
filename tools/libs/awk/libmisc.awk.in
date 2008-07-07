@@ -47,7 +47,7 @@ function help(h_useinput, h_desc, h_note, opts, opt_desc)
 #
 # A sample output:
 #
-# Usage: program-name [OPTION]... [FILES]... <<< automatic 
+# Usage: program-name [OPTION]... [FILES]... <<< automatic
 # This program is use for...                 <<< "h_desc"
 #
 #   -x  this option is for...                <<< "opts"+"opts_desc"
@@ -98,13 +98,13 @@ function help(h_useinput, h_desc, h_note, opts, opt_desc)
 				} else {
 					h_str = h_str "  -" a "          ";
 				}
-				opt_str = strformat(opt_desc[a], 
+				opt_str = strformat(opt_desc[a],
 						    h_length - length(spc));
 				opt_str = strindent(c_desc, "", spc);
 				h_str   = h_str opt_str "\n";
 			} else {
 				h_str   = h_str "  -" a "          ";
-				opt_str = strformat(opt_desc[a], 
+				opt_str = strformat(opt_desc[a],
 						    h_length - length(spc));
 				opt_str = strindent(c_desc, "", spc);
 				h_str   = h_str opt_str "\n";

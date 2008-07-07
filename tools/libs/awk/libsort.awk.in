@@ -31,7 +31,7 @@ function _sort_fini()
 #function qsort(qs_array, qs_l, qs_r)
 #{
 #	qs_lh = qs_l;
-#	qs_rh = qs_r;	
+#	qs_rh = qs_r;
 #	qs_s  = qs_array[qs_l];
 #
 #	while (qs_l < qs_r) {

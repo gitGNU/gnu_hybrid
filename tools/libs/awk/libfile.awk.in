@@ -18,18 +18,18 @@
 
 function _file_init()
 {
-        delete _files_open;
-        delete _files_error;
-        delete _files_eof;
+	delete _files_open;
+	delete _files_error;
+	delete _files_eof;
 
 	return 1;
 }
 
 function _file_fini()
 {
-        delete _files_open;
-        delete _files_error;
-        delete _files_eof;
+	delete _files_open;
+	delete _files_error;
+	delete _files_eof;
 }
 
 function path_clean(string)
@@ -55,7 +55,7 @@ function file_find(paths, infile)
 			break;
 		}
 	}
-	
+
 	return tmpfile;
 }
 
