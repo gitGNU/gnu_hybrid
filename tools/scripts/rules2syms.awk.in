@@ -29,7 +29,7 @@ BEGIN {
 	h_note = "Place input files at last, using -- as separator";
 
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["o"] = "set the output file";
 	opt_desc["h"] = "display this help and exit";
 
@@ -62,7 +62,7 @@ BEGIN {
 		}
 
 		infiles[i] = ARGV[optind];
-		
+
 		i++;
 	}
 	infiles_cnt = i;
@@ -98,7 +98,7 @@ BEGIN {
 					printf("%s\n", string) > outfile;
 				}
 			}
-			
+
 			close(infiles[i]);
 		} else {
 			verbose("Skipping empty file " infiles[i] "\n");
@@ -106,7 +106,7 @@ BEGIN {
 	}
 
 	verbose("Scan completed without errors\n");
-	
+
 	debug("Output file is: " outfile "\n");
 
 	if (count) {

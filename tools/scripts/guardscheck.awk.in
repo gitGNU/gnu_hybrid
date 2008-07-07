@@ -41,7 +41,7 @@ function guard_report(guard_lst, guard_ref)
 
 		for (file in guard_ref) {
 			split(guard_ref[file], guard_tmp, " ");
-			
+
 			for (item in guard_tmp) {
 
 				if (guard_tmp[item] == guard) {
@@ -64,7 +64,7 @@ function guard_check(guard_lst, guard_ref)
 		verbose("Checking guard: `" i "`\n");
 		debug("Guard `" i "` is used " guard_lst[i] " times\n");
 
- 		if (guard_lst[i] > 1) {
+		if (guard_lst[i] > 1) {
 
 			for (j in guard_ref) {
 
@@ -75,11 +75,11 @@ function guard_check(guard_lst, guard_ref)
 
 			warning("Guard `" i "` is already define in " \
 				":" files "\n");
-			
+
 			if (fatal) {
 				return 0;
 			}
- 		}
+		}
 	}
 	return 1;
 }
@@ -117,7 +117,7 @@ function guard_count(filename)
 	assert(filename != "");
 
 	verbose("Counting guards in file `" filename "`\n");
-	
+
 	while (((getline string < filename) > 0) &&
 	       (guard_def  == 0)) {
 
@@ -127,11 +127,11 @@ function guard_count(filename)
 			continue;
 		}
 
-		if ((guard_cond == 1) && 
+		if ((guard_cond == 1) &&
 		    (match(string, "#[ \t]*define[ \t]+" guard_curr) != 0)) {
 			debug("Found guard define entry `" \
 			      string "`\n");
-			
+
 			guard_def = 1;
 			guard_lst[guard_curr]++;
 
@@ -146,10 +146,10 @@ function guard_count(filename)
 
 		if ((guard_cond == 1) && (skip == 0)) {
 
-			if (match(string, 
+			if (match(string,
 				  "[ \t]*(/)(*).*(*)(/)[ \t]*") != 0) {
 				debug("Found inline C comment\n");
-			} else if (match(string, 
+			} else if (match(string,
 				  "[ \t]*(/)(/).*[ \t]*") != 0) {
 				debug("Found inline C++ comment\n");
 			} else if (match(string,
@@ -164,7 +164,7 @@ function guard_count(filename)
 				continue;
 			}
 		}
-		
+
 		if ((skip == 1) && (guard_cond == 1)) {
 
 			if (match(string,
@@ -181,7 +181,7 @@ function guard_count(filename)
 		}
 
 		if ((guard_cond == 0) &&
-		    (match(string, 
+		    (match(string,
 			   "#[ \t]*ifndef[ \t]+[A-Z0-9_]+") != 0)) {
 			debug("Found first guard conditional " \
 			      "entry: `" string "`\n");
@@ -205,7 +205,7 @@ function guard_count(filename)
 
 			guard_curr = string;
 			guard_cond = 1;
-				
+
 			continue;
 		}
 
@@ -241,10 +241,10 @@ function guard_retrieve(filename)
 
 		if ((guard_cond == 1) && (skip == 0)) {
 
-			if (match(string, 
+			if (match(string,
 				  "[ \t]*(/)(*).*(*)(/)[ \t]*") != 0) {
 				debug("Found inline C comment\n");
-			} else if (match(string, 
+			} else if (match(string,
 				  "[ \t]*(/)(/).*[ \t]*") != 0) {
 				debug("Found inline C++ comment\n");
 			} else if (match(string,
@@ -276,7 +276,7 @@ function guard_retrieve(filename)
 		}
 
 		if ((guard_cond == 0) &&
-		    (match(string, 
+		    (match(string,
 			   "#[ \t]*ifndef[ \t]+[A-Z0-9_]+") \
 		     != 0)) {
 			debug("Found first guard conditional " \
@@ -297,18 +297,18 @@ function guard_retrieve(filename)
 
 				string = clean_comment(string);
 				skip = 1;
-			}	
+			}
 			guard_curr = string;
 			guard_cond = 1;
-				
+
 			continue;
 		}
 
-		if ((guard_cond == 1) && 
+		if ((guard_cond == 1) &&
 		    (match(string, "#[ \t]*define[ \t]+" guard_curr) != 0)) {
 			debug("Found guard define entry `" \
 			      string "`\n");
-			
+
 			guard_def = 1;
 			break;
 		}
@@ -352,9 +352,9 @@ BEGIN {
 
 	lib_init();
 
-        delete paths;
-        paths["./"]  = 1;
-        paths["/"]   = 1;
+	delete paths;
+	paths["./"]  = 1;
+	paths["/"]   = 1;
 	fatal        = 0;
 
 	opts   = "p:rfvdh";
@@ -372,12 +372,12 @@ BEGIN {
 
 	guard_cnt = 0;
 	guard_rep = 0;
-        delete guard_lst;
+	delete guard_lst;
 	delete guard_ref;
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
-                if (c == "p") {
-                        paths[optarg] = 1;
+		if (c == "p") {
+			paths[optarg] = 1;
 		} else if (c == "r") {
 			guard_rep = 1;
 		} else if (c == "f") {
@@ -402,7 +402,7 @@ BEGIN {
 
 	debug("PASS 1: Checking input files existance\n");
 
-        for (i = 0; optind < ARGC; optind++) {
+	for (i = 0; optind < ARGC; optind++) {
 		infile = ARGV[optind];
 		wrong  = 1;
 
@@ -465,14 +465,14 @@ BEGIN {
 		exit(1);
 	}
 
-  	if (guard_rep == 1) {
+	if (guard_rep == 1) {
 		debug("PASS 5: Produce summary report\n");
 
- 		if (!guard_report(guard_lst, guard_ref)) {
+		if (!guard_report(guard_lst, guard_ref)) {
 			exit(1);
 
 		}
- 	}
+	}
 
 	verbose("All done\n");
 	exit(0);

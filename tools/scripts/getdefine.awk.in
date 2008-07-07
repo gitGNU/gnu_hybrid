@@ -19,7 +19,7 @@
 
 BEGIN {
 	PROGNAME = "getdefine";
-	
+
 	lib_init();
 
 	symbol   = "";
@@ -90,16 +90,16 @@ BEGIN {
 		debug("String is: " string "\n");
 		string = strcleanspc(string);
 
-		if (match(string, 
+		if (match(string,
 			  /^#[ ]*define [a-zA-Z_][0-9a-zA-Z_]* .*$/) != 0) {
-			      
+
 			sub(/^#[ ]*define /, "", string);
 			split(string, line, " ");
 
 			if (line[1] ~ symbol) {
 				assert(value == "");
 				value = line[2];
-				
+
 				verbose("Got " value " for " symbol "\n");
 			}
 		} else {

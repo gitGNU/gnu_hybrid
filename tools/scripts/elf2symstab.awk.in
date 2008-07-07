@@ -70,7 +70,7 @@ function fix_data(count, infile, names, types, values)
 		type  = types[k];
 		name  = names[k];
 		value = values[k];
-		
+
 		if (match(type, /^[ABCDGINRSTUVW-]$/) != 0) {
 			debug("Got global symbol "	\
 			      "`" name "` "		\
@@ -78,7 +78,7 @@ function fix_data(count, infile, names, types, values)
 			      "`" type "`"		\
 			      " / "			\
 			      "value = "		\
-			      "`" value "`" 		\
+			      "`" value "`"		\
 			      ")\n");
 
 			# Fix name, value and type as needed ...
@@ -89,10 +89,10 @@ function fix_data(count, infile, names, types, values)
 				debug("Fixing undefined symbol " \
 				      "`" name "`"		 \
 				      "\n");
-					
+
 				value = 0;
 			}
-				
+
 			assert(value != "");
 
 		} else if (match(type, /^[abcdginrstuvw-]$/) != 0) {
@@ -102,7 +102,7 @@ function fix_data(count, infile, names, types, values)
 			      "`" type "`"		\
 			      " / "			\
 			      "value = "		\
-			      "`" value "`" 		\
+			      "`" value "`"		\
 			      ")\n");
 
 			# Fix name, value and type as needed ...
@@ -113,10 +113,10 @@ function fix_data(count, infile, names, types, values)
 				debug("Fixing undefined symbol " \
 				      "`" name "`"		 \
 				      "\n");
-					
+
 				value = 0;
 			}
-				
+
 			assert(value != "");
 
 		} else if (match(type, /^[?]$/) != 0) {
@@ -135,7 +135,7 @@ function fix_data(count, infile, names, types, values)
 	}
 
 	verbose("Fixed " k " items\n");
-	
+
 	return 1;
 }
 
@@ -143,18 +143,18 @@ function scan_file(pipe, infile, names, types, values)
 {
 	assert(pipe != "");
 	assert(infile != "");
-	
+
 	archive_seen = 0;
 	k            = 0;
 	stream       = pipe infile;
-	
+
 	verbose("Scanning file `" infile "`\n");
 
 	while ((stream | getline string) > 0) {
 		delete data;
-		
+
 		string = strcleanspc(string);
-		
+
 		if (match(string, /^[0-9a-fA-F]*[ ]*. [ ]*.*$/) != 0) {
 			debug("input line is: " string "\n");
 
@@ -171,13 +171,13 @@ function scan_file(pipe, infile, names, types, values)
 			} else {
 				assert(1);
 			}
-			
+
 			# Check gathered data
 			assert(name  != "");       # name must be != ""
 			assert(type  != "");       # type must be != ""
 			assert(length(type) == 1); # type must be 1 char
 						   # value could be whatever
-			
+
 			values[k] = value;
 			names[k]  = name;
 			types[k]  = type;
@@ -203,17 +203,17 @@ function scan_file(pipe, infile, names, types, values)
 			return -1;
 		}
 	}
-	
+
 	close(stream);
 
 	verbose("Scanned " k " items\n");
-	
+
 	return k;
 }
 
 BEGIN {
 	PROGNAME            = "elf2symstab";
-	
+
 	lib_init();
 
 	outfile             = "/dev/stdout";
@@ -244,7 +244,7 @@ BEGIN {
 	opt_desc["w"] = "set architecture word-size";
 	opt_desc["f"] = "warnings are fatal";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	infiles_cnt = 0;
@@ -270,7 +270,7 @@ BEGIN {
 			radix = 10;
 		} else if (c == "X") {
 			radix = 16;
-		} else if (c == "w") {	
+		} else if (c == "w") {
 			# convert to number
 			wordsize = 0 + optarg;
 		} else if (c == "f") {
@@ -395,7 +395,7 @@ BEGIN {
 	}
 
 	# Require decimal input from pipe!
-	pipe = pipe "--radix=d "; 
+	pipe = pipe "--radix=d ";
 
 	if (sort_numerically) {
 		pipe = pipe "--numeric-sort ";
@@ -410,7 +410,7 @@ BEGIN {
 	}
 
 	# Compute maximum required digits for output format
-	digits = 1;	
+	digits = 1;
 	debug("Computing maximum required digits in output format "	\
 	      "(wordsize = " wordsize ", radix = " radix ")"		\
 	      "\n");
@@ -421,7 +421,7 @@ BEGIN {
 		digits++;
 	}
 	debug("Require digits are " digits "\n");
-	
+
 	# Build format string
 	format = "";
 	if (radix == 8) {

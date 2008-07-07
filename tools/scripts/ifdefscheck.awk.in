@@ -79,7 +79,7 @@ BEGIN {
 
 	debug("PASS 1: Checking input files existance\n");
 
-        for (i = 0; optind < ARGC; optind++) {
+	for (i = 0; optind < ARGC; optind++) {
 
 			infile = ARGV[optind];
 			wrong  = 1;
@@ -108,7 +108,7 @@ BEGIN {
 	}
 
 	debug("PASS 2: Checking input files data\n");
-	
+
 	if (config != "") {
 		if (!process_config(config)) {
 			error("Wrong config file `" config "`\n");
@@ -118,7 +118,7 @@ BEGIN {
 
 	if (check) {
 		# XXX FIXME:
-		#     Do not use global variables this way, use a 
+		#     Do not use global variables this way, use a
 		#     variable and pass it with function call instead
 		tmp_conf_cnt = 0;
 	}
@@ -131,12 +131,12 @@ BEGIN {
 			warning("Got " count " wrong defines on "	\
 				"`" infiles[fn] "`"			\
 				"\n");
-			exit(1); 
+			exit(1);
 		}
 	}
 	if (count > 0) {
 		warning("Got " count " wrong defines\n");
-		
+
 	}
 
 	count = 0;
@@ -163,7 +163,7 @@ BEGIN {
 	exit(0);
 }
 
-function process_config(filename) 
+function process_config(filename)
 {
 	assert(filename);
 

@@ -29,10 +29,10 @@ function dumpbuffer(buffer, bytes_per_row)
 			start = "";
 			stop  = "";
 		}
-		
+
 		printf("%s0x%02x, %s",
 		       start, ord(substr(buffer, i, 1)), stop) > outfile;
-		
+
 		position++;
 	}
 }
@@ -51,7 +51,7 @@ BEGIN {
 	style    = "";
 
 	opts   = "i:o:n:c:xXvdh";
-	h_desc = "Transform a raw binary file into a C file"; 
+	h_desc = "Transform a raw binary file into a C file";
 	h_note = "";
 
 	opt_desc["i"] = "set the input file";
@@ -61,7 +61,7 @@ BEGIN {
 	opt_desc["x"] = "set output style for C language";
 	opt_desc["X"] = "set output style for C++ language";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -120,7 +120,7 @@ BEGIN {
 		hint("Wrong columns per line");
 		exit(1);
 	}
-	
+
 	if (toupper(style) == "C") {
 
 		c_header(outfile);
@@ -133,7 +133,7 @@ BEGIN {
 			dumpbuffer(buffer, columns);
 		}
 		printf("\n};\n") > outfile;
-		
+
 		c_footer(outfile, bytes " bytes processed");
 
 	} else if (toupper(style) == "C++") {
@@ -148,7 +148,7 @@ BEGIN {
 			dumpbuffer(buffer, columns);
 		}
 		printf("\n};\n") > outfile;
-		
+
 		cxx_footer(outfile, bytes " bytes processed");
 
 	} else if (style != "") {
@@ -158,7 +158,7 @@ BEGIN {
 		hint("Missing output style");
 		exit(1);
 	}
-	
+
 	close(infile);
 	close(outfile);
 

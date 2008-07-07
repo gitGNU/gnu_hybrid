@@ -85,15 +85,15 @@ BEGIN {
 	delete paths;
 	paths["./"] = 1;
 	paths["/"]  = 1;
-	
+
 	opts   = "Dp:vdh";
-	h_desc = "Check for duplicated includes"; 
+	h_desc = "Check for duplicated includes";
 	h_note = "Place input files at last, using -- as separator";
 
 	opt_desc["D"] = "dump gathered includes";
 	opt_desc["p"] = "specify a search path for input files";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -121,7 +121,7 @@ BEGIN {
 
 	debug("PASS 1: Checking input files existance\n");
 
-        for (i = 0; optind < ARGC; optind++) {
+	for (i = 0; optind < ARGC; optind++) {
 
 			infile = ARGV[optind];
 			wrong  = 1;

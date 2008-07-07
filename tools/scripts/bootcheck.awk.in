@@ -18,7 +18,7 @@
 
 BEGIN {
 	PROGNAME = "bootcheck";
-	
+
 	lib_init();
 
 	arch  = "";
@@ -33,7 +33,7 @@ BEGIN {
 	opt_desc["i"] = "set the input file";
 	opt_desc["f"] = "warnings are fatal";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -78,7 +78,7 @@ BEGIN {
 	if (arch == "ia32") {
 		if ("@MBCHK@" != "") {
 			assert(executable(remove_parameters("@MBCHK@")));
-			
+
 			command = "@MBCHK@ " infn;
 			retval  = system(command);
 		} else {

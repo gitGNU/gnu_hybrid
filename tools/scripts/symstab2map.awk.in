@@ -34,7 +34,7 @@ BEGIN {
 	opt_desc["o"] = "set the output file";
 	opt_desc["f"] = "warnings are fatal";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -85,10 +85,10 @@ BEGIN {
 	while ((getline line < infile) > 0) {
 		printf("%s\n", line) > outfile;
 	}
-	
+
 	close(infile);
 	close(outfile);
-	
+
 	exit(0);
 }
 

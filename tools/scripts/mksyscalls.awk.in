@@ -39,7 +39,7 @@ BEGIN {
 	opt_desc["o"] = "set the output file";
 	opt_desc["f"] = "warnings are fatal";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -79,7 +79,7 @@ BEGIN {
 
 	debug("PASS 1: Checking input files existance ...\n");
 
-        for (i = 0; optind < ARGC; optind++) {
+	for (i = 0; optind < ARGC; optind++) {
 
 			infile = ARGV[optind];
 			wrong  = 1;
@@ -144,7 +144,7 @@ BEGIN {
 					if (split(string, temp, ",") != 2) {
 						not_reachable();
 					}
-					
+
 					number = 0 + strcleanspc(temp[1]);
 					name   = strcleanspc(temp[2]);
 					delete temp;
@@ -178,7 +178,7 @@ BEGIN {
 
 	# Sort the syscalls
 	debug("PASS 3: Sorting (missing) ...\n");
-	
+
 	for (i = min_number; i <= max_number; i++) {
 		syscalls_type[i] = "unused";
 		syscalls_name[i] = "unused";

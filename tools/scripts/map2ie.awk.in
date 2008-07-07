@@ -94,7 +94,7 @@ BEGIN {
 		if (match(string, /^.*[ ]*:[ ]*$/) != 0) {
 			sub(/[ ]*:[ ]*$/, "", string);
 			module = string;
-			
+
 			assert(module != "");
 
 			debug("Got module `" module "`\n");
@@ -102,7 +102,7 @@ BEGIN {
 			split(string, line, " ");
 			import = line[3];
 			export = "";
-			
+
 			assert(import != "");
 
 			debug("Got import `" import "`\n");
@@ -111,7 +111,7 @@ BEGIN {
 			split(string, line, " ");
 			import = "";
 			export = line[3];
-			
+
 			assert(export != "");
 
 			debug("Got export `" export "`\n");
@@ -164,7 +164,7 @@ BEGIN {
 			}
 		}
 	}
-	
+
 	close(infile);
 
 	verbose("Got "				\

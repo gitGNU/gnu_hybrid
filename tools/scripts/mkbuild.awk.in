@@ -35,7 +35,7 @@ BEGIN {
 	opt_desc["F"] = "set the input/output file";
 	opt_desc["f"] = "warnings are fatal";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -106,12 +106,12 @@ BEGIN {
 				debug("Value is now: " value "\n");
 
 				debug("Current value should be " value "\n");
-				
+
 				count = value + 0;
 				break;
 			}
 		}
-		
+
 		close(infile);
 
 		if (matches != 1) {

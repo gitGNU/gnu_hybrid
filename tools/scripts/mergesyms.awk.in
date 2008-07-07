@@ -35,7 +35,7 @@ function readfile(name)
 
 		if (match(line, /^#.*$/) != 0) {
 			#debug("Line `" line "` is a comment\n");
-		} else if (match(line, 
+		} else if (match(line,
 				 /^[A-Z][A-Z0-9_]*[ ]*=[ ]*.*$/) != 0) {
 			split(line, data, "=");
 			sub(/[ ]*$/, "", data[1]);
@@ -56,7 +56,7 @@ function readfile(name)
 			exit(1);
 		}
 	}
-	
+
 	close(name);
 	return read_defs;
 }
@@ -80,7 +80,7 @@ BEGIN {
 	opt_desc["j"] = "set the second input file";
 	opt_desc["o"] = "set the output file";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
@@ -158,7 +158,7 @@ BEGIN {
 	if (in1_defs < in2_defs) {
 		error("Input files definitions does not match "	\
 		      "("					\
-		      in1_defs " from " infn1 			\
+		      in1_defs " from " infn1			\
 		      ", "					\
 		      in2_defs " from " infn2			\
 		      ")\n");
@@ -169,7 +169,7 @@ BEGIN {
 	for (sym in defs) {
 		max_sym_length = max(max_sym_length, length(sym));
 	}
-	
+
 	# sh_header(outfn);
 
 	#

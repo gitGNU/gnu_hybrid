@@ -60,9 +60,9 @@ BEGIN {
 
 	lib_init();
 
-        delete paths;
-        paths["./"]  = 1;
-        paths["/"]   = 1;
+	delete paths;
+	paths["./"]  = 1;
+	paths["/"]   = 1;
 	fatal        = 0;
 
 	opts   = "p:i:e:s:fvdh";
@@ -83,13 +83,13 @@ BEGIN {
 	ext_match    = 0;
 	sep_lst      = " ";
 
-        delete ext_lst;
+	delete ext_lst;
 	delete out_lst;
 
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
-                if (c == "p") {
-                        paths[optarg] = 1;
-                } else if (c == "i") {
+		if (c == "p") {
+			paths[optarg] = 1;
+		} else if (c == "i") {
 			include_flag    = 1;
 			ext_lst[optarg] = 1;
 		} else if (c == "e") {
@@ -131,7 +131,7 @@ BEGIN {
 
 	debug("PASS 2: Processing files list\n");
 
-        for (i = 0; optind < ARGC; optind++) {
+	for (i = 0; optind < ARGC; optind++) {
 		infile = ARGV[optind];
 
 		if ((include_flag == 1) &&

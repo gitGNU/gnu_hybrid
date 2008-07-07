@@ -81,7 +81,7 @@ function check(infile, architecture, maxstack)
 		}
 	}
 	close(pipe);
-	
+
 	for (i in symbol) {
 		entries++;
 		if (symbol[i] > maxstack) {
@@ -100,7 +100,7 @@ function check(infile, architecture, maxstack)
 		}
 
 		printf("Stack growth exceeding %d bytes:\n", maxstack);
-		
+
 		for (i in exceeding) {
 			printf("  %" maxlength "s | %d\n", i, exceeding[i]);
 		}
@@ -108,16 +108,16 @@ function check(infile, architecture, maxstack)
 		error("File " infile " reports " out_entries            \
 		      " entries exceeding allowed stack size\n");
 
-		
+
 		retval = 0;
 	};
 
 	return retval;
 }
-	
+
 BEGIN {
 	PROGNAME    = "stackcheck";
-	
+
 	lib_init();
 
 	entries     = 0;
@@ -179,7 +179,7 @@ BEGIN {
 	assert(executable(remove_parameters("@CXXFILT@")));
 
 	wrong = 0;
-        for (i = 1; optind < ARGC; optind++) {
+	for (i = 1; optind < ARGC; optind++) {
 
 			infile = ARGV[optind];
 
@@ -187,7 +187,7 @@ BEGIN {
 				error(infile " is not readable!\n");
 				exit(1);
 			}
-			
+
 			if (!check(infile, arch, maxstack)) {
 				error("File "				 \
 				      infile				 \

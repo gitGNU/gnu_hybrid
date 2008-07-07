@@ -85,20 +85,20 @@ BEGIN {
 		}
 	}
 
-        for (i = 0; optind < ARGC; optind++) {
-                if (!readable(ARGV[optind])) {
-                        error(ARGV[optind] " is not readable!\n");
-                        exit(1);
-                }
-                i++;
+	for (i = 0; optind < ARGC; optind++) {
+		if (!readable(ARGV[optind])) {
+			error(ARGV[optind] " is not readable!\n");
+			exit(1);
+		}
+		i++;
 		infiles[i] = ARGV[optind];
-        }
+	}
 	infiles_cnt = i;
 
-        if (infiles_cnt <= 0) {
-                hint("Missing input file(s)");
-                exit(1);
-        }
+	if (infiles_cnt <= 0) {
+		hint("Missing input file(s)");
+		exit(1);
+	}
 
 	if (outfile == "") {
 		hint("Missing output file name");
@@ -127,7 +127,7 @@ BEGIN {
 
 	assert("@OBJDUMP@" != "");
 	assert(executable(remove_parameters("@OBJDUMP@")));
-	
+
 	delete sections;
 	delete sizes;
 	delete sizes_sum;
@@ -138,13 +138,13 @@ BEGIN {
 	for (i = 1; i <= infiles_cnt; i++) {
 		count = 0;
 		pipe  = "@OBJDUMP@ -w -h " infiles[i];
-		
+
 		debug("Processing file `" infiles[i] "`\n");
 
 		if (!dump_total) {
 			printf("%s:\n", infiles[i]);
 		}
-		
+
 		while ((pipe | getline string) > 0) {
 			string = strcleanspc(string);
 
@@ -152,12 +152,12 @@ BEGIN {
 				  /^[0-9][0-9]* \.[a-zA-Z0-9_][a-zA-Z0-9_]* [0-9a-fA-F][0-9a-fA-F]* [0-9a-fA-F][0-9a-fA-F]* [0-9a-fA-F][0-9a-fA-F]* [0-9a-fA-F][0-9a-fA-F]* 2\*\*[0-9][0-9]*.*$/) != 0) {
 				split(string, line, " ");
 				name = line[2];
-				
+
 				if (dump_total &&
 				    (index(sections_list, name"\n") == 0)) {
 					debug("Initializing size counter " \
 					      "for section `" name "`\n");
-					
+
 					sizes_sum[name] = 0;
 					sections_list   = name "\n" \
 						sections_list;
@@ -176,8 +176,8 @@ BEGIN {
 				if (word_size < length(size)) {
 					word_size = length(size);
 				}
-				
-				debug("Got section " 	\
+
+				debug("Got section "	\
 				      name " / "	\
 				      size " / "	\
 				      vma  " / "	\
@@ -185,12 +185,12 @@ BEGIN {
 				      flag		\
 				      "\n");
 
-				# Avoid size to be recognized as 
+				# Avoid size to be recognized as
 				# octal number by strtonum()
 				if (dump_total) {
 					gsub(/^0{2.}/, "", size);
 				}
-				
+
 				sections[name] = 1;
 				sizes[name]    = size;
 				vmas[name]     = vma;
@@ -206,7 +206,7 @@ BEGIN {
 			}
 		}
 		close(pipe);
-		
+
 		if (zero && (sizes[name] == 0)) {
 			warning("Section `" name "` has zero size.\n");
 			if (fatal) {
@@ -219,31 +219,31 @@ BEGIN {
 		}
 		debug("Got " count " input sections\n");
 
-                # Dump sections list		
+		# Dump sections list
 		if (!dump_total) {
 			for (name in sections) {
-				
+
 				printf("   ") > outfile;
-				
+
 				if (dump_size) {
-					printf(" 0x%" word_size "s", 
+					printf(" 0x%" word_size "s",
 					       sizes[name]) > outfile;
 				}
-			
+
 				if (dump_lma) {
-					printf(" 0x%" word_size "s", 
+					printf(" 0x%" word_size "s",
 					       lmas[name])  > outfile;
 				}
-			
+
 				if (dump_vma) {
-					printf(" 0x%" word_size "s", 
+					printf(" 0x%" word_size "s",
 					       vmas[name])  > outfile;
 				}
-			
+
 				printf(" %s", name) > outfile;
 
 				if (dump_flags) {
-					printf(" [ %s ]", 
+					printf(" [ %s ]",
 					       flags[name]) > outfile;
 				}
 

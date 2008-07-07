@@ -58,11 +58,11 @@ BEGIN {
 	opt_desc["p"] = "set the prefix";
 	opt_desc["i"] = "set the input file";
 	opt_desc["o"] = "set the output file";
-        opt_desc["f"] = "warnings are fatal";
+	opt_desc["f"] = "warnings are fatal";
 	opt_desc["v"] = "enable verbose output";
-	opt_desc["d"] = "enable debugging";	
+	opt_desc["d"] = "enable debugging";
 	opt_desc["h"] = "display this help and exit";
-	
+
 	while ((c = getopt(ARGC, ARGV, opts)) != -1) {
 		if (c == "p") {
 			prefix = optarg;
@@ -74,8 +74,8 @@ BEGIN {
 			outfile = optarg;
 		} else if (c == "d") {
 			_debug = 1;
-                } else if (c == "f") {
-                        fatal = 1;
+		} else if (c == "f") {
+			fatal = 1;
 		} else if (c == "v") {
 			_verbose = 1;
 		} else if (c == "h") {
@@ -91,7 +91,7 @@ BEGIN {
 			not_reachable();
 		}
 	}
-	
+
 	if (guard == "") {
 		hint("Missing guard");
 		exit(1);
@@ -100,18 +100,18 @@ BEGIN {
 		hint("Missing prefix");
 		exit(1);
 	}
-	
+
 	debug("guard   = " guard   "\n");
 	debug("prefix  = " prefix  "\n");
 	debug("infile  = " infile  "\n");
 	debug("outfile = " outfile "\n");
-	
+
 	verbose("Checking input files ...\n");
 	if (!readable(infile)) {
 		error(infile " is not readable!\n");
 		exit(1);
 	}
-	
+
 	verbose("Checking output file ...\n");
 	if (outfile !~ "/dev/stdout" && exist(outfile)) {
 		warning("Outfile " outfile " is already present\n");
@@ -123,22 +123,22 @@ BEGIN {
 		error("Cannot write on file " outfile "\n");
 		exit(1);
 	}
-	
+
 	verbose("Start processing ...\n");
-	
+
 	while ((getline line < infile) > 0) {
 		line = strcleanspc(line);
-		
+
 		sym = "";
 		if (match(line,			\
 			  /^#.*$/)		\
 			  != 0) {
 			if (line ~ /^.* is not set$/) {            # Not set
 				sym = line;
-				
+
 				sub(/^\#[ ]*/,"",sym);
 				sub(/[ ]*is not set$/,"",sym);
-				
+
 				defs[sym] = "0 /* Deduced */";
 			} else {                                   # Comment
 				continue;
@@ -156,7 +156,7 @@ BEGIN {
 			defs[get_name(line)] = get_value(line);
 		} else if (match(line,                             # Hex \
 				 /^.* 0[xX][0-9a-fA-F][0-9a-fA-F]*$/)	 \
-			   != 0) { 
+			   != 0) {
 			defs[get_name(line)] = get_value(line);
 		} else if (match(line, /^[ ]*$/) != 0) {           # Empty line
 		} else {
@@ -171,24 +171,24 @@ BEGIN {
 
 	c_header(outfile);
 	c_guard_header(outfile,guard);
-	
+
 	maxlength = 0;
 	for (sym in defs) {
 		maxlength = max(maxlength, length(sym));
 	}
-	
+
 	defscount = 0;
 	for (sym in defs) {
 		printf("#define %s%-" maxlength "s %s\n",
 		       prefix, sym, defs[sym]) > outfile;
 		defscount++;
 	}
-	
+
 	c_guard_footer(outfile, guard);
 	c_footer(outfile, defscount " definitions processed");
-	
+
 	close(outfile);
-	
+
 	exit(0);
 }
 
