@@ -120,6 +120,12 @@ $(BUILD_FILE):
 BUILT_SOURCES        += $(BUILD_FILE)
 MAINTAINERCLEANFILES += $(BUILD_FILE)
 
+##
+## NOTE:
+##     kernel.ld and module.ld are obtained from kernel.ld.in and module.ld.in
+##     in the arch related directory. CONFIG_LMA and CONFIG_VMA get exported
+##     in the procedure
+##
 CONFIG_LMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_LMA -V -D`
 CONFIG_VMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_VMA -V -D`
 

@@ -26,7 +26,8 @@ include @reldir@/boot/Makefile.inc
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg			\
-	@reldir@/kernel.ld
+	@reldir@/kernel.ld.in			\
+	@reldir@/module.ld.in
 
 arch_ppc32_multiboot_SRCS =			\
 	$(arch_ppc32_boot_SRCS)

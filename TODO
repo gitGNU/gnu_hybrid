@@ -14,6 +14,9 @@ NOTE:
 	when that TODO has been declared completed ...
 
 TO-BE-DONE:
+* Move less useful tools related parameters from src/Makefile.am to
+  src/Makefile.am
+
 * We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have
   This approach should handle cross-compilation cases.
 
