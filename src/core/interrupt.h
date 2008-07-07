@@ -25,25 +25,28 @@
 
 __BEGIN_DECLS
 
-void interrupts_disable(void);
-void interrupts_enable(void);
-void interrupts_lock(void);
-void interrupts_unlock(void);
-
-__END_DECLS
-
-#ifdef __cplusplus
-
 int  interrupts_init(void);
 void interrupts_fini(void);
 
+void interrupts_lock(void);
+void interrupts_unlock(void);
+int  interrupts_unlocked(void);
+
+// XXX FIXME: Remove this hardwired constant
+#define MAX_IRQ_VECTORS 256
+
+int  interrupt_enable(uint_t vector);
+int  interrupt_disable(uint_t vector);
+int  interrupt_enabled(uint_t vector);
+
 typedef void (* interrupt_handler_t)(void * opaque);
 
-bool interrupts_attach(uint_t              vector,
-		       interrupt_handler_t handler,
-		       void *              opaque);
-bool interrupts_detach(uint_t              vector,
-		       interrupt_handler_t handler);
-#endif
+int  interrupt_attach(uint_t              vector,
+		      interrupt_handler_t handler,
+		      void *              opaque);
+int  interrupt_detach(uint_t              vector,
+		      interrupt_handler_t handler);
+
+__END_DECLS
 
 #endif // CORE_INTERRUPT_H

@@ -34,37 +34,44 @@
 #define dprintf(F,A...)
 #endif
 
-static int                                           nr_locks;
-arch_irqs_state_t                                    state;
-static int                                           initialized;
+static int        nr_locks;
+arch_irqs_state_t state;
+static int        initialized;
 
-// XXX FIXME: Remove the hardwired constant
 ktl::vector<ktl::list<ktl::pair<interrupt_handler_t,
-				void *> > >          handlers(100);
+				void *> > > handlers(MAX_IRQ_VECTORS);
+
+__BEGIN_DECLS
 
 int interrupts_init(void)
 {
 	nr_locks    = 0;
 	initialized = 1;
+
+	// handlers.resize(MAX_IRQ_VECTORS);
+
 	handlers.clear();
+
+	// Start in locked state
+	interrupts_lock();
 
 	return 1;
 }
 
-__BEGIN_DECLS
-
+// Called from lower layer
 void interrupts_handler(uint_t vector)
 {
-	dprintf("Executing interrupt handlers for vector %d\n", vector);
+	assert(vector < MAX_IRQ_VECTORS);
 
 	if (handlers[vector].empty()) {
-		dprintf("No handlers for vector %d\n", vector);
+		dprintf("No handler(s) for vector %d\n", vector);
 		return;
 	}
 
 	ktl::list<ktl::pair<interrupt_handler_t, void *> >::iterator iter;
 
-	dprintf("Handlers chain size %d\n", handlers[vector].size());
+	dprintf("Executing %d interrupt handler(s) for vector %d\n",
+		handlers[vector].size(), vector);
 
 	for (iter  = handlers[vector].begin();
 	     iter != handlers[vector].end();
@@ -78,38 +85,32 @@ void interrupts_handler(uint_t vector)
 	}
 }
 
-void interrupts_disable(void)
+int interrupt_enabled(uint_t vector)
 {
-	assert(initialized);
+	assert(vector < MAX_IRQ_VECTORS);
 
-	arch_irqs_disable();
-	dprintf("Interrupts disabled\n");
+	missing();
+
+	return 0;
 }
 
-void interrupts_enable(void)
+int interrupt_enable(uint_t vector)
 {
-	assert(initialized);
-
-	dprintf("Enabling interrupts\n");
-	arch_irqs_enable();
+	assert(vector < MAX_IRQ_VECTORS);
+	return arch_irq_unmask(vector);
 }
 
-void interrupts_lock(void)
+int interrupt_disable(uint_t vector)
+{
+	assert(vector < MAX_IRQ_VECTORS);
+	return arch_irq_mask(vector);
+}
+
+int interrupts_unlocked(void)
 {
 	assert(initialized);
-	assert(nr_locks >= 0);
 
-	dprintf("Locking interrupts\n");
-
-	nr_locks++;
-	if (nr_locks == 1) {
-		state = arch_irqs_state_get();
-		arch_irqs_disable();
-
-		dprintf("Interrupts locked\n");
-	} else {
-		dprintf("Interrupts already locked\n");
-	}
+	return ((nr_locks == 0) ? 1 : 0);
 }
 
 void interrupts_unlock(void)
@@ -130,13 +131,30 @@ void interrupts_unlock(void)
 	}
 }
 
-__END_DECLS
-
-bool interrupts_attach(uint_t              vector,
-		       interrupt_handler_t handler,
-		       void *              opaque)
+void interrupts_lock(void)
 {
 	assert(initialized);
+	assert(nr_locks >= 0);
+
+	dprintf("Locking interrupts\n");
+
+	nr_locks++;
+	if (nr_locks == 1) {
+		state = arch_irqs_state_get();
+		arch_irqs_disable();
+
+		dprintf("Interrupts locked\n");
+	} else {
+		dprintf("Interrupts already locked\n");
+	}
+}
+
+int interrupt_attach(uint_t              vector,
+		     interrupt_handler_t handler,
+		     void *              opaque)
+{
+	assert(initialized);
+	assert(vector < MAX_IRQ_VECTORS);
 
 	if (!handler) {
 		return false;
@@ -152,7 +170,9 @@ bool interrupts_attach(uint_t              vector,
 	assert(temp.second == opaque);
 
 	handlers[vector].push_back(temp);
-	arch_irq_handler_set(vector, interrupts_handler);
+	if (handlers[vector].size() == 1) {
+		arch_irq_handler_set(vector, interrupts_handler);
+	}
 
 	interrupts_unlock();
 
@@ -161,10 +181,11 @@ bool interrupts_attach(uint_t              vector,
 	return true;
 }
 
-bool interrupts_detach(uint_t              vector,
-		       interrupt_handler_t handler)
+int interrupt_detach(uint_t              vector,
+		     interrupt_handler_t handler)
 {
 	assert(initialized);
+	assert(vector < MAX_IRQ_VECTORS);
 
 	dprintf("Detaching handler 0x%p from vector %d\n",
 		handler, vector);
@@ -182,7 +203,9 @@ bool interrupts_detach(uint_t              vector,
 		if ((*iter).first == handler) {
 			dprintf("Got handler to remove\n");
 			handlers[vector].erase(iter);
-			arch_irq_handler_set(vector, NULL);
+			if (handlers[vector].empty()) {
+				arch_irq_handler_set(vector, NULL);
+			}
 			retval = true;
 			break;
 		}
@@ -205,3 +228,5 @@ void interrupts_fini(void)
 
 	initialized = 0;
 }
+
+__END_DECLS

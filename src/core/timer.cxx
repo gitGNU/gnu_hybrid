@@ -84,11 +84,14 @@ int timers_init(void)
 
 	dprintf("Timers granularity %dHz\n", granularity);
 
-	if (!interrupts_attach(0, timers_update, 0)) {
+	if (!interrupt_attach(0, timers_update, 0)) {
 		dprintf("Cannot attach timers update interrupt handler\n");
 		return 0;
 	}
-
+	if (!interrupt_enable(0)) {
+		dprintf("Cannot enable timer interrupt\n");
+		return 0;
+	}
 	dprintf("Initialized\n");
 
 	return 1;
@@ -98,7 +101,11 @@ int timers_fini(void)
 {
 	dprintf("Finalizing timers\n");
 
-	if (!interrupts_detach(0, timers_update)) {
+	if (!interrupt_disable(0)) {
+		dprintf("Cannot disable timer interrupt\n");
+		return 0;
+	}
+	if (!interrupt_detach(0, timers_update)) {
 		dprintf("Cannot detach timers update interrupt handler\n");
 		return 0;
 	}

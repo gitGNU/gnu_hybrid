@@ -57,7 +57,6 @@ static int handler_install(uint_t             irq,
 {
 	assert(irq < I8259_IRQS);
 	assert(handler);
-
 	if (handlers[irq]) {
 		dprintf("Handler already present on irq %d\n", irq);
 		return 0;
@@ -105,6 +104,8 @@ int arch_irq_handler_set(uint_t             irq,
 void irq_enable(void)
 {
 	sti();
+
+	dprintf("Mask is now 0x%x\n", i8259_mask_get());
 }
 
 void irq_disable(void)

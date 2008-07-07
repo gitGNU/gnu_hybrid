@@ -31,6 +31,8 @@ int               irq_init(void);
 void              irq_fini(void);
 void              irq_enable(void);
 void              irq_disable(void);
+void              irq_unmask(uint_t irq);
+void              irq_mask(uint_t irq);
 arch_irqs_state_t irq_state_get(void);
 void              irq_state_set(arch_irqs_state_t * state);
 

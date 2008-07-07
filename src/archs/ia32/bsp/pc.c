@@ -87,6 +87,18 @@ void arch_irqs_disable(void)
 	irq_disable();
 }
 
+int arch_irq_mask(uint_t irq)
+{
+	irq_mask(irq);
+	return 1;
+}
+
+int arch_irq_unmask(uint_t irq)
+{
+	irq_unmask(irq);
+	return 1;
+}
+
 arch_irqs_state_t arch_irqs_state_get(void)
 {
 	return irq_state_get();

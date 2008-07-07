@@ -52,8 +52,8 @@ int main(int argc, char * argv[])
 		panic("Cannot initialize timers");
 	}
 
-	interrupts_enable();
-
+	interrupts_unlock();
+	
 	if (!dma_init()) {
 		panic("Cannot initialize interrupts");
 	}
