@@ -49,7 +49,7 @@ void i8259_eoi(uint_t irq)
 {
 	CHECK_IRQ_INDEX(irq);
 
-	dprintf("Sending EOI for irq %d\n", irq);
+	/* dprintf("Sending EOI for irq %d\n", irq); */
 	if (irq >= 8) {
 		/* dprintf("Sending EOI to slave\n"); */
 		port_out8(PIC_SLAVE, 0x20);

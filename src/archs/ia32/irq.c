@@ -57,6 +57,7 @@ static int handler_install(uint_t             irq,
 {
 	assert(irq < I8259_IRQS);
 	assert(handler);
+
 	if (handlers[irq]) {
 		dprintf("Handler already present on irq %d\n", irq);
 		return 0;
@@ -104,8 +105,6 @@ int arch_irq_handler_set(uint_t             irq,
 void irq_enable(void)
 {
 	sti();
-
-	dprintf("Mask is now 0x%x\n", i8259_mask_get());
 }
 
 void irq_disable(void)
@@ -123,9 +122,12 @@ void irq_handler(regs_t * regs)
 
 	irq = regs->isr_no - I8259_IDT_BASE_INDEX;
 
+#if 0
 	dprintf("Handler running for IRQ %d/%d/%d (mask = 0x%x)\n",
 		regs->isr_no, irq, I8259_IRQS, i8259_mask_get());
+
 	idt_frame_dump(regs);
+#endif
 
 	assert((irq >= 0) && (irq < I8259_IRQS));
 
@@ -137,9 +139,16 @@ void irq_handler(regs_t * regs)
 
 	handler = handlers[irq];
 	if (handler) {
+#if 0
+		dprintf("Running handler 0x%p for interrupt %d\n",
+			handler, irq);
+#endif
 		handler(irq);
 	} else {
-		dprintf("No handler installed for interrupt %d\n", irq);
+#if 0
+		dprintf("No handler installed for interrupt %d\n",
+			irq);
+#endif
 	}
 
 	irq_unmask(irq);
@@ -162,11 +171,11 @@ int irq_init(void)
 	irq_disable();
 
 	for (i = 0; i < I8259_IRQS; i++) {
-		handlers[i]   = NULL;
+		handlers[i] = NULL;
 	}
 
 	if (!i8259_init()) {
-		dprintf("Cannot initialize i8259");
+		dprintf("Cannot initialize i8259\n");
 		return 0;
 	}
 

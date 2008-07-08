@@ -43,8 +43,9 @@ static size_t               granularity;
 void timers_update(void * unused)
 {
 	unused_argument(unused);
+	assert(granularity > 0);
 
-	dprintf("Updating timers\n");
+	dprintf("Updating timers (granularity %dHz)\n", granularity);
 
 	if (timers.empty()) {
 		dprintf("List is empty, quitting update\n");
