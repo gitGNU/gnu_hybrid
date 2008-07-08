@@ -25,10 +25,10 @@
 #include "libc/assert.h"
 #include "libcompiler/macro.h"
 
-#define missing()						\
-	__BEGIN_MACRO						\
-	printf("Missing functionality in function at %s:%d\n",	\
-	       __FILE__,__PRETTY_FUNCTION__,__LINE__);		\
+#define missing()							\
+	__BEGIN_MACRO							\
+	printf("Missing functionality in function '%s' at %s:%d\n",	\
+	       __PRETTY_FUNCTION__,__FILE__,__LINE__);			\
 	__END_MACRO
 
 /*
