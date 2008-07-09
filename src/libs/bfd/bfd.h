@@ -26,18 +26,24 @@
 
 __BEGIN_DECLS
 
+struct bfd_image;
+
 int  bfd_init(void);
 
-int  bfd_config_kernel(bootinfo_t* bootinfo);
-int  bfd_config_modules(bootinfo_t* bootinfo);
+int  bfd_bi_image_dynamic_add(const bi_image_t * image);
+int  bfd_bi_image_dynamic_remove(const bi_image_t * image);
 
-int  bfd_symbol_reverse_lookup(void*  address,
-			       char*  buffer,
-			       size_t length,
-			       void** base);
-int  bfd_symbols_foreach(int (* callback)(const char*   name,
-					  unsigned long address));
-int  bfd_images_foreach(int (* callback)(const char* name));
+int  bfd_bi_image_static_add(const bi_image_t * image,
+			     struct bfd_image * buffer);
+int  bfd_bi_image_static_remove(const bi_image_t * image);
+
+int  bfd_symbol_reverse_lookup(void *  address,
+			       char *  buffer,
+			       size_t  length,
+			       void ** base);
+int  bfd_symbols_foreach(int (* callback)(const char *   name,
+					  unsigned long  address));
+int  bfd_images_foreach(int (* callback)(const char * name));
 
 void bfd_fini(void);
 

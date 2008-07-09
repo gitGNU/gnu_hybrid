@@ -47,9 +47,8 @@ typedef enum {
 	BFD_AOUT,
 } bfd_type_t;
 
-typedef struct bfd {
-	struct bfd*         next;
-	uint_t              id;
+struct bfd_image {
+	struct bfd_image *  next;
 	bfd_type_t          type;
 	union {
 #if CONFIG_ELF
@@ -59,13 +58,14 @@ typedef struct bfd {
 		aout_info_t aout;
 #endif
 	} data;
-} bfd_image_t;
+};
+typedef struct bfd_image bfd_image_t;
 
-static bfd_image_t* head;
-static bfd_image_t  kernel;
+static bfd_image_t * head;
+struct bfd_image     kernel_image;
 
-int bfd_config_bootinfo_image(bi_image_t*  bi_image,
-			      bfd_image_t* bfd_image)
+int bfd_bi_config_image(const bi_image_t * bi_image,
+			bfd_image_t *      bfd_image)
 {
 	int retval;
 
@@ -142,33 +142,58 @@ int bfd_config_bootinfo_image(bi_image_t*  bi_image,
 	return retval;
 }
 
-int bfd_config_kernel(bootinfo_t* bootinfo)
+int bfd_bi_image_static_add(const bi_image_t * image,
+			    struct bfd_image * buffer)
 {
-	/* Set up bfd descriptor for kernel image */
-	kernel.id   = 1;
-	kernel.type = BFD_UNKNOWN;
+	assert(image);
+	assert(buffer);
 
-	if (!bfd_config_bootinfo_image(&(bootinfo->kernel), &kernel)) {
+	buffer->type = BFD_UNKNOWN;
+
+	if (!bfd_bi_config_image(image, buffer)) {
 		dprintf("Cannot initialize bootinfo descriptor for "
-			"kernel image\n");
+			"image 0x%p\n", image);
 		return 0;
 	}
 
-	assert(kernel.type != BFD_UNKNOWN);
+	assert(buffer->type != BFD_UNKNOWN);
 
-	kernel.next = NULL;
-	head        = &kernel;
+	buffer->next = head;
+	head         = buffer;
 
 	return 1;
 }
 
-int bfd_config_modules(bootinfo_t* bootinfo)
+int bfd_bi_image_static_remove(const bi_image_t * image)
 {
-	unused_argument(bootinfo);
+	assert(image);
 
 	missing();
 
-	return 1;
+	return 0;
+}
+
+int bfd_bi_image_dynamic_add(const bi_image_t * image)
+{
+	bfd_image_t * tmp;
+
+	assert(image);
+
+	tmp = malloc(sizeof(bfd_image_t));
+	if (!tmp) {
+		return 0;
+	}
+
+	return bfd_bi_image_static_add(image, tmp);
+}
+
+int bfd_bi_image_dynamic_remove(const bi_image_t * image)
+{
+	assert(image);
+
+	missing();
+
+	return 0;
 }
 
 int bfd_init(void)
@@ -178,12 +203,12 @@ int bfd_init(void)
 	return 1;
 }
 
-int bfd_symbol_reverse_lookup(void*  address,
-			      char*  buffer,
-			      size_t length,
-			      void** base)
+int bfd_symbol_reverse_lookup(void *  address,
+			      char *  buffer,
+			      size_t  length,
+			      void ** base)
 {
-	bfd_image_t* p;
+	bfd_image_t * p;
 
 #if (!CONFIG_ELF && !CONFIG_AOUT)
 	unused_argument(address);
@@ -236,10 +261,10 @@ int bfd_symbol_reverse_lookup(void*  address,
 }
 
 #if CONFIG_DEBUGGER /* XXX FIXME: Nobody else needs these functions ? */
-int bfd_symbols_foreach(int (* callback)(const char*   name,
-					 unsigned long address))
+int bfd_symbols_foreach(int (* callback)(const char *   name,
+					 unsigned long  address))
 {
-	bfd_image_t* p;
+	bfd_image_t * p;
 
 	assert(callback);
 
@@ -279,9 +304,9 @@ int bfd_symbols_foreach(int (* callback)(const char*   name,
 }
 
 /* Used in the lsmod iterator by the dbg builtin command lsmod */
-int bfd_images_foreach(int (* callback)(const char* name))
+int bfd_images_foreach(int (* callback)(const char * name))
 {
-	bfd_image_t* p;
+	bfd_image_t * p;
 
 	assert(callback);
 
@@ -298,31 +323,28 @@ int bfd_images_foreach(int (* callback)(const char* name))
 }
 #endif /* CONFIG_DEBUGGER */
 
+/* NOTE: static images must be removed before bfd_fini() call */
 void bfd_fini(void)
 {
-	/* Head could be NULL (see bfd_init) */
+	bfd_image_t * p;
+
 	while (head != NULL) {
-		bfd_image_t* p;
 
-		if (head != &kernel) {
-			p = head;
-			head = head->next;
+		p = head;
+		head = head->next;
 
-			dprintf("Destroying bfd %d\n", p->id);
-			free(p);
-		} else {
-			/* dprintf("Skipping kernel static descriptor\n"); */
-			head = head->next;
-		}
+		dprintf("Destroying bfd %0xp\n", p);
+		free(p);
 	}
 }
 
 #if CONFIG_DEBUGGER
-static FILE*         syms_stream;
+static FILE *        syms_stream;
 static unsigned long syms_min;
 static unsigned long syms_max;
 
-static int symbols_iterator(const char* name, unsigned long address)
+static int symbols_iterator(const char *  name,
+			    unsigned long address)
 {
 	assert(syms_stream);
 	assert(name);
@@ -335,7 +357,7 @@ static int symbols_iterator(const char* name, unsigned long address)
 	return 1;
 }
 
-static unsigned long atoaddr(char* string)
+static unsigned long atoaddr(char * string)
 {
 	unsigned long tmp_val;
 	char*         tmp_char;
@@ -354,9 +376,9 @@ static unsigned long atoaddr(char* string)
 	return 0;
 }
 
-static dbg_result_t command_symbols_on_execute(FILE* stream,
-					       int   argc,
-					       char* argv[])
+static dbg_result_t command_symbols_on_execute(FILE * stream,
+					       int    argc,
+					       char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);

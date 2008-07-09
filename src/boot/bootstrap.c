@@ -88,19 +88,23 @@ void bootstrap_early(void)
 }
 
 #if CONFIG_BOOTINFO_DEBUG
-bootinfo_t*   bootinfo_last = NULL;
+bootinfo_t *            bootinfo_last = NULL;
 #endif /* CONFIG_BOOTINFO_DEBUG */
 
-static uint_t heap_base;
-static uint_t heap_size;
+static uint_t           heap_base;
+static uint_t           heap_size;
+
+extern struct bfd_image kernel_image;
 
 #if 0
-static uint_t bootmem_base;
-static uint_t bootmem_size;
+static uint_t           bootmem_base;
+static uint_t           bootmem_size;
 #endif
 
 void bootstrap_late(bootinfo_t* bootinfo)
 {
+	int i;
+
 	assert(bootinfo);
 
 	/*
@@ -177,7 +181,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 		panic("Resource problems");
 	}
 
-	if (!bfd_config_kernel(bootinfo)) {
+	if (!bfd_bi_image_static_add(&bootinfo->kernel, &kernel_image)) {
 		panic("Cannot initialize bfd related infos for kernel");
 		/* This check could be a warning ... */
 	}
@@ -247,10 +251,14 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* Huh we have options now (at least the default values ...) */
 #endif /* CONFIG_OPTIONS */
 
-	/* config remaining bfd structures for modules */
-	if (!bfd_config_modules(bootinfo)) {
-		panic("Cannot initialize bfd related infos for modules");
-		/* This check could be a warning ... */
+	/* Add remaining bfd structures for modules */
+	for (i = 0; i < BOOTINFO_MODULES; i++) {
+		if (bootinfo->modules[i].type != BOOTINFO_IMAGE_UNKNOWN) {
+			if (!bfd_bi_image_dynamic_add(&bootinfo->modules[i])) {
+				panic("Cannot initialize bfd related "
+				      "infos for module");
+			}
+		}
 	}
 
 	/* C library (glue) startup */
@@ -284,6 +292,12 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	pmm_fini();
 	arch_fini();
 	resource_fini();
+	bfd_bi_image_static_remove(&bootinfo->kernel);
+	for (i = 0; i < BOOTINFO_MODULES; i++) {
+		if (bootinfo->modules[i].type != BOOTINFO_IMAGE_UNKNOWN) {
+			bfd_bi_image_dynamic_remove(&bootinfo->modules[i]);
+		}
+	}
 	bfd_fini();
 	log_fini();
 
