@@ -25,12 +25,11 @@ CLEANFILES =
 scripts =					\
 	bin2source				\
 	sh2h					\
-	map2ie					\
 	mergesyms				\
 	stackcheck				\
 	mksyscalls				\
 	mkbuild					\
-	elf2symstab				\
+	obj2symstab				\
 	symstab2map				\
 	getdefine				\
 	sections				\
@@ -55,12 +54,11 @@ CLEANFILES += $(scripts)
 awk_scripts_SRCS =				\
 	bin2source.awk.in			\
 	sh2h.awk.in				\
-	map2ie.awk.in				\
 	mergesyms.awk.in			\
 	stackcheck.awk.in			\
 	mksyscalls.awk.in			\
 	mkbuild.awk.in				\
-	elf2symstab.awk.in			\
+	obj2symstab.awk.in			\
 	symstab2map.awk.in			\
 	getdefine.awk.in			\
 	sections.awk.in				\
@@ -256,28 +254,6 @@ sh2h: Makefile sh2h.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 
 
-## map2ie
-map2ie.awk: Makefile $(awk_lib_SRC) map2ie.awk.in
-	INFILE=map2ie.awk.in ;			\
-	OUTFILE=map2ie.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += map2ie.awk
-
-map2ie.sh: Makefile $(sh_lib_SRC) map2ie.awk
-	INFILE=map2ie.awk ;			\
-	OUTFILE=map2ie.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += map2ie.sh
-
-map2ie: Makefile map2ie.sh
-	INFILE=map2ie.sh ;			\
-	OUTFILE=map2ie ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-
-
 ## mergesyms
 mergesyms.awk: Makefile $(awk_lib_SRC) mergesyms.awk.in
 	INFILE=mergesyms.awk.in ;		\
@@ -366,24 +342,24 @@ mkbuild: Makefile mkbuild.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 
 
-## elf2symstab
-elf2symstab.awk: Makefile $(awk_lib_SRC) elf2symstab.awk.in
-	INFILE=elf2symstab.awk.in ;		\
-	OUTFILE=elf2symstab.awk ;		\
+## obj2symstab
+obj2symstab.awk: Makefile $(awk_lib_SRC) obj2symstab.awk.in
+	INFILE=obj2symstab.awk.in ;		\
+	OUTFILE=obj2symstab.awk ;		\
 	$(transform_awk_in_2_awk) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += elf2symstab.awk
+CLEANFILES += obj2symstab.awk
 
-elf2symstab.sh: Makefile $(sh_lib_SRC) elf2symstab.awk
-	INFILE=elf2symstab.awk ;		\
-	OUTFILE=elf2symstab.sh ;		\
+obj2symstab.sh: Makefile $(sh_lib_SRC) obj2symstab.awk
+	INFILE=obj2symstab.awk ;		\
+	OUTFILE=obj2symstab.sh ;		\
 	$(transform_awk_2_sh) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += elf2symstab.sh
+CLEANFILES += obj2symstab.sh
 
-elf2symstab: Makefile elf2symstab.sh
-	INFILE=elf2symstab.sh ;			\
-	OUTFILE=elf2symstab ;			\
+obj2symstab: Makefile obj2symstab.sh
+	INFILE=obj2symstab.sh ;			\
+	OUTFILE=obj2symstab ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 

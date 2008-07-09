@@ -29,6 +29,8 @@ tools/scripts/grub-config.sh
 # XXX FIXME: To be removed ASAP
 
 src/kernel
+src/system.map
+src/system.sym
 
 src/config/rules.usr
 src/config/autoconfig.h.in
@@ -82,9 +84,9 @@ tools/scripts/bootcheck.sh
 tools/scripts/clhandler
 tools/scripts/clhandler.awk
 tools/scripts/clhandler.sh
-tools/scripts/elf2symstab
-tools/scripts/elf2symstab.awk
-tools/scripts/elf2symstab.sh
+tools/scripts/obj2symstab
+tools/scripts/obj2symstab.awk
+tools/scripts/obj2symstab.sh
 tools/scripts/getdefine
 tools/scripts/getdefine.awk
 tools/scripts/getdefine.sh

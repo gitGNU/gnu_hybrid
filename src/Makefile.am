@@ -203,39 +203,33 @@ kernel_CXXFLAGS     = $(KERNELCXXFLAGS)
 #	done
 
 ##
-## kernel again ...
+## map related
 ##
-SYMSFILE    = all.syms
-CLEANFILES += $(SYMSFILE)
-WORDSIZE    = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_srcdir)/src/archs/$(architecture)/libs/c/bits/wordsize.h -s __WORDSIZE -V -D`
-$(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(ELF2SYMSTAB)
-	$(ELF2SYMSTAB) $(ELF2SYMSTAB_FLAGS) -m -X -w $(WORDSIZE) -n -o $(SYMSFILE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || { rm -f $(SYMSFILE) ; exit 1 ; } 
-
-MAPFILE    = all.map
+MAPFILE     = system.map
 CLEANFILES += $(MAPFILE)
 $(MAPFILE): Makefile $(SYMSFILE) $(SYMSTAB2MAP)
-	$(SYMSTAB2MAP) $(SYMSTAB2MAP_FLAGS) -i $(SYMSFILE) -o $(MAPFILE) || { rm -f $(MAPFILE) ; exit 1 ; } 
+	$(SYMSTAB2MAP) $(SYMSTAB2MAP_FLAGS) -i $(SYMSFILE) -o $(MAPFILE) || { \
+		rm -f $(MAPFILE) ; \
+		exit 1 ; \
+	}
 
+SYMSFILE    = system.sym
+CLEANFILES += $(SYMSFILE)
+$(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
+	$(OBJ2SYMSTAB) $(OBJ2SYMSTAB_FLAGS) -m -X -n -o $(SYMSFILE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || { \
+		rm -f $(SYMSFILE) ; \
+		exit 1 ; \
+	} 
 
-IMPEXPFILE  = all.ie
-CLEANFILES += $(IMPEXPFILE)
-$(IMPEXPFILE): Makefile $(MAPFILE) $(MAP2IE)
-	$(MAP2IE) $(MAP2IE_FLAGS) -i $(MAPFILE) -o $(IMPEXPFILE) || { rm -f $(IMPEXPFILE) ; exit 1 ; }
-
-#DEPFILE     = all.dep
-#CLEANFILES += $(DEPFILE)
-#$(DEPFILE): Makefile $(IMPEXPFILE) $(MODDEP)
-#	$(MODDEP) $(MODDEP_FLAGS) -i $(IMPEXPFILE) -o $(DEPFILE) || { rm -f $(DEPFILE) ; exit 1 ; }
-
+##
+## statistics related
+##
 stats:
 	@echo ""
 	@echo "  Kernel stats:"
 	@echo ""
 	@echo "    Build number:" $(BUILD_NUMBER)
 	@echo ""
-
-
-#all-local: $(MODULES_DB) $(DEPFILE)
 
 ##
 ## check target related

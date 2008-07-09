@@ -82,14 +82,41 @@ BEGIN {
 		exit(1);
 	}
 
+	retval = 0;
+	printf(" ") > outfile;
 	while ((getline line < infile) > 0) {
-		printf("%s\n", line) > outfile;
+		if (match(line, /^.*:$/) != 0) {
+			# Skip
+		} else if (match(line, /^[ ]*$/) != 0) {
+			# Skip
+		} else if (match(line, /^.* .* .*$/) != 0) {
+			delete data;
+
+			n = split(line, data, " ");
+			assert(n == 3);
+
+			assert(data[1] != "");
+			assert(data[2] != "");
+			assert(data[3] != "");
+
+			debug("Got " data[1] " " data[2] " " data[3] "\n");
+
+			# Output only global symbols
+			if (match(data[2], /^G.$/) != 0) {
+				printf("%s %s\n", data[1], data[3]) > outfile;
+			}
+		} else {
+			error("Unsupported or wrong input format "	\
+			      "(line = `" line "`) ?\n");
+			retval = -1;
+			break;
+		}
 	}
 
 	close(infile);
 	close(outfile);
 
-	exit(0);
+	exit(retval);
 }
 
 END {
