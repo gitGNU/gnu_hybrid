@@ -58,6 +58,9 @@ text-config:
 stats:
 	$(MAKE) stats -C src
 
+debug:
+	$(MAKE) system.map -C src
+
 ##
 ## help related target
 ##
@@ -71,6 +74,7 @@ help:
 	@echo "    menu-config         -- Interactive configuration (dialog)"
 	@echo "    old-config          -- Reconfigure using old configuration"
 	@echo "    stats               -- Dump some stats"
+	@echo "    debug               -- Generate (useful) debugging files"
 	@echo ""
 	@echo "    *automake*          -- Standard automake targets"
 	@echo ""
