@@ -49,7 +49,7 @@ typedef struct {
 	} caches;
 
 	int              level;
-	uint8_t          cores;    /* Num cores in HyperThreaded CPUs */
+	uint8_t          index;
 	uint32_t         loops_ms;
 	uint32_t         freq_mhz;
 	struct cpu_ops * ops;      /* Vendor specific code */

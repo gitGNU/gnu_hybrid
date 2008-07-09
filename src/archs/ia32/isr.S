@@ -90,10 +90,10 @@ irq_nesting:
 	.section .text
 
 irq_common:
-	cli
-
 	REGS_SAVE_ALL
 	SEGMENT_SETUP
+
+//	cli
 
 	incl  irq_nesting
 	cmpl  $1, irq_nesting
@@ -110,7 +110,8 @@ irq_return:
 	REGS_RESTORE_ALL
 	addl  $8, %esp   // Clear arguments from stack
 
-	sti
+//	sti
+
 	iret
 
 	//

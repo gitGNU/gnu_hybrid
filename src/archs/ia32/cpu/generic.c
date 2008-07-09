@@ -38,9 +38,11 @@
 
 #if CONFIG_ARCH_CPU_GENERIC
 
-int generic_cache_init(arch_cpu_t* cpu)
+int generic_cache_init(arch_cpu_t * cpu)
 {
 	uint_t  n;
+
+	assert(cpu);
 
 	n = cpuid_eax(0x80000000);
 	if (n >= 0x80000005) {
@@ -75,14 +77,14 @@ int generic_cache_init(arch_cpu_t* cpu)
 	return 1;
 }
 
-void generic_cache_fini(arch_cpu_t* cpu)
+void generic_cache_fini(arch_cpu_t * cpu)
 {
 	assert(cpu);
 
 	unused_argument(cpu);
 }
 
-int generic_cpu_init(arch_cpu_t* cpu)
+int generic_cpu_init(arch_cpu_t * cpu)
 {
 	assert(cpu);
 
@@ -91,16 +93,18 @@ int generic_cpu_init(arch_cpu_t* cpu)
 	return 1;
 }
 
-void generic_cpu_fini(arch_cpu_t* cpu)
+void generic_cpu_fini(arch_cpu_t * cpu)
 {
 	assert(cpu);
 
 	unused_argument(cpu);
 }
 
-int generic_infos(arch_cpu_t* cpu)
+int generic_infos(arch_cpu_t * cpu)
 {
 	uint_t eax, ebx, ecx, edx;
+
+	assert(cpu);
 
 	/* Clear the features */
 	memset(cpu->infos.features, 0, sizeof(cpu->infos.features));
