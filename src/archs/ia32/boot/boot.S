@@ -22,6 +22,9 @@
 #include "archs/common/multiboot.h"
 #include "archs/common/asm.h"
 
+#define RESET_EFLAGS 1
+#define CLEAR_BSS    1
+
 	.section .text
 
 	.global entry_point
@@ -71,19 +74,27 @@ multiboot_entry:
 	/* Turn IRQs off */
 	cli
 
+#if RESET_EFLAGS
 	/* Reset EFLAGS to a known state */
 	pushl	$0
 	popf
+#endif
 
-#if 0
+#if CLEAR_BSS
 	/* Clean-up the .bss segment */
 	cld
-	xorl %eax, %eax
-	movl $_bss, %edi
-	movl $_ebss, %ecx
-	subl %edi, %ecx
-	shrl $2, %ecx
-	rep ; stosl
+	xorl	%eax, %eax
+	movl	$_bss, %edi
+	movl	$_ebss, %ecx
+	subl	%edi, %ecx
+	shrl	$2, %ecx
+	rep	; stosl
+
+	/* Restore multiboot infos into registers */
+	popl	%eax
+	popl	%ebx
+	pushl	%ebx
+	pushl	%eax
 #endif
 
 	/* Call the entry point */
