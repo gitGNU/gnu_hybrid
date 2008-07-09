@@ -30,7 +30,7 @@
 
 #if CONFIG_OPTIONS
 
-#define BANNER              "option"
+#define BANNER              "option:"
 
 #if CONFIG_OPTIONS_DEBUG
 #define dprintf(F,A...)     printf(BANNER F,##A)
