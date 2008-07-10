@@ -220,6 +220,8 @@ int timer_remove(timer_t * timer)
 #if CONFIG_DEBUGGER
 static void callback(void * data)
 {
+	unused_argument(data);
+
 	dprintf("Called test timer callback with opaque data 0x%p", data);
 }
 
@@ -250,7 +252,6 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 		}
 
 		return DBG_RESULT_OK;
-#if CONFIG_TIMERS_DEBUG
 	} else if (argc == 2) {
 		int time;
 
@@ -262,8 +263,9 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 			t = new timer_t;
 			t->expiration = time;
 			t->callback   = callback;
+#if CONFIG_TIMERS_DEBUG
 			t->removable  = 1;
-
+#endif
 			if (!timer_add(t)) {
 				return DBG_RESULT_ERROR;
 			}
@@ -285,21 +287,21 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
 			}
 
 			timer = *iter;
-			if (timer->removable) {
-				dprintf("Deleting timer 0x%p\n", timer);
-				timers.erase(iter);
-				delete timer;
-			} else {
+#if CONFIG_TIMERS_DEBUG
+			if (!timer->removable) {
 				dprintf("Cannot remove timer\n");
 				return DBG_RESULT_ERROR;
 			}
+#endif
+			dprintf("Deleting timer 0x%p\n", timer);
+			timers.erase(iter);
+			delete timer;
 
 			return DBG_RESULT_OK;
 		} else {
 			return DBG_RESULT_ERROR_WRONG_PARAMETERS;
 		}
 	}
-#endif
 
 	return DBG_RESULT_ERROR_WRONG_PARAMETERS;
 }
