@@ -10,7 +10,6 @@
    (ul
     (li "Strict architecture-independant layer that allows clean porting to other CPU architectures")
     (li "Debugging support with installable debugger commands")
-    (li "Remote gdb support")
     (li "Symbolic backtraces")
     (li "Multiboot compliance")
     (li "Memory partitions")
