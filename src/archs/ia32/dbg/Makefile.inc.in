@@ -18,16 +18,14 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
-include @reldir@/debugger/Makefile.inc
-
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
 
 arch_ia32_dbg_SRCS =				\
-	$(arch_ia32_dbg_debugger_SRCS)		\
 	@reldir@/backtrace.c			\
 	@reldir@/dbg.c				\
+	@reldir@/gdb.h				\
 	@reldir@/bochs.c			\
 	@reldir@/rs232.c			\
 	@reldir@/vga.c				\

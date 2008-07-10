@@ -25,7 +25,7 @@
 #include "libc/bits/byteswap.h"
 #include "archs/linker.h"
 #if ARCH_IA32
-#include "archs/ia32/dbg/debugger/gdb.h"
+#include "archs/ia32/dbg/gdb.h"
 #endif
 #include "libs/debug.h"
 #include "dbg/debugger.h"
