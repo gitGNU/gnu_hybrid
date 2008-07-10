@@ -28,8 +28,6 @@ dbg_SRCS =					\
 	@reldir@/panic.h			\
 	@reldir@/backtrace.c			\
 	@reldir@/backtrace.h			\
-	@reldir@/gdb.c				\
-	@reldir@/gdb.h				\
 	@reldir@/debugger.h			\
 	@reldir@/commands.c			\
 	@reldir@/variables.c			\
