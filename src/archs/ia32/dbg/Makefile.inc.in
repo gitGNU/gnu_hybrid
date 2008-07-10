@@ -25,7 +25,6 @@ EXTRA_DIST +=					\
 arch_ia32_dbg_SRCS =				\
 	@reldir@/backtrace.c			\
 	@reldir@/dbg.c				\
-	@reldir@/gdb.h				\
 	@reldir@/bochs.c			\
 	@reldir@/rs232.c			\
 	@reldir@/vga.c				\
