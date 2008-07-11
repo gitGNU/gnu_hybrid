@@ -1,20 +1,21 @@
-//
-// Copyright (C) 2008 Francesco Salvestrini
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License along
-// with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-//
+/*
+ * Copyright (C) 2008 Francesco Salvestrini
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
 
 #include "config/config.h"
 #include "libc/stdint.h"
@@ -87,8 +88,8 @@ static struct heap_bin bins[] = {
 
 #define bin_count (sizeof(bins) / sizeof(struct heap_bin))
 
-#if 0 // CONFIG_DEBUG_HEAP
-// NOTE: This function is needed only for debugging purposes
+#if 0 /* CONFIG_DEBUG_HEAP */
+/* NOTE: This function is needed only for debugging purposes */
 static void dump_bin(size_t indx)
 {
 	struct heap_bin * bin;
@@ -125,7 +126,7 @@ static void dump_bin(size_t indx)
 #endif
 }
 
-// NOTE: This function is needed only for debugging purposes
+/* NOTE: This function is needed only for debugging purposes */
 static void dump_bin_list(void)
 {
 	size_t i;
@@ -136,21 +137,19 @@ static void dump_bin_list(void)
 		dump_bin(i);
 	}
 }
-#endif // CONFIG_DEBUG_HEAP */
-
-__BEGIN_DECLS
+#endif /* CONFIG_DEBUG_HEAP */
 
 int heap_initialized(void)
 {
 	return initialized ? 1 : 0;
 }
 
-//
-// NOTE:
-//     This function should be called at VM init time. The heap should already
-//     be mapped-in at this point, we just do a little housekeeping to set
-//     up the data structures.
-//
+/*
+ * NOTE:
+ *     This function should be called at VM init time. The heap should already
+ *     be mapped-in at this point, we just do a little housekeeping to set
+ *     up the data structures.
+ */
 int heap_init(addr_t base,
 	      size_t size)
 {
@@ -158,7 +157,7 @@ int heap_init(addr_t base,
 	uint_t       max_grow;
 	unsigned int page_entries;
 
-	// Inizialize the bins
+	/* Inizialize the bins */
 	dprintf("Initializing %d bins (threshold %d bytes)\n",
 		bin_count, CONFIG_PAGE_SIZE);
 	for (i = 0; i < bin_count; i++) {
@@ -173,7 +172,7 @@ int heap_init(addr_t base,
 	page_entries     = CONFIG_PAGE_SIZE / sizeof(struct heap_page);
 	heap_alloc_table = (struct heap_page *) base;
 
-	// XXX: The formula was: size > (sqr(CONFIG_PAGE_SIZE) / 2)
+	/* XXX: The formula was: size > (sqr(CONFIG_PAGE_SIZE) / 2) */
 	if (size > (CONFIG_PAGE_SIZE * CONFIG_PAGE_SIZE / 2)) {
 		heap_size = ((addr_t) size * page_entries /
 			     (page_entries + 1)) & ~(CONFIG_PAGE_SIZE - 1);
@@ -187,7 +186,7 @@ int heap_init(addr_t base,
 	dprintf("alloc_table = 0x%p, base = 0x%p, size = 0x%x\n",
 		heap_alloc_table, heap_base, heap_size);
 
-	// zero out the heap alloc table at the base of the heap
+	/* zero out the heap alloc table at the base of the heap */
 	memset((void *) heap_alloc_table,
 	       0,
 	       (heap_size / CONFIG_PAGE_SIZE) * sizeof(struct heap_page));
@@ -206,8 +205,6 @@ void heap_fini(void)
 	dprintf("Disposing heap\n");
 	initialized = 0;
 }
-
-__END_DECLS
 
 static char* raw_alloc(unsigned int size,
 		       size_t       bin_index)
@@ -282,7 +279,7 @@ void * arch_heap_alloc(unsigned int size)
 			bins[indx].raw_list  =
 				raw_alloc(bins[indx].grow_size, indx);
 			bins[indx].raw_count = (bins[indx].grow_size /
-						 bins[indx].element_size);
+						bins[indx].element_size);
 		}
 
 		bins[indx].raw_count--;
@@ -367,11 +364,11 @@ void arch_heap_free(void * address)
 	}
 
 #if CONFIG_DEBUG_HEAP_PARANOID
-	//
-	// NOTE:
-	//     Walk the free list on this bin to make sure this address
-	//     doesn't exist already ...
-	//
+	/*
+	 * NOTE:
+	 *     Walk the free list on this bin to make sure this address
+	 *     doesn't exist already ...
+	 */
 	{
 		unsigned int * temp;
 		for (temp = (unsigned int *) bin->free_list;
@@ -383,7 +380,7 @@ void arch_heap_free(void * address)
 			}
 		}
 	}
-#endif // CONFIG_DEBUG_HEAP_PARANOID
+#endif /* CONFIG_DEBUG_HEAP_PARANOID */
 
 #if CONFIG_DEBUG_HEAP_SIGNATURE
 	memset(address, 0x99, bin->element_size);
@@ -409,11 +406,11 @@ static int heap_iterator(uint_t bin_index,
 {
 	assert(heap_stream);
 
-	//
-	// NOTE:
-	//     heap_foreach() calls us for-each region, even for those with
-	//     0 length ... so we need to remove the useless ones.
-	//
+	/*
+	 * NOTE:
+	 *     heap_foreach() calls us for-each region, even for those with
+	 *     0 length ... so we need to remove the useless ones.
+	 */
 	fprintf(heap_stream,
 		"  %2d   0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n",
 		bin_index,

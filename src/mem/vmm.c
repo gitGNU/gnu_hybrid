@@ -1,20 +1,21 @@
-//
-// Copyright (C) 2008 Francesco Salvestrini
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License along
-// with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-//
+/*
+ * Copyright (C) 2008 Francesco Salvestrini
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
 
 #include "config/config.h"
 #include "archs/arch.h"
@@ -35,8 +36,6 @@
 
 static int initialized = 0;
 
-__BEGIN_DECLS
-
 int vmm_init(bootinfo_t* bi)
 {
 	assert(!initialized);
@@ -44,11 +43,11 @@ int vmm_init(bootinfo_t* bi)
 
 	unused_argument(bi);
 
-	// XXX FIXME
-	missing();
+	//	missing();
 
 	dprintf("Virtual memory initialized successfully\n");
 	initialized = 1;
+
 	return 1;
 }
 
@@ -66,8 +65,6 @@ void vmm_fini(void)
 	initialized = 0;
 }
 
-__END_DECLS
-
 #if CONFIG_DEBUGGER
 static FILE* vmm_stream;
 
@@ -76,11 +73,11 @@ static int vmm_iterator(uint_t indx, uint_t base, uint_t length)
 {
 	assert(vmm_stream);
 
-	//
-	// NOTE:
-	//     vmm_foreach() calls us for-each region, even for those with
-	//     0 length ... so we need to remove the useless ones.
-	//
+	/*
+	 * NOTE:
+	 *     vmm_foreach() calls us for-each region, even for those with
+	 *     0 length ... so we need to remove the useless ones.
+	 */
 	if (length != 0) {
 		fprintf(vmm_stream, "  %2d   0x%08x  0x%08x\n",
 			indx, base, length);

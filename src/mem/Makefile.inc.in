@@ -23,13 +23,11 @@ EXTRA_DIST +=					\
 	@reldir@/rules.cfg
 
 mem_SRCS =					\
-	@reldir@/address.cxx			\
+	@reldir@/address.c			\
 	@reldir@/address.h			\
-	@reldir@/heap.cxx			\
+	@reldir@/heap.c				\
 	@reldir@/heap.h				\
-	@reldir@/fit.h				\
-	@reldir@/fit.cxx			\
-	@reldir@/vmm.cxx			\
+	@reldir@/vmm.c				\
 	@reldir@/vmm.h				\
-	@reldir@/pmm.cxx			\
+	@reldir@/pmm.c				\
 	@reldir@/pmm.h
