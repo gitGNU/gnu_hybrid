@@ -31,6 +31,18 @@
 #include "core/build.h"
 #include "libc++/cstdlib"
 
+timer_t timer1;
+timer_t timer2;
+timer_t timer3;
+
+void timer_cb(void *)
+{
+	printf("FIRED 1 SEC TIMER\n");
+	printf("FIRED 1 SEC TIMER\n");
+	printf("FIRED 1 SEC TIMER\n");
+	printf("FIRED 1 SEC TIMER\n");
+}
+
 /* We reach this point from init() */
 int main(int argc, char * argv[])
 {
@@ -48,15 +60,28 @@ int main(int argc, char * argv[])
 		panic("Cannot initialize interrupts");
 	}
 
+	if (!dma_init()) {
+		panic("Cannot initialize interrupts");
+	}
+
 	if (!timers_init()) {
 		panic("Cannot initialize timers");
 	}
 
-	interrupts_unlock();
-
-	if (!dma_init()) {
-		panic("Cannot initialize interrupts");
+	TIMER_FILL(&timer1, timer_cb, 0, 0500000);
+	if (!timer_add(&timer1)) {
+		panic("Cannot add timer");
 	}
+	TIMER_FILL(&timer2, timer_cb, 0, 1000000);
+	if (!timer_add(&timer2)) {
+		panic("Cannot add timer");
+	}
+	TIMER_FILL(&timer3, timer_cb, 0, 1500000);
+	if (!timer_add(&timer3)) {
+		panic("Cannot add timer");
+	}
+
+	interrupts_unlock();
 
 	scheduler * sched;
 
@@ -66,15 +91,22 @@ int main(int argc, char * argv[])
 #define TEST 1
 #if TEST
 #include "core/delay.h"
+	static int i = 0;
+
 	while (1 != 0) {
-#if 0
-		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-		printf("\n");
+		i++;
+		if (i >= 1500000) {
+#if 1
+			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+			printf("\n");
 #endif
+
+			i = 0;
+		}
 	}
 #endif
 
