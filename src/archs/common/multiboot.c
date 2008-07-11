@@ -413,7 +413,11 @@ void multiboot(unsigned long magic,
 {
 	multiboot_info_t* mbi;
 
-	bootstrap_early(); /* Add early support, call it as soon as possible */
+	/*
+	 * NOTE:
+	 *     Add early support, call it as soon as possible
+	 */
+	bootstrap_early();
 
 	/* Am I booted by a Multiboot-compliant boot loader?  */
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
