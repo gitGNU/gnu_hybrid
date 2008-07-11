@@ -37,7 +37,6 @@
 #include "mem/heap.h"
 #include "mem/pmm.h"
 #include "mem/vmm.h"
-#include "mem/fit.h"
 
 #define BANNER          "bootstrap: "
 
@@ -65,6 +64,16 @@ extern int main(int argc, char* argv[]);
  */
 void bootstrap_early(void)
 {
+	/*
+	 * NOTE:
+	 *     Call the C library init function as soon as possible in order
+	 *     to setup all the global initializers
+	 */
+
+	/* C library (glue) startup */
+	dprintf("Initializing C support\n");
+	_init();
+
 #if CONFIG_DEBUG
 	if (arch_dbg_init()) {
 		FILE_set(stdin,  NULL, arch_dbg_getchar, NULL, NULL);
@@ -73,7 +82,7 @@ void bootstrap_early(void)
 		/* We should have printf() and puts() now */
 	}
 #else
-	/* No debugging required, turn off all the streams ... */
+	/* No debugging required, turn off all streams ... */
 	FILE_set(stdin,  NULL, NULL, NULL, NULL);
 	FILE_set(stdout, NULL, NULL, NULL, NULL);
 	FILE_set(stderr, NULL, NULL, NULL, NULL);
@@ -95,11 +104,6 @@ static uint_t           heap_base;
 static uint_t           heap_size;
 
 extern struct bfd_image kernel_image;
-
-#if 0
-static uint_t           bootmem_base;
-static uint_t           bootmem_size;
-#endif
 
 void bootstrap_late(bootinfo_t* bootinfo)
 {
@@ -192,6 +196,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	}
 
 	/* Translate bootinfo memory resources into pmm ones */
+	dprintf("Initializing pmm\n");
 	if (!pmm_init(bootinfo)) {
 		panic("Cannot initialize physical memory manager");
 	}
@@ -203,27 +208,15 @@ void bootstrap_late(bootinfo_t* bootinfo)
 		panic("Cannot mark kernel regions as used");
 	}
 
-#if 0
-	/* Initialize boot memory */
-	bootmem_size = CONFIG_PAGE_SIZE * 4;
-	bootmem_base = pmm_reserve(bootmem_size);
-	if (bootmem_base == ((uint_t) -1)) {
-		panic("Cannot allocate boot memory");
-	}
-	if (!fit_init(FIT_MODE_BEST, bootmem_base, bootmem_size)) {
-		panic("Cannot initialize boot memory");
-	}
-	assert(fit_initialized());
-
-	fit_fini();
-#endif
 	/* Initialize virtual memory */
+	dprintf("Initializing vmm\n");
 	if (!vmm_init(bootinfo)) {
 		panic("Cannot initialize virtual memory");
 	}
 	/* From this point on we should have virtual memory turned on */
 
 	/* Setting up the heap ! */
+	dprintf("Initializing heap\n");
 	heap_size = CONFIG_PAGE_SIZE * 16;
 	heap_base = pmm_reserve(heap_size);
 	if (heap_base == ((uint_t) -1)) {
@@ -261,10 +254,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 		}
 	}
 
-	/* C library (glue) startup */
-	dprintf("Initializing C support\n");
-	_init();
-
 	/*
 	 * NOTE:
 	 *     We have malloc(), free() ... now
@@ -288,9 +277,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 #if CONFIG_DEBUGGER
 	dbg_fini();
 #endif
-
-	/* C (glue) Shutdown */
-	_fini();
 
 #if CONFIG_OPTIONS
 	option_fini();
@@ -316,6 +302,9 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* NOTE: arch_dbg_init() has been called in early_init() ... */
 	arch_dbg_fini();
 #endif /* CONFIG_DEBUG*/
+
+	/* C (glue) Shutdown */
+	_fini();
 
 	/* Halt should be done here ... ? */
 	arch_halt();
