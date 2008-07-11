@@ -251,7 +251,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* Huh we have options now (at least the default values ...) */
 #endif /* CONFIG_OPTIONS */
 
-	/* Add remaining bfd structures for modules */
+	dprintf("Adding modules to bfd structures\n");
 	for (i = 0; i < BOOTINFO_MODULES; i++) {
 		if (bootinfo->modules[i].type != BOOTINFO_IMAGE_UNKNOWN) {
 			if (!bfd_bi_image_dynamic_add(&bootinfo->modules[i])) {
@@ -262,13 +262,24 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	}
 
 	/* C library (glue) startup */
+	dprintf("Initializing C support\n");
 	_init();
-	/* We have malloc(), free() ... now */
+
+	/*
+	 * NOTE:
+	 *     We have malloc(), free() ... now
+	 */
 
 	/* C++ library (glue) startup */
+	dprintf("Initializing C++ support\n");
 	__do_global_ctors_aux();
-	/* We have new, delete ... now */
 
+	/*
+	 * NOTE:
+	 *     We have new, delete ... now
+	 */
+
+	dprintf("Calling main()\n");
 	main(0, 0);
 
 	/* C++ (glue) Shutdown */
