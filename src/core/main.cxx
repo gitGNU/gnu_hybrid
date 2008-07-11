@@ -37,10 +37,7 @@ timer_t timer3;
 
 void timer_cb(void *)
 {
-	printf("FIRED 1 SEC TIMER\n");
-	printf("FIRED 1 SEC TIMER\n");
-	printf("FIRED 1 SEC TIMER\n");
-	printf("FIRED 1 SEC TIMER\n");
+	printf("T");
 }
 
 /* We reach this point from init() */
@@ -96,14 +93,7 @@ int main(int argc, char * argv[])
 	while (1 != 0) {
 		i++;
 		if (i >= 1500000) {
-#if 1
-			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-			printf("\n");
-#endif
+			printf("A");
 
 			i = 0;
 		}
