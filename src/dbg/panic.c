@@ -28,9 +28,10 @@
 #include "dbg/debugger.h"
 #include "core/interrupt.h"
 #include "core/power.h"
+#include "core/delay.h"
 
 #if CONFIG_REBOOT_ON_PANIC
-static int panic_timeout = PANIC_TIMEOUT;
+static int panic_timeout = CONFIG_PANIC_TIMEOUT;
 #endif /* REBOOT_ON_PANIC */
 
 #define PANIC_ON_PANIC 0
