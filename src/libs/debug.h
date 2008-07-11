@@ -17,18 +17,18 @@
  *
  */
 
-#ifndef CORE_DBG_DEBUG_H
-#define CORE_DBG_DEBUG_H
+#ifndef LIBS_DEBUG_H
+#define LIBS_DEBUG_H
 
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "libc/assert.h"
 #include "libcompiler/macro.h"
 
-#define missing()							\
-	__BEGIN_MACRO							\
-	printf("Missing functionality in function '%s' at %s:%d\n",	\
-	       __PRETTY_FUNCTION__,__FILE__,__LINE__);			\
+#define missing()						\
+	__BEGIN_MACRO						\
+	printf("Missing code in function '%s' at %s:%d\n",	\
+	       __PRETTY_FUNCTION__,__FILE__,__LINE__);		\
 	__END_MACRO
 
 /*
@@ -41,4 +41,4 @@
 	       __PRETTY_FUNCTION__,__LINE__);	\
 	__END_MACRO
 
-#endif /* CORE_DBG_DEBUG_H */
+#endif /* LIBS_DEBUG_H */
