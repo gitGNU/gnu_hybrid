@@ -46,22 +46,24 @@ void timers_update(void * unused)
 	assert(granularity > 0);
 
 	dprintf("Updating timers (granularity %dHz)\n", granularity);
-
 	if (timers.empty()) {
 		dprintf("List is empty, quitting update\n");
 		return;
+	} else {
+		dprintf("Timers to go %d\n", timers.size());
 	}
 
+	TIMERS_DUMP(timers);
 	timer_t * & timer = timers.front();
 	assert(timer);
 
 	dprintf("Updating timer 0x%p\n", timer);
+	TIMER_DUMP(timer);
 
 	timer->expiration -= granularity;
 	if (TIMER_EXPIRED(timer)) {
-		dprintf("Timer 0x%p is expired\n", timer);
-
-		timers.pop_front();
+		dprintf("Timer 0x%p expired\n", timer);
+		TIMER_DUMP(timer);
 
 		if (!timer->callback) {
 			dprintf("Timer 0x%p callback is empty\n", timer);
@@ -69,7 +71,12 @@ void timers_update(void * unused)
 		}
 
 		timer->callback(timer->data);
+
+		// Remove the entry now
+		timers.pop_front();
 	}
+
+	TIMERS_DUMP(timers);
 
 	dprintf("Updated completed\n");
 }
@@ -135,6 +142,7 @@ int timer_add(timer_t * timer)
 	dprintf("Adding timer 0x%p (expiration %d)\n",
 		timer, timer->expiration);
 
+#if 0
 	if (timers.empty()) {
 		dprintf("Timers list is empty, adding timer at the head\n");
 
@@ -144,8 +152,8 @@ int timer_add(timer_t * timer)
 		return 1;
 	}
 
-	dprintf("Timers list not empty, adding somewhere\n");
-
+	dprintf("Timers list not empty, adding ordered\n");
+#endif
 	ktl::list<timer_t *>::iterator iter;
 	for (iter = timers.begin(); iter != timers.end(); iter++) {
 		if ((*iter)->expiration > timer->expiration) {
@@ -166,6 +174,8 @@ int timer_add(timer_t * timer)
 	}
 
 	timers.insert(iter, timer);
+
+	TIMERS_DUMP(timers);
 
 	return 1;
 }

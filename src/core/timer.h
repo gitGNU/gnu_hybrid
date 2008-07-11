@@ -38,7 +38,20 @@ struct timer {
 typedef struct timer timer_t;
 
 #define TIMER_EXPIRED(TIMER) (((TIMER)->expiration <= 0) ? 1 : 0)
-#define TIMER_INIT(TIMER,CALLBACK,DATA,DELAY)	\
+#define TIMER_DUMP(TIMER) {						\
+	dprintf("  Timer 0x%p:\n", (TIMER));				\
+	dprintf("    callback   = 0x%p\n", (TIMER)->callback);		\
+	dprintf("    data       = 0x%p\n", (TIMER)->data);		\
+	dprintf("    expiration = %d\n",   (TIMER)->expiration);	\
+}
+#define TIMERS_DUMP(TIMERS) {						\
+	dprintf("Timers:\n");						\
+	ktl::list<timer_t *>::iterator iter;				\
+	for (iter = (TIMERS).begin(); iter != (TIMERS).end(); iter++) {	\
+		TIMER_DUMP(*iter);					\
+	}								\
+}
+#define TIMER_FILL(TIMER,CALLBACK,DATA,DELAY)	\
 	__BEGIN_MACRO				\
 	assert(TIMER);				\
 	assert((DELAY) >= 0);			\
