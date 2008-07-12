@@ -42,12 +42,12 @@ struct heap_page {
 	uint16_t in_use     : 1;
 };
 
-static int               initialized = 0;
+static int                initialized = 0;
 
-static struct heap_page* heap_alloc_table;
-static addr_t            heap_base_ptr;
-static addr_t            heap_base;
-static size_t            heap_size;
+static struct heap_page * heap_alloc_table;
+static addr_t             heap_base_ptr;
+static addr_t             heap_base;
+static size_t             heap_size;
 
 struct heap_bin {
 	uint_t  element_size;
@@ -172,6 +172,8 @@ int heap_init(addr_t base,
 	page_entries     = CONFIG_PAGE_SIZE / sizeof(struct heap_page);
 	heap_alloc_table = (struct heap_page *) base;
 
+	dprintf("alloc_table = 0x%p\n", heap_alloc_table);
+
 	/* XXX: The formula was: size > (sqr(CONFIG_PAGE_SIZE) / 2) */
 	if (size > (CONFIG_PAGE_SIZE * CONFIG_PAGE_SIZE / 2)) {
 		heap_size = ((addr_t) size * page_entries /
@@ -183,8 +185,8 @@ int heap_init(addr_t base,
 			 PAGE_ALIGN(heap_size / page_entries));
 	heap_base_ptr = heap_base;
 
-	dprintf("alloc_table = 0x%p, base = 0x%p, size = 0x%x\n",
-		heap_alloc_table, heap_base, heap_size);
+	dprintf("base = 0x%p, end = 0x%p, size = 0x%x\n",
+		heap_base, heap_base + size - 1, heap_size);
 
 	/* zero out the heap alloc table at the base of the heap */
 	memset((void *) heap_alloc_table,
@@ -206,13 +208,13 @@ void heap_fini(void)
 	initialized = 0;
 }
 
-static char* raw_alloc(unsigned int size,
-		       size_t       bin_index)
+static char * raw_alloc(unsigned int size,
+			size_t       bin_index)
 {
-	unsigned int      new_heap_ptr;
-	char*             retval;
-	struct heap_page* page;
-	unsigned int      addr;
+	unsigned int       new_heap_ptr;
+	char *             retval;
+	struct heap_page * page;
+	unsigned int       addr;
 
 	assert(bin_index < bin_count);
 
@@ -395,7 +397,7 @@ void arch_heap_free(void * address)
 __END_DECLS
 
 #if CONFIG_DEBUGGER
-static FILE* heap_stream;
+static FILE * heap_stream;
 
 static int heap_iterator(uint_t bin_index,
 			 uint_t bin_element_size,
@@ -449,9 +451,9 @@ static int heap_foreach(int (* callback)(uint_t bin_index,
 	return 1;
 }
 
-static dbg_result_t command_heap_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+static dbg_result_t command_heap_on_execute(FILE * stream,
+					    int    argc,
+					    char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
