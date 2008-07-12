@@ -203,9 +203,9 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* Physical memory initialized */
 
 	/* Mark kernel areas of physical memory as "used" */
-	if (pmm_reserve_region((uint_t) &_kernel, &_ekernel - &_kernel) !=
-	    (uint_t) &_kernel) {
-		panic("Cannot mark kernel regions as used");
+	dprintf("Marking unavailable regions\n");
+	if (!pmm_reserve_region((uint_t) &_kernel, &_ekernel - &_kernel)) {
+		panic("Cannot mark kernel region as used");
 	}
 
 	/* Initialize virtual memory */
@@ -219,7 +219,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	dprintf("Initializing heap\n");
 	heap_size = CONFIG_PAGE_SIZE * 16;
 	heap_base = pmm_reserve(heap_size);
-	if (heap_base == ((uint_t) -1)) {
+	if (!heap_base) {
 		panic("Cannot allocate memory for the heap");
 	}
 
