@@ -379,27 +379,30 @@ void pmm_fini(void)
 }
 
 /* Returns 1 on success, 0 on failure */
-uint_t pmm_reserve_region(uint_t address,
-			  size_t size)
+uint_t pmm_reserve_region(uint_t start,
+			  uint_t stop)
 {
-	int i;
+	int    i;
+	size_t size;
 
-	dprintf("Allocating %d (0x%x) bytes, starting from 0x%p\n",
-		size, size, address);
-
-	if (size == 0) {
+	if (stop <= start) {
 		return 0;
 	}
+	size = stop - start + 1;
 
+	dprintf("Allocating 0x%p-0x%p region (%d/0x%x bytes), \n",
+		start, stop, size, size);
+
+	// XXX FIXME: THIS IS BUGGY, NEEDS SPLITTING
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
 		if (!RGN_USABLE(i)) {
 			continue;
 		}
 
 		/* Could this region contain the requested one ? */
-		if ((RGN_START(i) > address)      ||
+		if ((RGN_START(i) > start)        ||
 		    (RGN_SIZE(i)  < size)         ||
-		    (RGN_STOP(i)  < address + size)) {
+		    (RGN_STOP(i)  < start + size)) {
 			continue;
 		}
 
@@ -414,14 +417,14 @@ uint_t pmm_reserve_region(uint_t address,
 		regions_dump("after reserving region");
 #endif
 		dprintf("Space 0x%p-0x%p allocated into region 0x%p-0x%p\n",
-			address, address + size -1,
+			start, stop,
 			RGN_START(i), RGN_START(i) + RGN_SIZE(i) - 1);
 
 		return 1;
 	}
 
 	dprintf("Cannot allocate %d bytes, starting from 0x%p\n",
-		size, address);
+		size, start);
 
 	return 0;
 }
