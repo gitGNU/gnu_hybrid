@@ -160,6 +160,7 @@ static void regions_dump(char * comment)
 
 static void pmm_reorder(void)
 {
+	dprintf("Reordering regions\n");
 	qsort((void *) regions,
 	      PMM_MAX_REGIONS,
 	      sizeof(pmm_region_t),
@@ -216,6 +217,7 @@ static int region_split(int    i,
 	dprintf("Splitting region %d, by %d (0x%x) bytes\n", i, size, size);
 
 	if (RGN_SIZE(i) == size) {
+		dprintf("Split done\n");
 		return 1;
 	} else if (RGN_SIZE(i) > size) {
 		int j;
@@ -245,10 +247,12 @@ static int region_split(int    i,
 
 			pmm_reorder();
 
+			dprintf("Split done\n");
 			return 1;
 		}
 	}
 
+	dprintf("Split problems\n");
 	return 0;
 }
 
@@ -374,6 +378,7 @@ void pmm_fini(void)
 	dprintf("Physical memory disposed\n");
 }
 
+/* Returns 1 on success, 0 on failure */
 uint_t pmm_reserve_region(uint_t address,
 			  size_t size)
 {
@@ -383,7 +388,7 @@ uint_t pmm_reserve_region(uint_t address,
 		size, size, address);
 
 	if (size == 0) {
-		return ((uint_t) -1);
+		return 0;
 	}
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
@@ -399,7 +404,7 @@ uint_t pmm_reserve_region(uint_t address,
 		}
 
 		if (!region_split(i, size)) {
-			return ((uint_t) -1);
+			return 0;
 		}
 
 		/* Yes, so mark it as used */
@@ -408,15 +413,20 @@ uint_t pmm_reserve_region(uint_t address,
 #if CONFIG_PMM_DUMPS_DEBUG
 		regions_dump("after reserving region");
 #endif
-		return RGN_START(i);
+		dprintf("Space 0x%p-0x%p allocated into region 0x%p-0x%p\n",
+			address, address + size -1,
+			RGN_START(i), RGN_START(i) + RGN_SIZE(i) - 1);
+
+		return 1;
 	}
 
 	dprintf("Cannot allocate %d bytes, starting from 0x%p\n",
 		size, address);
 
-	return ((uint_t) -1);
+	return 0;
 }
 
+/* Returns 0 on failure, the starting address on success */
 uint_t pmm_reserve(uint_t size)
 {
 	int i;
@@ -424,7 +434,7 @@ uint_t pmm_reserve(uint_t size)
 	dprintf("Allocating %d (0x%x) bytes\n", size, size);
 
 	if (size == 0) {
-		return ((uint_t) -1);
+		return 0;
 	}
 
 	for (i = 0; i < PMM_MAX_REGIONS; i++) {
@@ -456,7 +466,7 @@ uint_t pmm_reserve(uint_t size)
 		return RGN_START(i);
 	}
 
-	return ((uint_t) -1);
+	return 0;
 }
 
 void pmm_release(uint_t start)
