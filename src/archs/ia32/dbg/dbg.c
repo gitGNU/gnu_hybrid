@@ -90,8 +90,9 @@ int arch_dbg_init(void)
 	if (!vga_init()) {
 		/*
 		 * NOTE:
-		 *     We don't have output ... this is useless so we stop
-		 *     the arch_dbg_init() returning 0 (as error).
+		 *     We don't have output ... output is prioritary over
+		 *     input, so this condition is an hard-error. We will
+		 *     return 0 in order to notify back the problem
 		 */
 		return 0;
 	}
@@ -115,15 +116,15 @@ int arch_dbg_init(void)
 
 void arch_dbg_fini(void)
 {
-#if CONFIG_BOCHS_DEBUGGER
-	bochs_fini();
-#endif
-#if CONFIG_HOSTED_DEBUGGER
-	kbd_fini();
-	vga_fini();
-#endif
 #if CONFIG_RS232_DEBUGGER
 	rs232_fini();
+#endif
+#if CONFIG_HOSTED_DEBUGGER
+	vga_fini();
+	kbd_fini();
+#endif
+#if CONFIG_BOCHS_DEBUGGER
+	bochs_fini();
 #endif
 }
 #endif /* CONFIG_DEBUG */
