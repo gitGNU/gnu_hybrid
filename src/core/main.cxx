@@ -37,7 +37,7 @@ timer_t timer3;
 
 void timer_cb(void *)
 {
-	printf("T");
+	putchar('T');
 }
 
 /* We reach this point from init() */
@@ -65,15 +65,15 @@ int main(int argc, char * argv[])
 		panic("Cannot initialize timers");
 	}
 
-	TIMER_FILL(&timer1, timer_cb, 0, 0500000);
+	TIMER_FILL(&timer1, timer_cb, 0, 05000);
 	if (!timer_add(&timer1)) {
 		panic("Cannot add timer");
 	}
-	TIMER_FILL(&timer2, timer_cb, 0, 1000000);
+	TIMER_FILL(&timer2, timer_cb, 0, 10000);
 	if (!timer_add(&timer2)) {
 		panic("Cannot add timer");
 	}
-	TIMER_FILL(&timer3, timer_cb, 0, 1500000);
+	TIMER_FILL(&timer3, timer_cb, 0, 15000);
 	if (!timer_add(&timer3)) {
 		panic("Cannot add timer");
 	}
@@ -92,8 +92,8 @@ int main(int argc, char * argv[])
 
 	while (1 != 0) {
 		i++;
-		if (i >= 1500000) {
-			printf("A");
+		if (i >= 15000) {
+			putchar('A');
 
 			i = 0;
 		}
