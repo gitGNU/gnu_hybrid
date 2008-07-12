@@ -49,7 +49,7 @@ void backtrace_save(void)
 	assert(frames >= 1);
 }
 
-void backtrace_show(FILE* stream)
+void backtrace_show(FILE * stream)
 {
 	unsigned int i;
 
@@ -65,8 +65,8 @@ void backtrace_show(FILE* stream)
 	for (i = 1; /* Do not store this function into the trace */
 	     i < frames;
 	     i++) {
-		void* base;
-		char* symbol;
+		void * base;
+		char * symbol;
 
 		/* Resolve the symbol base */
 		if (bfd_symbol_reverse_lookup((void *) backtrace[i],
@@ -121,9 +121,9 @@ void backtrace_show(FILE* stream)
 }
 
 #if CONFIG_DEBUGGER
-static dbg_result_t command_backtrace_on_execute(FILE* stream,
-						 int   argc,
-						 char* argv[])
+static dbg_result_t command_backtrace_on_execute(FILE * stream,
+						 int    argc,
+						 char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
