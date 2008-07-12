@@ -34,19 +34,26 @@
 static int panic_timeout = CONFIG_PANIC_TIMEOUT;
 #endif /* REBOOT_ON_PANIC */
 
-#define PANIC_ON_PANIC 0
+#define NO_PANIC_ON_PANIC 1
 
 void arch_panic(const char* message)
 {
-#if PANIC_ON_PANIC
+#if NO_PANIC_ON_PANIC
 	static int panic_in_progress = 0;
 #endif
 	interrupts_lock();
 
-#if PANIC_ON_PANIC
+#if NO_PANIC_ON_PANIC
 	/* Remember that a panic is in progress */
 	panic_in_progress++;
+	if (panic_in_progress > 1) {
+		/* Don't panic too much, let the previous panic finish ;-) */
+		printf("Panic inside panic, bailing out ...\n");
+		interrupts_unlock();
+		return;
+	}
 #endif
+
 
 	/* Print the message (if any) */
 	if (!message) {
@@ -56,15 +63,6 @@ void arch_panic(const char* message)
 
 	backtrace_save();
 	backtrace_show(stdout);
-
-#if PANIC_ON_PANIC
-	if (panic_in_progress > 1) {
-		/* Don't panic too much, let the previous panic finish ;-) */
-		printf("Panic inside panic, bailing out ...\n");
-		interrupts_unlock();
-		return;
-	}
-#endif
 
 #if (!CONFIG_DEBUGGER_ON_PANIC && \
      !CONFIG_HALT_ON_PANIC     && \
@@ -85,7 +83,7 @@ void arch_panic(const char* message)
 	}
 #endif
 
-#if PANIC_ON_PANIC
+#if NO_PANIC_ON_PANIC
 	/* We could panic again here ... is it correct ? */
 	panic_in_progress--;
 
