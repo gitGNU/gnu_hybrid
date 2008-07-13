@@ -41,6 +41,10 @@ endif
 ##
 ## NOTE:
 ##   Multiboot compliance force us to have the multiboot header first ...
+##   A trick is available inside the kernel linker script
+##
+## XXX FIXME:
+##   Both solutions are quite awful, find a better solution ASAP
 ##
 arch_SRCS +=					\
 	$(arch_common_SRCS)			\
