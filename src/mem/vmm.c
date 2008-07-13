@@ -21,7 +21,6 @@
 #include "archs/arch.h"
 #include "libs/debug.h"
 #include "mem/pmm.h"
-#include "boot/bootinfo.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "libc/string.h"

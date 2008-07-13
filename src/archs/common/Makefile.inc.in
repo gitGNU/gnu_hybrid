@@ -19,7 +19,8 @@
 ##
 
 EXTRA_DIST +=					\
-	@reldir@/Makefile.inc.in
+	@reldir@/Makefile.inc.in		\
+	@reldir@/rules.cfg
 
 arch_common_SRCS =				\
 	@reldir@/multiboot.c			\

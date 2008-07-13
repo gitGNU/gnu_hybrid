@@ -25,7 +25,7 @@
 #include "libc/stddef.h"
 #include "libs/debug.h"
 #include "mem/pmm.h"
-#include "boot/bootinfo.h"
+#include "archs/boot/bootinfo.h"
 #include "dbg/debugger.h"
 
 #define BANNER          "pmm: "

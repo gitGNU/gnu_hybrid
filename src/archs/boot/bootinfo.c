@@ -25,10 +25,10 @@
 #include "libc/param.h"
 #include "archs/arch.h"
 #include "archs/linker.h"
+#include "archs/boot/bootinfo.h"
 #include "libs/debug.h"
 #include "dbg/panic.h"
 #include "dbg/debugger.h"
-#include "boot/bootinfo.h"
 
 #define BANNER          "bootinfo: "
 

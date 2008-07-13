@@ -21,6 +21,7 @@
 include @reldir@/ia32/Makefile.inc
 include @reldir@/ppc32/Makefile.inc
 include @reldir@/common/Makefile.inc
+include @reldir@/boot/Makefile.inc
 
 EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in
@@ -40,13 +41,18 @@ endif
 
 ##
 ## NOTE:
-##   Multiboot compliance force us to have the multiboot header first ...
-##   A trick is available inside the kernel linker script
+##   Multiboot compliance force us to have the multiboot header first so we
+##   must split the architecture level sources into arch_SRCS and
+##   arch_multiboot_SRCS.
+##
+##   Another trick to enforce the multiboot compliance is available inside the
+##   kernel linker script
 ##
 ## XXX FIXME:
-##   Both solutions are quite awful, find a better solution ASAP
+##   Both solutions are quite awful, we should find a better solution ASAP
 ##
 arch_SRCS +=					\
 	$(arch_common_SRCS)			\
+	$(arch_boot_SRCS)			\
 	@reldir@/arch.h				\
 	@reldir@/linker.h

@@ -27,7 +27,7 @@
 #include "core/dma.h"
 #include "core/cpu.h"
 #include "core/scheduler.h"
-#include "boot/option.h"
+#include "archs/boot/option.h"
 #include "core/build.h"
 #include "libc++/cstdlib"
 

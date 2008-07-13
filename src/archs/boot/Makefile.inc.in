@@ -22,7 +22,7 @@ EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
 
-boot_SRCS =					\
+arch_boot_SRCS =				\
 	@reldir@/bootstrap.c			\
 	@reldir@/bootstrap.h			\
 	@reldir@/bootinfo.h			\

@@ -21,7 +21,7 @@
 #define BOOTSTRAP_H
 
 #include "config/config.h"
-#include "boot/bootinfo.h"
+#include "archs/boot/bootinfo.h"
 
 __BEGIN_DECLS
 

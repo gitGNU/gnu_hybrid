@@ -21,7 +21,7 @@
 #define CORE_MEM_VMM_H
 
 #include "config/config.h"
-#include "boot/bootinfo.h"
+#include "archs/boot/bootinfo.h"
 
 int  vmm_init(void);
 int  vmm_pagesize(void);

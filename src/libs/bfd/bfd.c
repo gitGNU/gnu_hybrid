@@ -30,7 +30,7 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "mem/heap.h"
-#include "boot/bootinfo.h"
+#include "archs/boot/bootinfo.h"
 
 #define BANNER          "bfd: "
 

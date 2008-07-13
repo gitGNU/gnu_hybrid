@@ -21,7 +21,7 @@
 #define CORE_MEM_PMM_H
 
 #include "config/config.h"
-#include "boot/bootinfo.h"
+#include "archs/boot/bootinfo.h"
 #include "libc/stdint.h"
 
 __BEGIN_DECLS

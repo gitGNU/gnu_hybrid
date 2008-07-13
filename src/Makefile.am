@@ -27,7 +27,6 @@ include $(srcdir)/config/Makefile.inc
 include $(srcdir)/libs/Makefile.inc
 include $(srcdir)/core/Makefile.inc
 include $(srcdir)/mem/Makefile.inc
-include $(srcdir)/boot/Makefile.inc
 include $(srcdir)/archs/Makefile.inc
 include $(srcdir)/dbg/Makefile.inc
 
