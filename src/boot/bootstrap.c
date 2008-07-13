@@ -27,10 +27,10 @@
 #include "libs/debug.h"
 #include "dbg/panic.h"
 #include "dbg/debugger.h"
+#include "dbg/log.h"
 #include "boot/option.h"
 #include "boot/bootinfo.h"
 #include "boot/bootstrap.h"
-#include "core/log.h"
 #include "core/resource.h"
 #include "core/semaphore.h"
 #include "core/mutex.h"
@@ -88,6 +88,17 @@ void bootstrap_early(void)
 	}
 	/* Now we should enter the debugger safely ... */
 #endif
+
+	/*
+	 * NOTE:
+	 *     The logger is static so it can be initialized as soon as
+	 *     possible (no malloc()/free() needed there)
+	 */
+	if (!log_init()) {
+		panic("Cannot initialize logger");
+		/* This check could be a warning ... */
+	}
+	log(LOG_NORMAL, "%s %s starting ...\n", PACKAGE_NAME, PACKAGE_VERSION);
 }
 
 #if CONFIG_BOOTINFO_DEBUG
@@ -258,19 +269,6 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	 * NOTE:
 	 *     We have new, delete ... now
 	 */
-
-	/*
-	 * XXX FIXME:
-	 *     The logger is static so it could be moved up but it comes from
-	 *     the C++ world, so it must be initialized after the C++ glue
-	 *     We should find a way to bring its initialization as sooner as
-	 *     possible
-	 */
-	if (!log_init()) {
-		panic("Cannot initialize logger");
-		/* This check could be a warning ... */
-	}
-	log(LOG_NORMAL, "%s %s starting ...\n", PACKAGE_NAME, PACKAGE_VERSION);
 
 	dprintf("Calling main()\n");
 	main(0, 0);
