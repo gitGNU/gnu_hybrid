@@ -60,7 +60,7 @@ void bootstrap_early(void)
 {
 	/*
 	 * NOTE:
-	 *     Call the C library init function as soon as possible in order
+	 *     Call the C library init function as soon as possible, in order
 	 *     to setup all the global initializers
 	 */
 
@@ -86,7 +86,7 @@ void bootstrap_early(void)
 	if (!dbg_init()) {
 		panic("Cannot initialize the debugger");
 	}
-	/* Now we can enter the debugger (safely ?) */
+	/* Now we should enter the debugger safely ... */
 #endif
 }
 
@@ -99,7 +99,7 @@ static uint_t           heap_size;
 
 extern struct bfd_image kernel_image;
 
-void bootstrap_late(bootinfo_t* bootinfo)
+void bootstrap_late(bootinfo_t * bootinfo)
 {
 	int i;
 
@@ -157,16 +157,9 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	assert(bootinfo_last == bootinfo);
 #endif /* CONFIG_BOOTINFO_DEBUG */
 
-	/* The logger is static ... it should be moved up */
-	if (!log_init()) {
-		panic("Cannot initialize logger");
-		/* This check could be a warning ... */
-	}
-	log(LOG_NORMAL, "%s %s starting ...\n", PACKAGE_NAME, PACKAGE_VERSION);
-
 	/*
 	 * NOTE:
-	 *     The bfd layer  is needed as soon as possible in order to help
+	 *     The bfd layer is needed as soon as possible in order to help
 	 *     dumping kernel stack traces ...
 	 */
 	if (!bfd_init()) {
@@ -228,6 +221,12 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* From this point on we can issue malloc() and free() ... */
 	assert(heap_initialized());
 
+	/*
+	 * NOTE:
+	 *     We have malloc(), free() ... now
+	 */
+
+
 #if CONFIG_OPTIONS
 	dprintf("Initializing options\n");
 	if (!option_init()) {
@@ -251,11 +250,6 @@ void bootstrap_late(bootinfo_t* bootinfo)
 		}
 	}
 
-	/*
-	 * NOTE:
-	 *     We have malloc(), free() ... now
-	 */
-
 	/* C++ library (glue) startup */
 	dprintf("Initializing C++ support\n");
 	elklib_cxx_init();
@@ -264,6 +258,19 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	 * NOTE:
 	 *     We have new, delete ... now
 	 */
+
+	/*
+	 * XXX FIXME:
+	 *     The logger is static so it could be moved up but it comes from
+	 *     the C++ world, so it must be initialized after the C++ glue
+	 *     We should find a way to bring its initialization as sooner as
+	 *     possible
+	 */
+	if (!log_init()) {
+		panic("Cannot initialize logger");
+		/* This check could be a warning ... */
+	}
+	log(LOG_NORMAL, "%s %s starting ...\n", PACKAGE_NAME, PACKAGE_VERSION);
 
 	dprintf("Calling main()\n");
 	main(0, 0);

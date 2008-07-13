@@ -38,12 +38,12 @@ __BEGIN_DECLS
 
 static int   initialized = 0;
 
-static FILE  _stdlog     = FILE_INITIALIZER;
-static FILE* stdlog      = &_stdlog;
+static FILE   _stdlog     = FILE_INITIALIZER;
+static FILE * stdlog      = &_stdlog;
 
-static int   position    = 0;
-static int   length      = 0;
-static char  buffer[CONFIG_LOG_SIZE];
+static int    position    = 0;
+static int    length      = 0;
+static char   buffer[CONFIG_LOG_SIZE];
 
 /* Utility macro */
 #define CHECK_POSITION(P)			\
