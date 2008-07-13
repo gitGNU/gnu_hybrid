@@ -24,6 +24,7 @@
 #include "boot/bootinfo.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"
+#include "libc/string.h"
 #include "dbg/debugger.h"
 
 #define BANNER          "vmm: "
@@ -36,14 +37,32 @@
 
 static int initialized = 0;
 
-int vmm_init(bootinfo_t* bi)
+int vmm_init(size_t max_size)
 {
+	void * pdir;
+#if 0
+	uint_t i;
+#endif
 	assert(!initialized);
-	assert(bi);
+	unused_argument(max_size);
 
-	unused_argument(bi);
+	pdir = (void *) pmm_page_alloc(CONFIG_PAGE_SIZE);
+	if (!pdir) {
+		return 0;
+	}
 
-	//	missing();
+	memset((char *) pdir, 0, CONFIG_PAGE_SIZE);
+
+	dprintf("Building identity mapping up to %dMb\n",
+		max_size / (1024 * 1024));
+
+#if 0
+	for (i = 0;
+	     i < ALIGN(max_size,
+		       1024 * CONFIG_PAGE_SIZE) / (1024 * CONFIG_PAGE_SIZE);
+	     i++) {
+	}
+#endif
 
 	dprintf("Virtual memory initialized successfully\n");
 	initialized = 1;

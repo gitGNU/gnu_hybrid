@@ -23,7 +23,7 @@
 #include "config/config.h"
 #include "boot/bootinfo.h"
 
-int  vmm_init(bootinfo_t* bi);
+int  vmm_init(void);
 int  vmm_pagesize(void);
 void vmm_fini(void);
 

@@ -378,9 +378,75 @@ void pmm_fini(void)
 	dprintf("Physical memory disposed\n");
 }
 
+/* Returns 0 on failure, the starting address on success */
+uint_t pmm_alloc(size_t size)
+{
+	int i;
+
+	dprintf("Allocating %d (0x%x) bytes\n", size, size);
+
+	if (size == 0) {
+		return 0;
+	}
+
+	for (i = 0; i < PMM_MAX_REGIONS; i++) {
+		if (!RGN_USABLE(i)) {
+			continue;
+		}
+
+		/* Its bounds must be good ones */
+		assert(RGN_START(i) < RGN_STOP(i));
+
+		/* Could this region contains the requested one ? */
+		if (RGN_SIZE(i) < size) {
+			continue;
+		}
+
+		/* dprintf("Region %d will be used\n", i); */
+		if (!region_split(i, size)) {
+			// No ...
+			continue;
+		}
+
+		/* Yes, so mark it as used */
+		RGN_FLAGS(i) |= PMM_FLAG_USED;
+
+#if CONFIG_PMM_DUMPS_DEBUG
+		regions_dump("after allocating region");
+#endif
+
+		return RGN_START(i);
+	}
+
+	return 0;
+}
+
+/* XXX FIXME: This is buggy */
+void pmm_free(uint_t start)
+{
+	int i;
+
+	for (i = 0; i < PMM_MAX_REGIONS; i++) {
+		if (RGN_START(i) == start) {
+			break;
+		}
+	}
+	if (i >= PMM_MAX_REGIONS) {
+		return;
+	}
+
+	if (!(RGN_VALID(i) && RGN_USED(i) && RGN_ENABLED(i))) {
+		return;
+	}
+
+	RGN_FLAGS(i) &= ~PMM_FLAG_USED;
+
+	regions_merge();
+}
+
 /* Returns 1 on success, 0 on failure */
-uint_t pmm_reserve_region(uint_t start,
-			  uint_t stop)
+uint_t pmm_reserve(uint_t start,
+		   uint_t stop)
 {
 	int    i;
 	size_t size;
@@ -429,69 +495,18 @@ uint_t pmm_reserve_region(uint_t start,
 	return 0;
 }
 
-/* Returns 0 on failure, the starting address on success */
-uint_t pmm_reserve(uint_t size)
-{
-	int i;
-
-	dprintf("Allocating %d (0x%x) bytes\n", size, size);
-
-	if (size == 0) {
-		return 0;
-	}
-
-	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (!RGN_USABLE(i)) {
-			continue;
-		}
-
-		/* Its bounds must be good ones */
-		assert(RGN_START(i) < RGN_STOP(i));
-
-		/* Could this region contains the requested one ? */
-		if (RGN_SIZE(i) < size) {
-			continue;
-		}
-
-		/* dprintf("Region %d will be used\n", i); */
-		if (!region_split(i, size)) {
-			// No ...
-			continue;
-		}
-
-		/* Yes, so mark it as used */
-		RGN_FLAGS(i) |= PMM_FLAG_USED;
-
-#if CONFIG_PMM_DUMPS_DEBUG
-		regions_dump("after allocating region");
-#endif
-
-		return RGN_START(i);
-	}
-
-	return 0;
-}
-
 void pmm_release(uint_t start)
 {
-	int i;
+	pmm_free(start);
+}
 
-	for (i = 0; i < PMM_MAX_REGIONS; i++) {
-		if (RGN_START(i) == start) {
-			break;
-		}
-	}
-	if (i >= PMM_MAX_REGIONS) {
-		return;
-	}
+uint_t pmm_page_alloc(size_t size)
+{
+	unused_argument(size);
 
-	if (!(RGN_VALID(i) && RGN_USED(i) && RGN_ENABLED(i))) {
-		return;
-	}
+	missing();
 
-	RGN_FLAGS(i) &= ~PMM_FLAG_USED;
-
-	regions_merge();
+	return 0;
 }
 
 #if CONFIG_DEBUGGER

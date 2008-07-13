@@ -39,11 +39,14 @@ int    pmm_foreach(pmm_type_t flags,
 		   int        (* callback)(uint_t     start,
 					   uint_t     stop,
 					   pmm_type_t flags));
-uint_t pmm_reserve_region(uint_t start,
-			  uint_t stop);
-uint_t pmm_reserve(uint_t size);
+uint_t pmm_reserve(uint_t start,
+		   uint_t stop);
 void   pmm_release(uint_t start);
-int    pmm_test(void);
+
+uint_t pmm_alloc(size_t size);
+void   pmm_free(uint_t start);
+
+uint_t pmm_page_alloc(size_t size);
 
 __END_DECLS
 
