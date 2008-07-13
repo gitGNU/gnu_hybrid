@@ -54,7 +54,7 @@ extern int main(int argc, char* argv[]);
 /*
  * NOTE:
  *     This is the first stage init, we need this call in order to have
- *     early printf capabilities ...
+ *     early debugging capabilities ...
  */
 void bootstrap_early(void)
 {
@@ -178,22 +178,26 @@ void bootstrap_late(bootinfo_t * bootinfo)
 		/* This check could be a warning ... */
 	}
 
-	/* Resources are needed as soon as possible */
-	if (!resource_init()) {
-		panic("Resource problems");
-	}
-
 	if (!bfd_bi_image_static_add(&bootinfo->kernel, &kernel_image)) {
 		panic("Cannot initialize bfd related infos for kernel");
 		/* This check could be a warning ... */
 	}
 	/* We should be able to resolve symbols now ... */
 
-	if (!arch_init()) {
-		panic("Cannot initialize architecture layer");
+	/*
+	 * NOTE:
+	 *     Resources initialization is needed sooner than the architecture
+	 *     layer, in order to let the architecture layer mark each used
+	 *     resource
+	 */
+	if (!resource_init()) {
+		panic("Resource initialization problems");
 	}
 
-	/* Translate bootinfo memory resources into pmm ones */
+	/*
+	 * NOTE:
+	 *     Translate bootinfo memory resources into physical memory infos
+	 */
 	dprintf("Initializing pmm\n");
 	if (!pmm_init(bootinfo)) {
 		panic("Cannot initialize physical memory manager");
@@ -205,6 +209,16 @@ void bootstrap_late(bootinfo_t * bootinfo)
 		&_kernel, &_ekernel);
 	if (!pmm_reserve((uint_t) &_kernel, (uint_t) &_ekernel)) {
 		panic("Cannot mark kernel region as used");
+	}
+
+	/*
+	 * NOTE:
+	 *     Start the architecture layer, from now on it should be possible
+	 *     to allocate physical memory (or mark it as reserved) and work
+	 *     with resources
+	 */
+	if (!arch_init()) {
+		panic("Cannot initialize architecture layer");
 	}
 
 #if 0
