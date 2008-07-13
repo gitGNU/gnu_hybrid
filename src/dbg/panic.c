@@ -54,7 +54,6 @@ void arch_panic(const char* message)
 	}
 #endif
 
-
 	/* Print the message (if any) */
 	if (!message) {
 		message = "EMPTY ???";
