@@ -35,7 +35,7 @@
  (li "Debugging via RS232")
  )
 
-(h3 "Copying")
+(h3 "COPYING")
 (p "Hybrid is licensed under the "
    (a (@ (href "http://www.gnu.org/licenses/licenses.html"))
       "GNU General Public License, version 2")
