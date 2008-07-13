@@ -58,7 +58,7 @@ text-config:
 stats:
 	$(MAKE) stats -C src
 
-debug:
+debug: image.iso
 	$(MAKE) system.map -C src
 
 ##
