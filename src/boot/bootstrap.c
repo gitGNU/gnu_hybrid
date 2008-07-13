@@ -38,6 +38,8 @@
 #include "mem/pmm.h"
 #include "mem/vmm.h"
 
+#include "elklib.h"
+
 #define BANNER          "bootstrap: "
 
 #if CONFIG_BOOTSTRAP_DEBUG
@@ -45,14 +47,6 @@
 #else
 #define dprintf(F,A...)
 #endif
-
-/* C library */
-extern void _init(void);
-extern void _fini(void);
-
-/* C++ library */
-extern void __do_global_ctors_aux(void);
-extern void __do_global_dtors_aux(void);
 
 /* main entry point */
 extern int main(int argc, char* argv[]);
@@ -72,7 +66,7 @@ void bootstrap_early(void)
 
 	/* C library (glue) startup */
 	dprintf("Initializing C support\n");
-	_init();
+	elklib_c_init();
 
 #if CONFIG_DEBUG
 	if (arch_dbg_init()) {
@@ -205,21 +199,23 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	/* Mark kernel areas of physical memory as "used" */
 	dprintf("Marking unavailable region 0x%p-0x%p\n",
 		&_kernel, &_ekernel);
-	if (!pmm_reserve_region((uint_t) &_kernel, (uint_t) &_ekernel)) {
+	if (!pmm_reserve((uint_t) &_kernel, (uint_t) &_ekernel)) {
 		panic("Cannot mark kernel region as used");
 	}
 
+#if 0
 	/* Initialize virtual memory */
 	dprintf("Initializing vmm\n");
-	if (!vmm_init(bootinfo)) {
+	if (!vmm_init()) {
 		panic("Cannot initialize virtual memory");
 	}
 	/* From this point on we should have virtual memory turned on */
+#endif
 
 	/* Setting up the heap ! */
 	dprintf("Initializing heap\n");
 	heap_size = CONFIG_PAGE_SIZE * 64;
-	heap_base = pmm_reserve(heap_size);
+	heap_base = pmm_alloc(heap_size);
 	if (!heap_base) {
 		panic("Cannot allocate memory for the heap");
 	}
@@ -262,7 +258,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 
 	/* C++ library (glue) startup */
 	dprintf("Initializing C++ support\n");
-	__do_global_ctors_aux();
+	elklib_cxx_init();
 
 	/*
 	 * NOTE:
@@ -273,7 +269,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 	main(0, 0);
 
 	/* C++ (glue) Shutdown */
-	__do_global_dtors_aux();
+	elklib_cxx_fini();
 
 #if CONFIG_DEBUGGER
 	dbg_fini();
@@ -285,7 +281,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 
 	heap_fini();
 	vmm_fini();
-	pmm_release(heap_base);
+	pmm_free(heap_base);
 	pmm_release((uint_t) &_kernel);
 	pmm_fini();
 	arch_fini();
@@ -305,7 +301,7 @@ void bootstrap_late(bootinfo_t* bootinfo)
 #endif /* CONFIG_DEBUG*/
 
 	/* C (glue) Shutdown */
-	_fini();
+	elklib_c_fini();
 
 	/* Halt should be done here ... ? */
 	arch_halt();
