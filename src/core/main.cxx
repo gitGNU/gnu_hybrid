@@ -31,6 +31,12 @@
 #include "core/build.h"
 #include "libc++/cstdlib"
 
+#if CONFIG_INIT_DEBUG
+#define dprintf(F,A...) printf("main: " F,##A)
+#else
+#define dprintf(F,A...)
+#endif
+
 timer_t timer1;
 timer_t timer2;
 timer_t timer3;
@@ -43,8 +49,12 @@ void timer_cb(void *)
 /* We reach this point from init() */
 int main(int argc, char * argv[])
 {
-	printf("Entering main(argc = %d, argv = %p)\n", argc, argv);
-
+#if CONFIG_INIT_DEBUG
+	dprintf("Entering main(argc = %d, argv = %p)\n", argc, argv);
+#else
+	unused_argument(argc);
+	unused_argument(argv);
+#endif
 	printf("Welcome to Hybrid kernel "
 	       "v%d.%d.%d "
 	       "%s"
