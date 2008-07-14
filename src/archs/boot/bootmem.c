@@ -110,8 +110,8 @@ int bootmem_reserve(addr_t start,
 
 	assert(pg_start <= pg_stop);
 
-	dprintf("Reserving pages rage [%d-%d] (%d)\n",
-		pg_start, pg_stop,  pg_stop - pg_start + 1);
+	dprintf("Reserving 0x%p-0x%p (pages rage [%d-%d], %d pages)\n",
+		start, stop, pg_start, pg_stop,  pg_stop - pg_start + 1);
 
 	for (i = pg_start; i <= pg_stop; i++) {
 		size_t j;
@@ -143,8 +143,8 @@ int bootmem_unreserve(addr_t start,
 
 	assert(pg_start <= pg_stop);
 
-	dprintf("Unreserving pages range [%d-%d] (%d)\n",
-		pg_start, pg_stop, pg_stop - pg_start + 1);
+	dprintf("Unreserving 0x%p-0x%p (pages rage [%d-%d], %d pages)\n",
+		start, stop, pg_start, pg_stop,  pg_stop - pg_start + 1);
 
 	for (i = pg_start; i <= pg_stop; i++) {
 		size_t j;
