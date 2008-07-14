@@ -19,7 +19,7 @@
 
 #include "config/config.h"
 #include "libc/stdio.h"
-#include "libc/assert.h"
+#include "libs/debug.h"
 #include "archs/arch.h"
 #include "archs/ia32/asm.h"
 #include "archs/ia32/port.h"
