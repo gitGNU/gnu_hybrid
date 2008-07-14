@@ -43,8 +43,8 @@
 #define MEM_SIZE(X,Y)  (X)->mem[(Y)].size
 
 /* Memory */
-static void mem_invalidate(bootinfo_t* bi,
-			   int         i)
+static void mem_invalidate(bootinfo_t * bi,
+			   int          i)
 {
 	assert(bi);
 	assert((i >= 0) && (i < BOOTINFO_MEM_REGIONS));
@@ -53,9 +53,9 @@ static void mem_invalidate(bootinfo_t* bi,
 	MEM_TYPE(bi, i) = BOOTINFO_MEM_UNKNOWN;
 }
 
-static void mem_duplicate(bootinfo_t* bi,
-			  int         i,
-			  int         j)
+static void mem_duplicate(bootinfo_t * bi,
+			  int          i,
+			  int          j)
 {
 	assert(bi);
 	assert((i >= 0) && (i < BOOTINFO_MEM_REGIONS));
@@ -64,8 +64,8 @@ static void mem_duplicate(bootinfo_t* bi,
 	memcpy(&bi->mem[j], &bi->mem[i], sizeof(bi_region_t));
 }
 
-static int mem_valid(bootinfo_t* bi,
-		     int         i)
+static int mem_valid(bootinfo_t * bi,
+		     int          i)
 {
 	assert(bi);
 	assert((i >= 0) && (i < BOOTINFO_MEM_REGIONS));
@@ -82,7 +82,7 @@ static int mem_valid(bootinfo_t* bi,
 	return 1;
 }
 
-static int mem_find_free(bootinfo_t* bi)
+static int mem_find_free(bootinfo_t * bi)
 {
 	int i;
 
@@ -97,11 +97,11 @@ static int mem_find_free(bootinfo_t* bi)
 	return i;
 }
 
-static int mem_compare(const void* a,
-		       const void* b)
+static int mem_compare(const void * a,
+		       const void * b)
 {
-	bi_region_t* ra;
-	bi_region_t* rb;
+	bi_region_t * ra;
+	bi_region_t * rb;
 
 	assert(a);
 	assert(b);
@@ -129,9 +129,9 @@ static int mem_compare(const void* a,
 	bug(); /* We shouldn't reach this point ... */
 }
 
-static int mem_compose(bootinfo_t* bi,
-		       int         i,
-		       int         j)
+static int mem_compose(bootinfo_t * bi,
+		       int          i,
+		       int          j)
 {
 	bi_mem_t t1, t2;
 	uint_t   b1, e1, b2, e2;
@@ -217,7 +217,7 @@ static int mem_compose(bootinfo_t* bi,
 	return 1;
 }
 
-int bootinfo_mem_fix(bootinfo_t* bi)
+int bootinfo_mem_fix(bootinfo_t * bi)
 {
 	int i;
 
@@ -338,7 +338,7 @@ int bootinfo_mem_fix(bootinfo_t* bi)
 }
 
 /* Arguments */
-int bootinfo_args_fix(bootinfo_t* bi)
+int bootinfo_args_fix(bootinfo_t * bi)
 {
 	int i;
 
@@ -370,8 +370,8 @@ int bootinfo_args_fix(bootinfo_t* bi)
 }
 
 /* Modules */
-static void mod_invalidate(bootinfo_t* bi,
-			   int         i)
+static void mod_invalidate(bootinfo_t * bi,
+			   int          i)
 {
 	assert(bi);
 	assert((i >= 0) && (i < BOOTINFO_MODULES));
@@ -380,7 +380,7 @@ static void mod_invalidate(bootinfo_t* bi,
 	memset(&(bi->modules[i].data), 0, sizeof(bi->modules[i].data));
 }
 
-static int mod_valid(bootinfo_t* bi,
+static int mod_valid(bootinfo_t * bi,
 		     int         i)
 {
 	assert(bi);
@@ -411,7 +411,7 @@ static int mod_valid(bootinfo_t* bi,
 	return 1;
 }
 
-int bootinfo_mod_fix(bootinfo_t* bi)
+int bootinfo_mod_fix(bootinfo_t * bi)
 {
 	int i;
 
@@ -455,7 +455,7 @@ static void mem_dump(bootinfo_t * bi, char * comment)
 #endif
 
 #if CONFIG_BOOTINFO_DEBUG
-void bootinfo_dump(bootinfo_t* bi,
+void bootinfo_dump(bootinfo_t * bi,
 		   FILE*       stream)
 {
 #if CONFIG_BOOTINFO_MODULES
@@ -498,7 +498,7 @@ void bootinfo_dump(bootinfo_t* bi,
 #endif
 
 /* Entry-point */
-int bootinfo_fix(bootinfo_t* bi)
+int bootinfo_fix(bootinfo_t * bi)
 {
 	assert(bi);
 
@@ -537,13 +537,13 @@ int bootinfo_fix(bootinfo_t* bi)
 }
 
 #if CONFIG_BOOTINFO_DEBUG
-extern bootinfo_t* bootinfo_last;
+extern bootinfo_t * bootinfo_last;
 
-static dbg_result_t command_bootinfo_on_execute(FILE* stream,
-						int   argc,
-						char* argv[])
+static dbg_result_t command_bootinfo_on_execute(FILE * stream,
+						int    argc,
+						char * argv[])
 {
-	bootinfo_t* bi;
+	bootinfo_t * bi;
 
 	assert(stream);
 	assert(argc >= 0);

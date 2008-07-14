@@ -117,7 +117,7 @@ typedef struct {
 	arch_bootinfo_t arch;
 } bootinfo_t;
 
-int bootinfo_fix(bootinfo_t* bi);
+int bootinfo_fix(bootinfo_t * bi);
 
 __END_DECLS
 
