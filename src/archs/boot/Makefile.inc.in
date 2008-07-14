@@ -27,5 +27,7 @@ arch_boot_SRCS =				\
 	@reldir@/bootstrap.h			\
 	@reldir@/bootinfo.h			\
 	@reldir@/bootinfo.c			\
+	@reldir@/bootmem.h			\
+	@reldir@/bootmem.c			\
 	@reldir@/option.h			\
 	@reldir@/option.c
