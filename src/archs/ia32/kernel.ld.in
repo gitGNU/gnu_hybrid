@@ -116,6 +116,11 @@ SECTIONS {
 		_edebug = .;
 	}
 
+	/* Sections that would be discarded after bootmem finalization */
+	.bootstrap : {
+		*(.bootmem*)
+	}
+
 	_ekernel = .;
 
 	/* Discard unnecessary stuff */
