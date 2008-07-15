@@ -17,18 +17,28 @@
  *
  */
 
-#ifndef BOOTMEM_H
-#define BOOTMEM_H
+#ifndef BOOTRAM_H
+#define BOOTRAM_H
 
 #include "config/config.h"
 #include "mem/address.h"
 
-int    bootmem_init(void);
-void   bootmem_fini(void);
+struct bmap {
+	size_t    size; /* Size in bits */
+	uint8_t * data; /* Buffer */
+};
+typedef struct bmap bmap_t;
 
-int    bootmem_reserve(addr_t start,
+int    bootram_init(void);
+void   bootram_fini(void);
+
+int    bootram_reserve(addr_t start,
 		       addr_t stop);
-int    bootmem_unreserve(addr_t start,
+int    bootram_unreserve(addr_t start,
 			 addr_t stop);
 
-#endif /* BOOTMEM_H */
+addr_t bootram_alloc(size_t size);
+void   bootram_free(addr_t start,
+		    size_t size);
+
+#endif /* BOOTRAM_H */

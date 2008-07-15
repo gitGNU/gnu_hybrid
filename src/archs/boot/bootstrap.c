@@ -25,6 +25,7 @@
 #include "archs/arch.h"
 #include "archs/boot/option.h"
 #include "archs/boot/bootinfo.h"
+#include "archs/boot/bootram.h"
 #include "archs/boot/bootstrap.h"
 #include "libs/bfd/bfd.h"
 #include "libs/debug.h"
@@ -88,6 +89,24 @@ void bootstrap_early(void)
 	}
 	/* Now we should enter the debugger safely ... */
 #endif
+
+	if (!bootram_init()) {
+		panic("Cannot initialize bootram");
+	}
+	/* Unreserve the first MB */
+	bootram_unreserve(0, 1 * 1024 * 1024 - 1);
+
+	/* Unreserve 16-20 MB */
+	bootram_unreserve(16 * 1024 * 1024, 20 * 1024 * 1024 - 1);
+
+	/* Unreserve 2-4 MB */
+	bootram_unreserve(2 * 1024 * 1024, 4 * 1024 * 1024 - 1);
+
+	/* Unreserve third MB */
+	bootram_unreserve(3 * 1024 * 1024, 4 * 1024 * 1024 - 1);
+
+	/* Unreserve all */
+	bootram_unreserve(0, (addr_t) - 1);
 
 	/*
 	 * NOTE:
@@ -203,6 +222,9 @@ void bootstrap_late(bootinfo_t * bootinfo)
 		panic("Cannot initialize physical memory manager");
 	}
 	/* Physical memory initialized */
+
+	/* Now we could dispose the bootram layer */
+	bootram_fini();
 
 	/* Mark kernel areas of physical memory as "used" */
 	dprintf("Marking unavailable region 0x%p-0x%p\n",
