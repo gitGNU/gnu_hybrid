@@ -41,7 +41,9 @@ void arch_panic(const char* message)
 #if NO_PANIC_ON_PANIC
 	static int panic_in_progress = 0;
 #endif
-	interrupts_lock();
+	if (interrupts_initialized()) {
+		interrupts_lock();
+	}
 
 #if NO_PANIC_ON_PANIC
 	/* Remember that a panic is in progress */
@@ -49,7 +51,9 @@ void arch_panic(const char* message)
 	if (panic_in_progress > 1) {
 		/* Don't panic too much, let the previous panic finish ;-) */
 		printf("Panic inside panic, bailing out ...\n");
-		interrupts_unlock();
+		if (interrupts_initialized()) {
+			interrupts_unlock();
+		}
 		return;
 	}
 #endif
@@ -87,7 +91,9 @@ void arch_panic(const char* message)
 	panic_in_progress--;
 
 	/* Reenable the interrupts to let other entities complete their work */
-	interrupts_unlock();
+	if (interrupts_initialized()) {
+		interrupts_unlock();
+	}
 #endif
 
 #if CONFIG_REBOOT_ON_PANIC
