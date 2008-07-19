@@ -58,6 +58,11 @@ int interrupts_init(void)
 	return 1;
 }
 
+int interrupts_initialized(void)
+{
+	return initialized;
+}
+
 // Called from lower layer
 void interrupts_handler(uint_t vector)
 {

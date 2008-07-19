@@ -27,6 +27,7 @@ __BEGIN_DECLS
 
 int  interrupts_init(void);
 void interrupts_fini(void);
+int  interrupts_initialized(void);
 
 void interrupts_lock(void);
 void interrupts_unlock(void);
