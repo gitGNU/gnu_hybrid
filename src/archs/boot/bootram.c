@@ -155,13 +155,14 @@ static size_t bmap_count_reset(bmap_t * bmap)
 }
 #endif
 
+/* This function shouldn't be called directly */
 static void bmap_set(bmap_t * bmap,
 		     size_t   index)
 {
 	size_t q;
 	size_t r;
 
-	BMAP_CHECK(bmap);
+	/* BMAP_CHECK(bmap); */
 
 	assert(index < bmap->size);
 
@@ -195,13 +196,14 @@ static void bmap_set_all(bmap_t * bmap)
 	bmap_set_range(bmap, 0, bmap->size - 1);
 }
 
+/* This function shouldn't be called directly */
 static void bmap_reset(bmap_t * bmap,
 		       size_t   index)
 {
 	size_t q;
 	size_t r;
 
-	BMAP_CHECK(bmap);
+	/* BMAP_CHECK(bmap); */
 
 	assert(index < bmap->size);
 
