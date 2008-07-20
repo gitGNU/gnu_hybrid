@@ -33,6 +33,9 @@
 
 int arch_bootinfo_fix(bootinfo_t * bi)
 {
+#if 1
+	unused_argument(bi);
+#else
 	int i;
 
 	assert(bi);
@@ -45,6 +48,7 @@ int arch_bootinfo_fix(bootinfo_t * bi)
 			bi->mem[i].type = BOOTINFO_MEM_ROM;
 		}
 	}
+#endif
 
 	return 1;
 }
