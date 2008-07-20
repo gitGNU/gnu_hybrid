@@ -260,3 +260,8 @@ uint64_t rdtsc(void)
 
 	return v;
 }
+
+void rep_nop(void)
+{
+	asm volatile("rep; nop" : : : "memory");
+}

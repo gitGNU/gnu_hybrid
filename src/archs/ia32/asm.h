@@ -225,6 +225,8 @@ void          hlt(void);
 
 uint64_t      rdtsc(void);
 
+void          rep_nop(void);
+
 __END_DECLS
 
 #endif /* ARCH_ASM_H */
