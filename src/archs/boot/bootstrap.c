@@ -93,20 +93,13 @@ void bootstrap_early(void)
 	if (!bootram_init()) {
 		panic("Cannot initialize bootram");
 	}
-	/* Unreserve the first MB */
-	bootram_unreserve(0, 1 * 1024 * 1024 - 1);
 
-	/* Unreserve 16-20 MB */
-	bootram_unreserve(16 * 1024 * 1024, 20 * 1024 * 1024 - 1);
-
-	/* Unreserve 2-4 MB */
-	bootram_unreserve(2 * 1024 * 1024, 4 * 1024 * 1024 - 1);
-
-	/* Unreserve third MB */
-	bootram_unreserve(3 * 1024 * 1024, 4 * 1024 * 1024 - 1);
-
-	/* Unreserve all */
-	bootram_unreserve(0, (addr_t) - 1);
+	/* Mark kernel areas of physical memory as "used" */
+	dprintf("Marking unavailable region 0x%p-0x%p\n",
+		&_kernel, &_ekernel);
+	if (!bootram_reserve((addr_t) &_kernel, (addr_t) &_ekernel)) {
+		panic("Cannot mark kernel region as used");
+	}
 
 	/*
 	 * NOTE:
@@ -215,6 +208,19 @@ void bootstrap_late(bootinfo_t * bootinfo)
 
 	/*
 	 * NOTE:
+	 *     Start the architecture layer, from now on it should be possible
+	 *     to allocate physical memory (or mark it as reserved) and work
+	 *     with resources. Allocation must be performed via the bootram
+	 *     layer. Architecture layer is responsible of reserving and/or
+	 *     unreserving ram regions.
+	 */
+	if (!arch_init()) {
+		panic("Cannot initialize architecture layer");
+	}
+
+	/* XXX FIXME: Remove heap initialization inside bootram ASAP !!! */
+	/*
+	 * NOTE:
 	 *     Translate bootinfo memory resources into physical memory infos
 	 */
 	dprintf("Initializing pmm\n");
@@ -222,26 +228,6 @@ void bootstrap_late(bootinfo_t * bootinfo)
 		panic("Cannot initialize physical memory manager");
 	}
 	/* Physical memory initialized */
-
-	/* Now we could dispose the bootram layer */
-	bootram_fini();
-
-	/* Mark kernel areas of physical memory as "used" */
-	dprintf("Marking unavailable region 0x%p-0x%p\n",
-		&_kernel, &_ekernel);
-	if (!pmm_reserve((uint_t) &_kernel, (uint_t) &_ekernel)) {
-		panic("Cannot mark kernel region as used");
-	}
-
-	/*
-	 * NOTE:
-	 *     Start the architecture layer, from now on it should be possible
-	 *     to allocate physical memory (or mark it as reserved) and work
-	 *     with resources
-	 */
-	if (!arch_init()) {
-		panic("Cannot initialize architecture layer");
-	}
 
 #if 0
 	/* Initialize virtual memory */
@@ -255,10 +241,14 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	/* Setting up the heap ! */
 	dprintf("Initializing heap\n");
 	heap_size = CONFIG_PAGE_SIZE * 64;
-	heap_base = pmm_alloc(heap_size);
+	heap_base = bootram_alloc(heap_size);
 	if (!heap_base) {
-		panic("Cannot allocate memory for the heap");
+		panic("Cannot allocate %d bytes of memory for the heap",
+		      heap_size);
 	}
+
+	/* Now we could dispose the bootram layer */
+	bootram_fini();
 
 	dprintf("Heap base 0x%x, size 0x%x\n", heap_base, heap_size);
 	if (!heap_init(heap_base, heap_size)) {
