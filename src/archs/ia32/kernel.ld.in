@@ -118,6 +118,11 @@ SECTIONS {
 
 	_ekernel = .;
 
+	/* Will be discarded after bootstrap */
+	.bootstrap : {
+		    *(.bootstrap*)
+	}
+
 	/* Discard unnecessary stuff */
 	/DISCARD/ : {
 		/* *(.comment) */
