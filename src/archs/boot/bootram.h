@@ -27,9 +27,10 @@
 int    bootram_init(void);
 void   bootram_fini(void);
 
-void   bootram_reserve(addr_t start,
+int    bootram_reserve(addr_t start,
 		       addr_t stop);
-void   bootram_unreserve(addr_t start,
+int    bootram_unreserve(addr_t start,
 			 addr_t stop);
+addr_t bootram_alloc(size_t size);
 
 #endif /* BOOTRAM_H */
