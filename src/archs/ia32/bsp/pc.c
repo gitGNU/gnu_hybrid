@@ -111,32 +111,31 @@ void arch_irqs_state_set(arch_irqs_state_t * state)
 	irq_state_set(state);
 }
 
-/* Delay loop  */
-void delay_loops(uint32_t loops)
+void arch_delay_ns(uint32_t ns)
 {
-	__asm__ volatile ("   movl %0, %%ecx\n\t"
-			  "0: lahf\n\t"
-			  "   dec  %%ecx\n\t"
-			  "   jnz  0b\n\t"
-			  :
-			  : "r" (loops)
-			  : "%ecx"
-			  );
-}
-
-void arch_delay_ms(uint32_t ms)
-{
-	delay_loops(ms * __this_cpu->arch.loops_ms);
+	unused_argument(ns);
 }
 
 void arch_delay_us(uint32_t us)
 {
-	delay_loops((us * __this_cpu->arch.loops_ms) / 1024);
+	unused_argument(us);
+
+#if 0
+	ulong_t ticks;
+	ulong_t s, e;
+
+	ticks = us * (__this_cpu->khz / CONFIG_HZ);
+	rdtscl(s);
+	do {
+		rep_nop();
+		rdtscl(e);
+	} while ((e - s) < ticks);
+#endif
 }
 
-void arch_delay_ns(uint32_t ns)
+void arch_delay_ms(uint32_t ms)
 {
-	delay_loops((ns * __this_cpu->arch.loops_ms) / (1024 * 1024));
+	arch_delay_us(ms * 1000);
 }
 
 int arch_vm_pagesize(void)
