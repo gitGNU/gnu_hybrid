@@ -21,6 +21,7 @@
 #include "libc/stdio.h"
 #include "libs/debug.h"
 #include "archs/arch.h"
+#include "archs/boot/bootram.h"
 #include "archs/ia32/asm.h"
 #include "archs/ia32/port.h"
 #include "archs/ia32/cpu.h"
@@ -43,6 +44,9 @@
 int arch_init(void)
 {
 	dprintf("Initializing architecture\n");
+
+	/* Reserve lower memory */
+	bootram_reserve(0, 1024 * 1024);
 
 	if (!bios_init()) {
 		panic("Cannot initialize BIOS");
