@@ -23,22 +23,13 @@
 #include "config/config.h"
 #include "mem/address.h"
 
-struct bmap {
-	size_t    size; /* Size in bits */
-	uint8_t * data; /* Buffer */
-};
-typedef struct bmap bmap_t;
 
 int    bootram_init(void);
 void   bootram_fini(void);
 
-int    bootram_reserve(addr_t start,
+void   bootram_reserve(addr_t start,
 		       addr_t stop);
-int    bootram_unreserve(addr_t start,
+void   bootram_unreserve(addr_t start,
 			 addr_t stop);
-
-addr_t bootram_alloc(size_t size);
-void   bootram_free(addr_t start,
-		    size_t size);
 
 #endif /* BOOTRAM_H */
