@@ -51,17 +51,16 @@ typedef struct bmap bmap_t;
 }
 
 #if CONFIG_BOOTRAM_DEBUG
-void bmap_dump(bmap_t * bmap)
-{
-	BMAP_CHECK(bmap);
-
-	dprintf("bmap 0x%p stats:\n",
-		bmap);
-	dprintf("  size %d bits (maps %u bytes)\n",
-		bmap->size,  bmap->size * CONFIG_PAGE_SIZE);
-	dprintf("  data 0x%p\n",
-		bmap->data);
+#define BMAP_DUMP(B) {						\
+	dprintf("bmap 0x%p stats:\n",				\
+		(B));						\
+	dprintf("  size %d bits (maps %u bytes)\n",		\
+		(B)->size,  (B)->size * CONFIG_PAGE_SIZE);	\
+	dprintf("  data 0x%p\n",				\
+		(B)->data);					\
 }
+#else
+#define BMAP_DUMP(B) { }
 #endif
 
 #if 0
@@ -79,9 +78,7 @@ static void bmap_iterate(bmap_t * bmap,
 	BMAP_CHECK(bmap);
 	assert(op);
 
-#if CONFIG_BOOTRAM_DEBUG
-	bmap_dump(bmap);
-#endif
+	BMAP_DUMP(bmap);
 
 	i = 0;
 	for (i = start; i <= stop; i++) {
@@ -89,35 +86,6 @@ static void bmap_iterate(bmap_t * bmap,
 	}
 }
 #endif
-
-#if CONFIG_BOOTRAM_DEBUG
-static size_t bmap_accumulate(bmap_t * bmap,
-			      size_t   start,
-			      size_t   stop,
-			      int      (* op)(bmap_t * bmap,
-					      size_t   i))
-{
-	size_t i;
-	size_t c;
-
-	dprintf("Accumulating bits %d thru %d on bmap 0x%p\n",
-		start, stop, bmap);
-
-	BMAP_CHECK(bmap);
-	assert(op);
-
-#if CONFIG_BOOTRAM_DEBUG
-	bmap_dump(bmap);
-#endif
-
-	i = 0;
-	c = 0;
-	for (i = start; i <= stop; i++) {
-		c += op(bmap, i);
-	}
-
-	return c;
-}
 
 static int bmap_test_set(bmap_t * bmap,
 			 size_t   index)
@@ -138,6 +106,33 @@ static int bmap_test_reset(bmap_t * bmap,
 			   size_t   index)
 {
 	return !bmap_test_set(bmap, index);
+}
+
+#if CONFIG_BOOTRAM_DEBUG
+static size_t bmap_accumulate(bmap_t * bmap,
+			      size_t   start,
+			      size_t   stop,
+			      int      (* op)(bmap_t * bmap,
+					      size_t   i))
+{
+	size_t i;
+	size_t c;
+
+	dprintf("Accumulating bits %d thru %d on bmap 0x%p\n",
+		start, stop, bmap);
+
+	BMAP_CHECK(bmap);
+	assert(op);
+
+	BMAP_DUMP(bmap);
+
+	i = 0;
+	c = 0;
+	for (i = start; i <= stop; i++) {
+		c += op(bmap, i);
+	}
+
+	return c;
 }
 
 static size_t bmap_count_set(bmap_t * bmap)
@@ -276,7 +271,7 @@ static int bmap_init(bmap_t *  bmap,
 #if CONFIG_BOOTRAM_DEBUG
 	assert(bmap_count_reset(bmap) == size);
 
-	bmap_dump(bmap);
+	BMAP_DUMP(bmap);
 #endif
 
 	return 1;
@@ -309,16 +304,15 @@ typedef struct bnode bnode_t;
 }
 
 #if CONFIG_BOOTRAM_DEBUG
-void bnode_dump(bnode_t * bnode)
-{
-	BNODE_CHECK(bnode);
-
-	dprintf("bnode 0x%p stats:\n", bnode);
-	dprintf("  start 0x%p\n", (addr_t) bnode->start);
-	dprintf("  stop  0x%p\n", (addr_t) bnode->stop);
-	dprintf("  bmap  0x%p\n", bnode->bmap);
-	dprintf("  next  0x%p\n", bnode->next);
+#define BNODE_DUMP(N) {					\
+	dprintf("bnode 0x%p stats:\n", (N));		\
+	dprintf("  start 0x%p\n", (addr_t) (N)->start);	\
+	dprintf("  stop  0x%p\n", (addr_t) (N)->stop);	\
+	dprintf("  bmap  0x%p\n", (N)->bmap);		\
+	dprintf("  next  0x%p\n", (N)->next);		\
 }
+#else
+#define BNODE_DUMP(N) { }
 #endif
 
 static int bnode_init(bnode_t * bnode,
@@ -337,9 +331,7 @@ static int bnode_init(bnode_t * bnode,
 
 	BNODE_CHECK(bnode);
 
-#if CONFIG_BOOTRAM_DEBUG
-	bnode_dump(bnode);
-#endif
+	BNODE_DUMP(bnode);
 
 	assert(((bnode->stop - bnode->start) / CONFIG_PAGE_SIZE) == bmap->size);
 
@@ -374,9 +366,7 @@ static int bnode_reserve(bnode_t * bnode,
 		bmap_reset_range(bnode->bmap, page_start, page_stop);
 	}
 
-#if CONFIG_BOOTRAM_DEBUG
-	bnode_dump(bnode);
-#endif
+	BNODE_DUMP(bnode);
 
 	return 1;
 }
@@ -409,9 +399,7 @@ static int bnode_unreserve(bnode_t * bnode,
 		bmap_set_range(bnode->bmap, page_start, page_stop);
 	}
 
-#if CONFIG_BOOTRAM_DEBUG
-	bnode_dump(bnode);
-#endif
+	BNODE_DUMP(bnode);
 
 	return 1;
 }
@@ -441,17 +429,20 @@ static bnode_t   node_          SECTION(".bootstrap");
 static bnode_t * head_          SECTION(".bootstrap");
 
 #if CONFIG_BOOTRAM_DEBUG
-void bram_dump(void)
-{
-	bnode_t * tmp;
-
-	dprintf("Dump starts here\n");
-	for (tmp = head_; tmp != NULL; tmp = tmp->next) {
-		bnode_dump(tmp);
-	}
-	dprintf("Dump ends here\n");
+#define BRAM_DUMP() {						\
+	bnode_t * tmp;						\
+								\
+	dprintf("Dump starts here\n");				\
+	for (tmp = head_; tmp != NULL; tmp = tmp->next) {	\
+		BNODE_DUMP(tmp);				\
+	}							\
+	dprintf("Dump ends here\n");				\
 }
+#else
+#define BRAM_DUMP() { }
+#endif
 
+#if CONFIG_BOOTRAM_DEBUG
 static size_t bram_count_reserved(void)
 {
 	size_t    count;
@@ -580,24 +571,25 @@ static int bram_node_remove(bnode_t * bnode)
 }
 
 #if CONFIG_BOOTRAM_DEBUG
-static void bootram_dump(void)
-{
-	size_t all, reserved, unreserved;
-
-	all        = bram_count_all();
-	reserved   = bram_count_reserved();
-	unreserved = bram_count_unreserved();
-
-	dprintf("bootram stats:\n");
-	dprintf("  All        %d (%u bytes)\n",
-		all,        all * CONFIG_PAGE_SIZE);
-	dprintf("  Reserved   %d (%u bytes)\n",
-		reserved,   reserved * CONFIG_PAGE_SIZE);
-	dprintf("  Unreserved %d (%u bytes)\n",
-		unreserved, unreserved * CONFIG_PAGE_SIZE);
-
-	bram_dump();
+#define BOOTRAM_DUMP() {					\
+	size_t all, reserved, unreserved;			\
+								\
+	all        = bram_count_all();				\
+	reserved   = bram_count_reserved();			\
+	unreserved = bram_count_unreserved();			\
+								\
+	dprintf("bootram stats:\n");				\
+	dprintf("  All        %d (%u bytes)\n",			\
+		all,        all * CONFIG_PAGE_SIZE);		\
+	dprintf("  Reserved   %d (%u bytes)\n",			\
+		reserved,   reserved * CONFIG_PAGE_SIZE);	\
+	dprintf("  Unreserved %d (%u bytes)\n",			\
+		unreserved, unreserved * CONFIG_PAGE_SIZE);	\
+								\
+	BRAM_DUMP();						\
 }
+#else
+#define BOOTRAM_DUMP() { }
 #endif
 
 int bootram_init(void)
@@ -621,18 +613,14 @@ int bootram_init(void)
 
 	dprintf("Initialized\n");
 
-#if CONFIG_BOOTRAM_DEBUG
-	bootram_dump();
-#endif
+	BOOTRAM_DUMP();
 
 	return 1;
 }
 
 void bootram_fini(void)
 {
-#if CONFIG_BOOTRAM_DEBUG
-	bootram_dump();
-#endif
+	BOOTRAM_DUMP();
 
 	bram_node_remove(&node_);
 	bnode_fini(&node_);
