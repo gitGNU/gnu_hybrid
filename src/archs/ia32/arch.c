@@ -32,6 +32,7 @@
 #include "archs/ia32/i8253.h"
 #include "archs/ia32/dma.h"
 #include "archs/ia32/irq.h"
+#include "archs/ia32/tsc.h"
 
 #if CONFIG_ARCH_DEBUG
 #define dprintf(F,A...) printf("arch: " F,##A)
@@ -76,6 +77,10 @@ int arch_init(void)
 		panic("Cannot initialize i8253");
 	}
 
+	if (!tsc_init()) {
+		panic("Cannot initialize tsc");
+	}
+
 	if (!dma_init()) {
 		panic("Cannot initialize DMAs");
 	}
@@ -88,6 +93,7 @@ int arch_init(void)
 void arch_fini(void)
 {
 	dma_fini();
+	tsc_fini();
 	irq_fini();
 	i8253_fini();
 	tss_fini();
