@@ -36,8 +36,9 @@
 
 static int initialized = 0;
 
-int vmm_init(size_t max_size)
+int vmm_init(void)
 {
+#if 0
 	void * pdir;
 #if 0
 	uint_t i;
@@ -65,6 +66,7 @@ int vmm_init(size_t max_size)
 
 	dprintf("Virtual memory initialized successfully\n");
 	initialized = 1;
+#endif
 
 	return 1;
 }
