@@ -224,7 +224,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	 *     Translate bootinfo memory resources into physical memory infos
 	 */
 	dprintf("Initializing pmm\n");
-	if (!pmm_init(bootinfo)) {
+	if (!pmm_init()) {
 		panic("Cannot initialize physical memory manager");
 	}
 	/* Physical memory initialized */
@@ -312,8 +312,6 @@ void bootstrap_late(bootinfo_t * bootinfo)
 
 	heap_fini();
 	vmm_fini();
-	pmm_free(heap_base);
-	pmm_release((uint_t) &_kernel);
 	pmm_fini();
 	arch_fini();
 	resource_fini();
