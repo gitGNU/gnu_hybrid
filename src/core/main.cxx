@@ -75,15 +75,15 @@ int main(int argc, char * argv[])
 		panic("Cannot initialize timers");
 	}
 
-	TIMER_FILL(&timer1, timer_cb, 0, 05000);
+	TIMER_FILL(&timer1, timer_cb, 0, 05000, TIMER_ONE_SHOT);
 	if (!timer_add(&timer1)) {
 		panic("Cannot add timer");
 	}
-	TIMER_FILL(&timer2, timer_cb, 0, 10000);
+	TIMER_FILL(&timer2, timer_cb, 0, 10000, TIMER_ONE_SHOT);
 	if (!timer_add(&timer2)) {
 		panic("Cannot add timer");
 	}
-	TIMER_FILL(&timer3, timer_cb, 0, 15000);
+	TIMER_FILL(&timer3, timer_cb, 0, 15000, TIMER_REPETITIVE);
 	if (!timer_add(&timer3)) {
 		panic("Cannot add timer");
 	}

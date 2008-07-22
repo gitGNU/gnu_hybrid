@@ -25,11 +25,16 @@
 
 __BEGIN_DECLS
 
+typedef enum {
+	TIMER_ONE_SHOT,
+	TIMER_REPETITIVE
+} timer_type_t;
+
 struct timer {
 	void         (* callback)(void * data);
 	void *       data;
 	int          expiration; /* Relative expiration time */
-
+	timer_type_t type;
 #if CONFIG_TIMERS_DEBUG
 	int          absolute;   /* Absolute expiration time */
 	int          removable;
@@ -43,6 +48,7 @@ typedef struct timer timer_t;
 	dprintf("    callback   = 0x%p\n", (TIMER)->callback);		\
 	dprintf("    data       = 0x%p\n", (TIMER)->data);		\
 	dprintf("    expiration = %d\n",   (TIMER)->expiration);	\
+	dprintf("    type       = %d\n",   (TIMER)->type);		\
 }
 #define TIMERS_DUMP(TIMERS) {						\
 	dprintf("Timers:\n");						\
@@ -51,13 +57,14 @@ typedef struct timer timer_t;
 		TIMER_DUMP(*iter);					\
 	}								\
 }
-#define TIMER_FILL(TIMER,CALLBACK,DATA,DELAY)	\
-	__BEGIN_MACRO				\
-	assert(TIMER);				\
-	assert((DELAY) >= 0);			\
-	(TIMER)->callback   = CALLBACK;		\
-	(TIMER)->data       = DATA;		\
-	(TIMER)->expiration = DELAY;		\
+#define TIMER_FILL(TIMER,CALLBACK,DATA,DELAY,TYPE)	\
+	__BEGIN_MACRO					\
+	assert(TIMER);					\
+	assert((DELAY) >= 0);				\
+	(TIMER)->callback   = CALLBACK;			\
+	(TIMER)->data       = DATA;			\
+	(TIMER)->expiration = DELAY;			\
+	(TIMER)->type       = TYPE;			\
 	__END_MACRO
 #define TIMER_GOOD(TIMER)			\
 	((TIMER) &&				\

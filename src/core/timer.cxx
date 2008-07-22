@@ -40,6 +40,36 @@
 static ktl::list<timer_t *> timers;
 static size_t               granularity;
 
+
+static int timer_enqueue(timer_t * timer)
+{
+	ktl::list<timer_t *>::iterator iter;
+
+	for (iter = timers.begin(); iter != timers.end(); iter++) {
+		if ((*iter)->expiration > timer->expiration) {
+			dprintf("Cursor expiration time is bigger\n");
+			break;
+		}
+
+		timer->expiration -= (*iter)->expiration;
+
+		dprintf("Decrementing timer expiration (now %d)\n",
+			timer->expiration);
+
+		if (timer->expiration < 0) {
+			dprintf("Timer expiration underflow while walking\n");
+			timer->expiration = 0;
+			break;
+		}
+	}
+
+	timers.insert(iter, timer);
+
+	TIMERS_DUMP(timers);
+
+	return 1;
+}
+
 void timers_update(void * unused)
 {
 	unused_argument(unused);
@@ -72,8 +102,17 @@ void timers_update(void * unused)
 
 		timer->callback(timer->data);
 
-		// Remove the entry now
-		timers.pop_front();
+		switch (timer->type) {
+			case TIMER_ONE_SHOT:
+				// Remove the entry now
+				timers.pop_front();
+				break;
+			case TIMER_REPETITIVE:
+				break;
+			default:
+				bug();
+				break;
+		}
 	}
 
 	TIMERS_DUMP(timers);
@@ -142,42 +181,7 @@ int timer_add(timer_t * timer)
 	dprintf("Adding timer 0x%p (expiration %d)\n",
 		timer, timer->expiration);
 
-#if 0
-	if (timers.empty()) {
-		dprintf("Timers list is empty, adding timer at the head\n");
-
-		timers.push_front(timer);
-		assert(!timers.empty());
-
-		return 1;
-	}
-
-	dprintf("Timers list not empty, adding ordered\n");
-#endif
-	ktl::list<timer_t *>::iterator iter;
-	for (iter = timers.begin(); iter != timers.end(); iter++) {
-		if ((*iter)->expiration > timer->expiration) {
-			dprintf("Cursor expiration time is bigger\n");
-			break;
-		}
-
-		timer->expiration -= (*iter)->expiration;
-
-		dprintf("Decrementing timer expiration (now %d)\n",
-			timer->expiration);
-
-		if (timer->expiration < 0) {
-			dprintf("Timer expiration underflow while walking\n");
-			timer->expiration = 0;
-			break;
-		}
-	}
-
-	timers.insert(iter, timer);
-
-	TIMERS_DUMP(timers);
-
-	return 1;
+	return timer_enqueue(timer);
 }
 
 int timer_remove(timer_t * timer)
