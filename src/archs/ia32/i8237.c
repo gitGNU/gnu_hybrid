@@ -36,7 +36,7 @@
 #define NR_DMAS         7
 #define DMA_MAX         (1024 * 64)
 #define DMA_MASK        (DMA_MAX - 1)
-#define DMA_ALIGN(n)    ((((addr_t)(n)) + DMA_MASK) & ~DMA_MASK)
+#define DMA_ALIGN(n)    ((((paddr_t)(n)) + DMA_MASK) & ~DMA_MASK)
 
 struct dma_port {
 	int mask;
@@ -60,10 +60,10 @@ static const struct dma_port dma_regs[] = {
 
 #define CHANNEL2BITS(C) (((C) < 4) ? (C) : (C) >> 2)
 
-int i8237_start(uint_t channel,
-		addr_t addr,
-		size_t count,
-		int    read)
+int i8237_start(uint_t  channel,
+		paddr_t addr,
+		size_t  count,
+		int     read)
 {
 	const struct dma_port * regs;
 	uint_t                  bits, mode;

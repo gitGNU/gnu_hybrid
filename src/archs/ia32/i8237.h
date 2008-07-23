@@ -24,20 +24,16 @@
 #include "mem/address.h"
 #include "libc/stdint.h"
 
-__BEGIN_DECLS
-
 int    i8237_init(void);
 int    i8237_fini(void);
 
-int    i8237_start(uint_t channel,
-		   addr_t address,
-		   size_t count,
-		   int    read);
+int    i8237_start(uint_t  channel,
+		   paddr_t address,
+		   size_t  count,
+		   int     read);
 
 int    i8237_stop(uint_t channel);
 size_t i8327_channels(void);
 size_t i8327_channel_size(uint_t channel);
-
-__END_DECLS
 
 #endif /* I8237_H */

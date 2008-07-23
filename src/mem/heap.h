@@ -24,7 +24,7 @@
 #include "libc/stdint.h"
 #include "mem/address.h"
 
-int    heap_init(addr_t base,
+int    heap_init(vaddr_t base,
 		 size_t size);
 int    heap_initialized(void);
 void * heap_alloc(size_t size);

@@ -45,8 +45,8 @@ struct heap_page {
 static int                initialized = 0;
 
 static struct heap_page * heap_alloc_table;
-static addr_t             heap_base_ptr;
-static addr_t             heap_base;
+static vaddr_t            heap_base_ptr;
+static vaddr_t            heap_base;
 static size_t             heap_size;
 
 struct heap_bin {
@@ -150,8 +150,8 @@ int heap_initialized(void)
  *     be mapped-in at this point, we just do a little housekeeping to set
  *     up the data structures.
  */
-int heap_init(addr_t base,
-	      size_t size)
+int heap_init(vaddr_t base,
+	      size_t  size)
 {
 	size_t       i;
 	uint_t       max_grow;
@@ -176,7 +176,7 @@ int heap_init(addr_t base,
 
 	/* XXX: The formula was: size > (sqr(CONFIG_PAGE_SIZE) / 2) */
 	if (size > (CONFIG_PAGE_SIZE * CONFIG_PAGE_SIZE / 2)) {
-		heap_size = ((addr_t) size * page_entries /
+		heap_size = ((vaddr_t) size * page_entries /
 			     (page_entries + 1)) & ~(CONFIG_PAGE_SIZE - 1);
 	} else {
 		heap_size = size - CONFIG_PAGE_SIZE;
@@ -245,8 +245,6 @@ static char * raw_alloc(unsigned int size,
 
 	return retval;
 }
-
-__BEGIN_DECLS
 
 void * arch_heap_alloc(unsigned int size)
 {
@@ -326,8 +324,8 @@ void arch_heap_free(void * address)
 		return;
 	}
 
-	if (((addr_t) address < heap_base) ||
-	    ((addr_t) address >= (heap_base + heap_size))) {
+	if (((vaddr_t) address < heap_base) ||
+	    ((vaddr_t) address >= (heap_base + heap_size))) {
 		panic("Freeing invalid address 0x%p", address);
 	}
 
@@ -351,7 +349,7 @@ void arch_heap_free(void * address)
 	bin = &bins[page[0].bin_index];
 #if 0
 	if ((bin->element_size <= CONFIG_PAGE_SIZE) &&
-	    ((addr_t) address % bin->element_size != 0)) {
+	    ((vaddr_t) address % bin->element_size != 0)) {
 		panic("Passed invalid pointer 0x%p to heap_free, "
 		      "it is supposed to be in bin for esize %d",
 		      address, bin->element_size);
@@ -393,8 +391,6 @@ void arch_heap_free(void * address)
 	bin->alloc_count--;
 	bin->free_count++;
 }
-
-__END_DECLS
 
 #if CONFIG_DEBUGGER
 static FILE * heap_stream;

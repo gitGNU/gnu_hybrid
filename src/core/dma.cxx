@@ -123,7 +123,7 @@ static bool detach(dma_channel_t channel)
 }
 
 bool dma_start_read(dma_channel_t channel,
-		    addr_t        address,
+		    paddr_t       address,
 		    size_t        count)
 {
 	if (!attach(channel)) {
@@ -143,7 +143,7 @@ bool dma_start_read(dma_channel_t channel,
 }
 
 bool dma_start_write(dma_channel_t channel,
-		     addr_t        address,
+		     paddr_t       address,
 		     size_t        count)
 {
 	if (!attach(channel)) {
