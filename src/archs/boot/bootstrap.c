@@ -97,7 +97,7 @@ void bootstrap_early(void)
 	/* Mark kernel areas of physical memory as "used" */
 	dprintf("Marking unavailable region 0x%p-0x%p\n",
 		&_kernel, &_ekernel);
-	if (!bootram_reserve((addr_t) &_kernel, (addr_t) &_ekernel)) {
+	if (!bootram_reserve((paddr_t) &_kernel, (paddr_t) &_ekernel)) {
 		panic("Cannot mark kernel region as used");
 	}
 

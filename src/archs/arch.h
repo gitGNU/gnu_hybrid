@@ -100,10 +100,9 @@ int               arch_atomic_sub(int * pointer, int delta);
 int               arch_atomic_exchange(int * pointer, int new_value);
 int               arch_atomic_test_and_set(int * pointer);
 
-/* XXX FIXME: Fix all uint_t * ... they should be addr_t* */
-void              arch_context_switch(uint_t * old_stack,
-				      uint_t * new_stack,
-				      uint_t * new_mm);
+void              arch_context_switch(vaddr_t old_stack,
+				      vaddr_t new_stack,
+				      vaddr_t new_mm);
 
 void	          arch_halt(void);
 void	          arch_poweroff(void);
@@ -129,12 +128,12 @@ void              arch_delay_ns(uint32_t ns);
 
 size_t            arch_dma_channels(void);
 size_t            arch_dma_channel_size(uint_t channel);
-int               arch_dma_start_read(uint_t channel,
-				      addr_t address,
-				      size_t count);
-int               arch_dma_start_write(uint_t channel,
-				       addr_t address,
-				       size_t count);
+int               arch_dma_start_read(uint_t  channel,
+				      paddr_t address,
+				      size_t  count);
+int               arch_dma_start_write(uint_t  channel,
+				       paddr_t address,
+				       size_t  count);
 int               arch_dma_stop(uint_t channel);
 
 size_t            arch_timer_granularity(void);

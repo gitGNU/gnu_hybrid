@@ -157,16 +157,16 @@ size_t arch_dma_channel_size(uint_t channel)
 	return i8327_channel_size(channel);
 }
 
-int arch_dma_start_read(uint_t channel,
-			addr_t address,
-			size_t count)
+int arch_dma_start_read(uint_t  channel,
+			paddr_t address,
+			size_t  count)
 {
 	return i8237_start(channel, address, count, 1);
 }
 
-int arch_dma_start_write(uint_t channel,
-			 addr_t address,
-			 size_t count)
+int arch_dma_start_write(uint_t  channel,
+			 paddr_t address,
+			 size_t  count)
 {
 	return i8237_start(channel, address, count, 0);
 }
@@ -216,40 +216,13 @@ void arch_cpu_dcache_sync(cpu_t* cpu)
 	}
 }
 
-void arch_context_switch(uint_t* old_stack,
-			 uint_t* new_stack,
-			 uint_t* new_mm)
+void arch_context_switch(vaddr_t old_stack,
+			 vaddr_t new_stack,
+			 vaddr_t new_mm)
 {
 	unused_argument(old_stack);
 	unused_argument(new_stack);
 	unused_argument(new_mm);
-
-#if 0
-	__asm__ volatile (
-			  pushal
-
-			  movl    36(%esp), %eax
-			  movl    %esp, (%eax)
-
-			  movl    44(%esp), %eax
-			  cmpl    $0x00, %eax
-			  je      _no_mmu_switch
-
-			  /*
-			   * switching cr3 really *is* time-messing
-			   */
-			  movl    44(%esp), %eax
-			  movl    %eax, %cr3
-
-			  _no_mmu_switch:
-
-			  movl    40(%esp), %eax
-			  lss             (%eax), %esp
-
-			  popal
-			  ret
-			  );
-#endif
 }
 
 size_t arch_timer_granularity(void)

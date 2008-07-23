@@ -290,8 +290,8 @@ static void bmap_fini(bmap_t * bmap)
  */
 
 struct bnode {
-	addr_t         start; /* Start address */
-	addr_t         stop;  /* Stop address */
+	paddr_t        start; /* Start address */
+	paddr_t        stop;  /* Stop address */
 	bmap_t *       bmap;  /* Pointer to page bitmap */
 	struct bnode * next;  /* Next bnode in list */
 };
@@ -304,21 +304,21 @@ typedef struct bnode bnode_t;
 }
 
 #if CONFIG_BOOTRAM_DEBUG
-#define BNODE_DUMP(N) {					\
-	dprintf("bnode 0x%p stats:\n", (N));		\
-	dprintf("  start 0x%p\n", (addr_t) (N)->start);	\
-	dprintf("  stop  0x%p\n", (addr_t) (N)->stop);	\
-	dprintf("  bmap  0x%p\n", (N)->bmap);		\
-	dprintf("  next  0x%p\n", (N)->next);		\
+#define BNODE_DUMP(N) {						\
+	dprintf("bnode 0x%p stats:\n", (N));			\
+	dprintf("  start 0x%p\n", (paddr_t) (N)->start);	\
+	dprintf("  stop  0x%p\n", (paddr_t) (N)->stop);		\
+	dprintf("  bmap  0x%p\n", (N)->bmap);			\
+	dprintf("  next  0x%p\n", (N)->next);			\
 }
 #else
 #define BNODE_DUMP(N) { }
 #endif
 
-static int bnode_init(bnode_t * bnode,
-		      addr_t    start,
-		      addr_t    stop,
-		      bmap_t *  bmap)
+static int bnode_init(bnode_t *  bnode,
+		      paddr_t    start,
+		      paddr_t    stop,
+		      bmap_t *   bmap)
 {
 	assert(bnode);
 
@@ -333,14 +333,15 @@ static int bnode_init(bnode_t * bnode,
 
 	BNODE_DUMP(bnode);
 
-	assert(((bnode->stop - bnode->start) / CONFIG_PAGE_SIZE) == bmap->size);
+	assert(((bnode->stop - bnode->start) / CONFIG_PAGE_SIZE) ==
+	       bmap->size);
 
 	return 1;
 }
 
-static int bnode_reserve(bnode_t * bnode,
-			 addr_t    start,
-			 addr_t    stop)
+static int bnode_reserve(bnode_t *  bnode,
+			 paddr_t    start,
+			 paddr_t    stop)
 {
 	BNODE_CHECK(bnode);
 
@@ -371,9 +372,9 @@ static int bnode_reserve(bnode_t * bnode,
 	return 1;
 }
 
-static int bnode_unreserve(bnode_t * bnode,
-			   addr_t    start,
-			   addr_t    stop)
+static int bnode_unreserve(bnode_t *  bnode,
+			   paddr_t    start,
+			   paddr_t    stop)
 {
 	BNODE_CHECK(bnode);
 
@@ -421,7 +422,7 @@ static int bnode_fini(bnode_t * bnode)
  */
 
 /* XXX FIXME: Ugly hack, please remove ASAP */
-#define PAGES   (((addr_t) - 1) / CONFIG_PAGE_SIZE)
+#define PAGES   (((paddr_t) - 1) / CONFIG_PAGE_SIZE)
 #define ENTRIES (PAGES / UINT8_BITS)
 static uint8_t   data_[ENTRIES] SECTION(".bootstrap");
 static bmap_t    map_           SECTION(".bootstrap");
@@ -603,7 +604,7 @@ int bootram_init(void)
 	}
 	bmap_set_all(&map_);
 
-	if (!bnode_init(&node_, 0, (addr_t) -1, &map_)) {
+	if (!bnode_init(&node_, 0, (paddr_t) -1, &map_)) {
 		return 0;
 	}
 
@@ -629,11 +630,11 @@ void bootram_fini(void)
 	head_ = NULL;
 }
 
-static int bootram_operation(addr_t start,
-			     addr_t stop,
-			     int (* op)(bnode_t * bnode,
-					addr_t    start,
-					addr_t    stop))
+static int bootram_operation(paddr_t start,
+			     paddr_t stop,
+			     int     (* op)(bnode_t * bnode,
+					    paddr_t    start,
+					    paddr_t    stop))
 {
 	bnode_t * tmp;
 
@@ -674,23 +675,23 @@ static int bootram_operation(addr_t start,
 	return 1;
 }
 
-int bootram_reserve(addr_t start,
-		    addr_t stop)
+int bootram_reserve(paddr_t start,
+		    paddr_t stop)
 {
 	dprintf("Reserving address range 0x%p-0x%p\n", start, stop);
 
 	return bootram_operation(start, stop, bnode_reserve);
 }
 
-int bootram_unreserve(addr_t start,
-		      addr_t stop)
+int bootram_unreserve(paddr_t start,
+		      paddr_t stop)
 {
 	dprintf("Unreserving address range 0x%p-0x%p\n", start, stop);
 
 	return bootram_operation(start, stop, bnode_unreserve);
 }
 
-addr_t bootram_alloc(size_t size)
+paddr_t bootram_alloc(size_t size)
 {
 	size_t    pages;
 	bnode_t * tmp;

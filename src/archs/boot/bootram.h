@@ -24,13 +24,13 @@
 #include "mem/address.h"
 
 
-int    bootram_init(void);
-void   bootram_fini(void);
+int     bootram_init(void);
+void    bootram_fini(void);
 
-int    bootram_reserve(addr_t start,
-		       addr_t stop);
-int    bootram_unreserve(addr_t start,
-			 addr_t stop);
-addr_t bootram_alloc(size_t size);
+int     bootram_reserve(paddr_t start,
+			paddr_t stop);
+int     bootram_unreserve(paddr_t start,
+			  paddr_t stop);
+paddr_t bootram_alloc(size_t size);
 
 #endif /* BOOTRAM_H */
