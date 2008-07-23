@@ -19,7 +19,7 @@
 
 #define ASM	1
 #include "config/config.h"
-#include "archs/common/multiboot.h"
+#include "archs/boot/multiboot.h"
 #include "archs/common/asm.h"
 
 #define RESET_EFLAGS 1
