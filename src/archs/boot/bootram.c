@@ -742,7 +742,7 @@ paddr_t bootram_alloc(size_t size)
 
 			for (i = start; i <= stop; i++) {
 				if (bmap_test_reset(tmp->bmap, i)) {
-					dprintf("    Page %i not free\n", i);
+					dprintf("    Page %i is used\n", i);
 					break;
 				}
 			}
