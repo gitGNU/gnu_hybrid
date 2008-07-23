@@ -23,6 +23,8 @@ EXTRA_DIST +=					\
 	@reldir@/rules.cfg
 
 arch_boot_SRCS =				\
+	@reldir@/multiboot.c			\
+	@reldir@/multiboot.h			\
 	@reldir@/bootstrap.c			\
 	@reldir@/bootstrap.h			\
 	@reldir@/bootinfo.h			\
