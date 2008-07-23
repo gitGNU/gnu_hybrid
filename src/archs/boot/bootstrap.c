@@ -240,7 +240,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 
 	/* Setting up the heap ! */
 	dprintf("Initializing heap\n");
-	heap_size = CONFIG_PAGE_SIZE * 64;
+	heap_size = CONFIG_HEAP_SIZE;
 	heap_base = bootram_alloc(heap_size);
 	if (!heap_base) {
 		panic("Cannot allocate %d bytes of memory for the heap",

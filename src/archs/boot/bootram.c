@@ -232,7 +232,6 @@ static void bmap_reset_all(bmap_t * bmap)
 	bmap_reset_range(bmap, 0, bmap->size - 1);
 }
 
-
 static int bmap_ffs(bmap_t * bmap,
 		    size_t   start,
 		    size_t * got)
@@ -243,8 +242,12 @@ static int bmap_ffs(bmap_t * bmap,
 	assert(bmap->size > start);
 	assert(got);
 
+	dprintf("Looking for the first set bit on bmap 0x%p\n", bmap);
+	dprintf("Starting from %d (size = %d)\n", bmap, start, bmap->size);
+
 	for (i = start; i < bmap->size; i++) {
 		if (bmap_test_set(bmap, i)) {
+			dprintf("First free on bmap 0x%p is %d\n", bmap, i);
 			*got = i;
 			return 1;
 		}
@@ -691,6 +694,27 @@ int bootram_unreserve(paddr_t start,
 	return bootram_operation(start, stop, bnode_unreserve);
 }
 
+/* XXX FIXME: TO BE REMOVED */
+#undef dprintf
+#define dprintf(F,A...) printf(BANNER F,##A)
+#undef BNODE_DUMP
+#define BNODE_DUMP(N) {						\
+	dprintf("bnode 0x%p stats:\n", (N));			\
+	dprintf("  start 0x%p\n", (paddr_t) (N)->start);	\
+	dprintf("  stop  0x%p\n", (paddr_t) (N)->stop);		\
+	dprintf("  bmap  0x%p\n", (N)->bmap);			\
+	dprintf("  next  0x%p\n", (N)->next);			\
+}
+#undef BMAP_DUMP
+#define BMAP_DUMP(B) {						\
+	dprintf("bmap 0x%p stats:\n",				\
+		(B));						\
+	dprintf("  size %d bits (maps %u bytes)\n",		\
+		(B)->size,  (B)->size * CONFIG_PAGE_SIZE);	\
+	dprintf("  data 0x%p\n",				\
+		(B)->data);					\
+}
+
 paddr_t bootram_alloc(size_t size)
 {
 	size_t    pages;
@@ -703,40 +727,51 @@ paddr_t bootram_alloc(size_t size)
 	for (tmp = head_; tmp != NULL; tmp = tmp->next) {
 		size_t start;
 		size_t stop;
-		size_t i;
 
-		dprintf("Looking for %d bytes on node 0x%p\n", size, tmp);
+		dprintf("Looking for %d pages on node 0x%p\n", pages, tmp);
 
-		if ((tmp->stop - tmp->start) < size) {
-			dprintf("  Node 0x%p is too small\n", tmp);
+		BNODE_DUMP(tmp);
+
+		dprintf("Working on bmap 0x%p\n", tmp->bmap);
+
+		BMAP_DUMP(tmp->bmap);
+
+		if (tmp->bmap->size < size) {
+			dprintf("  Node 0x%p bmap is too small (%d pages)\n",
+				tmp, tmp->bmap->size);
 			continue;
 		}
 
-		if (!bmap_ffs(tmp->bmap, 0, &start)) {
-			dprintf("  Node 0x%p has no free pages\n", tmp);
-			continue;
-		}
+		start = 0;
+		while (start + pages - 1 <= tmp->bmap->size) {
+			size_t i;
 
-		stop = start + pages - 1;
-
-		if (stop >= tmp->bmap->size) {
-			dprintf("  Node 0x%p has no enough free pages\n", tmp);
-			continue;
-		}
-
-		dprintf("  Starting from %d\n", start);
-
-		for (i = start; i <= stop; i++) {
-			if (bmap_test_reset(tmp->bmap, i)) {
-				stop = i;
+			if (!bmap_ffs(tmp->bmap, start, &start)) {
+				dprintf("No free bits on bmap 0x%p\n",
+					tmp->bmap);
 				break;
 			}
-		}
-		dprintf("  Last reset bit index is %d\n", i);
 
-		dprintf("  Stopping to   %d\n", stop);
+			stop = start + pages - 1;
+			if (stop > tmp->bmap->size) {
+				dprintf("  Node 0x%p has no enough "
+					"free pages\n", tmp);
+				break;
+			}
 
-		if (i == stop + 1) {
+			dprintf("  Exploring %d-%d\n", start, stop);
+
+			for (i = start; i <= stop; i++) {
+				if (bmap_test_reset(tmp->bmap, i)) {
+					dprintf("    Page %i not free\n", i);
+					break;
+				}
+			}
+			if (i != stop + 1) {
+				start = stop + 1;
+				continue;
+			}
+
 			dprintf("  Pages %d-%d on node 0x%p are good\n",
 				start, stop, tmp);
 			for (i = start; i <= stop; i++) {
@@ -745,6 +780,7 @@ paddr_t bootram_alloc(size_t size)
 
 			return start;
 		}
+		dprintf("  No good pages on node 0x%p\n", tmp);
 	}
 
 	return 0;
