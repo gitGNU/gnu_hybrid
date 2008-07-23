@@ -36,6 +36,10 @@
 #define dprintf(F,A...)
 #endif
 
+typedef struct {
+	paddr_t address;
+} pmm_entry_t;
+
 int pmm_init(void)
 {
 	return 1;
@@ -43,4 +47,32 @@ int pmm_init(void)
 
 void pmm_fini(void)
 {
+}
+
+paddr_t pmm_page_alloc(pmm_page_type_t type)
+{
+	unused_argument(type);
+
+	return 0;
+}
+
+int pmm_page_free(paddr_t address)
+{
+	unused_argument(address);
+
+	return 0;
+}
+
+int pmm_page_use_inc(paddr_t address)
+{
+	unused_argument(address);
+
+	return 0;
+}
+
+int pmm_page_use_dec(paddr_t address)
+{
+	unused_argument(address);
+
+	return 0;
 }

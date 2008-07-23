@@ -23,12 +23,24 @@
 #include "config/config.h"
 #include "archs/boot/bootinfo.h"
 #include "libc/stdint.h"
-
-__BEGIN_DECLS
+#include "mem/address.h"
 
 int    pmm_init(void);
 void   pmm_fini(void);
 
-__END_DECLS
+/* Page types */
+typedef enum {
+	PMM_PAGE_FREE,
+	PMM_PAGE_KERNEL,
+	PMM_PAGE_USER
+} pmm_page_type_t;
+
+paddr_t pmm_page_alloc(pmm_page_type_t type);
+int     pmm_page_free(paddr_t address);
+
+int     pmm_page_use_inc(paddr_t address);
+int     pmm_page_use_dec(paddr_t address);
+int     pmm_page_use_set(paddr_t address);
+int     pmm_page_use_get(paddr_t address);
 
 #endif /* CORE_MEM_PMM_H */
