@@ -24,6 +24,7 @@
 #include "libc/stdlib.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
+#include "mem/address.h"
 
 static int inrange(void * addr, void * start, void * end)
 {
@@ -36,39 +37,35 @@ static int inrange(void * addr, void * start, void * end)
 	return 0;
 }
 
-__BEGIN_DECLS
-
-int valid_text_address(unsigned int addr)
+int valid_text_address(paddr_t addr)
 {
 	return (inrange((void *) addr, (void *) &_text, (void *) &_etext));
 }
 
-int valid_data_address(unsigned int addr)
+int valid_data_address(paddr_t addr)
 {
 	return (inrange((void *) addr, (void *) &_data, (void *) &_edata));
 }
 
-int valid_rodata_address(unsigned int addr)
+int valid_rodata_address(paddr_t addr)
 {
 	return (inrange((void *) addr, (void *) &_rodata, (void *) &_erodata));
 }
 
-int valid_bss_address(unsigned int addr)
+int valid_bss_address(paddr_t addr)
 {
 	return (inrange((void *) addr, (void *) &_bss, (void *) &_ebss));
 }
 
-int valid_debug_address(unsigned int addr)
+int valid_debug_address(paddr_t addr)
 {
 	return (inrange((void *) addr, (void *) &_debug, (void *) &_edebug));
 }
 
-__END_DECLS
-
 #if CONFIG_DEBUGGER
-static dbg_result_t command_regions_on_execute(FILE* stream,
-					       int   argc,
-					       char* argv[])
+static dbg_result_t command_regions_on_execute(FILE * stream,
+					       int    argc,
+					       char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
@@ -105,10 +102,10 @@ DBG_COMMAND_DECLARE(regions,
 		    command_regions_on_execute,
 		    NULL);
 
-static void dump(FILE* stream, void* base, void* buf, uint_t len, int words)
+static void dump(FILE * stream, void * base, void * buf, uint_t len, int words)
 {
 	uint_t i, j;
-	char*  b;
+	char * b;
 
 	assert(stream);
 
@@ -119,7 +116,7 @@ static void dump(FILE* stream, void* base, void* buf, uint_t len, int words)
 	}
 
 	for (i = 0; i < len; i += 16) {
-		fprintf(stream, "%08x      ", ((unsigned int) base + i));
+		fprintf(stream, "%08x      ", ((paddr_t) base + i));
 		for (j = i; j < i + 16; j++) {
 			if (j % 4 == 0) {
 				fprintf(stream, " ");
@@ -154,9 +151,9 @@ static void dump(FILE* stream, void* base, void* buf, uint_t len, int words)
 	}
 }
 
-static dbg_result_t command_dump_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+static dbg_result_t command_dump_on_execute(FILE * stream,
+					    int    argc,
+					    char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);

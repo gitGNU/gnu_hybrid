@@ -23,16 +23,17 @@
 
 __BEGIN_DECLS
 
-typedef uint_t addr_t;
+typedef uint_t paddr_t; /* Physical address */
+typedef uint_t vaddr_t; /* Virtual address */
 
 #define virt_to_phys(X) (X)
 #define phys_to_virt(X) (X)
 
-int valid_text_address(unsigned int addr);
-int valid_data_address(unsigned int addr);
-int valid_rodata_address(unsigned int addr);
-int valid_bss_address(unsigned int addr);
-int valid_debug_address(unsigned int addr);
+int valid_text_address(paddr_t addr);
+int valid_data_address(paddr_t addr);
+int valid_rodata_address(paddr_t addr);
+int valid_bss_address(paddr_t addr);
+int valid_debug_address(paddr_t addr);
 
 __END_DECLS
 
