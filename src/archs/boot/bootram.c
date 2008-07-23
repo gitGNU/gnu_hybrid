@@ -694,27 +694,6 @@ int bootram_unreserve(paddr_t start,
 	return bootram_operation(start, stop, bnode_unreserve);
 }
 
-/* XXX FIXME: TO BE REMOVED */
-#undef dprintf
-#define dprintf(F,A...) printf(BANNER F,##A)
-#undef BNODE_DUMP
-#define BNODE_DUMP(N) {						\
-	dprintf("bnode 0x%p stats:\n", (N));			\
-	dprintf("  start 0x%p\n", (paddr_t) (N)->start);	\
-	dprintf("  stop  0x%p\n", (paddr_t) (N)->stop);		\
-	dprintf("  bmap  0x%p\n", (N)->bmap);			\
-	dprintf("  next  0x%p\n", (N)->next);			\
-}
-#undef BMAP_DUMP
-#define BMAP_DUMP(B) {						\
-	dprintf("bmap 0x%p stats:\n",				\
-		(B));						\
-	dprintf("  size %d bits (maps %u bytes)\n",		\
-		(B)->size,  (B)->size * CONFIG_PAGE_SIZE);	\
-	dprintf("  data 0x%p\n",				\
-		(B)->data);					\
-}
-
 paddr_t bootram_alloc(size_t size)
 {
 	size_t    pages;
