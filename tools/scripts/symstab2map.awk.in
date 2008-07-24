@@ -83,7 +83,7 @@ BEGIN {
 	}
 
 	retval = 0;
-	printf(" ") > outfile;
+	printf("") > outfile;
 	while ((getline line < infile) > 0) {
 		if (match(line, /^.*:$/) != 0) {
 			# Skip
