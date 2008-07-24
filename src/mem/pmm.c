@@ -25,7 +25,7 @@
 #include "libc/stddef.h"
 #include "libs/debug.h"
 #include "mem/pmm.h"
-#include "archs/boot/bootinfo.h"
+#include "archs/boot/bootram.h"
 #include "dbg/debugger.h"
 
 #define BANNER          "pmm: "
@@ -36,12 +36,38 @@
 #define dprintf(F,A...)
 #endif
 
-typedef struct {
-	paddr_t address;
-} pmm_entry_t;
+struct pmm_entry {
+	paddr_t            address;
+	struct pmm_entry * next;
+};
+typedef struct pmm_entry pmm_entry_t;
+
+struct {
+	pmm_entry_t * free;
+} head;
+
+static int pmm_bootram_iterator(paddr_t start)
+{
+	pmm_entry_t * tmp;
+
+	/* dprintf("Adding page 0x%p to the free list\n", start); */
+
+	tmp = (pmm_entry_t *) start;
+	tmp->address = start;
+	tmp->next    = head.free;
+	head.free    = tmp;
+
+	return 1;
+}
 
 int pmm_init(void)
 {
+	head.free = NULL;
+
+	if (!bootram_foreach(pmm_bootram_iterator)) {
+		return 0;
+	}
+
 	return 1;
 }
 
@@ -49,30 +75,30 @@ void pmm_fini(void)
 {
 }
 
-paddr_t pmm_page_alloc(pmm_page_type_t type)
+paddr_t pmm_page_alloc(void)
 {
-	unused_argument(type);
+	pmm_entry_t * t;
 
-	return 0;
+	t = head.free;
+	if (!t) {
+		panic("No page to alloc");
+	}
+	
+	head.free = head.free->next;
+
+	return t->address;
 }
 
 int pmm_page_free(paddr_t address)
 {
+	pmm_entry_t * t;
+
 	unused_argument(address);
 
-	return 0;
-}
-
-int pmm_page_use_inc(paddr_t address)
-{
-	unused_argument(address);
-
-	return 0;
-}
-
-int pmm_page_use_dec(paddr_t address)
-{
-	unused_argument(address);
+	t          = (pmm_entry_t *) address;
+	t->address = address;
+	t->next    = head.free;
+	head.free  = t;
 
 	return 0;
 }
