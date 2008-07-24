@@ -64,7 +64,7 @@ typedef struct bmap bmap_t;
 #endif
 
 #if 0
-static void bmap_iterate(bmap_t * bmap,
+static void bmap_foreach(bmap_t * bmap,
 			 size_t   start,
 			 size_t   stop,
 			 void     (* op)(bmap_t * bmap,
@@ -763,4 +763,28 @@ paddr_t bootram_alloc(size_t size)
 	}
 
 	return 0;
+}
+
+int bootram_foreach(int (* op)(paddr_t start))
+{
+	bnode_t * tmp;
+
+	assert(op);
+
+	for (tmp = head_; tmp != NULL; tmp = tmp->next) {
+		size_t i;
+
+		BMAP_CHECK(tmp->bmap);
+
+		for (i = 0; i < tmp->bmap->size; i++) {
+			if (bmap_test_set(tmp->bmap, i)) {
+				if (!op((paddr_t) (tmp->start +
+						   i * CONFIG_PAGE_SIZE))) {
+					return 0;
+				}
+			}
+		}
+	}
+
+	return 1;
 }
