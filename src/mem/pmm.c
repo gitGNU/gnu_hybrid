@@ -46,6 +46,7 @@ struct {
 	pmm_entry_t * free;
 } head;
 
+#if 0
 static int pmm_bootram_iterator(paddr_t start)
 {
 	pmm_entry_t * tmp;
@@ -59,14 +60,19 @@ static int pmm_bootram_iterator(paddr_t start)
 
 	return 1;
 }
+#endif
 
 int pmm_init(void)
 {
+	dprintf("Initalizing\n");
+
 	head.free = NULL;
 
+#if 0
 	if (!bootram_foreach(pmm_bootram_iterator)) {
 		return 0;
 	}
+#endif
 
 	return 1;
 }
@@ -83,7 +89,7 @@ paddr_t pmm_page_alloc(void)
 	if (!t) {
 		panic("No page to alloc");
 	}
-	
+
 	head.free = head.free->next;
 
 	return t->address;
