@@ -536,7 +536,7 @@ int bootinfo_fix(bootinfo_t * bi)
 	return 1;
 }
 
-#if CONFIG_BOOTINFO_DEBUG
+#if CONFIG_DEBUGGER
 extern bootinfo_t * bootinfo_last;
 
 static dbg_result_t command_bootinfo_on_execute(FILE * stream,
@@ -571,4 +571,4 @@ DBG_COMMAND_DECLARE(bootinfo,
 		    NULL,
 		    command_bootinfo_on_execute,
 		    NULL);
-#endif /* CONFIG_BOOTINFO_DEBUG */
+#endif /* CONFIG_DEBUGGER */
