@@ -120,26 +120,6 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 		panic("Kernel image format is both elf and aout ??");
 	}
 
-#if CONFIG_AOUT
-	/* Is the symbol table of aout valid?  */
-	if (CHECK_FLAG(mbi->flags, 4)) {
-		aout_symbol_table_t* aout_sym;
-
-		dprintf("aout section header table:\n");
-
-		aout_sym = &(mbi->u.aout_sym);
-
-		dprintf("  tabsize = 0x%0x, strsize = 0x%x, addr = 0x%x\n",
-			(unsigned) aout_sym->tabsize,
-			(unsigned) aout_sym->strsize,
-			(unsigned) aout_sym->addr);
-
-		bi->kernel.type = BOOTINFO_IMAGE_AOUT;
-	} else {
-		dprintf("No aout section header table available\n");
-	}
-#endif /* CONFIG_AOUT */
-
 #if CONFIG_ELF
 	/* Is the section header table of ELF valid?  */
 	if (CHECK_FLAG(mbi->flags, 5)) {

@@ -124,9 +124,9 @@ int intel_cache_init(arch_cpu_t* cpu)
 	cprintf(cpu, "Intel cache detection in progress\n");
 
 	dp = (unsigned char *) regs;
+
 	/* Number of times to iterate */
 	n  = cpuid_eax(2) & 0xFF;
-
 	for (i = 0; i < n; i++) {
 		cpuid(2,
 		      (unsigned int *) &regs[0],
