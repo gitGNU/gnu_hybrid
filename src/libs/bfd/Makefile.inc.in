@@ -25,9 +25,6 @@ EXTRA_DIST +=					\
 libs_bfd_SRCS =					\
 	@reldir@/bfd.c				\
 	@reldir@/bfd.h				\
-	@reldir@/aout.c				\
-	@reldir@/aout.h				\
-	@reldir@/aout-format.h			\
 	@reldir@/elf.c				\
 	@reldir@/elf.h				\
 	@reldir@/elf-format.h

@@ -25,8 +25,6 @@
 #include "libs/bfd/bfd.h"
 #include "libs/bfd/elf.h"
 #include "libs/bfd/elf-format.h"
-#include "libs/bfd/aout.h"
-#include "libs/bfd/aout-format.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "mem/heap.h"
@@ -42,9 +40,7 @@
 
 /* NOTE: BFD types are a subset of bootinfo section types */
 typedef enum {
-	BFD_UNKNOWN = 0,
 	BFD_ELF,
-	BFD_AOUT,
 } bfd_type_t;
 
 struct bfd_image {
@@ -54,9 +50,6 @@ struct bfd_image {
 #if CONFIG_ELF
 		elf_info_t  elf;
 #endif
-#if CONFIG_AOUT
-		aout_info_t aout;
-#endif
 	} data;
 };
 typedef struct bfd_image bfd_image_t;
@@ -64,8 +57,8 @@ typedef struct bfd_image bfd_image_t;
 static bfd_image_t * head;
 struct bfd_image     kernel_image;
 
-int bfd_bi_config_image(const bi_image_t * bi_image,
-			bfd_image_t *      bfd_image)
+static int bfd_bi_config_image(const bi_image_t * bi_image,
+			       bfd_image_t *      bfd_image)
 {
 	int retval;
 
@@ -74,11 +67,10 @@ int bfd_bi_config_image(const bi_image_t * bi_image,
 
 	retval = 0;
 
-	bfd_image->type = BFD_UNKNOWN;
-
+	/* Add only supported image types */
 	switch (bi_image->type) {
 		case BOOTINFO_IMAGE_RAW:
-			dprintf("Hmmm image is RAW\n");
+			dprintf("Unsupported raw image\n");
 
 			retval = 0;
 			break;
@@ -106,36 +98,9 @@ int bfd_bi_config_image(const bi_image_t * bi_image,
 #endif
 			break;
 
-		case BOOTINFO_IMAGE_AOUT:
-#if CONFIG_AOUT
-			dprintf("Initializing AOUT bfd descriptor\n");
-
-			bfd_image->type = BFD_AOUT;
-
-			if (!aout_init(&(bfd_image->data.aout),
-				       bi_image->data.aout.num,
-				       bi_image->data.aout.strsize,
-				       bi_image->data.aout.addr)) {
-				dprintf("Cannot initialize AOUT descriptor\n");
-				break;
-			}
-
-			retval = 1;
-#else
-			printf("Unsupported image type\n");
-
-			retval = 0;
-#endif
-			break;
-
-		case BFD_UNKNOWN:
-			dprintf("Unknown image type\n");
-
-			break;
-
+		case BOOTINFO_IMAGE_UNKNOWN:
 		default:
-			bug();
-
+			dprintf("Unknown image type\n");
 			break;
 	}
 
@@ -148,15 +113,11 @@ int bfd_bi_image_static_add(const bi_image_t * image,
 	assert(image);
 	assert(buffer);
 
-	buffer->type = BFD_UNKNOWN;
-
 	if (!bfd_bi_config_image(image, buffer)) {
 		dprintf("Cannot initialize bootinfo descriptor for "
 			"image 0x%p\n", image);
 		return 0;
 	}
-
-	assert(buffer->type != BFD_UNKNOWN);
 
 	buffer->next = head;
 	head         = buffer;
@@ -210,7 +171,8 @@ int bfd_symbol_reverse_lookup(void *  address,
 {
 	bfd_image_t * p;
 
-#if (!CONFIG_ELF && !CONFIG_AOUT)
+	/* XXX FIXME: Ugly, please rearrange */
+#if (!CONFIG_ELF)
 	unused_argument(address);
 	unused_argument(buffer);
 	unused_argument(length);
@@ -232,21 +194,6 @@ int bfd_symbol_reverse_lookup(void *  address,
 					return 1;
 				}
 #endif
-				break;
-
-			case BFD_AOUT:
-#if CONFIG_AOUT
-				if (aout_symbol_reverse_lookup(&(p->data.aout),
-							       address,
-							       buffer,
-							       length,
-							       base)) {
-					return 1;
-				}
-#endif
-				break;
-
-			case BFD_UNKNOWN:
 				break;
 
 			default:
@@ -278,18 +225,6 @@ int bfd_symbols_foreach(int (* callback)(const char *   name,
 					return 0;
 				}
 #endif
-				break;
-
-			case BFD_AOUT:
-#if CONFIG_AOUT
-				if (!aout_symbols_foreach(&(p->data.aout),
-							  callback)) {
-					return 0;
-				}
-#endif
-				break;
-
-			case BFD_UNKNOWN:
 				break;
 
 			default:
