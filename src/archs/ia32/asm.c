@@ -59,12 +59,12 @@ boolean cpuHasMSR()
 
 void cpuGetMSR(dword msr, dword *lo, dword *hi)
 {
-	__asm__ volatile ("rdsmr" : "=a"(*lo),"=d"(*hi),"c"(msr));
+	__asm__ volatile ("rdsmr" : "=a" (*lo), "=d" (*hi), "c" (msr));
 }
 
 void cpuSetMSR(dword msr, dword lo, dword hi)
 {
-	__asm__ volatile ("wrsmr" : "=a"(lo),"=d"(hi),"c"(msr));
+	__asm__ volatile ("wrsmr" : "=a" (lo), "=d" (hi), "c" (msr));
 }
 #endif
 
@@ -98,7 +98,7 @@ unsigned int cpuid_ebx(unsigned int op)
 	__asm__ volatile ("cpuid"
 			  : "=a" (eax), "=b" (ebx)
 			  : "0"  (op)
-			  : "cx", "dx" );
+			  : "cx", "dx");
 
 	return ebx;
 }
@@ -110,7 +110,7 @@ unsigned int cpuid_ecx(unsigned int op)
 	__asm__ volatile ("cpuid"
 			  : "=a" (eax), "=c" (ecx)
 			  : "0"  (op)
-			  : "bx", "dx" );
+			  : "bx", "dx");
 
 	return ecx;
 }
@@ -153,8 +153,7 @@ void lidt(void * idt_ptr)
 
 void ltr(uint16_t sel)
 {
-	__asm__ __volatile__(
-			     "ltr %%ax;"
+	__asm__ __volatile__("ltr %%ax;"
 			     "jmp 1f;"
 			     "1:"
 			     :
@@ -255,8 +254,7 @@ uint64_t rdtsc(void)
 	uint64_t v;
 
 	asm volatile("rdtsc"
-		     : "=A" (v)
-		     );
+		     : "=A" (v));
 
 	return v;
 }
