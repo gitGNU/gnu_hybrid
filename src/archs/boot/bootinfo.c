@@ -398,11 +398,6 @@ static int mod_valid(bootinfo_t * bi,
 #else
 			return 0;
 #endif
-		case BOOTINFO_IMAGE_AOUT:
-#if CONFIG_AOUT
-#else
-			return 0;
-#endif
 		case BOOTINFO_IMAGE_UNKNOWN:
 		default:
 			return 0;

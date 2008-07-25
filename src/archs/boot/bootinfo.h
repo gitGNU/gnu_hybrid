@@ -62,12 +62,6 @@ typedef	struct {
 } bi_section_elf_t;
 
 typedef	struct {
-	unsigned long num;
-	unsigned long strsize;
-	unsigned long addr;
-} bi_section_aout_t;
-
-typedef	struct {
 	unsigned long start;
 	unsigned long end;
 } bi_section_raw_t;
@@ -76,23 +70,18 @@ typedef	enum {
 	BOOTINFO_IMAGE_UNKNOWN = 0, /* Must be 0 */
 	BOOTINFO_IMAGE_RAW,
 	BOOTINFO_IMAGE_ELF,
-	BOOTINFO_IMAGE_AOUT,
 } bi_section_type_t;
 
 #define BOOTINFO_IMAGETYPE2STRING(T)			\
 	(((T) == BOOTINFO_IMAGE_UNKNOWN) ? "unknown" :	\
 	 ((T) == BOOTINFO_IMAGE_RAW    ) ? "raw"     :	\
 	 ((T) == BOOTINFO_IMAGE_ELF    ) ? "elf"     :	\
-	 ((T) == BOOTINFO_IMAGE_AOUT   ) ? "aout"    :	\
 	 "!!! BUG !!!")
 
 typedef struct {
 	bi_section_type_t         type;
 	union {
 		bi_section_raw_t  raw;
-#if CONFIG_AOUT
-		bi_section_aout_t aout;
-#endif
 #if CONFIG_ELF
 		bi_section_elf_t  elf;
 #endif
