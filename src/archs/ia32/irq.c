@@ -120,7 +120,11 @@ void irq_handler(regs_t * regs)
 	/* NOTE: We reach this point with interrupts disabled */
 	assert(regs);
 
+#if 0
 	irq = regs->isr_no - I8259_IDT_BASE_INDEX;
+#else
+	irq = regs->isr_no;
+#endif
 
 #if 0
 	dprintf("Handler running for IRQ %d/%d/%d (mask = 0x%x)\n",
