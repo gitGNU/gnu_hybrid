@@ -27,6 +27,7 @@ __BEGIN_DECLS
 
 /* This struct defines the stack after an ISR (TRAP/IRQ) was running */
 struct regs {
+#if 0
 	/* Software frame */
 	uint_t ebx;
 	uint_t ecx;
@@ -46,6 +47,15 @@ struct regs {
 	uint_t eflags;
 	uint_t esp;
 	uint_t ss;
+#endif
+	/* Data segment selector */
+	uint32_t ds;
+	/* Pushed by pusha */
+	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+	/* Interrupt number and error code (when applicable) */
+	uint32_t isr_no, err_code;
+	/* Pushed by the processor automatically */
+	uint32_t eip, cs, eflags, user_esp, ss;
 };
 typedef struct regs regs_t;
 

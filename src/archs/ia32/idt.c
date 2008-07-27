@@ -170,8 +170,13 @@ void idt_frame_dump(regs_t * regs)
 	       regs->esi, regs->edi);
 	printf("  eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
 	       regs->eip, esp, regs->ebp, regs->eflags);
+#if 0
 	printf("  cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
 	       regs->cs, ss, regs->ds, regs->es, tss_get());
+#else
+	printf("  cs  0x%08x ss  0x%08x ds  0x%08x uesp   0x%08x\n",
+	       regs->cs, ss, regs->ds, regs->user_esp, tss_get());
+#endif
 }
 
 extern void trap_00(void);
