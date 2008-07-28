@@ -20,10 +20,10 @@
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
+#include "libbfd/bfd.h"
 #include "libcompiler/compiler.h"
 #include "libcompiler/demangle.h"
 #include "archs/arch.h"
-#include "libs/bfd/bfd.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 
@@ -46,7 +46,6 @@ void backtrace_save(void)
 	/* Save the backtrace */
 	frames = arch_backtrace_store(backtrace, CONFIG_MAX_STACK_LEVELS);
 	assert(frames <= CONFIG_MAX_STACK_LEVELS);
-	assert(frames >= 1);
 }
 
 void backtrace_show(FILE * stream)
@@ -62,9 +61,14 @@ void backtrace_show(FILE * stream)
 	}
 
 	fprintf(stream, "Stack backtrace:\n");
-	for (i = 1; /* Do not store this function into the trace */
-	     i < frames;
-	     i++) {
+
+	/*
+	 * NOTE:
+	 *     We should start from i = 1, in order to avoid dumping the
+	 *     current function in the backtrace. We remove this behavior for
+	 *     debugging purposes. To be re-enabled later ...
+	 */
+	for (i = 0; i < frames; i++) {
 		void * base;
 		char * symbol;
 

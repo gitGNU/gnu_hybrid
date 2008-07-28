@@ -23,7 +23,7 @@
 #include "libc/stdlib.h"
 #include "libc/string.h"
 #include "libc/ctype.h"
-#include "libs/bfd/bfd.h"
+#include "libbfd/bfd.h"
 #include "archs/boot/option.h"
 #include "libs/debug.h"
 #include "dbg/backtrace.h"
