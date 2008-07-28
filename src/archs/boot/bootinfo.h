@@ -82,9 +82,7 @@ typedef struct {
 	bi_section_type_t         type;
 	union {
 		bi_section_raw_t  raw;
-#if CONFIG_ELF
 		bi_section_elf_t  elf;
-#endif
 	} data;
 } bi_image_t;
 

@@ -21,13 +21,13 @@
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
+#include "libbfd/bfd.h"
 #include "archs/linker.h"
 #include "archs/arch.h"
 #include "archs/boot/option.h"
 #include "archs/boot/bootinfo.h"
 #include "archs/boot/bootram.h"
 #include "archs/boot/bootstrap.h"
-#include "libs/bfd/bfd.h"
 #include "libs/debug.h"
 #include "dbg/panic.h"
 #include "dbg/debugger.h"
@@ -114,18 +114,16 @@ void bootstrap_early(void)
 }
 
 #if CONFIG_BOOTINFO_DEBUG
-bootinfo_t *            bootinfo_last = NULL;
+bootinfo_t *  bootinfo_last = NULL;
 #endif /* CONFIG_BOOTINFO_DEBUG */
 
-static uint_t           heap_base;
-static uint_t           heap_size;
+static uint_t heap_base;
+static uint_t heap_size;
 
-extern struct bfd_image kernel_image;
+bfd_image_t   bfd_kernel_image;
 
 void bootstrap_late(bootinfo_t * bootinfo)
 {
-	int i;
-
 	assert(bootinfo);
 
 	/*
@@ -190,9 +188,11 @@ void bootstrap_late(bootinfo_t * bootinfo)
 		/* This check could be a warning ... */
 	}
 
-	if (!bfd_bi_image_static_add(&bootinfo->kernel, &kernel_image)) {
+	if (!bfd_image_elf_add(&bfd_kernel_image,
+			       (Elf32_Shdr *) bootinfo->kernel.data.elf.addr,
+			       bootinfo->kernel.data.elf.num,
+			       bootinfo->kernel.data.elf.shndx)) {
 		panic("Cannot initialize bfd related infos for kernel");
-		/* This check could be a warning ... */
 	}
 	/* We should be able to resolve symbols now ... */
 
@@ -277,16 +277,6 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	/* Huh we have options now (at least the default values ...) */
 #endif /* CONFIG_OPTIONS */
 
-	dprintf("Adding modules to bfd structures\n");
-	for (i = 0; i < BOOTINFO_MODULES; i++) {
-		if (bootinfo->modules[i].type != BOOTINFO_IMAGE_UNKNOWN) {
-			if (!bfd_bi_image_dynamic_add(&bootinfo->modules[i])) {
-				panic("Cannot initialize bfd related "
-				      "infos for module");
-			}
-		}
-	}
-
 	/* C++ library (glue) startup */
 	dprintf("Initializing C++ support\n");
 	elklib_cxx_init();
@@ -315,12 +305,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	pmm_fini();
 	arch_fini();
 	resource_fini();
-	bfd_bi_image_static_remove(&bootinfo->kernel);
-	for (i = 0; i < BOOTINFO_MODULES; i++) {
-		if (bootinfo->modules[i].type != BOOTINFO_IMAGE_UNKNOWN) {
-			bfd_bi_image_dynamic_remove(&bootinfo->modules[i]);
-		}
-	}
+	bfd_image_remove(&bfd_kernel_image);
 	bfd_fini();
 	log_fini();
 

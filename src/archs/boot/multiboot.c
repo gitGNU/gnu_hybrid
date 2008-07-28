@@ -120,7 +120,6 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 		panic("Kernel image format is both elf and aout ??");
 	}
 
-#if CONFIG_ELF
 	/* Is the section header table of ELF valid?  */
 	if (CHECK_FLAG(mbi->flags, 5)) {
 		elf_section_header_table_t* elf_sec;
@@ -149,7 +148,6 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 	} else {
 		dprintf("No elf section header table available\n");
 	}
-#endif /* CONFIG_ELF */
 
 	return (bi->kernel.type != BOOTINFO_IMAGE_UNKNOWN) ? 1 : 0;
 }

@@ -394,10 +394,6 @@ static int mod_valid(bootinfo_t * bi,
 				return 0;
 			}
 		case BOOTINFO_IMAGE_ELF:
-#if CONFIG_ELF
-#else
-			return 0;
-#endif
 		case BOOTINFO_IMAGE_UNKNOWN:
 		default:
 			return 0;
