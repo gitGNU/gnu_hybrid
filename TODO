@@ -14,6 +14,12 @@ NOTE:
 	when that TODO has been declared completed ...
 
 TO-BE-DONE:
+* Each time a (regression) test is performed, build a test directory inside
+  the tools/scripts directory in order to remove the temporary created files
+  after the unit run (or leave them after a fail). We should use a wrapper in
+  order to build the directory, cd into it, run the test and remove the
+  temporary directory
+
 * Move less useful tools related parameters from src/Makefile.am to
   src/Makefile.am
 

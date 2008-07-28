@@ -66,8 +66,11 @@
 	movl %edx, %es
 .endm
 
+	// NOTE: We use the isr_xxx label in order to detect problems
+
 .macro IRQ_ENTRY INDEX ISR_INDEX
 	.global irq_\INDEX
+isr_\ISR_INDEX :
 irq_\INDEX :
 	cli
 	pushl  $0
@@ -77,6 +80,7 @@ irq_\INDEX :
 
 .macro TRAP_ENTRY_NOERROR INDEX ISR_INDEX
 	.global trap_\INDEX
+isr_\ISR_INDEX :
 trap_\INDEX :
 	cli
 	pushl  $0
@@ -86,6 +90,7 @@ trap_\INDEX :
 
 .macro TRAP_ENTRY_ERROR INDEX ISR_INDEX
 	.global trap_\INDEX
+isr_\ISR_INDEX  :
 trap_\INDEX :
 	cli
 	pushl  $(\ISR_INDEX)
@@ -125,7 +130,7 @@ trap_common:
 
 	pushl %esp
 	call EXT_C(trap_handler)
-	addl  $5, %esp // Clear arguments from stack
+	addl  $5, %esp   // Clear arguments from stack
 
 trap_return:
 	REGS_RESTORE_ALL
