@@ -23,17 +23,15 @@
 #include "archs/arch.h"
 #include "mem/address.h"
 
-uint_t arch_backtrace_store(uint_t* backtrace,
-			    uint_t  max_len)
+uint_t arch_backtrace_store(uint_t * backtrace,
+			    uint_t   max_len)
 {
-	uint_t* ebp;
-	uint_t  i;
+	uint_t * ebp;
+	uint_t   i;
 
 	__asm__ volatile ("movl %%ebp,%0" : "=r" (ebp));
 
-	i = 0;
-
-	for (; valid_text_address(ebp[1]) && i < max_len; i++) {
+	for (i = 0; valid_text_address(ebp[1]) && i < max_len; i++) {
 		backtrace[i] = ebp[1];
 		ebp          = (uint_t *) ebp[0];
 	}
