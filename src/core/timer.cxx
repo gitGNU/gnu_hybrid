@@ -40,7 +40,6 @@
 static ktl::list<timer_t *> timers;
 static size_t               granularity;
 
-
 static int timer_enqueue(timer_t * timer)
 {
 	ktl::list<timer_t *>::iterator iter;
