@@ -24,8 +24,10 @@ config.status
 
 # XXX FIXME: To be removed ASAP
 *.iso
-tools/scripts/grub-config
-tools/scripts/grub-config.sh
+tools/scripts/grub1-config
+tools/scripts/grub1-config.sh
+tools/scripts/grub2-config
+tools/scripts/grub2-config.sh
 tools/scripts/mkiso-grub1
 tools/scripts/mkiso-grub1.sh
 tools/scripts/mkiso-grub2
