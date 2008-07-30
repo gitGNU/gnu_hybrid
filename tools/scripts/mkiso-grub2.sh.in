@@ -63,7 +63,7 @@ MKISOFS=`missing mkisofs` || { error "Missing tool: mkisofs"; exit 1; }
 # Variables initialization and checks
 #
 
-TMP_DIR="@abs_top_builddir@/tmp"
+TMP_DIR="tmp"
 test -d $TMP_DIR ||                                  \
 {                                                    \
     $MKDIR -p $TMP_DIR ||                            \
@@ -74,7 +74,7 @@ test -d $TMP_DIR ||                                  \
     $MKDIR -p $TMP_DIR/boot/grub;                    \
 }
 
-ISO_DIR="@abs_top_builddir@/iso"
+ISO_DIR="iso"
 test -d $ISO_DIR ||                                  \
 {                                                    \
     $MKDIR -p $ISO_DIR ||                            \
