@@ -51,8 +51,7 @@ static int timer_enqueue(timer_t * timer)
 		}
 
 		timer->expiration -= (*iter)->expiration;
-
-		dprintf("Decrementing timer expiration (now %d)\n",
+		dprintf("Decremented timer expiration (now %d)\n",
 			timer->expiration);
 
 		if (timer->expiration < 0) {
