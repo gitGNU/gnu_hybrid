@@ -31,9 +31,6 @@ static unsigned     backtrace[CONFIG_MAX_STACK_LEVELS];
 
 #define MAX_SYMBOL_LENGTH 512
 static char         mangled_symbol[MAX_SYMBOL_LENGTH];
-#if ELKLIB_SYMBOLS_DEMANGLING
-static char         demangled_symbol[2 * MAX_SYMBOL_LENGTH];
-#endif
 static unsigned int frames;
 
 void backtrace_clear(void)
@@ -78,29 +75,16 @@ void backtrace_show(FILE * stream)
 					      MAX_SYMBOL_LENGTH,
 					      &base)) {
 			unsigned delta;
-
-			/*
-			 * NOTE:
-			 *     Start from the mangled symbol, if we got the
-			 *     demangled one we are lucky ;-)
-			 */
-			symbol = mangled_symbol;
-#if ELKLIB_SYMBOLS_DEMANGLING
+			int      free_it;
 
 			/* Try to demangle the symbol */
-			if (demangle(mangled_symbol,
-				     demangled_symbol,
-				     sizeof(demangled_symbol))) {
-				/* Yeah, we got it ! */
-				symbol = demangled_symbol;
+			free_it = 1;
+			symbol  = demangle(mangled_symbol);
+			if (!symbol) {
+				/* No luck this time */
+				symbol  = mangled_symbol;
+				free_it = 0;
 			}
-#else
-			/*
-			 * NOTE:
-			 *     Huh no demangling code available ... so use the
-			 *     mangled one ...
-			 */
-#endif /* ELKLIB_SYMBOLS_DEMANGLING */
 
 			/*
 			 * NOTE:
@@ -116,6 +100,10 @@ void backtrace_show(FILE * stream)
 				/* Huh ... hang in function call ? */
 				fprintf(stream, "  %p <%s>\n",
 				       base, symbol);
+			}
+
+			if (free_it) {
+				free(symbol);
 			}
 		} else {
 			/* Hmm ... No symbol found ??? */
