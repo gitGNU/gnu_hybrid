@@ -43,6 +43,7 @@ scripts =					\
 	NEWS-query				\
 	fetch					\
 	grub1-config				\
+	grub2-config				\
 	mkiso-grub1				\
 	mkiso-grub2				\
 	whitespace-detect
@@ -80,6 +81,7 @@ noinst_SCRIPTS =				\
 	gitlog2ChangeLog			\
 	NEWS-query				\
 	grub1-config				\
+	grub2-config				\
 	mkiso-grub1				\
 	mkiso-grub2				\
 	whitespace-detect
@@ -96,6 +98,7 @@ EXTRA_DIST +=					\
 	gitlog2ChangeLog.in			\
 	NEWS-query.in				\
 	grub1-config.sh.in			\
+	grub2-config.sh.in			\
 	mkiso-grub1.sh.in			\
 	mkiso-grub2.sh.in			\
 	whitespace-detect.in
@@ -214,6 +217,20 @@ grub1-config: Makefile grub1-config.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += grub1-config
+
+grub2-config.sh: Makefile $(sh_lib_SRC) grub2-config.sh.in
+	INFILE=grub2-config.sh.in ;		\
+	OUTFILE=grub2-config.sh ;		\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += grub2-config.sh
+
+grub2-config: Makefile grub2-config.sh
+	INFILE=grub2-config.sh ;		\
+	OUTFILE=grub2-config ;			\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += grub2-config
 
 mkiso-grub1.sh: Makefile $(sh_lib_SRC) mkiso-grub1.sh.in
 	INFILE=mkiso-grub1.sh.in ;		\
