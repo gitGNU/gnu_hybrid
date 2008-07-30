@@ -64,45 +64,37 @@ MKISOFS=`missing mkisofs` || { error "Missing tool: mkisofs"; exit 1; }
 #
 
 TMP_DIR="tmp"
-test -d $TMP_DIR ||                                  \
-{                                                    \
-    $MKDIR -p $TMP_DIR ||                            \
-    {                                                \
+test -d $TMP_DIR || {                                \
+    $MKDIR -p $TMP_DIR || {                          \
 	error "Failed to create $TMP_DIR directory"; \
 	exit 1;                                      \
     };                                               \
     $MKDIR -p $TMP_DIR/boot/grub;                    \
 }
 
-ISO_DIR="iso"
-test -d $ISO_DIR ||                                  \
-{                                                    \
-    $MKDIR -p $ISO_DIR ||                            \
-    {                                                \
+ISO_DIR="."
+test -d $ISO_DIR || {                                \
+    $MKDIR -p $ISO_DIR || {                          \
 	error "Failed to create $ISO_DIR directory"; \
 	exit 1;                                      \
     };                                               \
 }
 
 GRUB1_CONFIG="@abs_top_builddir@/tools/scripts/grub-config"
-test -r $GRUB1_CONFIG ||               \
-{                                      \
+test -r $GRUB1_CONFIG || {             \
     error "Missing tool: grub-config"; \
     exit 1;                            \
 }
 
 GRUB1_EL_TORITO="`$GRUB1_CONFIG -D`/stage2_eltorito"
-test -r $GRUB1_EL_TORITO ||               \
-{                                         \
+test -r $GRUB1_EL_TORITO || {             \
     error "Missing El-Torito image file"; \
     exit 1;                               \
 }
 
 GRUB_LIB_DIR="@libdir@/grub/i386-pc"
-test -d $GRUB_LIB_DIR ||                                  \
-{                                                         \
-    $MKDIR -p $GRUB_LIB_DIR ||                            \
-    {                                                     \
+test -d $GRUB_LIB_DIR || {                                \
+    $MKDIR -p $GRUB_LIB_DIR || {                          \
 	error "Failed to create $GRUB_LIB_DIR directory"; \
 	exit 1;                                           \
     };                                                    \
@@ -132,9 +124,9 @@ test ! x"$GRUB_MOD_LIST" = x"" || \
 # Building GrUB2 image
 #
 
-HYBRID_KERNEL="@abs_top_srcdir@/src/kernel"
-test -r $HYBRID_KERNEL || \
-    { error "Missing kernel image $HYBRID_KERNEL"; exit 1; }
+KERNEL="kernel"
+test -r $KERNEL || \
+    { error "Missing kernel image $KERNEL"; exit 1; }
 
 $GRUB2_MKIMAGE -v -d $GRUB_LIB_DIR $GRUB_MOD_LIST 2>/dev/null \
        >$GRUB_IMAGE ||                                        \
@@ -143,7 +135,7 @@ $GRUB2_MKIMAGE -v -d $GRUB_LIB_DIR $GRUB_MOD_LIST 2>/dev/null \
 	   exit 1;                                            \
        }
 
-$CP $HYBRID_KERNEL $TMP_DIR/boot ||      \
+$CP $KERNEL $TMP_DIR/boot ||      \
 {                                        \
     error "Failed to copy kernel image"; \
     exit 1;                              \
