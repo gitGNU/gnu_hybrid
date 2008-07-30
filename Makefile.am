@@ -58,8 +58,38 @@ text-config:
 stats:
 	$(MAKE) stats -C src
 
-debug: image.iso
+##
+## XXX FIXME: The "iso" rules are temporary and for debugging purposes only.
+##            Please move them somewhere else ASAP
+##
+debug: image-grub1.iso Makefile
 	$(MAKE) system.map -C src
+
+image-grub1.iso: all Makefile
+	rm -r -f image-fs && \
+	mkdir image-fs && \
+	cp src/kernel image-fs && \
+	( cd image-fs &&	\
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 && \
+	  cp image.iso $(abs_top_builddir)/image-grub1.iso ) || { \
+		rm -r -f image-fs ; \
+		exit 1 ; \
+	} ; \
+	rm -r -f image-fs
+CLEANFILES += image-grub1.iso
+
+image-grub2.iso: all Makefile
+	rm -r -f image-fs && \
+	mkdir image-fs && \
+	cp src/kernel image-fs && \
+	( cd image-fs &&	\
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 && \
+	  cp image.iso $(abs_top_builddir)/image-grub2.iso ) || { \
+		rm -r -f image-fs ; \
+		exit 1 ; \
+	} ; \
+	rm -r -f image-fs
+CLEANFILES += image-grub2.iso
 
 ##
 ## help related target
@@ -127,23 +157,6 @@ ChangeLog: $(srcdir)/NEWS
 #		rm -f $(distdir)/NEWS ;		\
 #		exit 1 ;			\
 #	}
-
-##
-## XXX FIXME: The "iso" rule is temporary and for debugging purposes only.
-##            Please remove ASAP
-##
-image.iso: all
-	mkdir -p iso/boot/grub && \
-	cp -f `$(top_builddir)/tools/scripts/grub-config -D`/stage2_eltorito iso/boot/grub && \
-	cp -f src/kernel iso/boot && \
-	echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/kernel" > iso/boot/grub/menu.lst && \
-	$(MKISOFS) -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o image.iso iso || { \
-	        rm -r -f iso ; \
-		rm -f image.iso ; \
-	        exit 1 ; \
-	}
-	rm -r -f iso
-CLEANFILES += image.iso
 
 ##
 ## NOTE:
