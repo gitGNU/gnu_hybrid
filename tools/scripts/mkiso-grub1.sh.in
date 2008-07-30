@@ -1,5 +1,5 @@
 #
-# mkiso-grub2.sh
+# mkiso-grub1.sh
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #                    Alessandro Massignan
@@ -19,7 +19,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-mkdir -p iso/boot/grub && \
+@MKDIR_P@ iso/boot/grub && \
 cp -f `@abs_top_builddir@/tools/scripts/grub-config -D`/stage2_eltorito iso/boot/grub && \
 cp -f @abs_top_builddir@/src/kernel iso/boot && \
 echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/kernel" > iso/boot/grub/menu.lst && \
