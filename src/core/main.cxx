@@ -16,6 +16,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#include "elklib.h"
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
@@ -62,6 +63,8 @@ int main(int argc, char * argv[])
 	       VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO,
 	       strlen(VERSION_EXTRA) ? "(" VERSION_EXTRA ") " : "",
 	       BUILD_NUMBER, BUILD_DATE);
+
+	printf("Using elklib %s\n", ELKLIB_VERSION);
 
 	if (!interrupts_init()) {
 		panic("Cannot initialize interrupts");
