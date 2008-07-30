@@ -23,7 +23,7 @@ config.log
 config.status
 
 # XXX FIXME: To be removed ASAP
-image.iso
+*.iso
 tools/scripts/grub-config
 tools/scripts/grub-config.sh
 tools/scripts/mkiso-grub1
