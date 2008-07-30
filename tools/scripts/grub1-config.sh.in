@@ -1,5 +1,5 @@
 #
-# grub-config.sh
+# grub1-config.sh
 #
 # Copyright (C) 2007, 2008 Francesco Salvestrini
 #
@@ -23,7 +23,7 @@ GRUBINSTALL="@GRUB_INSTALL@"
 SED="@SED@"
 
 # Script variables
-PROGNAME="grub-config"
+PROGNAME="grub1-config"
 PROGVERSION="0.0.1"
 ACTION=""
 RESOLVEDVAR=""
