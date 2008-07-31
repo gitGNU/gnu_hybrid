@@ -123,12 +123,13 @@ AX_PATH_MISSING([SIZE],[size],[size seems missing])
 AC_ARG_VAR(MBCHK, [Full path to the 'mbchk' executable])
 AX_PATH_MISSING([MBCHK],[mbchk],[mbchk seems missing ...])
 
-# XXX FIXME: GRUB-1 and GRUB-2 support to be removed ASAP
-
 #
-# GRUB-1 support
+# Image build support (XXX FIXME: TO BE MOVED ELSEWHERE ASAP)
 #
-AX_WITH_PROG([GRUB_INSTALL],[grub-install],[/sbin/grub-install],[$PATH:/sbin])
+AX_PROG_GRUB1([],[grub1_support=yes],[grub1_support=no])
+AM_CONDITIONAL(GRUB1_SUPPORT,[test $grub1_support = yes])
+AX_PROG_GRUB2([],[grub2_support=yes],[grub2_support=no])
+AM_CONDITIONAL(GRUB2_SUPPORT,[test $grub2_support = yes])
 AX_WITH_PROG([MKISOFS],[mkisofs])
 
 #

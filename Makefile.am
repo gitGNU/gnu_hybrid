@@ -62,9 +62,10 @@ stats:
 ## XXX FIXME: The "iso" rules are temporary and for debugging purposes only.
 ##            Please move them somewhere else ASAP
 ##
-debug: image-grub1.iso Makefile
+debug: image-grub1.iso image-grub2.iso Makefile
 	$(MAKE) system.map -C src
 
+if GRUB1_SUPPORT
 image-grub1.iso: all Makefile
 	rm -r -f image-fs && \
 	mkdir image-fs && \
@@ -76,8 +77,12 @@ image-grub1.iso: all Makefile
 		exit 1 ; \
 	} ; \
 	rm -r -f image-fs
+else
+image-grub1.iso: all Makefile
+endif
 CLEANFILES += image-grub1.iso
 
+if GRUB2_SUPPORT
 image-grub2.iso: all Makefile
 	rm -r -f image-fs && \
 	mkdir image-fs && \
@@ -89,6 +94,9 @@ image-grub2.iso: all Makefile
 		exit 1 ; \
 	} ; \
 	rm -r -f image-fs
+else
+image-grub2.iso: all Makefile
+endif
 CLEANFILES += image-grub2.iso
 
 ##
