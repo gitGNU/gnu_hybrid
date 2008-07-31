@@ -133,7 +133,9 @@ MACROS =					\
 	ax_split_version.m4			\
 	ax_string_clean.m4			\
 	ax_string_intersect.m4			\
-	ax_test.m4
+	ax_test.m4				\
+	ax_prog_grub1.m4			\
+	ax_prog_grub2.m4
 
 update-local: Makefile
 	rm -r -f fetch-dir && \
