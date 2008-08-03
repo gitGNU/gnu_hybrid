@@ -36,7 +36,7 @@
       "Savannah")
    (br)
    "Please send broken links and other web page suggestions to "
-   "hybrid-bug AT nongnu.org, thank you."
+   "hybrid-generic AT nongnu.org, thank you."
    (br)
    "This page was last modified on "
    ,(strftime "%A %d %B %Y" (localtime (current-time)))
