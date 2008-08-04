@@ -1,3 +1,5 @@
+# Process this file with autoconf to produce a configure script.
+
 #
 # configure.ac for Hybrid kernel
 #
@@ -18,11 +20,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-AC_INIT([Choice-tool],[@VERSION@],[salvestrini@gmail.com],[choicetool])
+AC_INIT([Choose],[@VERSION@],[salvestrini@gmail.com],[choose])
 
 # Check for a recent version of autoconf
 AC_PREREQ(2.61)
 
+# Place/find all autotools related files in the following directories
 AC_CONFIG_SRCDIR([choose.sh.in])
 AC_CONFIG_AUX_DIR([tools/autotools])
 AC_CONFIG_MACRO_DIR([tools/autotools/m4])
@@ -31,7 +34,10 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-# Options applied globally to all processed Makefile.am
+#
+# For automake options (AM_INIT_AUTOMAKE options) see Makefile.am
+# file, AUTOMAKE_OPTIONS variable
+#
 AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
 
 #
@@ -39,15 +45,7 @@ AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
 #
 
 AC_PROG_GREP
-AS_IF([test -z "$GREP"],[
-   AX_MISSING_PACKAGE([grep],[http://www.gnu.org/software/grep/grep.html])
-])
-
 AC_PROG_SED
-AS_IF([test -z "$SED"],[
-   AX_MISSING_PACKAGE([sed],[http://www.gnu.org/software/sed/sed.html])
-])
-
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
 AX_PATH_MISSING([PERL], [perl])
