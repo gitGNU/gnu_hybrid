@@ -120,15 +120,12 @@ AX_PATH_MISSING([CXXFILT],[c++filt],[c++filt seems missing])
 AC_ARG_VAR(SIZE, [Full path to the 'size' executable])
 AX_PATH_MISSING([SIZE],[size],[size seems missing])
 
-AC_ARG_VAR(MBCHK, [Full path to the 'mbchk' executable])
-AX_PATH_MISSING([MBCHK],[mbchk],[mbchk seems missing ...])
-
 #
 # Image build support (XXX FIXME: TO BE MOVED ELSEWHERE ASAP)
 #
-AX_PROG_GRUB1([],[grub1_support=yes],[grub1_support=no])
+AX_PROG_GRUB1([$PATH:/bin:/sbin],[grub1_support=yes],[grub1_support=no])
 AM_CONDITIONAL(GRUB1_SUPPORT,[test $grub1_support = yes])
-AX_PROG_GRUB2([],[grub2_support=yes],[grub2_support=no])
+AX_PROG_GRUB2([$PATH:/bin:/sbin],[grub2_support=yes],[grub2_support=no])
 AM_CONDITIONAL(GRUB2_SUPPORT,[test $grub2_support = yes])
 AX_WITH_PROG([MKISOFS],[mkisofs])
 

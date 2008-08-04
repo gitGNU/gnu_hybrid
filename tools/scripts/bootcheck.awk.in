@@ -76,16 +76,13 @@ BEGIN {
 
 	retval = 1;
 	if (arch == "ia32") {
-		if ("@MBCHK@" != "") {
-			assert(executable(remove_parameters("@MBCHK@")));
+		if ("@GRUB1_MBCHK@" != "") {
+			assert(executable(remove_parameters("@GRUB1_MBCHK@")));
 
-			command = "@MBCHK@ " infn;
+			command = "@GRUB1_MBCHK@ " infn;
 			retval  = system(command);
 		} else {
-			warning("Cannot find mbchk program ...\n");
-			if (!fatal) {
-				retval = 0;
-			}
+			error("Cannot find needed mbchk program ...\n");
 		}
 	} else {
 		error("Unknown architecture " arch "\n");

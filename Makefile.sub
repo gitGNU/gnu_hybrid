@@ -52,7 +52,6 @@ do_subst = $(SED) \
   -e 's,[@]libdir[@],$(libdir),g' \
   -e 's,[@]includedir[@],$(includedir),g' \
   -e 's,[@]AWK[@],$(AWK),g' \
-  -e 's,[@]MBCHK[@],$(MBCHK),g' \
   -e 's,[@]GREP[@],$(GREP),g' \
   -e 's,[@]SED[@],$(SED),g' \
   -e 's,[@]OBJDUMP[@],$(OBJDUMP),g' \
@@ -64,7 +63,21 @@ do_subst = $(SED) \
   -e 's,[@]TEST_R[@],$(TEST_R),g' \
   -e 's,[@]TEST_W[@],$(TEST_W),g' \
   -e 's,[@]TEST_X[@],$(TEST_X),g' \
-  -e 's,[@]GRUB_INSTALL[@],$(GRUB_INSTALL),g' \
+  -e 's,[@]GRUB1_GRUB_INSTALL[@],$(GRUB1_GRUB_INSTALL),g' \
+  -e 's,[@]GRUB1_GRUB[@],$(GRUB1_GRUB),g' \
+  -e 's,[@]GRUB1_GRUB_MD5_CRYPT[@],$(GRUB1_GRUB_MD5_CRYPT),g' \
+  -e 's,[@]GRUB1_GRUB_SET_DEFAULT[@],$(GRUB1_GRUB_SET_DEFAULT),g' \
+  -e 's,[@]GRUB1_GRUB_TERMINFO[@],$(GRUB1_GRUB_TERMINFO),g' \
+  -e 's,[@]GRUB1_MBCHK[@],$(GRUB1_MBCHK),g' \
+  -e 's,[@]GRUB2_GRUB_INSTALL[@],$(GRUB2_GRUB_INSTALL),g' \
+  -e 's,[@]GRUB2_GRUB_MKDEVICEMAP[@],$(GRUB2_GRUB_MKDEVICEMAP),g' \
+  -e 's,[@]GRUB2_GRUB_PROBE[@],$(GRUB2_GRUB_PROBE),g' \
+  -e 's,[@]GRUB2_GRUB_SETUP[@],$(GRUB2_GRUB_SETUP),g' \
+  -e 's,[@]GRUB2_GRUB_UPDATE_GRUB[@],$(GRUB2_UPDATE_GRUB),g' \
+  -e 's,[@]GRUB2_EDITENV[@],$(GRUB2_EDITENV),g' \
+  -e 's,[@]GRUB2_MKIMAGE[@],$(GRUB2_MKIMAGE),g' \
+  -e 's,[@]GRUB2_MKRESCUE[@],$(GRUB2_MKRESCUE),g' \
+  -e 's,[@]GRUB2_PE2ELF[@],$(GRUB2_PE2ELF),g' \
   -e 's,[@]MKISOFS[@],$(MKISOFS),g' \
   -e 's,[@]MKDIR_P[@],$(MKDIR_P),g'
 
