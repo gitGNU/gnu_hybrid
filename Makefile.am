@@ -133,8 +133,8 @@ CHANGELOGS =					\
 EXTRA_DIST +=							\
 	BUGS TODO README NEWS COPYING AUTHORS INSTALL THANKS	\
 	$(CHANGELOGS)						\
-	configure.ac.in						\
-	bootstrap
+	bootstrap						\
+	configure.ac.in
 
 ##
 ## distribution related target
