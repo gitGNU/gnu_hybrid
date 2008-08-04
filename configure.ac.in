@@ -1,3 +1,5 @@
+# Process this file with autoconf to produce a configure script.
+
 #
 # configure.ac for Hybrid kernel
 #
@@ -23,57 +25,46 @@ AC_INIT([Hybrid kernel],[@VERSION@],[salvestrini@gmail.com],[hybrid-kernel])
 # Check for a recent version of autoconf
 AC_PREREQ([2.61])
 
-AC_CONFIG_SRCDIR([src/core/main.cxx])
+# Place/find all autotools related files in the following directories
 AC_CONFIG_AUX_DIR([tools/autotools])
 AC_CONFIG_MACRO_DIR([tools/autotools/m4])
+AC_CONFIG_SRCDIR([src/core/main.cxx])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-# Options applied globally to all processed Makefile.am
+#
+# For automake options (AM_INIT_AUTOMAKE options) see Makefile.am
+# file, AUTOMAKE_OPTIONS variable
+#
 AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
 
-#
-# Check if we are in a public release or not. Strip installed programs from
-# unneeded debugging informations ...
-#
-# NOTE:
-#     The PUBLIC_RELEASE AM_CONDITIONAL is used inside kernel/Makefile.am
-#
 AX_SPLIT_VERSION($PACKAGE_VERSION)
-AC_MSG_CHECKING([package major version])
-AS_IF([test x"$AX_MAJOR_VERSION" = x""],[
-  AC_MSG_RESULT([none specified])
-],[
-  AC_MSG_RESULT([$AX_MAJOR_VERSION])
-])
-AC_MSG_CHECKING([package minor version])
-AS_IF([test x"$AX_MINOR_VERSION" = x""],[
-  AC_MSG_RESULT([none specified])
-],[
-  AC_MSG_RESULT([$AX_MINOR_VERSION])
-])
-AC_MSG_CHECKING([package micro version])
-AS_IF([test x"$AX_MICRO_VERSION" = x""],[
-  AC_MSG_RESULT([none specified])
-],[
-  AC_MSG_RESULT([$AX_MICRO_VERSION])
-])
-AC_MSG_CHECKING([package extra version])
-AS_IF([test x"$AX_EXTRA_VERSION" = x""],[
-  AC_MSG_RESULT([none specified])
-],[
-  AC_MSG_RESULT([$AX_EXTRA_VERSION])
-])
-
-AC_MSG_CHECKING([if package is a public release])
-AS_IF([test -z "$AX_MICRO_VERSION"],[
-  AC_MSG_RESULT([yes])
-],[
-  AC_MSG_RESULT([no])
-])
-AM_CONDITIONAL([PUBLIC_RELEASE], [ test x"$AX_MICRO_VERSION" = x ])
+#AC_MSG_CHECKING([package major version])
+#AS_IF([test x"$AX_MAJOR_VERSION" = x""],[
+#  AC_MSG_RESULT([none specified])
+#],[
+#  AC_MSG_RESULT([$AX_MAJOR_VERSION])
+#])
+#AC_MSG_CHECKING([package minor version])
+#AS_IF([test x"$AX_MINOR_VERSION" = x""],[
+#  AC_MSG_RESULT([none specified])
+#],[
+#  AC_MSG_RESULT([$AX_MINOR_VERSION])
+#])
+#AC_MSG_CHECKING([package micro version])
+#AS_IF([test x"$AX_MICRO_VERSION" = x""],[
+#  AC_MSG_RESULT([none specified])
+#],[
+#  AC_MSG_RESULT([$AX_MICRO_VERSION])
+#])
+#AC_MSG_CHECKING([package extra version])
+#AS_IF([test x"$AX_EXTRA_VERSION" = x""],[
+#  AC_MSG_RESULT([none specified])
+#],[
+#  AC_MSG_RESULT([$AX_EXTRA_VERSION])
+#])
 
 AC_SUBST(AX_PACKAGE_MAJOR,$AX_MAJOR_VERSION)
 AC_SUBST(AX_PACKAGE_MINOR,$AX_MINOR_VERSION)
@@ -84,14 +75,7 @@ AC_SUBST(AX_PACKAGE_EXTRA,$AX_EXTRA_VERSION)
 # Checks for needed programs
 #
 AC_PROG_GREP
-AS_IF([test -z "$GREP"],[
-  AX_MISSING_PROG(GREP,[grep],[grep seems missing ...])
-])
-
 AC_PROG_SED
-AS_IF([test -z "$SED"],[
-  AX_MISSING_PROG(SED,[sed],[sed seems missing ...])
-])
 AX_PATH_MISSING([WGET],     [wget])
 AX_PATH_MISSING([SITETOOL], [sitetool])
 
