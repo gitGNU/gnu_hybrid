@@ -20,7 +20,7 @@
 #
 
 # System tools
-GRUBINSTALL="@GRUB_INSTALL@"
+GRUBINSTALL="@GRUB1_GRUB_INSTALL@"
 SED="@SED@"
 
 # Script variables
