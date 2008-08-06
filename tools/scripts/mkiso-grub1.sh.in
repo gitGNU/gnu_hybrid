@@ -29,4 +29,6 @@ echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/kernel" > iso/boot/grub/menu.ls
     exit 1 ; \
 }
 
+rm -r -f iso
+
 exit 0
