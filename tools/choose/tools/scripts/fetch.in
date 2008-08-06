@@ -39,9 +39,9 @@ if test "$FILE" = "" ; then
     exit 1
 fi
 
-echo "$me: Fetching $URL"
+echo "$me: $URL"
 rm -f $FILE
-$WGET --no-verbose -r -q -O $FILE -- $URL || {
+$WGET --no-verbose -q -O $FILE -- $URL || {
     echo "$me: Cannot fetch $URL"
     rm -f $FILE
     exit 1
