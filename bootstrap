@@ -43,6 +43,7 @@ rm -f  `find ./ -name "Makefile.in"`                 || exit 1
 rm -f  config.cache aclocal.m4 config.h.in configure || exit 1
 rm -f  config.guess config.sub ltmain.sh             || exit 1
 rm -rf autom4te.cache                                || exit 1
+rm -rf `find ./ -name ".deps"`                       || exit 1
 
 #
 # configure.ac
