@@ -58,13 +58,13 @@ text-config:
 stats:
 	$(MAKE) stats -C src
 
+debug:
+	$(MAKE) system.map -C src
+
 ##
 ## XXX FIXME: The "iso" rules are temporary and for debugging purposes only.
 ##            Please move them somewhere else ASAP
 ##
-debug: image-grub1.iso image-grub2.iso Makefile
-	$(MAKE) system.map -C src
-
 if GRUB1_SUPPORT
 image-grub1.iso: all Makefile
 	rm -r -f image-fs && \
@@ -119,90 +119,43 @@ help:
 
 ##
 ## NOTE:
-##     ChangeLogs are shipped by this directory Makefile.am even if they lie on
-##     child directory ... CHANGELOGS variable is needed here for distribution
-##     purposes ...
-##
-CHANGELOGS =					\
-	ChangeLog
-
-##
-## NOTE:
 ##     Makefile.sub is automatically distributed by automake rules
 ##
 EXTRA_DIST +=							\
 	BUGS TODO README NEWS COPYING AUTHORS INSTALL THANKS	\
-	$(CHANGELOGS)						\
 	bootstrap						\
 	configure.ac.in
 
 ##
-## distribution related target
-##
-#NEWS: $(SCRIPTSDIR)/CL2NEWS Makefile $(CHANGELOGS)
-#	 ( input="" ;					 \
-#	   for j in $(CHANGELOGS) ; do			 \
-#		 input="$$input $(srcdir)/$$j" ;	 \
-#	   done ;					 \
-#	   $(SCRIPTSDIR)/CL2NEWS -- $$input > NEWS ) ||	 \
-#	 { rm -f NEWS ; exit 1 ; }
-
-ChangeLog: $(srcdir)/NEWS
-	HEAD_TAG=`$(SCRIPTSDIR)/NEWS-query $(srcdir)/NEWS 0` ;	\
-	PREV_TAG=`$(SCRIPTSDIR)/NEWS-query $(srcdir)/NEWS 1` ;	\
-	$(SCRIPTSDIR)/gitlog2ChangeLog $$PREV_TAG..$$HEAD_TAG > \
-		ChangeLog || {					\
-		rm -f ChangeLog ;				\
-		exit 1;						\
-	}
-
-#dist-hook: ChangeLog NEWS
-#	cp ChangeLog $(distdir)/ChangeLog || {	\
-#		rm -f $(distdir)/ChangeLog ;	\
-#		exit 1 ;			\
-#	}
-#	cp NEWS $(distdir)/NEWS || {		\
-#		rm -f $(distdir)/NEWS ;		\
-#		exit 1 ;			\
-#	}
-
-##
-## NOTE:
-##     DISTCLEANFILES already defined in Makefile.def
-##
-#DISTCLEANFILES =
-
-##
 ## Maintainer related targets
 ##
+
+dist-hook:
+	$(top_srcdir)/tools/scripts/gitlog-to-changelog > $(distdir)/ChangeLog || {	\
+		rm -f ChangeLog ;							\
+		exit 1 ;								\
+	}
+
 site: all
 	(cd site && $(MAKE) $(AM_MAKEFLAGS) site)
 
-HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f=doc"
-
-DOWNLOAD =					\
-	INSTALL					\
-	COPYINGv2
-
-update-fixups:
-	mv -f COPYINGv2 COPYING
+HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
 
 update-download:
 	rm -r -f fetch-dir && \
 	mkdir fetch-dir && \
-	for i in $(DOWNLOAD) ; do \
-		$(FETCH) $(HOST)/$$i fetch-dir/$$i || { \
-			rm -f fetch-dir/$$i ; \
-			exit 1 ; \
-		} \
-	done && \
-	for i in $(DOWNLOAD) ; do \
-		mv -f fetch-dir/$$i $$i || { \
-			exit 1 ; \
-		} \
-	done && \
+	$(FETCH) $(HOST)doc/INSTALL fetch-dir/INSTALL && \
+	chmod a+r fetch-dir/INSTALL && \
+	chmod u+w fetch-dir/INSTALL && \
+	$(FETCH) $(HOST)doc/COPYINGv2 fetch-dir/COPYING && \
+	chmod a+r fetch-dir/COPYING && \
+	chmod u+w fetch-dir/COPYING && \
+	mv -f fetch-dir/* ./ || { \
+		rm -r -f fetch-dir ; \
+		exit 1 ; \
+	}
 	rm -r -f fetch-dir
 
-update-local: Makefile update-download update-fixups
+update-local: Makefile update-download
 
 maintainer-check-local: Makefile
