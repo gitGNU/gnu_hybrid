@@ -646,11 +646,11 @@ check-unallowed-function: Makefile $(awk_scripts_SRCS)
 check-parameters: Makefile $(scripts)
 	for i in $(scripts) ; do \
 		echo @ECHO_N@ "Checking standard parameters for $$i... " ; \
-		if test `./$$i -h > /dev/null 2>&1` ; then \
+		if ( ./$$i -h 2>&1 > /dev/null ) ; then \
+			echo "@ECHO_T@ok" ; \
+		else \
 			echo "@ECHO_T@error" ; \
 			exit 1 ; \
-		else \
-			echo "@ECHO_T@ok" ; \
 		fi ; \
 	done
 
