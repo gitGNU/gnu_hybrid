@@ -23,7 +23,6 @@ config.log
 config.status
 
 # XXX FIXME: To be removed ASAP
-*.iso
 tools/scripts/grub1-config
 tools/scripts/grub1-config.sh
 tools/scripts/grub2-config
