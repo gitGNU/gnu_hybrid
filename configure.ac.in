@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #
-# configure.ac for Hybrid kernel
+# configure.ac for Hybrid
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #
@@ -20,7 +20,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-AC_INIT([Hybrid kernel],[@VERSION@],[salvestrini@gmail.com],[hybrid-kernel])
+AC_INIT([Hybrid],[@VERSION@],[salvestrini@gmail.com],[hybrid])
 
 # Check for a recent version of autoconf
 AC_PREREQ([2.61])
