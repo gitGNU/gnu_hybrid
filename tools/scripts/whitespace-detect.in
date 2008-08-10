@@ -24,10 +24,45 @@ use strict;
 use warnings;
 
 my $program = "whitespace-detect";
+my $version = "0.1";
+
+sub hint ($) {
+    my $string = shift;
+
+    if (defined($string)) {
+	print "$program: " . $string . "\n";
+    }
+    print "Try `$program --help' for more information.\n";
+}
+
+sub help ()
+{
+    print "Usage: $program [OPTION]... FILE...\n";
+    print "\n";
+    print "    Check input file trailing whitespaces.\n";
+    print "\n";
+    print "OPTIONS:\n";
+    print "\n";
+    print "    --help,    -h    display this help and exit\n";
+    print "    --version, -v    output version information and exit\n";
+    print "\n";
+}
 
 if ($#ARGV < 0) {
-    print STDERR "$program: Missing parameters\n";
+    hint("Missing parameters");
     exit 1;
+}
+
+if (($ARGV[0] eq "--help") ||
+    ($ARGV[0] eq "-h")) {
+    help();
+    exit 0
+}
+
+if (($ARGV[0] eq "--version") ||
+    ($ARGV[0] eq "-v")) {
+    print "$program $version\n";
+    exit 0;
 }
 
 my $found = 0;
