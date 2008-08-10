@@ -26,7 +26,8 @@ use warnings;
 my $program = "whitespace-detect";
 my $version = "0.1";
 
-sub hint ($) {
+sub hint ($)
+{
     my $string = shift;
 
     if (defined($string)) {
@@ -46,6 +47,16 @@ sub help ()
     print "    --help,    -h    display this help and exit\n";
     print "    --version, -v    output version information and exit\n";
     print "\n";
+    print "Report bugs to <" . '@PACKAGE_BUGREPORT@' . ">\n";
+}
+
+sub version ()
+{
+    print "$program $version\n";
+    print "Written by Francesco Salvestrini.";
+    print "\n";
+    print "This is free software; see the source for copying conditions.  There is NO\n";
+    print "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
 }
 
 if ($#ARGV < 0) {
@@ -61,7 +72,7 @@ if (($ARGV[0] eq "--help") ||
 
 if (($ARGV[0] eq "--version") ||
     ($ARGV[0] eq "-v")) {
-    print "$program $version\n";
+    version();
     exit 0;
 }
 

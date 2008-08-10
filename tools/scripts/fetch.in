@@ -21,7 +21,28 @@
 #
 
 me="fetch"
+version="0.1"
+
 WGET=@WGET@
+
+case $1 in
+    -h|--help)
+	echo "Usage: $me URL FILE"
+	echo ""
+	echo "Fetch file from URL, placing output in FILE"
+	echo ""
+	echo "Report bugs to <@PACKAGE_BUGREPORT@>"
+	exit 0;
+	;;
+    -v|--version)
+	echo "$me (@PACKAGE_NAME@) $version"
+	echo "Written by Francesco Salvestrini."
+	echo ""
+	echo "This is free software; see the source for copying conditions.  There is NO"
+	echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+	exit 0;
+	;;
+esac
 
 URL=$1
 FILE=$2
@@ -32,10 +53,12 @@ if test "$WGET" = "" ; then
 fi
 if test "$URL" = "" ; then
     echo "$me: Missing input URL"
+    echo "Try \`$program --help' for more information.";
     exit 1
 fi
 if test "$FILE" = "" ; then
     echo "$me: Missing output file"
+    echo "Try \`$program --help' for more information.";
     exit 1
 fi
 
@@ -48,7 +71,7 @@ $WGET --no-verbose -q -O $FILE -- $URL || {
 }
 
 if test ! -s $FILE ; then
-    echo "$me: Cannot fetch $URL"
+    echo "$me: $URL not fetched ?"
     rm -f $FILE
     exit 1
 fi
