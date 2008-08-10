@@ -226,7 +226,7 @@ BEGIN {
 	radix               = 0;
 	fatal               = 0;
 
-	opts   = "o:w:DOXmfMnasuvdh";
+	opts   = "o:DOXmfMnasuvdh";
 	h_desc = "Dump symbols of elf image files";
 	h_note = "Place input files at last, using -- as separator";
 
