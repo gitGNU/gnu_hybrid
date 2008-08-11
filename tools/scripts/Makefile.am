@@ -10,7 +10,7 @@
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License along
@@ -20,9 +20,11 @@
 
 include $(top_srcdir)/Makefile.sub
 
-CLEANFILES =
-
 scripts =					\
+	fetch					\
+	whitespace-detect			\
+	git-version-gen				\
+	gitlog-to-changelog			\
 	bin2source				\
 	sh2h					\
 	mergesyms				\
@@ -39,18 +41,12 @@ scripts =					\
 	ifdefscheck				\
 	clhandler				\
 	guardscheck				\
-	fetch					\
 	grub1-config				\
 	grub2-config				\
 	mkiso-grub1				\
-	mkiso-grub2				\
-	whitespace-detect
+	mkiso-grub2
 
-all-local: $(scripts)
-
-update: fetch
-
-CLEANFILES += $(scripts)
+noinst_SCRIPTS = $(scripts)
 
 awk_scripts_SRCS =				\
 	bin2source.awk.in			\
@@ -70,18 +66,15 @@ awk_scripts_SRCS =				\
 	clhandler.awk.in			\
 	guardscheck.awk.in
 
-sh_scripts_SRCS =
+sh_scripts_SRCS =				\
+	grub1-config.sh.in			\
+	grub2-config.sh.in			\
+	mkiso-grub1.sh.in			\
+	mkiso-grub2.sh.in
 
 pl_scripts_SRCS =
 
-noinst_SCRIPTS =				\
-	fetch					\
-	grub1-config				\
-	grub2-config				\
-	mkiso-grub1				\
-	mkiso-grub2				\
-	whitespace-detect
-
+CLEANFILES =
 EXTRA_DIST =
 
 EXTRA_DIST +=					\
@@ -91,12 +84,9 @@ EXTRA_DIST +=					\
 
 EXTRA_DIST +=					\
 	fetch.in				\
-	grub1-config.sh.in			\
-	grub2-config.sh.in			\
-	mkiso-grub1.sh.in			\
-	mkiso-grub2.sh.in			\
-	whitespace-detect.in
-
+	whitespace-detect.in			\
+	git-version-gen				\
+	gitlog-to-changelog
 
 #
 # Transformation related variables
@@ -167,6 +157,7 @@ fetch: fetch.in Makefile
 		rm -f $@ $@.tmp ; \
 		exit 1 ; \
 	}
+CLEANFILES += fetch
 
 whitespace-detect: whitespace-detect.in Makefile
 	( rm -f $@ $@.tmp && \
@@ -177,6 +168,7 @@ whitespace-detect: whitespace-detect.in Makefile
 		rm -f $@ $@.tmp ; \
 		exit 1 ; \
 	}
+CLEANFILES += whitespace-detect
 
 grub1-config.sh: Makefile $(sh_lib_SRC) grub1-config.sh.in
 	INFILE=grub1-config.sh.in ;		\
@@ -254,7 +246,7 @@ bin2source: Makefile bin2source.sh
 	OUTFILE=bin2source ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += bin2source
 
 ## sh2h
 sh2h.awk: Makefile $(awk_lib_SRC) sh2h.awk.in
@@ -276,7 +268,7 @@ sh2h: Makefile sh2h.sh
 	OUTFILE=sh2h ;				\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += sh2h
 
 ## mergesyms
 mergesyms.awk: Makefile $(awk_lib_SRC) mergesyms.awk.in
@@ -298,7 +290,7 @@ mergesyms: Makefile mergesyms.sh
 	OUTFILE=mergesyms ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += mergesyms
 
 ## stackcheck
 stackcheck.awk: Makefile $(awk_lib_SRC) stackcheck.awk.in
@@ -320,7 +312,7 @@ stackcheck: Makefile stackcheck.sh
 	OUTFILE=stackcheck ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += stackcheck
 
 ## mksyscalls
 mksyscalls.awk: Makefile $(awk_lib_SRC) mksyscalls.awk.in
@@ -342,7 +334,7 @@ mksyscalls: Makefile mksyscalls.sh
 	OUTFILE=mksyscalls ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += mksyscalls
 
 ## mkbuild
 mkbuild.awk: Makefile $(awk_lib_SRC) mkbuild.awk.in
@@ -364,7 +356,7 @@ mkbuild: Makefile mkbuild.sh
 	OUTFILE=mkbuild ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += mkbuild
 
 ## obj2symstab
 obj2symstab.awk: Makefile $(awk_lib_SRC) obj2symstab.awk.in
@@ -386,7 +378,7 @@ obj2symstab: Makefile obj2symstab.sh
 	OUTFILE=obj2symstab ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += obj2symstab
 
 ## symstab2map
 symstab2map.awk: Makefile $(awk_lib_SRC) symstab2map.awk.in
@@ -408,7 +400,7 @@ symstab2map: Makefile symstab2map.sh
 	OUTFILE=symstab2map ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += symstab2map
 
 ## getdefine
 getdefine.awk: Makefile $(awk_lib_SRC) getdefine.awk.in
@@ -430,7 +422,7 @@ getdefine: Makefile getdefine.sh
 	OUTFILE=getdefine ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += getdefine
 
 ## sections
 sections.awk: Makefile $(awk_lib_SRC) sections.awk.in
@@ -452,7 +444,7 @@ sections: Makefile sections.sh
 	OUTFILE=sections ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += sections
 
 ## rules2syms
 rules2syms.awk: Makefile $(awk_lib_SRC) rules2syms.awk.in
@@ -474,7 +466,7 @@ rules2syms: Makefile rules2syms.sh
 	OUTFILE=rules2syms ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += rules2syms
 
 ## bootcheck
 bootcheck.awk: Makefile $(awk_lib_SRC) bootcheck.awk.in
@@ -496,7 +488,7 @@ bootcheck: Makefile bootcheck.sh
 	OUTFILE=bootcheck ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += bootcheck
 
 ## includescheck
 includescheck.awk: Makefile $(awk_lib_SRC) includescheck.awk.in
@@ -518,7 +510,7 @@ includescheck: Makefile includescheck.sh
 	OUTFILE=includescheck ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += includescheck
 
 ## ifdefscheck
 ifdefscheck.awk: Makefile $(awk_lib_SRC) ifdefscheck.awk.in
@@ -540,7 +532,7 @@ ifdefscheck: Makefile ifdefscheck.sh
 	OUTFILE=ifdefscheck ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += ifdefscheck
 
 ## clhandler
 clhandler.awk: Makefile $(awk_lib_SRC) clhandler.awk.in
@@ -562,7 +554,7 @@ clhandler: Makefile clhandler.sh
 	OUTFILE=clhandler ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-
+CLEANFILES += clhandler
 
 ## guardscheck
 guardscheck.awk: Makefile $(awk_lib_SRC) guardscheck.awk.in
@@ -584,14 +576,81 @@ guardscheck: Makefile guardscheck.sh
 	OUTFILE=guardscheck ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += guardscheck
 
+##
+## Checks
+##
+check_PASS_SCRPTS =				\
+	test-clhandler-1			\
+	test-clhandler-2			\
+	test-rules2syms-1			\
+	test-mergesyms-1			\
+	test-getdefine-1			\
+	test-guardscheck-1			\
+	test-guardscheck-2
+
+check_FAIL_SCRPTS =				\
+	test-guardscheck-3			\
+	test-guardscheck-4			\
+	test-guardscheck-5			\
+	test-guardscheck-6			\
+	test-clhandler-3
+
+check_SCRIPTS =					\
+	$(check_PASS_SCRPTS)			\
+	$(check_FAIL_SCRPTS)
+
+XFAIL_TESTS = $(check_FAIL_SCRPTS)
+TESTS	    =	$(check_PROGRAMS) $(check_SCRIPTS) 
+
+EXTRA_DIST += $(TESTS)
+
+##
+## XXX FIXME: This hard-wired name is very ugly ... please fix ASAP
+##
+clean-local:
+	for i in $(check_SCRIPTS) ; do										\
+		rm -f `$(GREP) TEST_FILENAME $(srcdir)/$$i | $(GREP) = | $(SED) -e 's,^.*=\(.*\),\1,'` ;	\
+	done
+
+##
+## Maintainer related targets
+##
+HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
+
+update-local: Makefile fetch
+	rm -r -f fetch-dir && \
+	mkdir fetch-dir && \
+	$(FETCH) $(HOST)build-aux/git-version-gen fetch-dir/git-version-gen && \
+	chmod a+rx fetch-dir/git-version-gen && \
+	chmod u+w  fetch-dir/git-version-gen && \
+	$(FETCH) $(HOST)build-aux/gitlog-to-changelog fetch-dir/gitlog-to-changelog && \
+	chmod a+rx fetch-dir/gitlog-to-changelog && \
+	chmod u+w  fetch-dir/gitlog-to-changelog && \
+	mv -f fetch-dir/* ./ || { \
+		rm -r -f fetch-dir ; \
+		exit 1 ; \
+	}
+	rm -r -f fetch-dir
+
+maintainer-check-parameters: Makefile $(scripts)
+	for i in $(scripts) ; do \
+		echo @ECHO_N@ "Checking standard parameters for $$i... " ; \
+		if ( ./$$i -h 2>&1 > /dev/null ) ; then \
+			echo "@ECHO_T@ok" ; \
+		else \
+			echo "@ECHO_T@error" ; \
+			exit 1 ; \
+		fi ; \
+	done
 
 ##
 ## NOTE:
 ##     All exported library functions must be called by two or more
 ##     different scripts
 ##
-check-exported: Makefile $(awk_lib_SRCS) $(awk_scripts_SRCS)
+maintainer-check-exported: Makefile $(awk_lib_SRCS) $(awk_scripts_SRCS)
 	for l in $(awk_libs_SRCS) ; do \
 		FUNCTIONS=`$(GREP) -e '^[ \t]*function\ .*$$' $(srcdir)/$$l | $(SED) -e 's/^[ \t]*function\ [ \t]*//' -e 's/(.*$$//'` ; \
 		for f in $$FUNCTIONS ; do \
@@ -623,13 +682,13 @@ check-exported: Makefile $(awk_lib_SRCS) $(awk_scripts_SRCS)
 ##     Don't leave white spaces before the parentheses in user functions
 ##     calls; GNU awk will reject it (XXX-FIXME: Add check)
 ##
-check-whitespaces: Makefile $(awk_scripts_SRCS)
+maintainer-check-whitespaces: Makefile $(awk_scripts_SRCS)
 
 ##
 ## NOTE:
 ##     Don't use unsupported functions (portability problems)
 ##
-check-unallowed-function: Makefile $(awk_scripts_SRCS)
+maintainer-check-unallowed-function: Makefile $(awk_scripts_SRCS)
 	FUNCTIONS="asort asorti" ; \
 	for l in $(awk_scripts_SRCS) ; do \
 		echo @ECHO_N@ "Checking $$l for unallowed functions: " ; \
@@ -643,22 +702,11 @@ check-unallowed-function: Makefile $(awk_scripts_SRCS)
 		echo "...  @ECHO_T@ok" ; \
 	done
 
-check-parameters: Makefile $(scripts)
-	for i in $(scripts) ; do \
-		echo @ECHO_N@ "Checking standard parameters for $$i... " ; \
-		if ( ./$$i -h 2>&1 > /dev/null ) ; then \
-			echo "@ECHO_T@ok" ; \
-		else \
-			echo "@ECHO_T@error" ; \
-			exit 1 ; \
-		fi ; \
-	done
-
-#
-# NOTE: 
-#     All scripts must call lib_init() and lib_fini() functions once
-#
-check-init-fini-functions: Makefile $(awk_scripts_SRCS)
+##
+## NOTE: 
+##     All scripts must call lib_init() and lib_fini() functions once
+##
+maintainer-check-init-fini-functions: Makefile $(awk_scripts_SRCS)
 #	for l in $(awk_scripts_SRCS) ; do \
 #		name=`echo $$l | $(SED) -e 's,^.*lib,,' -e 's,\\..*$$,,'` ; \
 #		if test "x$$name" = "xcore" ; then \
@@ -682,63 +730,4 @@ check-init-fini-functions: Makefile $(awk_scripts_SRCS)
 #		fi ; \
 #	done
 
-check-local: check-exported check-whitespaces check-init-fini-functions check-parameters check-unallowed-function
-
-check_PASS_SCRPTS =				\
-	test-clhandler-1			\
-	test-clhandler-2			\
-	test-rules2syms-1			\
-	test-mergesyms-1			\
-	test-getdefine-1			\
-	test-guardscheck-1			\
-	test-guardscheck-2
-
-check_FAIL_SCRPTS =				\
-	test-guardscheck-3			\
-	test-guardscheck-4			\
-	test-guardscheck-5			\
-	test-guardscheck-6			\
-	test-clhandler-3
-
-check_SCRIPTS =					\
-	$(check_PASS_SCRPTS)			\
-	$(check_FAIL_SCRPTS)
-
-XFAIL_TESTS = $(check_FAIL_SCRPTS)
-TESTS       =	$(check_PROGRAMS) $(check_SCRIPTS) 
-
-EXTRA_DIST += $(TESTS)
-
-##
-## XXX FIXME: This hard-wired name is very ugly ... please fix ASAP
-##
-clean-local:
-	for i in $(check_SCRIPTS) ; do										\
-		rm -f `$(GREP) TEST_FILENAME $(srcdir)/$$i | $(GREP) = | $(SED) -e 's,^.*=\(.*\),\1,'` ;	\
-	done
-
-##
-## Maintainer related targets
-##
-HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
-
-update-local: Makefile
-	rm -r -f fetch-dir && \
-	mkdir fetch-dir && \
-	$(FETCH) $(HOST)build-aux/git-version-gen fetch-dir/git-version-gen && \
-	chmod a+rx fetch-dir/git-version-gen && \
-	chmod u+w  fetch-dir/git-version-gen && \
-	$(FETCH) $(HOST)build-aux/gitlog-to-changelog fetch-dir/gitlog-to-changelog && \
-	chmod a+rx fetch-dir/gitlog-to-changelog && \
-	chmod u+w  fetch-dir/gitlog-to-changelog && \
-	mv -f fetch-dir/* ./ || { \
-		rm -r -f fetch-dir ; \
-		exit 1 ; \
-	}
-	rm -r -f fetch-dir
-
-EXTRA_DIST +=					\
-	git-version-gen				\
-	gitlog-to-changelog
-
-maintainer-check-local: Makefile
+maintainer-check-local: Makefile maintainer-check-exported maintainer-check-whitespaces maintainer-check-init-fini-functions maintainer-check-unallowed-function maintainer-check-parameters
