@@ -223,12 +223,14 @@ $(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
 ##
 ## statistics related
 ##
-stats:
+stats: all
 	@echo ""
-	@echo "  Kernel stats:"
+	@echo "  Build number:" $(BUILD_NUMBER)
 	@echo ""
-	@echo "    Build number:" $(BUILD_NUMBER)
+	@echo "  Sections:"
 	@echo ""
+	@$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+
 
 ##
 ## check target related
@@ -247,9 +249,6 @@ check-ifdefs: Makefile
 check-stack: Makefile
 	$(STACKCHECK) $(STACKCHECK_FLAGS) -a $(architecture) -s $(STACKSIZE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
-check-sections: Makefile
-	$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
-
 check-boot: Makefile
 	$(BOOTCHECK) $(BOOTCHECK_FLAGS) -a $(architecture) -i $(KERNEL_OBJ) || exit 1
 
@@ -257,7 +256,7 @@ HDRS = `$(CLHANDLER) $(CLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
 check-guards: Makefile
 	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
 
-check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards check-boot
+check-local: Makefile check-stack check-includes check-ifdefs check-guards check-boot
 
 ##
 ## install target related
