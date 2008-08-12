@@ -136,18 +136,20 @@ static size_t bmap_accumulate(bmap_t * bmap,
 	return c;
 }
 
-static size_t bmap_count_set(bmap_t * bmap)
-{
-	BMAP_CHECK(bmap);
-
-	return bmap_accumulate(bmap, 0, bmap->size - 1, bmap_test_set);
-}
-
 static size_t bmap_count_reset(bmap_t * bmap)
 {
 	BMAP_CHECK(bmap);
 
 	return bmap_accumulate(bmap, 0, bmap->size - 1, bmap_test_reset);
+}
+#endif
+
+#if CONFIG_BOOTRAM_STATS
+static size_t bmap_count_set(bmap_t * bmap)
+{
+	BMAP_CHECK(bmap);
+
+	return bmap_accumulate(bmap, 0, bmap->size - 1, bmap_test_set);
 }
 #endif
 
@@ -455,7 +457,7 @@ static bnode_t * head_          SECTION(".bootstrap");
 #define BRAM_DUMP() { }
 #endif
 
-#if CONFIG_BOOTRAM_DEBUG
+#if CONFIG_BOOTRAM_STATS
 static size_t bram_count_reserved(void)
 {
 	size_t    count;
@@ -583,7 +585,7 @@ static int bram_node_remove(bnode_t * bnode)
 	return 1;
 }
 
-#if CONFIG_BOOTRAM_DEBUG
+#if CONFIG_BOOTRAM_STATS
 #define BOOTRAM_DUMP() {					\
 	size_t all, reserved, unreserved;			\
 								\
