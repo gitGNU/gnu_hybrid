@@ -229,7 +229,7 @@ stats: all
 	@echo ""
 	@echo "  Sections:"
 	@echo ""
-	@$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+	@$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 
 ##
@@ -256,7 +256,10 @@ HDRS = `$(CLHANDLER) $(CLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
 check-guards: Makefile
 	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
 
-check-local: Makefile check-stack check-includes check-ifdefs check-guards check-boot
+check-sections:
+	$(SECTIONS) $(SECTIONS_FLAGS) -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+
+check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards check-boot
 
 ##
 ## install target related
