@@ -264,7 +264,10 @@ BEGIN {
 				}
 
 				if (dump_percent) {
-					printf(" [ %2.2f ]",
+					# 0  -> Pad with zero
+					# 4  -> Maximum length
+					# .1 -> decimals length
+					printf(" [ %04.1f ]",
 					       sizes[name] / total * 100) \
 						> outfile;
 				}
