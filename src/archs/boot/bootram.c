@@ -197,6 +197,7 @@ static void bmap_set_all(bmap_t * bmap)
 {
 	BMAP_CHECK(bmap);
 
+	dprintf("Setting all bits on bmap 0x%p (%d bits)\n", bmap, bmap->size);
 	bmap_set_range(bmap, 0, bmap->size - 1);
 }
 
