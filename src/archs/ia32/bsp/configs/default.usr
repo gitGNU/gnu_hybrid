@@ -30,11 +30,9 @@ BOCHS_DEBUGGER=y
 #
 
 #
-# Boot settings
+# Architecture boot settings
 #
 # BOOT_SANITY is not set
-# MULTIBOOT_VERBOSE is not set
-# MULTIBOOT_MEM_VERBOSE is not set
 
 #
 # Board Support
@@ -51,23 +49,9 @@ BOOTINFO_MEM_REGIONS=32
 BOOTINFO_ARGS_SIZE=256
 BOOTINFO_MODULES=64
 BOOTRAM_DEBUG=y
-
-#
-# Binary formats
-#
-# BFD_DEBUG is not set
-
-#
-# ELF format
-#
-ELF=y
-# ELF_DEBUG is not set
-
-#
-# A.OUT format
-#
-AOUT=y
-# AOUT_DEBUG is not set
+HEAP_SIZE=65535
+# MULTIBOOT_VERBOSE is not set
+# MULTIBOOT_MEM_VERBOSE is not set
 
 #
 # Memory
@@ -78,7 +62,6 @@ PAGE_SIZE=4096
 # VMM_DEBUG is not set
 # PMM_DEBUG is not set
 # DEBUG_HEAP is not set
-# DEBUG_FIT is not set
 
 #
 # Core
