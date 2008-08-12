@@ -238,6 +238,10 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	/* From this point on we should have virtual memory turned on */
 #endif
 
+#if CONFIG_HEAP_SIZE < CONFIG_PAGE_SIZE
+#error Heap size is too low
+#endif
+
 	/* Setting up the heap ! */
 	dprintf("Initializing heap\n");
 	heap_size = CONFIG_HEAP_SIZE;

@@ -128,6 +128,7 @@ static size_t bmap_accumulate(bmap_t * bmap,
 
 	i = 0;
 	c = 0;
+	dprintf("Performing loop for %d iterations\n", stop - start);
 	for (i = start; i <= stop; i++) {
 		c += op(bmap, i);
 	}
@@ -173,12 +174,16 @@ static void bmap_set_range(bmap_t * bmap,
 {
 	size_t i;
 
+	dprintf("Setting range %d thru %d on bmap 0x%p\n",
+		start, stop, bmap);
+
 	BMAP_CHECK(bmap);
 
 	assert(start <= stop);
 	/* assert(start >=0); */
 	assert(stop < bmap->size);
 
+	dprintf("Performing loop for %d iterations\n", stop - start);
 	for (i = start; i <= stop; i++) {
 		bmap_set(bmap, i);
 	}
@@ -214,12 +219,16 @@ static void bmap_reset_range(bmap_t * bmap,
 {
 	size_t i;
 
+	dprintf("Resetting range %d thru %d on bmap 0x%p\n",
+		start, stop, bmap);
+
 	BMAP_CHECK(bmap);
 
 	assert(start <= stop);
 	/* assert(start >=0); */
 	assert(stop < bmap->size);
 
+	dprintf("Performing loop for %d iterations\n", stop - start);
 	for (i = start; i <= stop; i++) {
 		bmap_reset(bmap, i);
 	}
@@ -698,6 +707,8 @@ paddr_t bootram_alloc(size_t size)
 {
 	size_t    pages;
 	bnode_t * tmp;
+
+	assert(size);
 
 	pages = (size / CONFIG_PAGE_SIZE) + (size % CONFIG_PAGE_SIZE ? 1 : 0);
 
