@@ -108,7 +108,7 @@ static int bmap_test_reset(bmap_t * bmap,
 	return !bmap_test_set(bmap, index);
 }
 
-#if CONFIG_BOOTRAM_DEBUG
+#if CONFIG_BOOTRAM_CHECKS || CONFIG_BOOTRAM_STATS
 static size_t bmap_accumulate(bmap_t * bmap,
 			      size_t   start,
 			      size_t   stop,
@@ -135,7 +135,9 @@ static size_t bmap_accumulate(bmap_t * bmap,
 
 	return c;
 }
+#endif
 
+#if CONFIG_BOOTRAM_CHECKS
 static size_t bmap_count_reset(bmap_t * bmap)
 {
 	BMAP_CHECK(bmap);
@@ -282,7 +284,7 @@ static int bmap_init(bmap_t *  bmap,
 
 	/* bmap_reset_all(bmap); */
 
-#if CONFIG_BOOTRAM_DEBUG
+#if CONFIG_BOOTRAM_CHECKS
 	assert(bmap_count_reset(bmap) == size);
 
 	BMAP_DUMP(bmap);
