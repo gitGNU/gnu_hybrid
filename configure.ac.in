@@ -371,13 +371,21 @@ AC_PROG_RANLIB
 #
 # Libraries
 #
-AC_PATH_PROG(ELKLIB,elklib-config-$target_cpu)
-AS_IF([test "$ELKLIB" = ""],[
+
+AC_PATH_PROG(ELKLIB_CONFIG,elklib-config)
+AS_IF([test "$ELKLIB_CONFIG" = ""],[
+  AC_MSG_ERROR([Could not find elklib-config program])
+])
+AS_IF([test `$ELKLIB_CONFIG --target-cpus | grep -v $target_cpu` ],[
+  AC_MSG_ERROR([Current elklib installation does not support $target_cpu target])
+])
+AC_PATH_PROG(ELKLIB_CONFIG_TARGET,elklib-config-$target_cpu)
+AS_IF([test "$ELKLIB_CONFIG_TARGET" = ""],[
   AC_MSG_ERROR([Could not find elklib-config-$target_cpu program])
 ])
 
 AC_MSG_CHECKING([elklib --cppflags option])
-ELKLIB_CPPFLAGS=`$ELKLIB --cppflags`
+ELKLIB_CPPFLAGS=`$ELKLIB_CONFIG_TARGET --cppflags`
 AS_IF([test "$ELKLIB_CPPFLAGS" == ""],[
   AC_MSG_RESULT([empty])
 ], [
@@ -386,7 +394,7 @@ AS_IF([test "$ELKLIB_CPPFLAGS" == ""],[
 AC_SUBST([ELKLIB_CPPFLAGS])
 
 AC_MSG_CHECKING([elklib --cflags option])
-ELKLIB_CFLAGS=`$ELKLIB --cflags`
+ELKLIB_CFLAGS=`$ELKLIB_CONFIG_TARGET --cflags`
 AS_IF([test "$ELKLIB_CFLAGS" == ""],[
   AC_MSG_RESULT([empty])
 ], [
@@ -395,7 +403,7 @@ AS_IF([test "$ELKLIB_CFLAGS" == ""],[
 AC_SUBST([ELKLIB_CFLAGS])
 
 AC_MSG_CHECKING([elklib --cxxflags option])
-ELKLIB_CXXFLAGS=`$ELKLIB --cxxflags`
+ELKLIB_CXXFLAGS=`$ELKLIB_CONFIG_TARGET --cxxflags`
 AS_IF([test "$ELKLIB_CXXFLAGS" == ""],[
   AC_MSG_RESULT([empty])
 ], [
@@ -404,7 +412,7 @@ AS_IF([test "$ELKLIB_CXXFLAGS" == ""],[
 AC_SUBST([ELKLIB_CXXFLAGS])
 
 AC_MSG_CHECKING([elklib --static-libs option])
-ELKLIB_LDADD=`$ELKLIB --static-libs`
+ELKLIB_LDADD=`$ELKLIB_CONFIG_TARGET --static-libs`
 AS_IF([test "$ELKLIB_LDADD" == ""],[
   AC_MSG_RESULT([empty])
 ], [
