@@ -113,9 +113,13 @@ help:
 	@echo "    old-config          -- Reconfigure using old configuration"
 	@echo "    stats               -- Dump some stats"
 	@echo "    debug               -- Generate (useful) debugging files"
+	@echo "    doxygen             -- Build doxygen documentation (in docs directory)"
 	@echo ""
 	@echo "    *automake*          -- Standard automake targets"
 	@echo ""
+
+doxygen: all
+	(cd docs && $(MAKE) $(AM_MAKEFLAGS) doxygen)
 
 ##
 ## NOTE:

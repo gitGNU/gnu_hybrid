@@ -76,8 +76,10 @@ AC_SUBST(AX_PACKAGE_EXTRA,$AX_EXTRA_VERSION)
 #
 AC_PROG_GREP
 AC_PROG_SED
-AX_PATH_MISSING([WGET],     [wget])
+
+AX_PATH_MISSING([DOXYGEN],  [doxygen])
 AX_PATH_MISSING([SITETOOL], [sitetool])
+AX_PATH_MISSING([WGET],     [wget])
 
 #
 # Check for programs that SHOULD (or MUST) be available into the system

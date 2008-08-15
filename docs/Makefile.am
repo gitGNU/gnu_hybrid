@@ -23,6 +23,33 @@ include $(top_srcdir)/Makefile.sub
 SUBDIRS =					\
 	info
 
+EXTRA_DIST =					\
+	Doxyfile.in
+
+CLEANFILES =					\
+	Doxyfile
+
+Doxyfile: $(srcdir)/Doxyfile.in Makefile
+	( rm -f $@ $@.tmp && \
+	  $(do_subst) < $(srcdir)/Doxyfile.in > $@.tmp && \
+	  chmod a-w $@.tmp && \
+	  mv -f $@.tmp $@ ) || { \
+		rm -f $@ $@.tmp ; \
+		exit 1 ; \
+	}
+
+.PHONY: doxygen
+doxygen: Doxyfile
+	rm -r -f doxygen && \
+	mkdir doxygen && \
+	$(DOXYGEN) Doxyfile || { \
+		rm -r -f doxygen \
+		exit 1 ; \
+	}
+
+clean-local:
+	rm -r -f doxygen
+
 ##
 ## Maintainer related targets
 ##

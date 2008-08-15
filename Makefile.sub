@@ -45,6 +45,7 @@ do_subst = $(SED) \
   -e 's,[@]abs_builddir[@],$(abs_builddir),g' \
   -e 's,[@]abs_top_builddir[@],$(abs_top_builddir),g' \
   -e 's,[@]abs_top_srcdir[@],$(abs_top_srcdir),g' \
+  -e 's,[@]top_srcdir[@],$(top_srcdir),g' \
   -e 's,[@]pkgvincludedir[@],$(pkgvincludedir),g' \
   -e 's,[@]pkgvbindir[@],$(pkgvbindir),g' \
   -e 's,[@]pkgvlibsdir[@],$(pkgvlibsdir),g' \
