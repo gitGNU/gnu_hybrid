@@ -14,6 +14,8 @@ NOTE:
 	when that TODO has been declared completed ...
 
 TO-BE-DONE:
+* Import ax_prog_doxygen.m4 macro from autoconf-archive
+
 * Each time a (regression) test is performed, build a test directory inside
   the tools/scripts directory in order to remove the temporary created files
   after the unit run (or leave them after a fail). We should use a wrapper in
@@ -21,7 +23,7 @@ TO-BE-DONE:
   temporary directory
 
 * Move less useful tools related parameters from src/Makefile.am to
-  src/Makefile.am
+  src/Makefile.def
 
 * We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have
   This approach should handle cross-compilation cases.
