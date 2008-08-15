@@ -55,7 +55,7 @@ src/archs/*/kernel.ld
 src/archs/*/module.ld
 src/core/build.h
 
-docs/hybrid.info
+docs/info/hybrid.info
 
 tools/autotools/compile
 tools/autotools/config.guess
