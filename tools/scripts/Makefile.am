@@ -25,6 +25,7 @@ scripts =					\
 	whitespace-detect			\
 	git-version-gen				\
 	gitlog-to-changelog			\
+	announce-gen				\
 	bin2source				\
 	sh2h					\
 	mergesyms				\
@@ -86,7 +87,8 @@ EXTRA_DIST +=					\
 	fetch.in				\
 	whitespace-detect.in			\
 	git-version-gen				\
-	gitlog-to-changelog
+	gitlog-to-changelog			\
+	announce-gen
 
 #
 # Transformation related variables
@@ -628,6 +630,9 @@ update-local: Makefile fetch
 	$(FETCH) $(HOST)build-aux/gitlog-to-changelog fetch-dir/gitlog-to-changelog && \
 	chmod a+rx fetch-dir/gitlog-to-changelog && \
 	chmod u+w  fetch-dir/gitlog-to-changelog && \
+	$(FETCH) $(HOST)build-aux/announce-gen fetch-dir/announce-gen && \
+	chmod a+rx fetch-dir/announce-gen && \
+	chmod u+w  fetch-dir/announce-gen && \
 	mv -f fetch-dir/* ./ || { \
 		rm -r -f fetch-dir ; \
 		exit 1 ; \
