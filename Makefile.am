@@ -134,10 +134,19 @@ EXTRA_DIST +=							\
 ## Maintainer related targets
 ##
 
+announcement:
+	$(ANNOUNCE_GEN)				\
+	  --release-type=alpha			\
+	  --package=$(PACKAGE_TARNAME)		\
+	  --prev=$(PACKAGE_VERSION).test	\
+	  --curr=$(PACKAGE_VERSION)		\
+	  --gpg-key-id=TEST			\
+	  --url-dir=TEST
+
 dist-hook:
-	$(top_srcdir)/tools/scripts/gitlog-to-changelog > $(distdir)/ChangeLog || {	\
-		rm -f ChangeLog ;							\
-		exit 1 ;								\
+	$(GITLOG_TO_CHANGELOG) > $(distdir)/ChangeLog || {	\
+		rm -f ChangeLog ;				\
+		exit 1 ;					\
 	}
 
 site: all

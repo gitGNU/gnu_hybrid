@@ -82,8 +82,11 @@ do_subst = $(SED) \
   -e 's,[@]MKISOFS[@],$(MKISOFS),g' \
   -e 's,[@]MKDIR_P[@],$(MKDIR_P),g'
 
-WHITESPACE_DETECT = $(top_builddir)/tools/scripts/whitespace-detect
-FETCH             = $(top_builddir)/tools/scripts/fetch
+WHITESPACE_DETECT   = $(top_builddir)/tools/scripts/whitespace-detect
+FETCH               = $(top_builddir)/tools/scripts/fetch
+GITLOG_TO_CHANGELOG = $(top_srcdir)/tools/scripts/gitlog-to-changelog
+GIT_VERSION_GEN     = $(top_srcdir)/tools/scripts/git-version-gen
+ANNOUNCE_GEN        = $(top_srcdir)/tools/scripts/announce-gen
 
 ##
 ## Maintainer related targets
