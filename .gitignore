@@ -78,10 +78,8 @@ tools/scripts/test-exp.txt
 tools/scripts/test-in.txt
 tools/scripts/test-out.txt
 
-tools/scripts/NEWS-query
 tools/scripts/fetch
 tools/scripts/whitespace-detect
-tools/scripts/gitlog2ChangeLog
 tools/scripts/bin2source
 tools/scripts/bin2source.awk
 tools/scripts/bin2source.sh
