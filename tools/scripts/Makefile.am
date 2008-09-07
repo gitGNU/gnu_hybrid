@@ -21,11 +21,6 @@
 include $(top_srcdir)/Makefile.sub
 
 scripts =					\
-	fetch					\
-	whitespace-detect			\
-	git-version-gen				\
-	gitlog-to-changelog			\
-	announce-gen				\
 	bin2source				\
 	sh2h					\
 	mergesyms				\
@@ -82,13 +77,6 @@ EXTRA_DIST +=					\
 	$(awk_scripts_SRCS)			\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
-
-EXTRA_DIST +=					\
-	fetch.in				\
-	whitespace-detect.in			\
-	git-version-gen				\
-	gitlog-to-changelog			\
-	announce-gen
 
 #
 # Transformation related variables
@@ -149,28 +137,6 @@ transform_pl_2_sh =				\
 	    $(footer_sh) } |			\
 	    $(protect_sh) > $$OUTFILE ; }
 
-
-fetch: fetch.in Makefile
-	( rm -f $@ $@.tmp && \
-	  $(do_subst) < $(srcdir)/fetch.in > $@.tmp && \
-	  chmod +x $@.tmp && \
-	  chmod a-w $@.tmp && \
-	  mv -f $@.tmp $@ ) || { \
-		rm -f $@ $@.tmp ; \
-		exit 1 ; \
-	}
-CLEANFILES += fetch
-
-whitespace-detect: whitespace-detect.in Makefile
-	( rm -f $@ $@.tmp && \
-	  $(do_subst) < $(srcdir)/whitespace-detect.in > $@.tmp && \
-	  chmod +x $@.tmp && \
-	  chmod a-w $@.tmp && \
-	  mv -f $@.tmp $@ ) || { \
-		rm -f $@ $@.tmp ; \
-		exit 1 ; \
-	}
-CLEANFILES += whitespace-detect
 
 grub1-config.sh: Makefile $(sh_lib_SRC) grub1-config.sh.in
 	INFILE=grub1-config.sh.in ;		\
@@ -622,22 +588,6 @@ clean-local:
 HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
 
 update-local: Makefile
-	rm -r -f fetch-dir && \
-	mkdir fetch-dir && \
-	$(FETCH) $(HOST)build-aux/git-version-gen fetch-dir/git-version-gen && \
-	chmod a+rx fetch-dir/git-version-gen && \
-	chmod u+w  fetch-dir/git-version-gen && \
-	$(FETCH) $(HOST)build-aux/gitlog-to-changelog fetch-dir/gitlog-to-changelog && \
-	chmod a+rx fetch-dir/gitlog-to-changelog && \
-	chmod u+w  fetch-dir/gitlog-to-changelog && \
-	$(FETCH) $(HOST)build-aux/announce-gen fetch-dir/announce-gen && \
-	chmod a+rx fetch-dir/announce-gen && \
-	chmod u+w  fetch-dir/announce-gen && \
-	mv -f fetch-dir/* ./ || { \
-		rm -r -f fetch-dir ; \
-		exit 1 ; \
-	} && \
-	rm -r -f fetch-dir
 
 maintainer-check-parameters: Makefile $(scripts)
 	for i in $(scripts) ; do \

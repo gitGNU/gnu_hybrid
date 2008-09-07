@@ -1,0 +1,98 @@
+##
+## Input file for automake
+##
+## Copyright (C) 2007, 2008 Francesco Salvestrini
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License along
+## with this program; if not, write to the Free Software Foundation, Inc.,
+## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+##
+
+include $(top_srcdir)/Makefile.sub
+
+scripts =					\
+	fetch					\
+	whitespace-detect			\
+	git-version-gen				\
+	gitlog-to-changelog			\
+	announce-gen
+
+noinst_SCRIPTS = $(scripts)
+
+CLEANFILES =
+EXTRA_DIST =					\
+	fetch.in				\
+	whitespace-detect.in			\
+	git-version-gen				\
+	gitlog-to-changelog			\
+	announce-gen
+
+fetch: fetch.in Makefile
+	( rm -f $@ $@.tmp && \
+	  $(do_subst) < $(srcdir)/fetch.in > $@.tmp && \
+	  chmod +x $@.tmp && \
+	  chmod a-w $@.tmp && \
+	  mv -f $@.tmp $@ ) || { \
+		rm -f $@ $@.tmp ; \
+		exit 1 ; \
+	}
+CLEANFILES += fetch
+EXTRA_DIST += fetch.in
+
+whitespace-detect: whitespace-detect.in Makefile
+	( rm -f $@ $@.tmp && \
+	  $(do_subst) < $(srcdir)/whitespace-detect.in > $@.tmp && \
+	  chmod +x $@.tmp && \
+	  chmod a-w $@.tmp && \
+	  mv -f $@.tmp $@ ) || { \
+		rm -f $@ $@.tmp ; \
+		exit 1 ; \
+	}
+CLEANFILES += whitespace-detect
+EXTRA_DIST += whitespace-detect.in
+
+##
+## Maintainer related targets
+##
+HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
+
+update-local: Makefile
+	rm -r -f fetch-dir && \
+	mkdir fetch-dir && \
+	$(FETCH) $(HOST)build-aux/git-version-gen fetch-dir/git-version-gen && \
+	chmod a+rx fetch-dir/git-version-gen && \
+	chmod u+w  fetch-dir/git-version-gen && \
+	$(FETCH) $(HOST)build-aux/gitlog-to-changelog fetch-dir/gitlog-to-changelog && \
+	chmod a+rx fetch-dir/gitlog-to-changelog && \
+	chmod u+w  fetch-dir/gitlog-to-changelog && \
+	$(FETCH) $(HOST)build-aux/announce-gen fetch-dir/announce-gen && \
+	chmod a+rx fetch-dir/announce-gen && \
+	chmod u+w  fetch-dir/announce-gen && \
+	mv -f fetch-dir/* ./ || { \
+		rm -r -f fetch-dir ; \
+		exit 1 ; \
+	} && \
+	rm -r -f fetch-dir
+
+maintainer-check-parameters: Makefile $(scripts)
+	for i in $(scripts) ; do \
+		echo @ECHO_N@ "Checking standard parameters for $$i... " ; \
+		if ( ./$$i -h 2>&1 > /dev/null ) ; then \
+			echo "@ECHO_T@ok" ; \
+		else \
+			echo "@ECHO_T@error" ; \
+			exit 1 ; \
+		fi ; \
+	done
+
+maintainer-check-local: Makefile maintainer-check-parameters
