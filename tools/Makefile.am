@@ -22,6 +22,7 @@ include $(top_srcdir)/Makefile.sub
 
 ## Always put libs first !!!
 SUBDIRS =					\
+	maint					\
 	libs					\
 	scripts					\
 	choose					\
