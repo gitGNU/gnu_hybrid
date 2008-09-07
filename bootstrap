@@ -24,21 +24,21 @@
 
 #. $BASEDIR/environment.sh || exit 1
 
-PROGNAME=bootstrap
+ME=bootstrap
 
 #
 # Dump some useful informations
 #
-echo "$PROGNAME: Dumping build-tools information ..."
+echo "$ME: Dumping build-tools information ..."
 for tool in autoheader autoconf libtool libtoolize aclocal automake; do
     TOOLVER=`$tool --version | head -1`
-    echo "$PROGNAME:   $TOOLVER"
+    echo "$ME:   $TOOLVER"
 done
 
 #
 # Remove files left from the previous run
 #
-echo "$PROGNAME: Removing autotools related files and directories ..."
+echo "$ME: Removing autotools related files and directories ..."
 rm -f  `find ./ -name "Makefile.in"`                 || exit 1
 rm -f  config.cache aclocal.m4 config.h.in configure || exit 1
 rm -f  config.guess config.sub ltmain.sh             || exit 1
@@ -48,13 +48,13 @@ rm -rf `find ./ -name ".deps"`                       || exit 1
 #
 # configure.ac
 #
-echo "$PROGNAME: Building configure.ac from configure.ac.in"
+echo "$ME: Building configure.ac from configure.ac.in"
 #if test ! -r ChangeLog ; then
-#    echo "$PROGNAME: Cannot read ChangeLog file"
+#    echo "$ME: Cannot read ChangeLog file"
 #    exit 1
 #fi
 #head -n 1 ChangeLog | sed -e 's/:.*//' > VERSION || {
-#    echo "$PROGNAME: Cannot build VERSION file"
+#    echo "$ME: Cannot build VERSION file"
 #    rm -f VERSION
 #    exit 1
 #}
@@ -67,7 +67,7 @@ chmod a-w configure.ac
 #
 # src/config/Makefile.cfg
 #
-echo "$PROGNAME: Building src/config/Makefile.cfg ..."
+echo "$ME: Building src/config/Makefile.cfg ..."
 OUTPUT_CFG=src/config/Makefile.cfg
 INPUT_CFGS=`find ./ -name "rules.cfg"`
 
@@ -99,9 +99,9 @@ for i in `find ./src -name "Makefile.inc.in"` ; do
     dstfile=`dirname $i`/`basename $i .in`
     relativepath=`echo $i | sed -e 's,\.\/src/,,' | sed -e 's,/Makefile\.inc\.in,,'`
 
-    #echo "$PROGNAME: Generating $dstfile from $srcfile ($relativepath)"
-    #echo "$PROGNAME: Generating $dstfile ($relativepath)"
-    echo "$PROGNAME: Generating $relativepath"
+    #echo "$ME: Generating $dstfile from $srcfile ($relativepath)"
+    #echo "$ME: Generating $dstfile ($relativepath)"
+    echo "$ME: Generating $relativepath"
 
     #cat $srcfile | sed \
     #	-e "s,@subdir_srcdir@,$\(top_srcdir\)\/src/$relativepath,g" \
@@ -116,7 +116,7 @@ for i in `find ./src -name "Makefile.inc.in"` ; do
     cat $srcfile | sed \
 	-e "s,@reldir@,$relativepath,g" \
 	> $dstfile || {
-	echo "$PROGNAME: Cannot rearrange $srcfile into $dstfile"
+	echo "$ME: Cannot rearrange $srcfile into $dstfile"
 	exit 1
     }
 done
@@ -124,9 +124,9 @@ done
 #
 # autoreconf
 #
-echo "$PROGNAME: Handling autotools bootstrap ..."
+echo "$ME: Handling autotools bootstrap ..."
 
-echo "$PROGNAME: Running autoreconf ..."
+echo "$ME: Running autoreconf ..."
 aclocal    --force --install -I ./tools/autotools/m4 && \
 autoreconf --verbose --force --install -Wall         || {
     exit 1
@@ -136,7 +136,7 @@ autoreconf --verbose --force --install -Wall         || {
 # bootstrap other packages
 #
 cd tools/choose && ./bootstrap || {
-    echo "$PROGNAME: Cannot bootstrap tools/choose directory"
+    echo "$ME: Cannot bootstrap tools/choose directory"
     exit 1
 }
 
