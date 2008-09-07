@@ -101,11 +101,11 @@ do_subst = $(SED) \
   $(do_subst_MAINTAINER) \
   $(do_subst_SPECIFIC)
 
-WHITESPACE_DETECT   = $(top_builddir)/tools/scripts/whitespace-detect
-FETCH               = $(top_builddir)/tools/scripts/fetch
-GITLOG_TO_CHANGELOG = $(top_srcdir)/tools/scripts/gitlog-to-changelog
-GIT_VERSION_GEN     = $(top_srcdir)/tools/scripts/git-version-gen
-ANNOUNCE_GEN        = $(top_srcdir)/tools/scripts/announce-gen
+WHITESPACE_DETECT   = $(top_builddir)/tools/maint/whitespace-detect
+FETCH               = $(top_builddir)/tools/maint/fetch
+GITLOG_TO_CHANGELOG = $(top_srcdir)/tools/maint/gitlog-to-changelog
+GIT_VERSION_GEN     = $(top_srcdir)/tools/maint/git-version-gen
+ANNOUNCE_GEN        = $(top_srcdir)/tools/maint/announce-gen
 
 ##
 ## Maintainer related targets
