@@ -70,6 +70,9 @@ tools/autotools/mkinstalldirs
 tools/autotools/texinfo.tex
 tools/autotools/ylwrap
 
+tools/maint/fetch
+tools/maint/whitespace-detect
+
 tools/libs/awk/lib.awk
 tools/libs/sh/lib.sh
 tools/libs/perl/lib.pl
@@ -78,8 +81,6 @@ tools/scripts/test-exp.txt
 tools/scripts/test-in.txt
 tools/scripts/test-out.txt
 
-tools/scripts/fetch
-tools/scripts/whitespace-detect
 tools/scripts/bin2source
 tools/scripts/bin2source.awk
 tools/scripts/bin2source.sh
