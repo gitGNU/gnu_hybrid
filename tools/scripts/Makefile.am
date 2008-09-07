@@ -621,7 +621,7 @@ clean-local:
 ##
 HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
 
-update-local: Makefile fetch
+update-local: Makefile
 	rm -r -f fetch-dir && \
 	mkdir fetch-dir && \
 	$(FETCH) $(HOST)build-aux/git-version-gen fetch-dir/git-version-gen && \
@@ -636,7 +636,7 @@ update-local: Makefile fetch
 	mv -f fetch-dir/* ./ || { \
 		rm -r -f fetch-dir ; \
 		exit 1 ; \
-	}
+	} && \
 	rm -r -f fetch-dir
 
 maintainer-check-parameters: Makefile $(scripts)

@@ -166,7 +166,7 @@ update-download:
 	mv -f fetch-dir/* ./ || { \
 		rm -r -f fetch-dir ; \
 		exit 1 ; \
-	}
+	} && \
 	rm -r -f fetch-dir
 
 update-local: Makefile update-download
