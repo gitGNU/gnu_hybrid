@@ -66,38 +66,38 @@ debug:
 ##            Please move them somewhere else ASAP
 ##
 if GRUB1_SUPPORT
-image-grub1.iso: all Makefile
+image.iso: Makefile all
 	rm -r -f image-fs && \
 	mkdir image-fs && \
 	cp src/kernel image-fs && \
 	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 && \
-	  cp image.iso $(abs_top_builddir)/image-grub1.iso ) || { \
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 -o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
-	} ; \
+	} && \
 	rm -r -f image-fs
+
+CLEANFILES += image.iso
 else
-image-grub1.iso: all Makefile
+image.iso: all Makefile
 endif
-CLEANFILES += image-grub1.iso
 
 if GRUB2_SUPPORT
-image-grub2.iso: all Makefile
+image.iso: Makefile all
 	rm -r -f image-fs && \
 	mkdir image-fs && \
 	cp src/kernel image-fs && \
 	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 && \
-	  cp image.iso $(abs_top_builddir)/image-grub2.iso ) || { \
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 -o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
-	} ; \
+	} && \
 	rm -r -f image-fs
+
+CLEANFILES += image.iso
 else
-image-grub2.iso: all Makefile
+image.iso: all Makefile
 endif
-CLEANFILES += image-grub2.iso
 
 ##
 ## help related target
@@ -113,6 +113,7 @@ help:
 	@echo "    old-config          -- Reconfigure using old configuration"
 	@echo "    stats               -- Dump some stats"
 	@echo "    debug               -- Generate (useful) debugging files"
+	@echo "    image.iso           -- Generate a bootable ISO image"
 	@echo "    doxygen             -- Build doxygen documentation (in docs directory)"
 	@echo ""
 	@echo "    *automake*          -- Standard automake targets"
