@@ -21,16 +21,18 @@
 
 me="mkiso-grub1"
 version="0.1"
+output=""
 
 case $1 in
     -h|--help)
-    echo "Usage: $me"
+    echo "Usage: $me [OPTIONS]"
     echo ""
     echo "Build an ISO image file using grub (1.x) as boot loader"
     echo ""
     echo "Report bugs to <@PACKAGE_BUGREPORT@>"
     exit 0
     ;;
+
     -v|--version)
     echo "$me (@PACKAGE_NAME@) $version"
     echo "Written by Francesco Salvestrini"
@@ -40,15 +42,23 @@ case $1 in
     echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     exit 0
     ;;
+
+    -o|--output)
+    output=$2
+    if test -z "$output" ; then
+	echo "$me: Missing output file"
+	exit 1
+    fi
+    ;;
 esac
 
 @MKDIR_P@ iso/boot/grub && \
 cp -f `@abs_top_builddir@/tools/scripts/grub1-config -D`/stage2_eltorito iso/boot/grub && \
 cp -f @abs_top_builddir@/src/kernel iso/boot && \
 echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/kernel" > iso/boot/grub/menu.lst && \
-@MKISOFS@ -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o image.iso iso || { \
+@MKISOFS@ -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o $output iso || { \
     rm -r -f iso ; \
-    rm -f image.iso ; \
+    rm -f $output ; \
     exit 1 ; \
 }
 
