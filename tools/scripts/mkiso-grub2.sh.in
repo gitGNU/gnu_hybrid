@@ -21,16 +21,18 @@
 
 me="mkiso-grub2"
 version="0.1"
+output=""
 
 case $1 in
     -h|--help)
-    echo "Usage: $me"
+    echo "Usage: $me [OPTIONS]"
     echo ""
     echo "Build an ISO image file using grub (2.x) as boot loader"
     echo ""
     echo "Report bugs to <@PACKAGE_BUGREPORT@>"
     exit 0
     ;;
+
     -v|--version)
     echo "$me (@PACKAGE_NAME@) $version"
     echo "Written by Francesco Salvestrini"
@@ -39,6 +41,14 @@ case $1 in
     echo "This is free software; see the source for copying conditions.  There is NO"
     echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     exit 0
+    ;;
+
+    -o|--output)
+    output=$2
+    if test -z "$output" ; then
+	echo "$me: Missing output file"
+	exit 1
+    fi
     ;;
 esac
 
@@ -129,7 +139,7 @@ GRUB2_MKIMAGE=`missing grub-mkimage` || \
 #
 
 GRUB_IMAGE="$TMP_DIR/boot/grub2.img"
-ISO_IMAGE="$ISO_DIR/image.iso"
+ISO_IMAGE="$ISO_DIR/$output"
 
 #GRUB_MOD_LIST=`echo $GRUB_LIB_DIR/*.mod |                      \
 #	       $SED -e 's/[^\ ]\{1,\}\/\([^\/]\{1,\}\)/\1\ /g' \
