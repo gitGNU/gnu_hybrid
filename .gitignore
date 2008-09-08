@@ -55,6 +55,8 @@ src/archs/*/kernel.ld
 src/archs/*/module.ld
 src/core/build.h
 
+image.iso
+
 docs/info/hybrid.info
 docs/doxygen
 docs/Doxyfile
