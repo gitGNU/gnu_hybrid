@@ -41,25 +41,25 @@ AUTOMAKE_OPTIONS = check-news
 ## Configuration related targets
 ##
 default-config-load:
-	$(MAKE) default-config-load -C src
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) default-config-load)
 
 default-config-save:
-	$(MAKE) default-config-save -C src
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) default-config-save)
 
 menu-config:
-	$(MAKE) menu-config -C src
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) menu-config)
 
 text-config:
-	$(MAKE) text-config -C src
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) text-config)
 
 ##
 ## Miscellaneous targets
 ##
 stats:
-	$(MAKE) stats -C src
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) stats)
 
 debug:
-	$(MAKE) system.map -C src
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) system.map)
 
 ##
 ## XXX FIXME: The "iso" rules are temporary and for debugging purposes only.
