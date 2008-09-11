@@ -37,7 +37,7 @@ TO-BE-DONE:
 
     /usr/bin/nm: kernel: no symbols
 
-* Move the src/archs/ia32/keyboard* related code to a i8042.* file.
+* Move the src/archs/x86/keyboard* related code to a i8042.* file.
 
 * Fix the modules build problem when compiling with bfd version 2.15 (on
   FreeBSD host ld exits with segmentation fault).
