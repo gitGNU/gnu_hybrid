@@ -17,25 +17,36 @@
  *
  */
 
-#ifndef ARCHS_COMMON_CPU_H
-#define ARCHS_COMMON_CPU_H
+#include "config/config.h"
+#include "archs/arch.h"
+#include "archs/x86/port.h"
+#include "libs/debug.h"
 
-#if ARCH_X86
-#include "archs/x86/cpu.h"
-#endif
+#define CLK_FREQ 1193180L
+#define PIO      0x61
+#define CTC_CMD  0x43
+#define CTC_DATA 0x42
+#define SETUP    0xB6
+#define TONE_ON  0x03
+#define TONE_OFF 0xFC
 
-typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
-} cpu_t;
+void arch_dbg_beep_on(uint_t frequency)
+{
+	int divisor;
+	int pio_word;
 
-/* XXX FIXME: This is temp */
-#define __this_cpu (&cpus[0])
+	divisor = (int)(CLK_FREQ / (long)(frequency));
+	port_out8(CTC_CMD, SETUP);
+	port_out8(CTC_DATA, divisor & 0xFF);
+	port_out8(CTC_DATA, divisor >> 8);
+	pio_word = port_in8(PIO);
+	port_out8(PIO, pio_word | TONE_ON);
+}
 
-extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
+void arch_dbg_beep_off(void)
+{
+	uint8_t pio_word;
 
-int arch_cpu_count(void);
-int arch_cpu_current(void);
-
-#endif /* ARCHS_COMMON_CPU_H */
+	pio_word = port_in8(PIO);
+	port_out8(PIO, pio_word & TONE_OFF);
+}

@@ -18,7 +18,7 @@
 ## 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##
 
-include @reldir@/ia32/Makefile.inc
+include @reldir@/x86/Makefile.inc
 include @reldir@/ppc32/Makefile.inc
 include @reldir@/common/Makefile.inc
 include @reldir@/boot/Makefile.inc
@@ -29,9 +29,9 @@ EXTRA_DIST +=					\
 arch_SRCS           =
 arch_multiboot_SRCS =
 
-if SUPPORT_ARCH_IA32
-arch_SRCS           += $(arch_ia32_SRCS)
-arch_multiboot_SRCS += $(arch_ia32_multiboot_SRCS)
+if SUPPORT_ARCH_X86
+arch_SRCS           += $(arch_x86_SRCS)
+arch_multiboot_SRCS += $(arch_x86_multiboot_SRCS)
 endif
 
 if SUPPORT_ARCH_PPC32

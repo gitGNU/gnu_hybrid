@@ -23,8 +23,8 @@
 #include "config/config.h"
 #include "libc/stdint.h"
 #include "libc/stdlib.h"
-#if ARCH_IA32
-#include "archs/ia32/arch.h"
+#if ARCH_X86
+#include "archs/x86/arch.h"
 #endif
 #include "boot/bootinfo.h"
 #include "archs/common/cpu.h"

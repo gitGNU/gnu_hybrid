@@ -27,7 +27,7 @@
 #include "archs/boot/bootinfo.h"
 #include "archs/boot/bootstrap.h"
 #include "archs/linker.h"
-#include "archs/ia32/asm.h"
+#include "archs/x86/asm.h"
 #include "dbg/panic.h"
 #include "libs/debug.h"
 #include "mem/pmm.h"

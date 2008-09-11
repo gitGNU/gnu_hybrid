@@ -17,25 +17,23 @@
  *
  */
 
-#ifndef ARCHS_COMMON_CPU_H
-#define ARCHS_COMMON_CPU_H
+#include "config/config.h"
+#include "archs/x86/i8237.h"
+#include "archs/x86/dma.h"
+#include "libs/debug.h"
 
-#if ARCH_X86
-#include "archs/x86/cpu.h"
+#if CONFIG_ARCH_DMA_DEBUG
+#define dprintf(F,A...) printf("dma: " F,##A)
+#else
+#define dprintf(F,A...)
 #endif
 
-typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
-} cpu_t;
+int dma_init(void)
+{
+	return i8237_init();
+}
 
-/* XXX FIXME: This is temp */
-#define __this_cpu (&cpus[0])
-
-extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
-
-int arch_cpu_count(void);
-int arch_cpu_current(void);
-
-#endif /* ARCHS_COMMON_CPU_H */
+void dma_fini(void)
+{
+	i8237_fini();
+}

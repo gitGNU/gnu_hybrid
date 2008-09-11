@@ -22,8 +22,8 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
-#if ARCH_IA32
-#include "archs/ia32/boot/bootinfo.h"
+#if ARCH_X86
+#include "archs/x86/boot/bootinfo.h"
 #endif
 
 __BEGIN_DECLS

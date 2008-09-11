@@ -17,25 +17,23 @@
  *
  */
 
-#ifndef ARCHS_COMMON_CPU_H
-#define ARCHS_COMMON_CPU_H
+#ifndef ARCH_IRQ_H
+#define ARCH_IRQ_H
 
+#include "config/config.h"
+#include "libc/stddef.h"
 #if ARCH_X86
-#include "archs/x86/cpu.h"
+#include "archs/x86/arch.h"
+#include "archs/x86/idt.h"
 #endif
 
-typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
-} cpu_t;
+int               irq_init(void);
+void              irq_fini(void);
+void              irq_enable(void);
+void              irq_disable(void);
+void              irq_unmask(uint_t irq);
+void              irq_mask(uint_t irq);
+arch_irqs_state_t irq_state_get(void);
+void              irq_state_set(arch_irqs_state_t * state);
 
-/* XXX FIXME: This is temp */
-#define __this_cpu (&cpus[0])
-
-extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
-
-int arch_cpu_count(void);
-int arch_cpu_current(void);
-
-#endif /* ARCHS_COMMON_CPU_H */
+#endif /* ARCH_IRQ_H */

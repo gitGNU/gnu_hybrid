@@ -17,25 +17,12 @@
  *
  */
 
-#ifndef ARCHS_COMMON_CPU_H
-#define ARCHS_COMMON_CPU_H
+#ifndef ARCH_ARCH_H
+#define ARCH_ARCH_H
 
-#if ARCH_X86
-#include "archs/x86/cpu.h"
-#endif
+#include "config/config.h"
+#include "archs/x86/i8259.h"
 
-typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
-} cpu_t;
+typedef i8259_mask_t arch_irqs_state_t;
 
-/* XXX FIXME: This is temp */
-#define __this_cpu (&cpus[0])
-
-extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
-
-int arch_cpu_count(void);
-int arch_cpu_current(void);
-
-#endif /* ARCHS_COMMON_CPU_H */
+#endif /* ARCH_ARCH_H */

@@ -17,25 +17,59 @@
  *
  */
 
-#ifndef ARCHS_COMMON_CPU_H
-#define ARCHS_COMMON_CPU_H
-
-#if ARCH_X86
+#include "config/config.h"
 #include "archs/x86/cpu.h"
+#include "libc/stdio.h"
+#include "libs/debug.h"
+
+#if CONFIG_ARCH_CPU_DEBUG
+#define dprintf(F,A...)   printf("amd: " F,##A)
+#else
+#define dprintf(F,A...)
 #endif
 
-typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
-} cpu_t;
+#if CONFIG_ARCH_CPU_VERBOSE
+#define cprintf(C,F,A...) printf("CPU%d: " F,(C)->index,##A)
+#else
+#define cprintf(C,F,A...)
+#endif
 
-/* XXX FIXME: This is temp */
-#define __this_cpu (&cpus[0])
+#if CONFIG_ARCH_CPU_AMD
+int amd_infos(arch_cpu_t* cpu)
+{
+	unused_argument(cpu);
 
-extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
+	missing();
+	return 0;
+}
 
-int arch_cpu_count(void);
-int arch_cpu_current(void);
+int amd_cache_init(arch_cpu_t* cpu)
+{
+	unused_argument(cpu);
 
-#endif /* ARCHS_COMMON_CPU_H */
+	missing();
+	return 0;
+}
+
+void amd_cache_fini(arch_cpu_t* cpu)
+{
+	unused_argument(cpu);
+
+	missing();
+}
+
+int amd_cpu_init(arch_cpu_t* cpu)
+{
+	unused_argument(cpu);
+
+	missing();
+	return 0;
+}
+
+void amd_cpu_fini(arch_cpu_t* cpu)
+{
+	unused_argument(cpu);
+
+	missing();
+}
+#endif /* CONFIG_ARCH_CPU_AMD */

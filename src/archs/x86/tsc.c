@@ -17,25 +17,44 @@
  *
  */
 
-#ifndef ARCHS_COMMON_CPU_H
-#define ARCHS_COMMON_CPU_H
+#include "config/config.h"
+#include "libc/stdio.h"
+#include "libc/stdint.h"
+#include "libc/stddef.h"
+#include "libc/string.h"
+#include "archs/x86/tss.h"
+#include "archs/x86/gdt.h"
+#include "archs/x86/asm.h"
+#include "libs/debug.h"
+#include "dbg/debugger.h"
 
-#if ARCH_X86
-#include "archs/x86/cpu.h"
+#if CONFIG_TSS_DEBUG
+#define dprintf(F,A...) printf("tsc: " F,##A)
+#else
+#define dprintf(F,A...)
 #endif
 
-typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
-} cpu_t;
+int tsc_init(void)
+{
+#if 0
+	uint64_t start;
+	uint64_t end;
+	ulong_t  count;
+#endif
 
-/* XXX FIXME: This is temp */
-#define __this_cpu (&cpus[0])
+	dprintf("Calibrating ...\n");
 
-extern cpu_t cpus[CONFIG_MAX_CPU_COUNT];
+#if 0
+	rdtscll(start);
+	for (count = 0; (inb(0x61) & 0x20) == 0; count++) {
+		continue;
+	}
+	rdtscll(end);
+#endif
 
-int arch_cpu_count(void);
-int arch_cpu_current(void);
+	return 1;
+}
 
-#endif /* ARCHS_COMMON_CPU_H */
+void tsc_fini(void)
+{
+}
