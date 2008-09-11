@@ -75,7 +75,7 @@ BEGIN {
 	}
 
 	retval = 1;
-	if (arch == "ia32") {
+	if (arch == "x86") {
 		if ("@GRUB1_MBCHK@" != "") {
 			assert(executable(remove_parameters("@GRUB1_MBCHK@")));
 

@@ -36,7 +36,7 @@ function add_name(name)
 	symbol[name] = 0;
 }
 
-function ia32(string)
+function x86(string)
 {
 	debug("Input string is `" string "`\n");
 
@@ -73,8 +73,8 @@ function check(infile, architecture, maxstack)
 
 	pipe = "@OBJDUMP@ -d " infile " | @CXXFILT@";
 	while ((pipe | getline string) > 0) {
-		if (architecture == "ia32") {
-			ia32(string);
+		if (architecture == "x86") {
+			x86(string);
 		} else {
 			error("Unknown architecture <" architecture "> ...\n");
 			exit(1);
