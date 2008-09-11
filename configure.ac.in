@@ -646,14 +646,14 @@ AX_ASM_USCORE
 
 # Make an alias of the current target cpu (it will be useful later)
 AS_CASE([$target],
-  [ i?86-*-* ],[ architecture="ia32"  ],
+  [ i?86-*-* ],[ architecture="x86"  ],
   [ ppc*     ],[ architecture="ppc32" ],
   [ AC_MSG_ERROR([unknown target $target]) ]
 )
 
 # Use the alias defined before in order to define the architecture
 AS_CASE([$architecture],
-  [ ia32  ],[ AC_DEFINE(ARCH_IA32,  1, [ 32 bit Intel architecture ]) ],
+  [ x86  ],[ AC_DEFINE(ARCH_X86,  1, [ 32 bit Intel architecture ]) ],
   [ ppc32 ],[ AC_DEFINE(ARCH_PPC32, 1, [ 32 bit PPC architecture   ]) ],
   [ AC_MSG_ERROR([unknown architecture $architecture]) ]
 )
@@ -662,7 +662,7 @@ AS_CASE([$architecture],
 AC_SUBST(architecture)
 
 # automake conditionals...
-AM_CONDITIONAL([SUPPORT_ARCH_IA32],  [ test x"$architecture" = x"ia32"  ])
+AM_CONDITIONAL([SUPPORT_ARCH_X86],   [ test x"$architecture" = x"x86"  ])
 AM_CONDITIONAL([SUPPORT_ARCH_PPC32], [ test x"$architecture" = x"ppc32" ])
 
 #
