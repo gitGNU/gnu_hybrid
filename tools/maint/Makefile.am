@@ -20,46 +20,12 @@
 
 include $(top_srcdir)/Makefile.sub
 
-scripts =					\
-	fetch					\
-	whitespace-detect			\
-	git-version-gen				\
-	gitlog-to-changelog			\
-	announce-gen
-
-noinst_SCRIPTS = $(scripts)
-
-CLEANFILES =
 EXTRA_DIST =					\
 	fetch.in				\
 	whitespace-detect.in			\
 	git-version-gen				\
 	gitlog-to-changelog			\
 	announce-gen
-
-fetch: fetch.in Makefile
-	( rm -f $@ $@.tmp && \
-	  $(do_subst) < $(srcdir)/fetch.in > $@.tmp && \
-	  chmod +x $@.tmp && \
-	  chmod a-w $@.tmp && \
-	  mv -f $@.tmp $@ ) || { \
-		rm -f $@ $@.tmp ; \
-		exit 1 ; \
-	}
-CLEANFILES += fetch
-EXTRA_DIST += fetch.in
-
-whitespace-detect: whitespace-detect.in Makefile
-	( rm -f $@ $@.tmp && \
-	  $(do_subst) < $(srcdir)/whitespace-detect.in > $@.tmp && \
-	  chmod +x $@.tmp && \
-	  chmod a-w $@.tmp && \
-	  mv -f $@.tmp $@ ) || { \
-		rm -f $@ $@.tmp ; \
-		exit 1 ; \
-	}
-CLEANFILES += whitespace-detect
-EXTRA_DIST += whitespace-detect.in
 
 ##
 ## Maintainer related targets

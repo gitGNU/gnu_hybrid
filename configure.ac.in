@@ -719,6 +719,9 @@ AC_CONFIG_FILES([
 	src/config/version.h
 ])
 
+AC_CONFIG_FILES([tools/maint/fetch],            [chmod +x tools/maint/fetch])
+AC_CONFIG_FILES([tools/maint/whitespace-detect],[chmod +x tools/maint/whitespace-detect])
+
 #
 # XXX FIXME:
 #     Build the correct link to the choosen target architecture. This solution
