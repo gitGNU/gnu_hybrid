@@ -719,9 +719,9 @@ AC_CONFIG_FILES([
 	src/config/version.h
 ])
 
-AC_CONFIG_FILES([tools/maint/fetch],            [chmod +x tools/maint/fetch])
-AC_CONFIG_FILES([tools/maint/whitespace-detect],[chmod +x tools/maint/whitespace-detect])
-AC_CONFIG_FILES([tools/maint/gitlog-to-AUTHORS],[chmod +x tools/maint/gitlog-to-AUTHORS])
+AC_CONFIG_FILES([tools/maint/fetch],               [chmod +x tools/maint/fetch])
+AC_CONFIG_FILES([tools/maint/whitespace-detect],   [chmod +x tools/maint/whitespace-detect])
+AC_CONFIG_FILES([tools/maint/gitlog-to-committers],[chmod +x tools/maint/gitlog-to-committers])
 
 #
 # XXX FIXME:

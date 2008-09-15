@@ -23,7 +23,7 @@ include $(top_srcdir)/Makefile.sub
 EXTRA_DIST =					\
 	fetch.in				\
 	whitespace-detect.in			\
-	gitlog-to-AUTHORS.in			\
+	gitlog-to-committers.in			\
 	\
 	git-version-gen				\
 	gitlog-to-changelog			\
