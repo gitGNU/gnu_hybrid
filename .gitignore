@@ -74,6 +74,7 @@ tools/autotools/ylwrap
 
 tools/maint/fetch
 tools/maint/whitespace-detect
+tools/maint/gitlog-to-AUTHORS
 
 tools/libs/awk/lib.awk
 tools/libs/sh/lib.sh
