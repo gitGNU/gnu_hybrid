@@ -1,11 +1,5 @@
 #! @PERL@
 
-my $VERSION = '2008-09-15 16:47'; # UTC
-# The definition above must lie within the first 8 lines in order
-# for the Emacs time-stamp write hook (at end) to update it.
-# If you change this file with Emacs, please let the write hook
-# do its job.  Otherwise, update this string manually.
-
 #
 # gitlog-to-AUTHORS.in
 #
@@ -34,6 +28,7 @@ use Getopt::Long;
 use POSIX qw(strftime);
 
 (my $ME = $0) =~ s|.*/||;
+my $VERSION = "0.1";
 
 END {
     defined fileno STDOUT or return;
@@ -138,12 +133,3 @@ sub quoted_cmd(@)
 	or die "$ME: error closing pipe from " . quoted_cmd (@cmd) . "\n";
     # FIXME-someday: include $PROCESS_STATUS in the diagnostic
 }
-
-# Local Variables:
-# indent-tabs-mode: nil
-# eval: (add-hook 'write-file-hooks 'time-stamp)
-# time-stamp-start: "my $VERSION = '"
-# time-stamp-format: "%:y-%02m-%02d %02H:%02M"
-# time-stamp-time-zone: "UTC"
-# time-stamp-end: "'; # UTC"
-# End:
