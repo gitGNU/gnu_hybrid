@@ -102,6 +102,7 @@ sub quoted_cmd(@)
 		"(Is your Git too old?  Version 1.5.1 or later required.)\n");
 
     my %committers;
+    my $total = 0;
     while (<PIPE>) {
 	my $line = $_;
 
@@ -119,6 +120,7 @@ sub quoted_cmd(@)
 		die "$ME: Duplicated name found, fix your .mailmap";
 	    }
 	    $committers{$name} = $commits;
+	    $total = $total + $commits;
 	} else {
 	    die "$ME: Unhandled line found ('$line')";
 	}
@@ -127,7 +129,10 @@ sub quoted_cmd(@)
     my @keys = sort { $committers{$a} < $committers{$b} } keys %committers;
     foreach my $name (@keys) {
 	print "$name\n";
+	$total -= $committers{$name};
     }
+
+    ($total == 0) or die("Bug found (total = $total)");
 
     close PIPE
 	or die "$ME: error closing pipe from " . quoted_cmd (@cmd) . "\n";
