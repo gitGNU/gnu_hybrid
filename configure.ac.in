@@ -653,7 +653,7 @@ AS_CASE([$target],
 
 # Use the alias defined before in order to define the architecture
 AS_CASE([$architecture],
-  [ x86  ],[ AC_DEFINE(ARCH_X86,  1, [ 32 bit Intel architecture ]) ],
+  [ x86   ],[ AC_DEFINE(ARCH_X86,   1, [ 32 bit Intel architecture ]) ],
   [ ppc32 ],[ AC_DEFINE(ARCH_PPC32, 1, [ 32 bit PPC architecture   ]) ],
   [ AC_MSG_ERROR([unknown architecture $architecture]) ]
 )
