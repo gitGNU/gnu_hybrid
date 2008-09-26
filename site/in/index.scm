@@ -2,10 +2,7 @@
 (p "Hybrid is a kernel being developed with an emphasis on design and "
    "portability. It is largely implemented in C/C++, with a small amount of "
    "assembly. The kernel is built on top of "
-   (a (@ (href "http://www.nongnu.org/elklib")) "elklib") "."
-   (br)
-   (i "The kernel is under heavy development and is not yet usable, from the "
-      "user point of view."))
+   (a (@ (href "http://www.nongnu.org/elklib")) "elklib") ".")
 
 (h4 "Features")
 (p "The architecture indipendent features are:")
