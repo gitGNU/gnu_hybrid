@@ -22,8 +22,8 @@ BEGIN {
 
 	lib_init();
 
-	infile      = "/dev/stdin";
-	outfile     = "/dev/stdout";
+	infile      = "";
+	outfile     = "";
 	fatal       = 0;
 
 	opts   = "i:o:fvdh";
@@ -66,21 +66,23 @@ BEGIN {
 		hint("Missing input file");
 		exit(1);
 	}
-	debug("infile = " infile "\n");
 	if (!readable(infile)) {
 		error(infile " is not readable!\n");
 		exit(1);
 	}
+	debug("infile = " infile "\n");
 
 	if (outfile == "") {
 		hint("Missing output file");
 		exit(1);
 	}
-	debug("outfile = " outfile "\n");
 	if (!writable(outfile)) {
 		error(outfile " is not writable!\n");
 		exit(1);
 	}
+	debug("outfile = " outfile "\n");
+
+	verbose("Start processing ...\n");
 
 	retval = 0;
 	printf("") > outfile;
