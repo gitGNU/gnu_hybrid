@@ -44,8 +44,8 @@ BEGIN {
 
 	bytes    = 0;
 	position = 0;
-	infile   = "/dev/stdin";
-	outfile  = "/dev/stdout";
+	infile   = "";
+	outfile  = "";
 	name     = "data";
 	columns  = 8;
 	style    = "";
@@ -109,17 +109,23 @@ BEGIN {
 		hint("Missing output file name");
 		exit(1);
 	}
+	if (!writable(outfile)) {
+		error(outfile " is not writable!\n");
+		exit(1);
+	}
 	debug("outfile = " outfile "\n");
 
 	if (name == "") {
 		hint("Structure name is missing");
 		exit(1);
 	}
+	debug("name    = " name "\n");
 
 	if (columns < 1) {
 		hint("Wrong columns per line");
 		exit(1);
 	}
+	debug("columns = " columns "\n");
 
 	if (toupper(style) == "C") {
 
