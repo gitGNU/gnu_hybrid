@@ -10,7 +10,7 @@
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License along
@@ -20,15 +20,32 @@
 
 include $(top_srcdir)/Makefile.sub
 
-SUBDIRS =					\
-	libs					\
-	usr					\
-	dev					\
-	maint
+CLEANFILES =
+
+all-local: lib.sh
+
+sh_libs_SRCS =					\
+	libtrace.sh.in				\
+	libmisc.sh.in				\
+	libcore.sh.in
+
+lib.sh: Makefile $(sh_libs_SRCS)
+	{ rm -f lib.sh &&				\
+	  touch lib.sh && 				\
+	  for i in $(sh_libs_SRCS) ; do			\
+		cat $(srcdir)/$$i >> lib.sh ;		\
+	  done ; } || { rm -f lib.sh ; exit 1 ; }
+CLEANFILES += lib.sh
+
+EXTRA_DIST =					\
+	$(sh_libs_SRCS)
 
 ##
 ## Maintainer related targets
 ##
 update-local: Makefile
 
-maintainer-check-local: Makefile
+maintainer-check-whitespaces: Makefile $(sh_libs_SRCS)
+	$(WHITESPACE_DETECT) $(sh_libs_SRCS)
+
+maintainer-check-local: Makefile maintainer-check-whitespaces
