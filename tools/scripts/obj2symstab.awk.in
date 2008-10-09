@@ -146,7 +146,7 @@ function scan_file(pipe, infile, names, types, values)
 
 	archive_seen = 0;
 	k            = 0;
-	stream       = pipe infile;
+	stream       = pipe infile " 2>/dev/null";
 
 	verbose("Scanning file `" infile "`\n");
 
