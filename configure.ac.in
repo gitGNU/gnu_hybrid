@@ -701,10 +701,13 @@ AC_CONFIG_FILES([
 
 	tools/Makefile
 
-	tools/libs/Makefile
-	tools/libs/sh/Makefile
-	tools/libs/awk/Makefile
 	tools/scripts/Makefile
+	tools/scripts/libs/Makefile
+	tools/scripts/libs/sh/Makefile
+	tools/scripts/libs/awk/Makefile
+	tools/scripts/usr/Makefile
+	tools/scripts/dev/Makefile
+	tools/scripts/maint/Makefile
 	tools/maint/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile
