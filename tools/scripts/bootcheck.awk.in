@@ -22,7 +22,7 @@ BEGIN {
 	lib_init();
 
 	arch  = "";
-	infn  = "/dev/stdin";
+	infn  = "";
 	fatal = 0;
 
 	opts   = "a:i:fvdh";
@@ -65,14 +65,16 @@ BEGIN {
 		hint("Missing architecture");
 		exit(1);
 	}
-
 	debug("arch   = " arch "\n");
-	debug("infile = " infn "\n");
-
+	if (infn == "") {
+		hint("Missing input file name");
+		exit(1);
+	}
 	if (!readable(infn)) {
 		error(infn " is not readable!\n");
 		exit(1);
 	}
+	debug("infile = " infn "\n");
 
 	retval = 1;
 	if (arch == "x86") {
