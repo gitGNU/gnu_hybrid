@@ -31,46 +31,47 @@ MODULES_AUTOLOAD     =
 
 
 # Base directories
-TOOLSDIR_BUILD  = $(top_builddir)/tools
-TOOLSDIR_SOURCE = $(top_srcdir)/tools
+TOOLSDIR_BUILD       = $(top_builddir)/tools
+TOOLSDIR_SOURCE      = $(top_srcdir)/tools
 
-SCRIPTSDIR = $(TOOLSDIR_BUILD)/scripts
-CHOOSEDIR  = $(TOOLSDIR_BUILD)/choose
+SCRIPTSDIR           = $(TOOLSDIR_BUILD)/scripts
+USR_SCRIPTSDIR       = $(SCRIPTSDIR)/usr
+DEV_SCRIPTSDIR       = $(SCRIPTSDIR)/dev
+MAINT_SCRIPTSDIR     = $(SCRIPTSDIR)/maint
+CHOOSEDIR            = $(TOOLSDIR_BUILD)/choose
 
 TOOL_FLAGS = $(AX_TOOL_FLAGS)
 
 # Useful scripts
-BIN2SOURCE          = $(SCRIPTSDIR)/bin2source
-BIN2SOURCE_FLAGS    = $(TOOL_FLAGS)
-STACKCHECK          = $(SCRIPTSDIR)/stackcheck
+STACKCHECK          = $(DEV_SCRIPTSDIR)/stackcheck
 STACKCHECK_FLAGS    = $(TOOL_FLAGS)
-OBJ2SYMSTAB         = $(SCRIPTSDIR)/obj2symstab
+OBJ2SYMSTAB         = $(DEV_SCRIPTSDIR)/obj2symstab
 OBJ2SYMSTAB_FLAGS   = $(TOOL_FLAGS)
-SYMSTAB2MAP         = $(SCRIPTSDIR)/symstab2map
+SYMSTAB2MAP         = $(DEV_SCRIPTSDIR)/symstab2map
 SYMSTAB2MAP_FLAGS   = $(TOOL_FLAGS)
-GETDEFINE           = $(SCRIPTSDIR)/getdefine
+GETDEFINE           = $(USR_SCRIPTSDIR)/getdefine
 GETDEFINE_FLAGS     = $(TOOL_FLAGS)
-BOOTCHECK           = $(SCRIPTSDIR)/bootcheck
+BOOTCHECK           = $(USR_SCRIPTSDIR)/bootcheck
 BOOTCHECK_FLAGS     = $(TOOL_FLAGS)
-SH2H                = $(SCRIPTSDIR)/sh2h
+SH2H                = $(USR_SCRIPTSDIR)/sh2h
 SH2H_FLAGS          = $(TOOL_FLAGS)
-RULES2SYMS          = $(SCRIPTSDIR)/rules2syms
+RULES2SYMS          = $(USR_SCRIPTSDIR)/rules2syms
 RULES2SYMS_FLAGS    = $(TOOL_FLAGS)
-MERGESYMS           = $(SCRIPTSDIR)/mergesyms
+MERGESYMS           = $(USR_SCRIPTSDIR)/mergesyms
 MERGESYMS_FLAGS     = $(TOOL_FLAGS)
-INCLUDESCHECK       = $(SCRIPTSDIR)/includescheck
+INCLUDESCHECK       = $(DEV_SCRIPTSDIR)/includescheck
 INCLUDESCHECK_FLAGS = $(TOOL_FLAGS)
-IFDEFSCHECK         = $(SCRIPTSDIR)/ifdefscheck
+IFDEFSCHECK         = $(DEV_SCRIPTSDIR)/ifdefscheck
 IFDEFSCHECK_FLAGS   = $(TOOL_FLAGS)
-GUARDSCHECK         = $(SCRIPTSDIR)/guardscheck
+GUARDSCHECK         = $(MAINT_SCRIPTSDIR)/guardscheck
 GUARDSCHECK_FLAGS   = $(TOOL_FLAGS)
-SECTIONS            = $(SCRIPTSDIR)/sections
+SECTIONS            = $(DEV_SCRIPTSDIR)/sections
 SECTIONS_FLAGS      = $(TOOL_FLAGS)
-MKSYSCALLS          = $(SCRIPTSDIR)/mksyscalls
+MKSYSCALLS          = $(DEV_SCRIPTSDIR)/mksyscalls
 MKSYSCALLS_FLAGS    = $(TOOL_FLAGS)
-MKBUILD             = $(SCRIPTSDIR)/mkbuild
+MKBUILD             = $(USR_SCRIPTSDIR)/mkbuild
 MKBUILD_FLAGS       = $(TOOL_FLAGS)
-CLHANDLER           = $(SCRIPTSDIR)/clhandler
+CLHANDLER           = $(USR_SCRIPTSDIR)/clhandler
 CLHANDLER_FLAGS     = $(TOOL_FLAGS)
 
 # Useful binaries
