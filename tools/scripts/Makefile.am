@@ -21,7 +21,6 @@
 include $(top_srcdir)/Makefile.sub
 
 scripts =					\
-	bin2source				\
 	sh2h					\
 	mergesyms				\
 	stackcheck				\
@@ -45,7 +44,6 @@ scripts =					\
 noinst_SCRIPTS = $(scripts)
 
 awk_scripts_SRCS =				\
-	bin2source.awk.in			\
 	sh2h.awk.in				\
 	mergesyms.awk.in			\
 	stackcheck.awk.in			\
@@ -193,28 +191,6 @@ mkiso-grub2: Makefile mkiso-grub2.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mkiso-grub2
-
-## bin2source
-bin2source.awk: Makefile $(awk_lib_SRC) bin2source.awk.in
-	INFILE=bin2source.awk.in ;		\
-	OUTFILE=bin2source.awk ;		\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bin2source.awk
-
-bin2source.sh: Makefile $(sh_lib_SRC) bin2source.awk
-	INFILE=bin2source.awk ;			\
-	OUTFILE=bin2source.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bin2source.sh
-
-bin2source: Makefile bin2source.sh
-	INFILE=bin2source.sh ;			\
-	OUTFILE=bin2source ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bin2source
 
 ## sh2h
 sh2h.awk: Makefile $(awk_lib_SRC) sh2h.awk.in
