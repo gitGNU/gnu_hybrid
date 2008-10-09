@@ -45,7 +45,7 @@ BEGIN {
 	bytes    = 0;
 	position = 0;
 	infile   = "";
-	outfile  = "";
+	outfile  = "/dev/stdout";
 	name     = "data";
 	columns  = 8;
 	style    = "";

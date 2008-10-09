@@ -23,7 +23,7 @@ BEGIN {
 	lib_init();
 
 	guard   = "";
-	outfile = "/dev/stdout";
+	outfile = "";
 	fatal   = 0;
 
 	delete paths;

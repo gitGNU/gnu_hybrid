@@ -24,7 +24,7 @@ BEGIN {
 
 	symbol   = "";
 	value    = "";
-	infn     = "/dev/stdin";
+	infn     = "";
 	outfn    = "/dev/stdout";
 
 	opts   = "s:i:o:vVdDh";
