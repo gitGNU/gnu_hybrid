@@ -53,7 +53,7 @@ case $1 in
 esac
 
 @MKDIR_P@ iso/boot/grub && \
-cp -f `@abs_top_builddir@/tools/scripts/grub1-config -D`/stage2_eltorito iso/boot/grub && \
+cp -f `@abs_top_builddir@/tools/scripts/usr/grub1-config -D`/stage2_eltorito iso/boot/grub && \
 cp -f @abs_top_builddir@/src/kernel iso/boot && \
 echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/kernel" > iso/boot/grub/menu.lst && \
 @MKISOFS@ -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o $output iso || { \

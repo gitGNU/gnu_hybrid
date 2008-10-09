@@ -71,7 +71,7 @@ image.iso: Makefile all
 	mkdir image-fs && \
 	cp src/kernel image-fs && \
 	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 -o $(abs_top_builddir)/image.iso ) || { \
+	  $(abs_top_builddir)/tools/scripts/usr/mkiso-grub1 -o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
 	} && \
@@ -88,7 +88,7 @@ image.iso: Makefile all
 	mkdir image-fs && \
 	cp src/kernel image-fs && \
 	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 -o $(abs_top_builddir)/image.iso ) || { \
+	  $(abs_top_builddir)/tools/scripts/usr/mkiso-grub2 -o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
 	} && \
