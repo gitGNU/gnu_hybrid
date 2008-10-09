@@ -70,7 +70,7 @@ BEGIN {
 	in2_defs  = 0;
 	infn1     = "";
 	infn2     = "";
-	outfn     = "/dev/stdout";
+	outfn     = "";
 
 	opts   = "i:j:o:vdh";
 	h_desc = "Merge two symbols file";
@@ -108,38 +108,35 @@ BEGIN {
 		}
 	}
 
-	verbose("Checking input files ...\n");
-
 	if (infn1 == "") {
 		hint("Missing first input file");
 		exit(1);
 	}
-	debug("infile1 = " infn1 "\n");
 	if (!readable(infn1)) {
 		error(infn1 " is not readable!\n");
 		exit(1);
 	}
+	debug("infile1 = " infn1 "\n");
 
 	if (infn2 == "") {
 		hint("Missing second input file");
 		exit(1);
 	}
-	debug("infile2 = " infn2 "\n");
 	if (!readable(infn2)) {
 		error(infn2 " is not readable!\n");
 		exit(1);
 	}
+	debug("infile2 = " infn2 "\n");
 
-	verbose("Checking output file ...\n");
-
-	debug("outfile = " outfn "\n");
-	if (outfn !~ "/dev/stdout" && exist(outfn)) {
-		warning("Outfile " outfn " is present\n");
+	if (outfn == "") {
+		hint("Missing output file");
+		exit(1);
 	}
 	if (!writable(outfn)) {
 		error("Cannot write on file " outfn "\n");
 		exit(1);
 	}
+	debug("outfile = " outfn "\n");
 
 	in1_defs = readfile(infn1);
 	if (!in1_defs) {
