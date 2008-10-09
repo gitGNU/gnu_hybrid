@@ -216,7 +216,7 @@ BEGIN {
 
 	lib_init();
 
-	outfile             = "/dev/stdout";
+	outfile             = "";
 	sort_numerically    = 0;
 	sort_alphabetically = 0;
 	sort_size           = 0;
@@ -308,11 +308,11 @@ BEGIN {
 		hint("Missing output file");
 		exit(1);
 	}
-	debug("outfile = " outfile "\n");
 	if (!writable(outfile)) {
 		error(outfile " is not writable!\n");
 		exit(1);
 	}
+	debug("outfile = " outfile "\n");
 
 	assert((sort_alphabetically == 0) || (sort_alphabetically == 1));
 	assert((sort_numerically == 0)    || (sort_numerically == 1));
