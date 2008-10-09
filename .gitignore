@@ -84,9 +84,6 @@ tools/scripts/test-exp.txt
 tools/scripts/test-in.txt
 tools/scripts/test-out.txt
 
-tools/scripts/bin2source
-tools/scripts/bin2source.awk
-tools/scripts/bin2source.sh
 tools/scripts/bootcheck
 tools/scripts/bootcheck.awk
 tools/scripts/bootcheck.sh
