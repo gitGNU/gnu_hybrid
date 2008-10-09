@@ -22,7 +22,7 @@ BEGIN {
 
 	lib_init();
 
-	outfile  = "/dev/stdout";
+	outfile  = "";
 
 	opts   = "o:vdh";
 	h_desc = "Extracs symbols from rule files";
@@ -54,7 +54,6 @@ BEGIN {
 		}
 	}
 
-	verbose("Checking input files ...\n");
 	for (i = 0; optind < ARGC; optind++) {
 		if (!readable(ARGV[optind])) {
 			error(ARGV[optind] " is not readable!\n");
@@ -72,12 +71,12 @@ BEGIN {
 		exit(1);
 	}
 
-	verbose("Checking output file ...\n");
-	if (exist(outfile)) {
-		warning("Outfile " outfile " is present\n");
+	if (outfile == "") {
+		hint("Missing output file name");
+		exit(1);
 	}
 	if (!writable(outfile)) {
-		error("Cannot write on file " outfile "\n");
+		error(outfile " is not writable!\n");
 		exit(1);
 	}
 
