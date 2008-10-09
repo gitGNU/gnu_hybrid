@@ -17,10 +17,7 @@ TO-BE-DONE:
 * Move less useful tools related parameters from src/Makefile.am to
   src/Makefile.def
 
-* We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have
-  This approach should handle cross-compilation cases.
-
-* tools/scripts/test-*: Remove test files (test-*.txt) when the test runs
+* tools/scripts/*/test-*: Remove test files (test-*.txt) when the test runs
   smoothly (XFAIL case).
 
 * tools/autotools/m4/ax_string_intersect.m4: Fix the bug, its description is
@@ -31,21 +28,15 @@ TO-BE-DONE:
   portability (ex. do not use things like this: `sed -e 's/^.*/\t/' on
   FreeBSD).
 
-* tools/scripts/map2ie.awk.in, tools/scripts/symsdump.awk.in: Fix the errors
-  when the kernel get stripped and a 'make' is issued on the tree. The error
-  is:
-
-    /usr/bin/nm: kernel: no symbols
-
 * Move the src/archs/x86/keyboard* related code to a i8042.* file.
 
 * Fix the modules build problem when compiling with bfd version 2.15 (on
   FreeBSD host ld exits with segmentation fault).
 
-* tools/scripts/*.awk.in: Remove all code that depends on 'for (x in y)' or our
-  regression tests will fail.
+* tools/scripts/*/*.awk.in: Remove all code that depends on 'for (x in y)' or
+  our regression tests will fail.
 
-* Add regression tests for tools/scripts awk libraries
+* Add regression tests in tools/scripts/libs/awk directory
 
 * Remove configure link in src/arch (it is not portable). Remove the LN_S check
   in configure.ac
@@ -61,21 +52,24 @@ TO-BE-DONE:
 * tools/autotools/m4/ax_asm_uscore.m4: Fix the test, it is really crappy and
   it will work only for gcc...
 
-* tools/scripts/Makefile.am: Complete pass 2 in check-local target (check for
+* tools/scripts/*/Makefile.am: Complete pass 2 in check-local target (check for
   detecting function calls with spaces between function-name and parentheses).
   Don't leave white spaces before the parentheses in user functions calls; GNU
   awk will reject it.
 
-* tools/scripts/*.awk: Change all external programs invocations from long
+* tools/scripts/*/*.awk: Change all external programs invocations from long
   arguments to short arguments (in order to be more portable)
 
 * src/include/config.h: Remove the #ifndef ASM ...
 
-* tools/scripts/*.awk: Add checks in order to detect when a parameter is
+* tools/scripts/*/*.awk: Add checks in order to detect when a parameter is
   specified multiple times (like -P in ifdefscheck.awk).
 
-* tools/scripts/Makefile.am: Fix the 'check' target ... it is not reporting
+* tools/scripts/*/Makefile.am: Fix the 'check' target ... it is not reporting
   duplicated symbols...
+
+* We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have
+  This approach should handle cross-compilation cases.
 
 * Use AC_CHECK_TOOL instead of AC_PATH_PROG for nm, objdump and so on in
   configure.ac.
@@ -86,7 +80,7 @@ TO-BE-DONE:
 * Fix the "protect" variable in tools/scripts/Makefile.am in order to protect
   even the ' character.
 
-* Check in tools/scripts/*.in the awk scripts in order to verify that:
+* Check in tools/scripts/*/*.in the awk scripts in order to verify that:
 
      If you want your program to be deterministic, don't depend on `for'
      on arrays:
@@ -151,9 +145,7 @@ TO-BE-DONE:
   bail-out or printing a message then stop/continue depending on what we need
   to do ...
 
-* Makefile.ams: Add the maintainer-check rule
-
-* In order to avoid automake problems follow the following rules for all
+* In order to avoid automake problems use the following rules in all
   Makefile.am:
 
 	> Hello,
@@ -170,5 +162,12 @@ TO-BE-DONE:
 * configure.ac: Add more Doxygen related checks.
 
 DONE:
+* Makefile.ams: Add the maintainer-check rule
+
+* tools/scripts/map2ie.awk.in, tools/scripts/symsdump.awk.in: Fix the errors
+  when the kernel get stripped and a 'make' is issued on the tree. The error
+  is:
+
+    /usr/bin/nm: kernel: no symbols
 
 DONE-RECHECK:
