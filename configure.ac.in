@@ -705,6 +705,7 @@ AC_CONFIG_FILES([
 	tools/scripts/libs/Makefile
 	tools/scripts/libs/sh/Makefile
 	tools/scripts/libs/awk/Makefile
+	tools/scripts/libs/perl/Makefile
 	tools/scripts/usr/Makefile
 	tools/scripts/dev/Makefile
 	tools/scripts/maint/Makefile
