@@ -19,6 +19,7 @@
 ##
 
 include $(top_srcdir)/Makefile.sub
+include $(top_srcdir)/tools/scripts/Makefile.sub
 
 scripts =					\
 	stackcheck				\
@@ -51,65 +52,6 @@ EXTRA_DIST +=					\
 	$(awk_scripts_SRCS)			\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
-
-#
-# Transformation related variables
-#
-
-awk_lib_SRC  = $(top_builddir)/tools/scripts/libs/awk/lib.awk
-sh_lib_SRC   = $(top_builddir)/tools/scripts/libs/sh/lib.sh
-perl_lib_SRC = $(top_builddir)/tools/scripts/libs/perl/lib.pl
-
-protect_sh = { cat ; }
-header_sh  = { echo "\#! @SHELL@" ; echo "" ; }
-footer_sh  = { echo "" ; }
-
-transform_sh_in_2_sh =				\
-	{ { $(header_sh) &&			\
-	    cat $(sh_lib_SRC) &&		\
-	    cat $(srcdir)/$$INFILE &&		\
-	    $(footer_sh) } |			\
-	    $(protect_sh) > $$OUTFILE ; } 
-
-transform_sh_2_script =					\
-	{ cat $$INFILE | $(do_subst) > $$OUTFILE &&	\
-	  chmod +x $$OUTFILE ; }
-
-header_awk  = { echo "@AWK@ '" ; }
-footer_awk  = { echo "' ""$$""@" ; }
-protect_awk = { $(SED) -e "s/'/\'/g" -e 's/,[ \t]*$$/, \\/' ; }
-
-transform_awk_in_2_awk =			\
-	{ { $(header_awk) &&			\
-	    cat $(awk_lib_SRC) &&		\
-	    cat $(srcdir)/$$INFILE &&		\
-	    $(footer_awk) } |			\
-	    $(protect_awk) > $$OUTFILE ; }
-
-transform_awk_2_sh =				\
-	{ { $(header_sh) &&			\
-	    cat $(sh_lib_SRC) &&		\
-	    cat $$INFILE &&			\
-	    $(footer_sh) } |			\
-	    $(protect_sh) > $$OUTFILE ; }
-
-header_perl  = { echo "@PERL@ -e '" ; }
-footer_perl  = { echo "' ""$$""@" ; }
-protect_perl = { $(SED) -e "s/'/\'/g" -e 's/,[ \t]*$$/, \\/' ; }
-
-transform_pl_in_2_pl =				\
-	{ { $(header_perl) &&			\
-	    cat $(perl_lib_SRC) &&		\
-	    cat $(srcdir)/$$INFILE &&		\
-	    $(footer_perl) } |			\
-	    $(protect_perl) > $$OUTFILE ; }
-
-transform_pl_2_sh =				\
-	{ { $(header_sh) &&			\
-	    cat $(sh_lib_SRC) &&		\
-	    cat $$INFILE &&			\
-	    $(footer_sh) } |			\
-	    $(protect_sh) > $$OUTFILE ; }
 
 
 ## stackcheck

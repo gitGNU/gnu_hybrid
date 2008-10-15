@@ -20,6 +20,12 @@
 
 include $(top_srcdir)/Makefile.sub
 
+##
+## NOTE:
+##     Makefile.sub is automatically distributed by automake rules
+##
+EXTRA_DIST =
+
 SUBDIRS =					\
 	libs					\
 	usr					\
