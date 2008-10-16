@@ -22,9 +22,9 @@
 # Transformation related variables
 #
 
-awk_lib_SRC  = $(top_builddir)/tools/scripts/libs/awk/lib.awk
-sh_lib_SRC   = $(top_builddir)/tools/scripts/libs/sh/lib.sh
-perl_lib_SRC = $(top_builddir)/tools/scripts/libs/perl/lib.pl
+awk_lib_SRC = $(top_builddir)/tools/scripts/libs/awk/lib.awk
+sh_lib_SRC  = $(top_builddir)/tools/scripts/libs/sh/lib.sh
+pl_lib_SRC  = $(top_builddir)/tools/scripts/libs/perl/lib.pl
 
 protect_sh = { cat ; }
 header_sh  = { echo "\#! @SHELL@" ; echo "" ; }
@@ -65,7 +65,7 @@ protect_perl = { $(SED) -e "s/'/\'/g" -e 's/,[ \t]*$$/, \\/' ; }
 
 transform_pl_in_2_pl =				\
 	{ { $(header_perl) &&			\
-	    cat $(perl_lib_SRC) &&		\
+	    cat $(pl_lib_SRC) &&		\
 	    cat $(srcdir)/$$INFILE &&		\
 	    $(footer_perl) } |			\
 	    $(protect_perl) > $$OUTFILE ; }
