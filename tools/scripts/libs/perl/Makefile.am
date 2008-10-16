@@ -28,10 +28,10 @@ pl_libs_SRCS =					\
 	libtrace.pl.in
 
 lib.pl: Makefile $(pl_libs_SRCS)
-	{ rm -f lib.pl &&				\
-	  touch lib.pl && 				\
-	  for i in $(pl_libs_SRCS) ; do			\
-		cat $(srcdir)/$$i >> lib.pl ;		\
+	{ rm -f lib.pl &&						\
+	  touch lib.pl &&						\
+	  for i in $(pl_libs_SRCS) ; do					\
+		cat $(srcdir)/$$i | $(SED) -e '/^#.*/d' >> lib.pl ;	\
 	  done ; } || { rm -f lib.pl ; exit 1 ; }
 CLEANFILES += lib.pl
 

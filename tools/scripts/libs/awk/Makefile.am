@@ -39,10 +39,10 @@ awk_libs_SRCS =					\
 	libcore.awk.in
 
 lib.awk: Makefile $(awk_libs_SRCS)
-	{ rm -f lib.awk &&				\
-	  touch lib.awk &&				\
-	  for i in $(awk_libs_SRCS) ; do		\
-		cat $(srcdir)/$$i >> lib.awk ;		\
+	{ rm -f lib.awk &&						\
+	  touch lib.awk &&						\
+	  for i in $(awk_libs_SRCS) ; do				\
+		cat $(srcdir)/$$i | $(SED) -e '/^#.*/d' >> lib.awk ;	\
 	  done ; } || { rm -f lib.awk ; exit 1 ; }
 CLEANFILES += lib.awk
 
