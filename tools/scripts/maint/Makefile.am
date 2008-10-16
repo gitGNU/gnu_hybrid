@@ -74,17 +74,10 @@ test.pl: Makefile $(pl_lib_SRC) test.pl.in
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += test.pl
 
-test.sh: Makefile $(sh_lib_SRC) test.pl
+test: Makefile test.pl
 	INFILE=test.pl ;			\
-	OUTFILE=test.sh ;			\
-	$(transform_pl_2_sh) ||			\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += test.sh
-
-test: Makefile test.sh
-	INFILE=test.sh ;			\
 	OUTFILE=test ;				\
-	$(transform_sh_2_script) ||		\
+	$(transform_pl_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += test
 
