@@ -31,7 +31,7 @@ lib.pl: Makefile $(pl_libs_SRCS)
 	{ rm -f lib.pl &&						\
 	  touch lib.pl &&						\
 	  for i in $(pl_libs_SRCS) ; do					\
-		cat $(srcdir)/$$i | $(SED) -e '/^#.*/d' >> lib.pl ;	\
+		cat $(srcdir)/$$i | $(SED) -e '1,/^$$/d' >> lib.pl ;	\
 	  done ; } || { rm -f lib.pl ; exit 1 ; }
 CLEANFILES += lib.pl
 

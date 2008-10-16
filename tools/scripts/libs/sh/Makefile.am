@@ -33,7 +33,7 @@ lib.sh: Makefile $(sh_libs_SRCS)
 	{ rm -f lib.sh &&						\
 	  touch lib.sh &&						\
 	  for i in $(sh_libs_SRCS) ; do					\
-		cat $(srcdir)/$$i | $(SED) -e '/^#.*/d' >> lib.sh ;	\
+		cat $(srcdir)/$$i | $(SED) -e '1,/^$$/d' >> lib.sh ;	\
 	  done ; } || { rm -f lib.sh ; exit 1 ; }
 CLEANFILES += lib.sh
 

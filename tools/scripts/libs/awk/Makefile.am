@@ -42,7 +42,7 @@ lib.awk: Makefile $(awk_libs_SRCS)
 	{ rm -f lib.awk &&						\
 	  touch lib.awk &&						\
 	  for i in $(awk_libs_SRCS) ; do				\
-		cat $(srcdir)/$$i | $(SED) -e '/^#.*/d' >> lib.awk ;	\
+		cat $(srcdir)/$$i | $(SED) -e '1,/^$$/d' >> lib.awk ;	\
 	  done ; } || { rm -f lib.awk ; exit 1 ; }
 CLEANFILES += lib.awk
 
