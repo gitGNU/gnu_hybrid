@@ -22,7 +22,8 @@ include $(top_srcdir)/Makefile.sub
 include $(top_srcdir)/tools/scripts/Makefile.sub
 
 scripts =					\
-	guardscheck
+	guardscheck				\
+	test
 
 noinst_SCRIPTS = $(scripts)
 
@@ -31,7 +32,8 @@ awk_scripts_SRCS =				\
 
 sh_scripts_SRCS =
 
-pl_scripts_SRCS =
+pl_scripts_SRCS =				\
+	test.pl.in
 
 CLEANFILES =
 EXTRA_DIST =
@@ -64,6 +66,28 @@ guardscheck: Makefile guardscheck.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += guardscheck
 
+## test
+test.pl: Makefile $(pl_lib_SRC) test.pl.in
+	INFILE=test.pl.in ;			\
+	OUTFILE=test.pl ;			\
+	$(transform_pl_in_2_pl) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += test.pl
+
+test.sh: Makefile $(sh_lib_SRC) test.pl
+	INFILE=test.pl ;			\
+	OUTFILE=test.sh ;			\
+	$(transform_pl_2_sh) ||			\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += test.sh
+
+test: Makefile test.sh
+	INFILE=test.sh ;			\
+	OUTFILE=test ;				\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += test
+
 
 ##
 ## Checks
@@ -83,7 +107,7 @@ check_SCRIPTS =					\
 	$(check_FAIL_SCRPTS)
 
 XFAIL_TESTS = $(check_FAIL_SCRPTS)
-TESTS	    =	$(check_PROGRAMS) $(check_SCRIPTS) 
+TESTS	    = $(check_PROGRAMS) $(check_SCRIPTS)
 
 EXTRA_DIST += $(TESTS)
 

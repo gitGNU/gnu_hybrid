@@ -291,7 +291,7 @@ check_SCRIPTS =					\
 	$(check_FAIL_SCRPTS)
 
 XFAIL_TESTS = $(check_FAIL_SCRPTS)
-TESTS	    =	$(check_PROGRAMS) $(check_SCRIPTS) 
+TESTS	    = $(check_PROGRAMS) $(check_SCRIPTS)
 
 EXTRA_DIST += $(TESTS)
 
