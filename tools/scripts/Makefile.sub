@@ -26,9 +26,9 @@ awk_lib_SRC = $(top_builddir)/tools/scripts/libs/awk/lib.awk
 sh_lib_SRC  = $(top_builddir)/tools/scripts/libs/sh/lib.sh
 pl_lib_SRC  = $(top_builddir)/tools/scripts/libs/perl/lib.pl
 
-protect_sh = { cat ; }
 header_sh  = { echo "\#! @SHELL@" ; echo "" ; }
 footer_sh  = { echo "" ; }
+protect_sh = { cat ; }
 
 transform_sh_in_2_sh =				\
 	{ { $(header_sh) &&			\
@@ -59,9 +59,9 @@ transform_awk_2_sh =				\
 	    $(footer_sh) } |			\
 	    $(protect_sh) > $$OUTFILE ; }
 
-header_perl  = { echo "@PERL@ -e '" ; }
-footer_perl  = { echo "' ""$$""@" ; }
-protect_perl = { $(SED) -e "s/'/\'/g" -e 's/,[ \t]*$$/, \\/' ; }
+header_perl  = { echo "\#! @PERL@" ; echo "" ; }
+footer_perl  = { echo "" ; }
+protect_perl = { cat ; }
 
 transform_pl_in_2_pl =				\
 	{ { $(header_perl) &&			\
@@ -70,9 +70,6 @@ transform_pl_in_2_pl =				\
 	    $(footer_perl) } |			\
 	    $(protect_perl) > $$OUTFILE ; }
 
-transform_pl_2_sh =				\
-	{ { $(header_sh) &&			\
-	    cat $(sh_lib_SRC) &&		\
-	    cat $$INFILE &&			\
-	    $(footer_sh) } |			\
-	    $(protect_sh) > $$OUTFILE ; }
+transform_pl_2_script =					\
+	{ cat $$INFILE | $(do_subst) > $$OUTFILE &&	\
+	  chmod +x $$OUTFILE ; }
