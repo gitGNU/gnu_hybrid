@@ -58,3 +58,14 @@ body {
   padding: 0px 4px 0px 0px;
   border-style: none;
 }
+
+.terminal {
+  margin: 4px 8px 4px 8px;
+  padding: 2px;
+  border-style: dotted solid solid dotted;
+  border-width: 1px 2px 2px 1px;
+  border-color: black;
+  white-space: pre;
+  background: rgb(240,240,240);
+  font-family: courier;
+}
