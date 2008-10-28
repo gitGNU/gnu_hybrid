@@ -35,6 +35,7 @@ EXTRA_DIST =					\
 site:
 	$(SITETOOL) -v --mode initialize && \
 	$(SITETOOL) -v --mode build && \
+	$(SITETOOL) -v --mode validate && \
 	touch site.stamp || { \
 		$(SITETOOL) -v --mode clean ; \
 		rm -f site.stamp ; \
