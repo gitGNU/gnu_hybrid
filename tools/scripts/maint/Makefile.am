@@ -22,20 +22,16 @@ include $(top_srcdir)/Makefile.sub
 include $(top_srcdir)/tools/scripts/Makefile.sub
 
 scripts =					\
-	guardscheck				\
-	guards_check				\
-	test
+	guardscheck
 
 noinst_SCRIPTS = $(scripts)
 
-awk_scripts_SRCS =				\
-	guardscheck.awk.in
+awk_scripts_SRCS =
 
 sh_scripts_SRCS =
 
 pl_scripts_SRCS =				\
-	test.pl.in				\
-	guards_check.pl.in
+	guardscheck.pl.in
 
 CLEANFILES =
 EXTRA_DIST =
@@ -46,57 +42,20 @@ EXTRA_DIST +=					\
 	$(pl_scripts_SRCS)
 
 
-## guardscheck
-guardscheck.awk: Makefile $(awk_lib_SRC) guardscheck.awk.in
-	INFILE=guardscheck.awk.in ;		\
-	OUTFILE=guardscheck.awk ;		\
-	$(transform_awk_in_2_awk) ||		\
+## guardsscheck
+guardscheck.pl: Makefile $(pl_lib_SRC) guardscheck.pl.in
+	INFILE=guardscheck.pl.in ;		\
+	OUTFILE=guardscheck.pl ;		\
+	$(transform_pl_in_2_pl) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += guardscheck.awk
+CLEANFILES += guardscheck.pl
 
-guardscheck.sh: Makefile $(sh_lib_SRC) guardscheck.awk
-	INFILE=guardscheck.awk ;		\
-	OUTFILE=guardscheck.sh ;		\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += guardscheck.sh
-
-guardscheck: Makefile guardscheck.sh
-	INFILE=guardscheck.sh ;			\
+guardscheck: Makefile guardscheck.pl
+	INFILE=guardscheck.pl ;			\
 	OUTFILE=guardscheck ;			\
-	$(transform_sh_2_script) ||		\
+	$(transform_pl_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += guardscheck
-
-## guard_scheck
-guards_check.pl: Makefile $(pl_lib_SRC) guards_check.pl.in
-	INFILE=guards_check.pl.in ;		\
-	OUTFILE=guards_check.pl ;		\
-	$(transform_pl_in_2_pl) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += guards_check.pl
-
-guards_check: Makefile guards_check.pl
-	INFILE=guards_check.pl ;		\
-	OUTFILE=guards_check ;			\
-	$(transform_pl_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += guards_check
-
-## test
-test.pl: Makefile $(pl_lib_SRC) test.pl.in
-	INFILE=test.pl.in ;			\
-	OUTFILE=test.pl ;			\
-	$(transform_pl_in_2_pl) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += test.pl
-
-test: Makefile test.pl
-	INFILE=test.pl ;			\
-	OUTFILE=test ;				\
-	$(transform_pl_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += test
 
 
 ##
@@ -104,19 +63,13 @@ CLEANFILES += test
 ##
 check_PASS_SCRPTS =				\
 	test-guardscheck-1			\
-	test-guardscheck-2			\
-	test-guards_check-1			\
-	test-guards_check-2
+	test-guardscheck-2
 
 check_FAIL_SCRPTS =				\
 	test-guardscheck-3			\
 	test-guardscheck-4			\
 	test-guardscheck-5			\
-	test-guardscheck-6			\
-	test-guards_check-3			\
-	test-guards_check-4			\
-	test-guards_check-5			\
-	test-guards_check-6
+	test-guardscheck-6
 
 check_SCRIPTS =					\
 	$(check_PASS_SCRPTS)			\
