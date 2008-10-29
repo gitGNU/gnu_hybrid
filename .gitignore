@@ -81,12 +81,7 @@ tools/scripts/usr/mkiso-grub2.sh
 # XXX FIXME: To be removed ASAP
 
 tools/scripts/maint/guardscheck
-tools/scripts/maint/guardscheck.awk
-tools/scripts/maint/guardscheck.sh
-tools/scripts/maint/test
-tools/scripts/maint/test.pl
-tools/scripts/maint/guards_check
-tools/scripts/maint/guards_check.pl
+tools/scripts/maint/guardscheck.pl
 
 tools/scripts/dev/obj2symstab
 tools/scripts/dev/obj2symstab.awk
