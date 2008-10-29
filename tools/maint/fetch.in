@@ -31,6 +31,11 @@ case $1 in
 	echo ""
 	echo "Fetch file from URL, placing output in FILE"
 	echo ""
+	echo "OPTIONS:"
+	echo ""
+	echo "  -h, --help       display this help and exit"
+	echo "  -v, --version    output version information and exit"
+	echo ""
 	echo "Report bugs to <@PACKAGE_BUGREPORT@>"
 	exit 0
 	;;
