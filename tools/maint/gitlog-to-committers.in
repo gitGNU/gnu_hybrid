@@ -1,7 +1,7 @@
 #! @PERL@
 
 #
-# gitlog-to-AUTHORS.in
+# gitlog-to-committers
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #
@@ -30,6 +30,10 @@ use POSIX qw(strftime);
 (my $ME = $0) =~ s|.*/||;
 my $VERSION = "0.1";
 
+my $PACKAGE_NAME      = '@PACKAGE_NAME@';
+my $PACKAGE_BUGREPORT = '@PACKAGE_BUGREPORT@';
+my $PACKAGE_VERSION   = '@PACKAGE_VERSION@';
+
 END {
     defined fileno STDOUT or return;
     close STDOUT and return;
@@ -47,23 +51,23 @@ sub usage ($)
 	print $STREAM <<EOF;
 Usage: $ME [OPTIONS]
 
-    Output git committers names.
+Output git committers names.
 
 OPTIONS:
 
-    --since=DATE convert only the logs since DATE;
-		 the default is to convert all log entries.
-
-    --help       display this help and exit
-    --version    output version information and exit
+      --since=DATE    convert only the logs since DATE;
+                      the default is to convert all log entries.
+  -h, --help          display this help and exit
+      --version       output version information and exit
 
 EXAMPLE:
 
-	    $ME --since=2008-01-01 > AUTHORS
+  $ME --since=2008-01-01 > AUTHORS
 
+Report bugs to <${PACKAGE_BUGREPORT}>
 EOF
     }
-    exit $exit_code;
+    exit($exit_code);
 }
 
 # If the string $S is a well-behaved file name, simply return it.
@@ -88,8 +92,8 @@ sub quoted_cmd(@)
 {
     my $since_date = '1970-01-01 UTC';
     GetOptions(
-	help      => sub { usage 0 },
-	version   => sub { print "$ME version $VERSION\n"; exit },
+	'h|help'    => sub { usage 0 },
+	'version'   => sub { print "$ME ($PACKAGE_NAME) $VERSION\n"; exit(0); },
 	'since=s' => \$since_date,
 	) or usage 1;
 
