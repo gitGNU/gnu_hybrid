@@ -20,19 +20,36 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-#BASEDIR=utils
-
-#. $BASEDIR/environment.sh || exit 1
-
 ME=bootstrap
+
+AUTOHEADER=`which autoheader`
+ACLOCAL=`which aclocal`
+AUTOCONF=`which autoconf`
+AUTOMAKE=`which automake`
+AUTORECONF=`which autoreconf`
+LIBTOOL=`which glibtool || which libtool`
+LIBTOOLIZE=`which glibtoolize || which libtoolize`
+GNULIBTOOL=`which gnulib-tool`
 
 #
 # Dump some useful informations
 #
 echo "$ME: Dumping build-tools information ..."
-for tool in autoheader autoconf libtool libtoolize aclocal automake; do
-    TOOLVER=`$tool --version | head -1`
-    echo "$ME:   $TOOLVER"
+for tool in	\
+    $AUTOHEADER	\
+    $AUTOCONF	\
+    $LIBTOOL	\
+    $LIBTOOLIZE	\
+    $ACLOCAL	\
+    $AUTOMAKE	\
+    $AUTORECONF \
+    $GNULIBTOOL \
+;
+do
+    if test -n "$tool" ; then
+	TOOLVER=`$tool --version | head -1`
+	echo "$ME:  $tool -> $TOOLVER"
+    fi
 done
 
 #
@@ -49,15 +66,6 @@ rm -rf `find ./ -name ".deps"`                       || exit 1
 # configure.ac
 #
 echo "$ME: Building configure.ac from configure.ac.in"
-#if test ! -r ChangeLog ; then
-#    echo "$ME: Cannot read ChangeLog file"
-#    exit 1
-#fi
-#head -n 1 ChangeLog | sed -e 's/:.*//' > VERSION || {
-#    echo "$ME: Cannot build VERSION file"
-#    rm -f VERSION
-#    exit 1
-#}
 rm -f configure.ac
 VERSION=`git tag -l | sort -s -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1`
 cat configure.ac.in | sed -e 's,[@]VERSION[@],'$VERSION',' > configure.ac || \
@@ -127,8 +135,8 @@ done
 echo "$ME: Handling autotools bootstrap ..."
 
 echo "$ME: Running autoreconf ..."
-aclocal    --force --install -I ./tools/autotools/m4 && \
-autoreconf --verbose --force --install -Wall         || {
+$ACLOCAL    --force --install -I ./tools/autotools/m4 && \
+$AUTORECONF --verbose --force --install -Wall         || {
     exit 1
 }
 
