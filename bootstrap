@@ -22,14 +22,14 @@
 
 ME=bootstrap
 
-AUTOHEADER=`which autoheader`
-ACLOCAL=`which aclocal`
-AUTOCONF=`which autoconf`
-AUTOMAKE=`which automake`
-AUTORECONF=`which autoreconf`
-LIBTOOL=`which glibtool || which libtool`
-LIBTOOLIZE=`which glibtoolize || which libtoolize`
-GNULIBTOOL=`which gnulib-tool`
+AUTOHEADER=`which autoheader 2>/dev/null`
+ACLOCAL=`which aclocal 2>/dev/null`
+AUTOCONF=`which autoconf 2>/dev/null`
+AUTOMAKE=`which automake 2>/dev/null`
+AUTORECONF=`which autoreconf 2>/dev/null`
+LIBTOOL=`( which glibtool || which libtool ) 2>/dev/null`
+LIBTOOLIZE=`( which glibtoolize || which libtoolize) 2>/dev/null`
+GNULIBTOOL=`which gnulib-tool 2>/dev/null`
 
 #
 # Dump some useful informations
