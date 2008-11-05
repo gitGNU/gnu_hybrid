@@ -51,15 +51,15 @@ config IIIIIII
 EOF
 
 cat << EOF > $TEST_FILENAME_EXP
-config AAA
-config BB
-config C
-config D
-config EE
-config FFF
-config GGGGGGG
-config HHHHHHH
-config IIIIIII
+AAA
+BB
+C
+D
+EE
+FFF
+GGGGGGG
+HHHHHHH
+IIIIIII
 EOF
 
 $RULES2SYMS -o $TEST_FILENAME_OUT -- $TEST_FILENAME1_IN $TEST_FILENAME2_IN $TEST_FILENAME3_IN || exit 1
