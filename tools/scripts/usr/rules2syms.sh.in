@@ -132,7 +132,8 @@ verbose "Start scanning..."
 OLDIFS=$IFS
 IFS=":"
 
-rm -f $OUTFILE || { error "Cannot write to \`$INFILE'" ; exit 1 ; }
+: 2>/dev/null 1>$OUTFILE || { error "Cannot write to \`$OUTFILE'" ; exit 1 ; }
+
 for INFILE in $INFILES
 do
     debug "Scanning file \`$INFILE'"
