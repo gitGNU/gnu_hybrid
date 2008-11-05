@@ -1,0 +1,75 @@
+#! /bin/sh
+
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+TEST_FILENAME1_IN=./test-1-in.txt
+TEST_FILENAME2_IN=./test-2-in.txt
+TEST_FILENAME3_IN=./test-3-in.txt
+TEST_FILENAME_OUT=./test-out.txt
+TEST_FILENAME_EXP=./test-exp.txt
+
+RULES2SYMS="./rules2syms"
+
+rm -f $TEST_FILENAME1_IN
+rm -f $TEST_FILENAME2_IN
+rm -f $TEST_FILENAME3_IN
+rm -f $TEST_FILENAME_OUT
+rm -f $TEST_FILENAME_EXP
+
+cat << EOF > $TEST_FILENAME1_IN
+config AAA
+config BB
+config C
+EOF
+
+cat << EOF > $TEST_FILENAME2_IN
+config D
+config EE
+config FFF
+EOF
+
+cat << EOF > $TEST_FILENAME3_IN
+config GGGGGGG
+config HHHHHHH
+config IIIIIII
+EOF
+
+cat << EOF > $TEST_FILENAME_EXP
+config AAA
+config BB
+config C
+config D
+config EE
+config FFF
+config GGGGGGG
+config HHHHHHH
+config IIIIIII
+EOF
+
+$RULES2SYMS -o $TEST_FILENAME_OUT -- $TEST_FILENAME1_IN $TEST_FILENAME2_IN $TEST_FILENAME3_IN || exit 1
+
+diff $TEST_FILENAME_OUT $TEST_FILENAME_EXP > /dev/null 2>&1 || exit 1
+
+rm -f $TEST_FILENAME1_IN
+rm -f $TEST_FILENAME2_IN
+rm -f $TEST_FILENAME3_IN
+rm -f $TEST_FILENAME_OUT
+rm -f $TEST_FILENAME_EXP
+
+exit 0
