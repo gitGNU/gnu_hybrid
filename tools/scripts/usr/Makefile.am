@@ -32,7 +32,6 @@ scripts =					\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
-	rules2syms_new				\
 	sh2h
 
 noinst_SCRIPTS = $(scripts)
@@ -43,7 +42,6 @@ awk_scripts_SRCS =				\
 	getdefine.awk.in			\
 	mergesyms.awk.in			\
 	mkbuild.awk.in				\
-	rules2syms.awk.in			\
 	sh2h.awk.in
 
 sh_scripts_SRCS =				\
@@ -51,7 +49,7 @@ sh_scripts_SRCS =				\
 	grub2-config.sh.in			\
 	mkiso-grub1.sh.in			\
 	mkiso-grub2.sh.in			\
-	rules2syms_new.sh.in
+	rules2syms.sh.in
 
 pl_scripts_SRCS =
 
@@ -64,19 +62,19 @@ EXTRA_DIST +=					\
 	$(pl_scripts_SRCS)
 
 
-rules2syms_new.sh: Makefile $(sh_lib_SRC) rules2syms_new.sh.in
-	INFILE=rules2syms_new.sh.in ;		\
-	OUTFILE=rules2syms_new.sh ;		\	
+rules2syms.sh: Makefile $(sh_lib_SRC) rules2syms.sh.in
+	INFILE=rules2syms.sh.in ;		\
+	OUTFILE=rules2syms.sh ;			\	
 	$(transform_sh_in_2_sh) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += rules2syms_new.sh
+CLEANFILES += rules2syms.sh
 
-rules2syms_new: Makefile rules2syms_new.sh
-	INFILE=rules2syms_new.sh ;		\
-	OUTFILE=rules2syms_new ;		\
+rules2syms: Makefile rules2syms.sh
+	INFILE=rules2syms.sh ;			\
+	OUTFILE=rules2syms ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += rules2syms_new
+CLEANFILES += rules2syms
 
 grub1-config.sh: Makefile $(sh_lib_SRC) grub1-config.sh.in
 	INFILE=grub1-config.sh.in ;		\
@@ -222,28 +220,6 @@ getdefine: Makefile getdefine.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += getdefine
 
-## rules2syms
-rules2syms.awk: Makefile $(awk_lib_SRC) rules2syms.awk.in
-	INFILE=rules2syms.awk.in ;		\
-	OUTFILE=rules2syms.awk ;		\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += rules2syms.awk
-
-rules2syms.sh: Makefile $(sh_lib_SRC) rules2syms.awk
-	INFILE=rules2syms.awk ;			\
-	OUTFILE=rules2syms.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += rules2syms.sh
-
-rules2syms: Makefile rules2syms.sh
-	INFILE=rules2syms.sh ;			\
-	OUTFILE=rules2syms ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += rules2syms
-
 ## bootcheck
 bootcheck.awk: Makefile $(awk_lib_SRC) bootcheck.awk.in
 	INFILE=bootcheck.awk.in ;		\
@@ -296,6 +272,7 @@ check_PASS_SCRPTS =				\
 	test-clhandler-1			\
 	test-clhandler-2			\
 	test-rules2syms-1			\
+	test-rules2syms-2			\
 	test-mergesyms-1			\
 	test-getdefine-1
 
