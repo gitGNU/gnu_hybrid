@@ -32,6 +32,7 @@ scripts =					\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
+	rules2syms_new				\
 	sh2h
 
 noinst_SCRIPTS = $(scripts)
@@ -49,7 +50,8 @@ sh_scripts_SRCS =				\
 	grub1-config.sh.in			\
 	grub2-config.sh.in			\
 	mkiso-grub1.sh.in			\
-	mkiso-grub2.sh.in
+	mkiso-grub2.sh.in			\
+	rules2syms_new.sh.in
 
 pl_scripts_SRCS =
 
@@ -61,6 +63,20 @@ EXTRA_DIST +=					\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
 
+
+rules2syms_new.sh: Makefile $(sh_lib_SRC) rules2syms_new.sh.in
+	INFILE=rules2syms_new.sh.in ;		\
+	OUTFILE=rules2syms_new.sh ;		\	
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += rules2syms_new.sh
+
+rules2syms_new: Makefile rules2syms_new.sh
+	INFILE=rules2syms_new.sh ;		\
+	OUTFILE=rules2syms_new ;		\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += rules2syms_new
 
 grub1-config.sh: Makefile $(sh_lib_SRC) grub1-config.sh.in
 	INFILE=grub1-config.sh.in ;		\
