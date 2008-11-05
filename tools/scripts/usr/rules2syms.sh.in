@@ -88,14 +88,14 @@ do
 	    do
 		FILENAME="$1"
 
-		if test ! -r $FILENAME; then
+		if test ! -r $FILENAME ; then
 		    error "File \`$FILENAME is not readable"
 		    exit 1
 		fi
 
 		debug "Adding file \`$FILENAME'"
 
-		if test x"$INFILES" = x""; then
+		if test x"$INFILES" = x"" ; then
 		    INFILES=$FILENAME
 		else
 		    INFILES="$INFILES:$1"
@@ -104,7 +104,9 @@ do
 	    done
 	    break
 	    ;;
-	*) hint "Wrong option \`$1'" && exit 1
+	*)
+	    hint "Wrong option \`$1'"
+	    exit 1
 	    ;;
     esac
     shift
@@ -113,11 +115,11 @@ done
 #
 # Checking command line arguments
 #
-if test x"$OUTFILE" = x""; then
+if test x"$OUTFILE" = x"" ; then
     hint "Missing output file"
 fi
 
-if test x"$INFILES" = x""; then
+if test x"$INFILES" = x"" ; then
     hint "Missing input file(s)"
     exit 1
 fi
@@ -130,13 +132,14 @@ verbose "Start scanning..."
 OLDIFS=$IFS
 IFS=":"
 
-for INFILE in `echo $INFILES`
+rm -f $OUTFILE || { error "Cannot write to \`$INFILE'" ; exit 1 ; }
+for INFILE in $INFILES
 do
     debug "Scanning file \`$INFILE'"
     $SED -n							\
 	-e 's/^[ \t]*config[ \t]*\(.*\)[ \t]*$/\1/p'		\
 	< $INFILE >> $OUTFILE					\
-	|| { error "Failed to scan file \`$INFILE'"; exit 1; }
+	|| { error "Failed to scan file \`$INFILE'" ; exit 1 ; }
 done
 
 verbose "Scan completed without errors"
