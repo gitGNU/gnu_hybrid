@@ -32,13 +32,11 @@ scripts =					\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
-	sh2h					\
-	bootcheck_new
+	sh2h
 
 noinst_SCRIPTS = $(scripts)
 
 awk_scripts_SRCS =				\
-	bootcheck.awk.in			\
 	clhandler.awk.in			\
 	getdefine.awk.in			\
 	mergesyms.awk.in			\
@@ -51,7 +49,7 @@ sh_scripts_SRCS =				\
 	mkiso-grub1.sh.in			\
 	mkiso-grub2.sh.in			\
 	rules2syms.sh.in			\
-	bootcheck_new.sh.in
+	bootcheck.sh.in
 
 pl_scripts_SRCS =
 
@@ -64,19 +62,19 @@ EXTRA_DIST +=					\
 	$(pl_scripts_SRCS)
 
 
-bootcheck_new.sh: Makefile $(sh_lib_SRC) bootcheck_new.sh.in
-	INFILE=bootcheck_new.sh.in ;		\
-	OUTFILE=bootcheck_new.sh ;		\
+bootcheck.sh: Makefile $(sh_lib_SRC) bootcheck.sh.in
+	INFILE=bootcheck.sh.in ;		\
+	OUTFILE=bootcheck.sh ;			\
 	$(transform_sh_in_2_sh) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck_new.sh
+CLEANFILES += bootcheck.sh
 
-bootcheck_new: Makefile bootcheck_new.sh
-	INFILE=bootcheck_new.sh ;		\
-	OUTFILE=bootcheck_new ;			\
+bootcheck: Makefile bootcheck.sh
+	INFILE=bootcheck.sh ;			\
+	OUTFILE=bootcheck ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck_new
+CLEANFILES += bootcheck
 
 rules2syms.sh: Makefile $(sh_lib_SRC) rules2syms.sh.in
 	INFILE=rules2syms.sh.in ;		\
@@ -235,28 +233,6 @@ getdefine: Makefile getdefine.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += getdefine
-
-## bootcheck
-bootcheck.awk: Makefile $(awk_lib_SRC) bootcheck.awk.in
-	INFILE=bootcheck.awk.in ;		\
-	OUTFILE=bootcheck.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck.awk
-
-bootcheck.sh: Makefile $(sh_lib_SRC) bootcheck.awk
-	INFILE=bootcheck.awk ;			\
-	OUTFILE=bootcheck.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck.sh
-
-bootcheck: Makefile bootcheck.sh
-	INFILE=bootcheck.sh ;			\
-	OUTFILE=bootcheck ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck
 
 ## clhandler
 clhandler.awk: Makefile $(awk_lib_SRC) clhandler.awk.in
