@@ -47,8 +47,8 @@ help () {
     echo "  -V    display program version"
     echo
     echo "Place input files at last, using -- as separator."
-    echo "Report bugs to <@PACKAGE_BUGREPORT@>."
     echo
+    echo "Report bugs to <@PACKAGE_BUGREPORT@>."
 }
 
 #

@@ -1,5 +1,5 @@
 #
-# bootcheck_new
+# bootcheck
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #                    Alessandro Massignan
@@ -28,7 +28,7 @@ GRUB1_MBCHK="@GRUB1_MBCHK@"
 #
 # Script variables
 #
-PROGNAME="bootcheck_new"
+PROGNAME="bootcheck"
 PROGVERSION="0.0.1"
 INFILE=""
 ARCH=""
@@ -50,7 +50,6 @@ help () {
     echo "  -V          display program version"
     echo
     echo "Report bugs to <@PACKAGE_BUGREPORT@>."
-    echo
 }
 
 #
