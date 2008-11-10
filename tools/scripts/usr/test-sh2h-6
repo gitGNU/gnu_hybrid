@@ -65,7 +65,7 @@ $SH2H -o $TEST_FILENAME_OUT			\
     -i $TEST_FILENAME_IN			\
     -p PREFIX_					\
     -g GUARD					\
-    || exit 1
+    > /dev/null 2>&1 || exit 1
 
 diff $TEST_FILENAME_OUT $TEST_FILENAME_EXP > /dev/null 2>&1 || exit 1
 
