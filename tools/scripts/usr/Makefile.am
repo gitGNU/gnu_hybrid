@@ -40,8 +40,7 @@ awk_scripts_SRCS =				\
 	clhandler.awk.in			\
 	getdefine.awk.in			\
 	mergesyms.awk.in			\
-	mkbuild.awk.in				\
-	sh2h.awk.in
+	mkbuild.awk.in
 
 sh_scripts_SRCS =				\
 	grub1-config.sh.in			\
@@ -49,7 +48,8 @@ sh_scripts_SRCS =				\
 	mkiso-grub1.sh.in			\
 	mkiso-grub2.sh.in			\
 	rules2syms.sh.in			\
-	bootcheck.sh.in
+	bootcheck.sh.in				\
+	sh2h.sh.in
 
 pl_scripts_SRCS =
 
@@ -61,6 +61,20 @@ EXTRA_DIST +=					\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
 
+
+sh2h.sh: Makefile $(sh_lib_SRC) sh2h.sh.in
+	INFILE=sh2h.sh.in ;			\
+	OUTFILE=sh2h.sh ;			\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += sh2h.sh
+
+sh2h: Makefile sh2h.sh
+	INFILE=sh2h.sh ;			\
+	OUTFILE=sh2h ;				\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += sh2h
 
 bootcheck.sh: Makefile $(sh_lib_SRC) bootcheck.sh.in
 	INFILE=bootcheck.sh.in ;		\
@@ -145,28 +159,6 @@ mkiso-grub2: Makefile mkiso-grub2.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mkiso-grub2
-
-## sh2h
-sh2h.awk: Makefile $(awk_lib_SRC) sh2h.awk.in
-	INFILE=sh2h.awk.in ;			\
-	OUTFILE=sh2h.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += sh2h.awk
-
-sh2h.sh: Makefile $(sh_lib_SRC) sh2h.awk
-	INFILE=sh2h.awk ;			\
-	OUTFILE=sh2h.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += sh2h.sh
-
-sh2h: Makefile sh2h.sh
-	INFILE=sh2h.sh ;			\
-	OUTFILE=sh2h ;				\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += sh2h
 
 ## mergesyms
 mergesyms.awk: Makefile $(awk_lib_SRC) mergesyms.awk.in
