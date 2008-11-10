@@ -28,7 +28,7 @@ AWK="@AWK@"
 #
 # Script variables
 #
-PROGNAME="sh2h_new"
+PROGNAME="sh2h"
 PROGVERSION="0.0.1"
 INFILE=""
 OUTFILE=""
@@ -136,8 +136,7 @@ fi
 #
 verbose "Start processing..."
 
-$AWK -v guard=$GUARD    \
-     -v prefix=$PREFIX  \
+$AWK -v guard=$GUARD -v prefix=$PREFIX  \
     'BEGIN {
 	delete defs;
 	retval = 0;
