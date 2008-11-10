@@ -50,21 +50,21 @@ cat << EOF > $TEST_FILENAME_EXP
 #ifndef GUARD
 #define GUARD
 
-#define PREFIX_DEBUGGER   1
-#define PREFIX_ARCH_DEBUG 0
 #define PREFIX_VMA        0xC0000000
+#define PREFIX_DEBUGGER   1
 #define PREFIX_HZ         100
+#define PREFIX_ARCH_DEBUG 0
 
 #endif /* GUARD */
 
-/* 3 definitions processed */
+/* 4 definitions processed */
 EOF
 
-$SH2H -o $TEST_FILENAME_OUT			\
-    -i $TEST_FILENAME_IN			\
-    -p PREFIX_					\
-    -g GUARD					\
-    || exit 1
+$SH2H -o $TEST_FILENAME_OUT \
+      -i $TEST_FILENAME_IN  \
+      -p PREFIX_            \
+      -g GUARD              \
+      || exit 1
 
 diff $TEST_FILENAME_OUT $TEST_FILENAME_EXP > /dev/null 2>&1 || exit 1
 
