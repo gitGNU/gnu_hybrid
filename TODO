@@ -6,6 +6,12 @@ NOTE:
 	be added too.
 
 TO-BE-DONE:
+* Rearrange the whole test infrastructure in tools/scripts (add defs and
+  wrapper)
+
+* Add a mkguard script in tools/scripts, remove the guard building related code
+  in sh and awk libraries (tools/scripts)
+
 * Import ax_prog_doxygen.m4 macro from autoconf-archive
 
 * Each time a (regression) test is performed, build a test directory inside
