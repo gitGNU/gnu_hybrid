@@ -258,10 +258,16 @@ check_PASS_SCRPTS =				\
 	test-rules2syms-1			\
 	test-rules2syms-2			\
 	test-mergesyms-1			\
-	test-getdefine-1
+	test-getdefine-1			\
+	test-sh2h-1				\
+	test-sh2h-2				\
+	test-sh2h-3				\
+	test-sh2h-4
 
 check_FAIL_SCRPTS =				\
-	test-clhandler-3
+	test-clhandler-3			\
+	test-sh2h-5				\
+	test-sh2h-6
 
 check_SCRIPTS =					\
 	$(check_PASS_SCRPTS)			\
