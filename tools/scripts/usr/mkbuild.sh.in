@@ -28,7 +28,7 @@ DATE="/bin/date"
 #
 # Script variables
 #
-PROGNAME="mkbuild_new"
+PROGNAME="mkbuild"
 PROGVERSION="0.0.1"
 IO_FILE=""
 GUARD=""
