@@ -120,15 +120,13 @@ tools/scripts/usr/mergesyms.sh
 tools/scripts/usr/mkbuild
 tools/scripts/usr/mkbuild.awk
 tools/scripts/usr/mkbuild.sh
-tools/scripts/usr/mkbuild_new
-tools/scripts/usr/mkbuild_new.sh
 tools/scripts/usr/rules2syms
 tools/scripts/usr/rules2syms.sh
 tools/scripts/usr/sh2h
 tools/scripts/usr/sh2h.awk
 tools/scripts/usr/sh2h.sh
-tools/scripts/usr/bootcheck_new
-tools/scripts/usr/bootcheck_new.sh
+tools/scripts/usr/getdefine_new
+tools/scripts/usr/getdefine_new.sh
 
 tools/choose/choose
 tools/choose/choose.sh
