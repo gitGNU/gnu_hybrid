@@ -32,7 +32,8 @@ scripts =					\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
-	sh2h
+	sh2h					\
+	mkbuild_new
 
 noinst_SCRIPTS = $(scripts)
 
@@ -49,7 +50,8 @@ sh_scripts_SRCS =				\
 	mkiso-grub2.sh.in			\
 	rules2syms.sh.in			\
 	bootcheck.sh.in				\
-	sh2h.sh.in
+	sh2h.sh.in				\
+	mkbuild_new.sh.in
 
 pl_scripts_SRCS =
 
@@ -61,6 +63,20 @@ EXTRA_DIST +=					\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
 
+
+mkbuild_new.sh: Makefile $(sh_lib_SRC) mkbuild_new.sh.in
+	INFILE=mkbuild_new.sh.in ;		\
+	OUTFILE=mkbuild_new.sh ;		\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += mkbuild_new.sh
+
+mkbuild_new: Makefile mkbuild_new.sh
+	INFILE=mkbuild_new.sh ;			\
+	OUTFILE=mkbuild_new ;			\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += mkbuild_new
 
 sh2h.sh: Makefile $(sh_lib_SRC) sh2h.sh.in
 	INFILE=sh2h.sh.in ;			\
