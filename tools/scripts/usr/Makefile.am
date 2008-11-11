@@ -32,16 +32,14 @@ scripts =					\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
-	sh2h					\
-	mkbuild_new
+	sh2h
 
 noinst_SCRIPTS = $(scripts)
 
 awk_scripts_SRCS =				\
 	clhandler.awk.in			\
 	getdefine.awk.in			\
-	mergesyms.awk.in			\
-	mkbuild.awk.in
+	mergesyms.awk.in
 
 sh_scripts_SRCS =				\
 	grub1-config.sh.in			\
@@ -51,7 +49,7 @@ sh_scripts_SRCS =				\
 	rules2syms.sh.in			\
 	bootcheck.sh.in				\
 	sh2h.sh.in				\
-	mkbuild_new.sh.in
+	mkbuild.sh.in
 
 pl_scripts_SRCS =
 
@@ -64,19 +62,19 @@ EXTRA_DIST +=					\
 	$(pl_scripts_SRCS)
 
 
-mkbuild_new.sh: Makefile $(sh_lib_SRC) mkbuild_new.sh.in
-	INFILE=mkbuild_new.sh.in ;		\
-	OUTFILE=mkbuild_new.sh ;		\
+mkbuild.sh: Makefile $(sh_lib_SRC) mkbuild.sh.in
+	INFILE=mkbuild.sh.in ;			\
+	OUTFILE=mkbuild.sh ;			\
 	$(transform_sh_in_2_sh) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild_new.sh
+CLEANFILES += mkbuild.sh
 
-mkbuild_new: Makefile mkbuild_new.sh
-	INFILE=mkbuild_new.sh ;			\
-	OUTFILE=mkbuild_new ;			\
+mkbuild: Makefile mkbuild.sh
+	INFILE=mkbuild.sh ;			\
+	OUTFILE=mkbuild ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild_new
+CLEANFILES += mkbuild
 
 sh2h.sh: Makefile $(sh_lib_SRC) sh2h.sh.in
 	INFILE=sh2h.sh.in ;			\
@@ -197,28 +195,6 @@ mergesyms: Makefile mergesyms.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mergesyms
-
-## mkbuild
-mkbuild.awk: Makefile $(awk_lib_SRC) mkbuild.awk.in
-	INFILE=mkbuild.awk.in ;			\
-	OUTFILE=mkbuild.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild.awk
-
-mkbuild.sh: Makefile $(sh_lib_SRC) mkbuild.awk
-	INFILE=mkbuild.awk ;			\
-	OUTFILE=mkbuild.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild.sh
-
-mkbuild: Makefile mkbuild.sh
-	INFILE=mkbuild.sh ;			\
-	OUTFILE=mkbuild ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild
 
 ## getdefine
 getdefine.awk: Makefile $(awk_lib_SRC) getdefine.awk.in
