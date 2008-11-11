@@ -149,7 +149,7 @@ cat >$IO_FILE <<EOF
 #define $GUARD
 
 #define BUILD_NUMBER $BUILDNO
-#define BUILD_DATE `$DATE`
+#define BUILD_DATE   "`$DATE`"
 
 #endif /* $GUARD */
 
