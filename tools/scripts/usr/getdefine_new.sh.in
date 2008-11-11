@@ -1,0 +1,158 @@
+#
+# getdefine_new
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+#
+# System tools
+#
+SED="@SED@"
+
+#
+# Script variables
+#
+PROGNAME="getdefine_new"
+PROGVERSION="0.0.1"
+INFILE=""
+OUTFILE=""
+SYMBOL=""
+VALUE=""
+
+#
+# Internal functions
+#
+help () {
+    echo "Usage: $PROGNAME -s <SYMBOL> -i <FILE> -o <FILE>"
+    echo
+    echo "Retrieve a symbol value"
+    echo
+    echo "  -s <ARG>    specify the symbol to look for"
+    echo "  -i <ARG>    set the input file"
+    echo "  -o <ARG>    set the output file"
+    echo "  -v          enable verbose messages"
+    echo "  -d          enable debugging"
+    echo "  -h          display this help and exit"
+    echo "  -V          display program version"
+    echo
+    echo "Report bugs to <@PACKAGE_BUGREPORT@>."
+}
+
+#
+# Libraries initialization
+#
+lib_init
+
+#
+# Parsing command line arguments
+#
+if test x"$*" = x"" ; then
+    hint "Missing required options"
+    exit 1
+fi
+
+while test ! x"$1" = x""
+do
+    case $1 in
+	-s)
+	    shift && SYMBOL=$1
+	    ;;
+	-i)
+	    shift && INFILE=$1
+	    ;;
+	-o)
+	    shift && OUTFILE=$1
+	    ;;
+	-v)
+	    VERBOSE=1
+	    ;;
+	-d)
+	    DEBUG=1
+	    ;;
+	-h)
+	    help && exit 0
+	    ;;
+	-V)
+	    version && exit 0
+	    ;;
+	*)
+	    hint "Wrong option \`$1'"
+	    exit 1
+	    ;;
+    esac
+    shift
+done
+
+#
+# Checking command line arguments
+#
+if test x"$SYMBOL" = x"" ; then
+    hint "Missing symbol"
+    exit 1
+fi
+
+if test x"$INFILE" = x"" ; then
+    hint "Missing input file"
+    exit 1
+fi
+
+if test x"$OUTFILE" = x"" ; then
+    hint "Missing outfile file"
+    exit 1
+fi
+
+if test ! -r $INFILE; then
+    error "File \`$INFILE' is not readable"
+    exit 1
+fi
+
+: 2>/dev/null 1>$OUTFILE || \
+    { error "File `${OUTFILE}` is not writable" ; exit 1 ; }
+
+debug "symbol      = ${SYMBOL}"
+debug "input file  = ${INFILE}"
+debug "output file = ${OUTFILE}"
+
+#
+# Start the real job
+#
+verbose "Start processing input file..."
+
+VALUE="`$SED -n \
+	     -e '/^[ \t]*\#[ \t]*define[ \t][ \t]*'$SYMBOL'[ \t]*/ {
+		 s/.*[ \t]\([^ \t][^ \t]*\)[ \t]*$/\1/;
+		 p;
+		 Q;
+		 }' <$INFILE`"
+
+if test x"$VALUE" = x""; then
+    warning "No value found for `${SYMBOL}` in `${INFILE}`"
+    exit 1
+else
+    echo $VALUE >$OUTFILE
+fi
+
+#
+# Libraries finalization
+#
+lib_fini
+
+#
+# All done!
+#
+exit 0
