@@ -125,8 +125,8 @@ MAINTAINERCLEANFILES += $(BUILD_FILE)
 ##     in the arch related directory. CONFIG_LMA and CONFIG_VMA get exported
 ##     in the procedure
 ##
-CONFIG_LMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_LMA -V -D`
-CONFIG_VMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_VMA -V -D`
+CONFIG_LMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_LMA`
+CONFIG_VMA = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_VMA`
 
 KERNELLDSCRIPT = $(top_builddir)/src/archs/$(architecture)/kernel.ld
 $(top_builddir)/src/archs/$(architecture)/kernel.ld: Makefile $(top_srcdir)/src/archs/$(architecture)/kernel.ld.in
@@ -235,7 +235,7 @@ stats: all
 ##
 ## check target related
 ##
-STACKSIZE = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_PAGE_SIZE -V -D`
+STACKSIZE = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_PAGE_SIZE`
 
 KERNEL_OBJ   = kernel$(EXEEXT)
 #MODULES_OBJS = $(MODULES_PRELOAD) $(MODULES_AUTOLOAD)
