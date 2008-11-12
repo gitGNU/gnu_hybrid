@@ -30,16 +30,16 @@ rm -f $TEST_FILENAME_EXP
 
 cat << EOF > $TEST_FILENAME_IN
 #define    beta    
-#define teta  'delta'
+#define teta  "delta"
 #define gamma alfa
 #define alfa
 EOF
 
 cat << EOF > $TEST_FILENAME_EXP
-'alfa'
+"delta"
 EOF
 
-$GETDEFINE -d -v -s teta -i $TEST_FILENAME_IN -o $TEST_FILENAME_OUT || exit 1
+$GETDEFINE -s teta -i $TEST_FILENAME_IN -o $TEST_FILENAME_OUT || exit 1
 
 diff $TEST_FILENAME_OUT $TEST_FILENAME_EXP > /dev/null 2>&1 || exit 1
 
