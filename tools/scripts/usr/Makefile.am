@@ -38,7 +38,6 @@ noinst_SCRIPTS = $(scripts)
 
 awk_scripts_SRCS =				\
 	clhandler.awk.in			\
-	getdefine.awk.in			\
 	mergesyms.awk.in
 
 sh_scripts_SRCS =				\
@@ -49,7 +48,8 @@ sh_scripts_SRCS =				\
 	rules2syms.sh.in			\
 	bootcheck.sh.in				\
 	sh2h.sh.in				\
-	mkbuild.sh.in
+	mkbuild.sh.in				\
+	getdefine.sh.in
 
 pl_scripts_SRCS =
 
@@ -61,6 +61,20 @@ EXTRA_DIST +=					\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
 
+
+getdefine.sh: Makefile $(sh_lib_SRC) getdefine.sh.in
+	INFILE=getdefine.sh.in ;		\
+	OUTFILE=getdefine.sh ;			\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += getdefine.sh
+
+getdefine: Makefile getdefine.sh
+	INFILE=getdefine.sh ;			\
+	OUTFILE=getdefine ;			\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += getdefine
 
 mkbuild.sh: Makefile $(sh_lib_SRC) mkbuild.sh.in
 	INFILE=mkbuild.sh.in ;			\
@@ -196,28 +210,6 @@ mergesyms: Makefile mergesyms.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mergesyms
 
-## getdefine
-getdefine.awk: Makefile $(awk_lib_SRC) getdefine.awk.in
-	INFILE=getdefine.awk.in ;		\
-	OUTFILE=getdefine.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += getdefine.awk
-
-getdefine.sh: Makefile $(sh_lib_SRC) getdefine.awk
-	INFILE=getdefine.awk ;			\
-	OUTFILE=getdefine.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += getdefine.sh
-
-getdefine: Makefile getdefine.sh
-	INFILE=getdefine.sh ;			\
-	OUTFILE=getdefine ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += getdefine
-
 ## clhandler
 clhandler.awk: Makefile $(awk_lib_SRC) clhandler.awk.in
 	INFILE=clhandler.awk.in ;		\
@@ -251,6 +243,7 @@ check_PASS_SCRPTS =				\
 	test-rules2syms-2			\
 	test-mergesyms-1			\
 	test-getdefine-1			\
+	test-getdefine-2			\
 	test-sh2h-1				\
 	test-sh2h-2				\
 	test-sh2h-3				\
