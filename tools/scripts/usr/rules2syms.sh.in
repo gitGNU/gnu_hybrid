@@ -19,16 +19,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-#
-# System tools
-#
-SED="@SED@"
-
-#
-# Script variables
-#
+# Required variables
 PROGNAME="rules2syms"
 PROGVERSION="0.0.1"
+
+# System tools
+SED="@SED@"
+
+# Script variables
 INFILES=""
 OUTFILE=""
 

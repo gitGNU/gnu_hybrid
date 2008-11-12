@@ -1,5 +1,5 @@
 #
-# mkbuild_new
+# mkbuild
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #                    Alessandro Massignan
@@ -19,17 +19,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-#
-# System tools
-#
-SED="@SED@"
-DATE="/bin/date"
-
-#
-# Script variables
-#
+# Required variables
 PROGNAME="mkbuild"
 PROGVERSION="0.0.1"
+
+# System tools
+SED="@SED@"
+DATE="@DATE@"
+
+# Script variables
 IO_FILE=""
 GUARD=""
 

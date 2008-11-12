@@ -19,13 +19,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
+# Required variables
+PROGNAME="grub2-config"
+PROGVERSION="0.0.1"
+
 # System tools
 GRUBINSTALL="@GRUB_INSTALL@"
 SED="@SED@"
 
 # Script variables
-PROGNAME="grub2-config"
-PROGVERSION="0.0.1"
 ACTION=""
 RESOLVEDVAR=""
 

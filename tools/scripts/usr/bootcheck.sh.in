@@ -19,17 +19,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-#
+# Required variables
+PROGNAME="bootcheck"
+PROGVERSION="0.0.1"
+
 # System tools
-#
 SED="@SED@"
 GRUB1_MBCHK="@GRUB1_MBCHK@"
 
-#
 # Script variables
-#
-PROGNAME="bootcheck"
-PROGVERSION="0.0.1"
 INFILE=""
 ARCH=""
 RETVAL=0
