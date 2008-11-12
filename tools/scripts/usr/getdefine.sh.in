@@ -28,7 +28,7 @@ SED="@SED@"
 
 # Script variables
 INFILE=""
-OUTFILE=""
+OUTFILE="/dev/stdout"
 SYMBOL=""
 VALUE=""
 
