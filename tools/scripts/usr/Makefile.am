@@ -244,6 +244,7 @@ check_PASS_SCRPTS =				\
 	test-mergesyms-1			\
 	test-getdefine-1			\
 	test-getdefine-2			\
+	test-getdefine-4			\
 	test-sh2h-1				\
 	test-sh2h-2				\
 	test-sh2h-3				\
@@ -252,7 +253,8 @@ check_PASS_SCRPTS =				\
 check_FAIL_SCRPTS =				\
 	test-clhandler-3			\
 	test-sh2h-5				\
-	test-sh2h-6
+	test-sh2h-6				\
+	test-getdefine-3
 
 check_SCRIPTS =					\
 	$(check_PASS_SCRPTS)			\
