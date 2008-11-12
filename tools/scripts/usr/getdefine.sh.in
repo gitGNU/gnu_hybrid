@@ -1,5 +1,5 @@
 #
-# getdefine_new
+# getdefine
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #                    Alessandro Massignan
@@ -19,16 +19,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-#
+# Required variables
+PROGNAME="getdefine"
+PROGVERSION="0.0.1"
+
 # System tools
-#
 SED="@SED@"
 
-#
 # Script variables
-#
-PROGNAME="getdefine_new"
-PROGVERSION="0.0.1"
 INFILE=""
 OUTFILE=""
 SYMBOL=""
