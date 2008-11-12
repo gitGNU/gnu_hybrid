@@ -139,7 +139,7 @@ VALUE="`$SED -n \
 		 }' <$INFILE`"
 
 if test x"$VALUE" = x""; then
-    warning "No value found for `${SYMBOL}` in `${INFILE}`"
+    warning "No value found for \`${SYMBOL}' in \`${INFILE}'"
     exit 1
 else
     echo $VALUE >$OUTFILE
