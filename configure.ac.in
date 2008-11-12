@@ -107,6 +107,14 @@ AC_ARG_VAR(SIZE, [Full path to the 'size' executable])
 AX_PATH_MISSING([SIZE],[size],[size seems missing])
 
 #
+# Program needed by scripts that must be present
+#
+# NOTE:
+#     date is used by mkbuild.sh.in in tools/scripts/usr
+#
+AX_PATH_MISSING([DATE],[date],[date seems missing])
+
+#
 # Image build support (XXX FIXME: TO BE MOVED ELSEWHERE ASAP)
 #
 AX_PROG_GRUB1([$PATH:/bin:/sbin],[grub1_support=yes],[grub1_support=no])
