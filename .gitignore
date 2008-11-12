@@ -69,17 +69,6 @@ tools/scripts/libs/awk/lib.awk
 tools/scripts/libs/sh/lib.sh
 tools/scripts/libs/perl/lib.pl
 
-# XXX FIXME: To be removed ASAP
-tools/scripts/usr/grub1-config
-tools/scripts/usr/grub1-config.sh
-tools/scripts/usr/grub2-config
-tools/scripts/usr/grub2-config.sh
-tools/scripts/usr/mkiso-grub1
-tools/scripts/usr/mkiso-grub1.sh
-tools/scripts/usr/mkiso-grub2
-tools/scripts/usr/mkiso-grub2.sh
-# XXX FIXME: To be removed ASAP
-
 tools/scripts/maint/guardscheck
 tools/scripts/maint/guardscheck.pl
 
@@ -106,27 +95,32 @@ tools/scripts/dev/symstab2map.awk
 tools/scripts/dev/symstab2map.sh
 
 tools/scripts/usr/bootcheck
-tools/scripts/usr/bootcheck.awk
 tools/scripts/usr/bootcheck.sh
 tools/scripts/usr/clhandler
 tools/scripts/usr/clhandler.awk
 tools/scripts/usr/clhandler.sh
 tools/scripts/usr/getdefine
-tools/scripts/usr/getdefine.awk
 tools/scripts/usr/getdefine.sh
 tools/scripts/usr/mergesyms
 tools/scripts/usr/mergesyms.awk
 tools/scripts/usr/mergesyms.sh
 tools/scripts/usr/mkbuild
-tools/scripts/usr/mkbuild.awk
 tools/scripts/usr/mkbuild.sh
 tools/scripts/usr/rules2syms
 tools/scripts/usr/rules2syms.sh
 tools/scripts/usr/sh2h
-tools/scripts/usr/sh2h.awk
 tools/scripts/usr/sh2h.sh
-tools/scripts/usr/getdefine_new
-tools/scripts/usr/getdefine_new.sh
+# XXX FIXME: To be removed ASAP
+tools/scripts/usr/grub1-config
+tools/scripts/usr/grub1-config.sh
+tools/scripts/usr/grub2-config
+tools/scripts/usr/grub2-config.sh
+tools/scripts/usr/mkiso-grub1
+tools/scripts/usr/mkiso-grub1.sh
+tools/scripts/usr/mkiso-grub2
+tools/scripts/usr/mkiso-grub2.sh
+# XXX FIXME: To be removed ASAP
+
 
 tools/choose/choose
 tools/choose/choose.sh
