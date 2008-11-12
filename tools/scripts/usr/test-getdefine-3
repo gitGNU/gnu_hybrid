@@ -29,8 +29,7 @@ rm -f $TEST_FILENAME_OUT
 rm -f $TEST_FILENAME_EXP
 
 cat << EOF > $TEST_FILENAME_IN
-#define gamma alfa
-#define beta  
+#define beta
 #define teta  'delta'
 #define gamma alfa
 #define alfa
