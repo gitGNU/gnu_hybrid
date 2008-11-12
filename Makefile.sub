@@ -93,7 +93,9 @@ do_subst_SPECIFIC = \
   -e 's,[@]GRUB2_MKIMAGE[@],$(GRUB2_MKIMAGE),g' \
   -e 's,[@]GRUB2_MKRESCUE[@],$(GRUB2_MKRESCUE),g' \
   -e 's,[@]GRUB2_PE2ELF[@],$(GRUB2_PE2ELF),g' \
-  -e 's,[@]MKISOFS[@],$(MKISOFS),g'
+  -e 's,[@]MKISOFS[@],$(MKISOFS),g' \
+  \
+  -e 's,[@]DATE[@],$(DATE),g'
 
 do_subst = $(SED) \
   $(do_subst_AUTOTOOLS) \
