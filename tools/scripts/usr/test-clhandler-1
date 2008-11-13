@@ -35,7 +35,7 @@ cat << EOF > $TEST_FILENAME_EXP
 gamma.h alfa.h beta.h
 EOF
 
-$CLHANDLER -i h -- alfa.h alfa.c beta.h beta.c gamma.h gamma.c eta.cxx> $TEST_FILENAME_OUT || exit 1
+$CLHANDLER -i h -- alfa.h alfa.c beta.h beta.c gamma.h gamma.c eta.cxx > $TEST_FILENAME_OUT || exit 1
 
 diff $TEST_FILENAME_OUT $TEST_FILENAME_EXP > /dev/null 2>&1 || exit 1
 
