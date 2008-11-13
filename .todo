@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <todo version="0.1.20">
+    <note priority="medium" time="1226607282" done="1226608734">
+        Fix eof and error indicator in streams (src/libs/c/stdio.c)
+        <comment>
+            Moved to ELKlib
+        </comment>
+    </note>
     <note priority="medium" time="1226585844">
         Rearrange the whole test infrastructure in tools/scripts (add defs and wrapper)
     </note>
@@ -87,11 +93,11 @@
     <note priority="medium" time="1226607255">
         We should replace most of the asserts with proper checks (and expect() calls). All the useless asserts should be removed
     </note>
-    <note priority="medium" time="1226607271">
+    <note priority="medium" time="1226607271" done="1226608828">
         Fix all return values (and all the referencing functions) in src/libs/c/stdio.c
-    </note>
-    <note priority="medium" time="1226607282">
-        Fix eof and error indicator in streams (src/libs/c/stdio.c)
+        <comment>
+            Moved to ELKlib
+        </comment>
     </note>
     <note priority="medium" time="1226607297">
         Add a check in 'check' target in order to see if panic() gets called with some '\n' (only at end of line)
