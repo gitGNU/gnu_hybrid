@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<todo version="0.1.20">
+    <note priority="medium" time="1226585844">
+        Rearrange the whole test infrastructure in tools/scripts (add defs and wrapper)
+    </note>
+    <note priority="medium" time="1226585905">
+        Add mkguard script in tools/scripts/dev, remove the guard building related code in sh and awk libraries (tools/scripts)
+    </note>
+    <note priority="medium" time="1226606595">
+        Import (and use ...) ax_prog_doxygen.m4 macro from autoconf-archive
+    </note>
+    <note priority="medium" time="1226606628">
+        Each time a (regression) test is performed, build a test directory inside the tools/scripts directory in order to remove the temporary created files after the unit run (or leave them after a fail). We should use a wrapper in order to build the directory, cd into it, run the test and remove the temporary directory
+    </note>
+    <note priority="medium" time="1226606652">
+        Move less useful tools related parameters from src/Makefile.am to src/Makefile.def
+    </note>
+    <note priority="medium" time="1226606682">
+        tools/scripts/*/test-*: Remove test files (test-*.txt) when the test runs smoothly (XFAIL case)
+    </note>
+    <note priority="medium" time="1226606704">
+        tools/autotools/m4/ax_string_intersect.m4: Fix the bug, its description is in the macro
+    </note>
+    <note priority="medium" time="1226606727">
+        Add a test in the `make check' target in order to avoid the use of multibyte character ('\') in sed substitution command (s///) in order to gain more portability (ex. do not use things like this: `sed -e 's/^.*/\t/' on FreeBSD)
+    </note>
+    <note priority="medium" time="1226606743">
+        Move the src/archs/x86/keyboard* related code to a i8042.* file
+    </note>
+    <note priority="medium" time="1226606764">
+        Fix the modules build problem when compiling with bfd version 2.15 (on FreeBSD host ld exits with segmentation fault)
+    </note>
+    <note priority="medium" time="1226606785">
+        tools/scripts/*/*.awk.in: Remove all code that depends on 'for (x in y)' or our regression tests will fail
+    </note>
+    <note priority="medium" time="1226606796">
+        Add regression tests in tools/scripts/libs/awk directory
+    </note>
+    <note priority="medium" time="1226606810">
+        Remove configure link in src/arch (it is not portable). Remove the LN_S check in configure.ac
+    </note>
+    <note priority="medium" time="1226606821">
+        Complete debugger-completion related code in kernel/dbg/debugger/completion.c
+    </note>
+    <note priority="medium" time="1226606835">
+        tools/scripts/*.awk: Start using the strerror() function to display all the system errors
+    </note>
+    <note priority="medium" time="1226606851">
+        tools/scripts/*.awk: Fix the common behaviour when RS="", at the moment all is broken
+    </note>
+    <note priority="medium" time="1226606871">
+        tools/autotools/m4/ax_asm_uscore.m4: Fix the test, it is really crappy and it will work only for gcc...
+    </note>
+    <note priority="medium" time="1226606893">
+        tools/scripts/*/Makefile.am: Complete pass 2 in check-local target (check for detecting function calls with spaces between function-name and parentheses). Don't leave white spaces before the parentheses in user functions calls; GNU awk will reject it
+    </note>
+    <note priority="medium" time="1226606906">
+        tools/scripts/*/*.awk: Change all external programs invocations from long arguments to short arguments (in order to be more portable)
+    </note>
+    <note priority="medium" time="1226606918">
+        src/include/config.h: Remove the #ifndef ASM ...
+    </note>
+    <note priority="medium" time="1226606931">
+        tools/scripts/*/*.awk: Add checks in order to detect when a parameter is specified multiple times (like -P in ifdefscheck.awk)
+    </note>
+    <note priority="medium" time="1226606943">
+        tools/scripts/*/Makefile.am: Fix the 'check' target ... it is not reporting duplicated symbols...
+    </note>
+    <note priority="medium" time="1226606961">
+        We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have This approach should handle cross-compilation cases
+    </note>
+    <note priority="medium" time="1226606992">
+        Use AC_CHECK_TOOL instead of AC_PATH_PROG for nm, objdump and so on in configure.ac.in
+    </note>
+    <note priority="medium" time="1226607014">
+        Reenable the -f (fatal) flag on tools/scripts/symscheck.awk and tools/scripts/ifdefscheck.awk (and other tools too) in src/Makefile.am
+    </note>
+    <note priority="medium" time="1226607029">
+        Fix the protect variable in tools/scripts/Makefile.am in order to protect even the ' character
+    </note>
+    <note priority="medium" time="1226607179">
+        Check in tools/scripts/*/*.in the awk scripts in order to verify that they do not depend upon `for' on arrays, its execution order IS NOT deterministic. From the autoconf info page 'Limitations of Usual Tools'
+    </note>
+    <note priority="medium" time="1226607229">
+        Add the sub-command functionality in src/dbg/debugger/builtin-commands.c in order to have commands like 'memory pmm' and 'memory heap' instead of 'pmm' and 'heap' separately (like gdb commands)
+    </note>
+    <note priority="medium" time="1226607255">
+        We should replace most of the asserts with proper checks (and expect() calls). All the useless asserts should be removed
+    </note>
+    <note priority="medium" time="1226607271">
+        Fix all return values (and all the referencing functions) in src/libs/c/stdio.c
+    </note>
+    <note priority="medium" time="1226607282">
+        Fix eof and error indicator in streams (src/libs/c/stdio.c)
+    </note>
+    <note priority="medium" time="1226607297">
+        Add a check in 'check' target in order to see if panic() gets called with some '\n' (only at end of line)
+    </note>
+    <note priority="medium" time="1226607322">
+        Add support for kernel debugging via GDB (GDB requires serial line support) in src/libs/debug/gdb.c
+    </note>
+    <note priority="medium" time="1226607331">
+        The config target in src/Makefile.am doesn't handle its dependencies properly
+    </note>
+    <note priority="medium" time="1226607346">
+        Add all the needed tests in configure.ac.in in order to check for required GCC features (like __builtin_* for stdarg.h macros)
+    </note>
+    <note priority="medium" time="1226607378">
+        Fix the checks for needed and wanted packages in configure.ac.in (they should bail-out or printing a message then stop/continue depending on what is need)
+    </note>
+    <note priority="medium" time="1226607412">
+        Add more Doxygen related checks on configure.ac.in
+    </note>
+</todo>
