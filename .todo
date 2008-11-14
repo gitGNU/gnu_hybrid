@@ -51,8 +51,11 @@
     <note priority="medium" time="1226606796">
         Add regression tests in tools/scripts/libs/awk directory
     </note>
-    <note priority="medium" time="1226606810">
+    <note priority="medium" time="1226606810" done="1226698386">
         Remove configure link in src/arch (it is not portable). Remove the LN_S check in configure.ac
+        <comment>
+            Removed (maybe) long time ago
+        </comment>
     </note>
     <note priority="medium" time="1226606821">
         Complete debugger-completion related code in kernel/dbg/debugger/completion.c
