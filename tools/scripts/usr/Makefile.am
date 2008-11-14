@@ -32,7 +32,8 @@ scripts =					\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
-	sh2h
+	sh2h					\
+	flhandler
 
 noinst_SCRIPTS = $(scripts)
 
@@ -49,7 +50,8 @@ sh_scripts_SRCS =				\
 	bootcheck.sh.in				\
 	sh2h.sh.in				\
 	mkbuild.sh.in				\
-	getdefine.sh.in
+	getdefine.sh.in				\
+	flhandler.sh.in
 
 pl_scripts_SRCS =
 
@@ -61,6 +63,20 @@ EXTRA_DIST +=					\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
 
+
+flhandler.sh: Makefile $(sh_lib_SRC) flhandler.sh.in
+	INFILE=flhandler.sh.in ;		\
+	OUTFILE=flhandler.sh ;			\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += flhandler.sh
+
+flhandler: Makefile flhandler.sh
+	INFILE=flhandler.sh ;			\
+	OUTFILE=flhandler ;			\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += flhandler
 
 getdefine.sh: Makefile $(sh_lib_SRC) getdefine.sh.in
 	INFILE=getdefine.sh.in ;		\
@@ -248,13 +264,16 @@ check_PASS_SCRPTS =				\
 	test-sh2h-1				\
 	test-sh2h-2				\
 	test-sh2h-3				\
-	test-sh2h-4
+	test-sh2h-4				\
+	test-flhandler-1			\
+	test-flhandler-2
 
 check_FAIL_SCRPTS =				\
 	test-clhandler-3			\
 	test-sh2h-5				\
 	test-sh2h-6				\
-	test-getdefine-3
+	test-getdefine-3			\
+	test-flhandler-3
 
 check_SCRIPTS =					\
 	$(check_PASS_SCRPTS)			\
