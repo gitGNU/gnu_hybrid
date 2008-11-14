@@ -17,6 +17,9 @@
         <note priority="high" time="1226606628">
             Each time a (regression) test is performed, build a test directory inside the tools/scripts directory in order to remove the temporary created files after the unit run (or leave them after a fail). We should use a wrapper in order to build the directory, cd into it, run the test and remove the temporary directory
         </note>
+        <note priority="medium" time="1226606682">
+            tools/scripts/*/test-*: Remove test files (test-*.txt) when the test runs smoothly (XFAIL case)
+        </note>
     </note>
     <note priority="high" time="1226606961">
         We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have This approach should handle cross-compilation cases
@@ -29,9 +32,6 @@
     </note>
     <note priority="medium" time="1226606595">
         Import (and use ...) ax_prog_doxygen.m4 macro from autoconf-archive
-    </note>
-    <note priority="medium" time="1226606682">
-        tools/scripts/*/test-*: Remove test files (test-*.txt) when the test runs smoothly (XFAIL case)
     </note>
     <note priority="medium" time="1226606704">
         tools/autotools/m4/ax_string_intersect.m4: Fix the bug, its description is in the macro
