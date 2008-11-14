@@ -12,17 +12,17 @@
             Moved to ELKlib
         </comment>
     </note>
-    <note priority="high" time="1226606628">
-        Each time a (regression) test is performed, build a test directory inside the tools/scripts directory in order to remove the temporary created files after the unit run (or leave them after a fail). We should use a wrapper in order to build the directory, cd into it, run the test and remove the temporary directory
+    <note priority="high" time="1226585844">
+        Rearrange the whole test infrastructure in tools/scripts (add defs and wrapper)
+        <note priority="high" time="1226606628">
+            Each time a (regression) test is performed, build a test directory inside the tools/scripts directory in order to remove the temporary created files after the unit run (or leave them after a fail). We should use a wrapper in order to build the directory, cd into it, run the test and remove the temporary directory
+        </note>
     </note>
     <note priority="high" time="1226606961">
         We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have This approach should handle cross-compilation cases
     </note>
     <note priority="high" time="1226607255">
         We should replace most of the asserts with proper checks (and expect() calls). All the useless asserts should be removed
-    </note>
-    <note priority="medium" time="1226585844">
-        Rearrange the whole test infrastructure in tools/scripts (add defs and wrapper)
     </note>
     <note priority="medium" time="1226585905">
         Add mkguard script in tools/scripts/dev, remove the guard building related code in sh and awk libraries (tools/scripts)
