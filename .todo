@@ -1,10 +1,25 @@
 <?xml version="1.0"?>
 <todo version="0.1.20">
+    <note priority="medium" time="1226607271" done="1226608828">
+        Fix all return values (and all the referencing functions) in src/libs/c/stdio.c
+        <comment>
+            Moved to ELKlib
+        </comment>
+    </note>
     <note priority="medium" time="1226607282" done="1226608734">
         Fix eof and error indicator in streams (src/libs/c/stdio.c)
         <comment>
             Moved to ELKlib
         </comment>
+    </note>
+    <note priority="high" time="1226606628">
+        Each time a (regression) test is performed, build a test directory inside the tools/scripts directory in order to remove the temporary created files after the unit run (or leave them after a fail). We should use a wrapper in order to build the directory, cd into it, run the test and remove the temporary directory
+    </note>
+    <note priority="high" time="1226606961">
+        We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have This approach should handle cross-compilation cases
+    </note>
+    <note priority="high" time="1226607255">
+        We should replace most of the asserts with proper checks (and expect() calls). All the useless asserts should be removed
     </note>
     <note priority="medium" time="1226585844">
         Rearrange the whole test infrastructure in tools/scripts (add defs and wrapper)
@@ -14,12 +29,6 @@
     </note>
     <note priority="medium" time="1226606595">
         Import (and use ...) ax_prog_doxygen.m4 macro from autoconf-archive
-    </note>
-    <note priority="medium" time="1226606628">
-        Each time a (regression) test is performed, build a test directory inside the tools/scripts directory in order to remove the temporary created files after the unit run (or leave them after a fail). We should use a wrapper in order to build the directory, cd into it, run the test and remove the temporary directory
-    </note>
-    <note priority="medium" time="1226606652">
-        Move less useful tools related parameters from src/Makefile.am to src/Makefile.def
     </note>
     <note priority="medium" time="1226606682">
         tools/scripts/*/test-*: Remove test files (test-*.txt) when the test runs smoothly (XFAIL case)
@@ -72,9 +81,6 @@
     <note priority="medium" time="1226606943">
         tools/scripts/*/Makefile.am: Fix the 'check' target ... it is not reporting duplicated symbols...
     </note>
-    <note priority="medium" time="1226606961">
-        We should use AC_CHECK_TOOL instead of AC_PATH_PROG machineries that we have This approach should handle cross-compilation cases
-    </note>
     <note priority="medium" time="1226606992">
         Use AC_CHECK_TOOL instead of AC_PATH_PROG for nm, objdump and so on in configure.ac.in
     </note>
@@ -89,15 +95,6 @@
     </note>
     <note priority="medium" time="1226607229">
         Add the sub-command functionality in src/dbg/debugger/builtin-commands.c in order to have commands like 'memory pmm' and 'memory heap' instead of 'pmm' and 'heap' separately (like gdb commands)
-    </note>
-    <note priority="medium" time="1226607255">
-        We should replace most of the asserts with proper checks (and expect() calls). All the useless asserts should be removed
-    </note>
-    <note priority="medium" time="1226607271" done="1226608828">
-        Fix all return values (and all the referencing functions) in src/libs/c/stdio.c
-        <comment>
-            Moved to ELKlib
-        </comment>
     </note>
     <note priority="medium" time="1226607297">
         Add a check in 'check' target in order to see if panic() gets called with some '\n' (only at end of line)
@@ -116,5 +113,8 @@
     </note>
     <note priority="medium" time="1226607412">
         Add more Doxygen related checks on configure.ac.in
+    </note>
+    <note priority="low" time="1226606652">
+        Move less useful tools related parameters from src/Makefile.am to src/Makefile.def
     </note>
 </todo>
