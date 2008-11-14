@@ -71,8 +71,8 @@ MKSYSCALLS          = $(DEV_SCRIPTSDIR)/mksyscalls
 MKSYSCALLS_FLAGS    = $(TOOL_FLAGS)
 MKBUILD             = $(USR_SCRIPTSDIR)/mkbuild
 MKBUILD_FLAGS       = $(TOOL_FLAGS)
-CLHANDLER           = $(USR_SCRIPTSDIR)/clhandler
-CLHANDLER_FLAGS     = $(TOOL_FLAGS)
+FLHANDLER           = $(USR_SCRIPTSDIR)/flhandler
+FLHANDLER_FLAGS     = $(TOOL_FLAGS)
 
 # Useful binaries
 CHOOSE             = $(CHOOSEDIR)/choose

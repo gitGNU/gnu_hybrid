@@ -23,7 +23,6 @@ include $(top_srcdir)/tools/scripts/Makefile.sub
 
 scripts =					\
 	bootcheck				\
-	clhandler				\
 	getdefine				\
 	grub1-config				\
 	grub2-config				\
@@ -38,7 +37,6 @@ scripts =					\
 noinst_SCRIPTS = $(scripts)
 
 awk_scripts_SRCS =				\
-	clhandler.awk.in			\
 	mergesyms.awk.in
 
 sh_scripts_SRCS =				\
@@ -226,35 +224,11 @@ mergesyms: Makefile mergesyms.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mergesyms
 
-## clhandler
-clhandler.awk: Makefile $(awk_lib_SRC) clhandler.awk.in
-	INFILE=clhandler.awk.in ;		\
-	OUTFILE=clhandler.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += clhandler.awk
-
-clhandler.sh: Makefile $(sh_lib_SRC) clhandler.awk
-	INFILE=clhandler.awk ;			\
-	OUTFILE=clhandler.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += clhandler.sh
-
-clhandler: Makefile clhandler.sh
-	INFILE=clhandler.sh ;			\
-	OUTFILE=clhandler ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += clhandler
-
 
 ##
 ## Checks
 ##
 check_PASS_SCRPTS =				\
-	test-clhandler-1			\
-	test-clhandler-2			\
 	test-rules2syms-1			\
 	test-rules2syms-2			\
 	test-mergesyms-1			\
@@ -269,7 +243,6 @@ check_PASS_SCRPTS =				\
 	test-flhandler-2
 
 check_FAIL_SCRPTS =				\
-	test-clhandler-3			\
 	test-sh2h-5				\
 	test-sh2h-6				\
 	test-getdefine-3			\

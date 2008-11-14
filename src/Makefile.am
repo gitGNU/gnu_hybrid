@@ -252,7 +252,7 @@ check-stack: Makefile
 check-boot: Makefile
 	$(BOOTCHECK) $(BOOTCHECK_FLAGS) -a $(architecture) -i $(KERNEL_OBJ) || exit 1
 
-HDRS = `$(CLHANDLER) $(CLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
+HDRS = `$(FLHANDLER) $(FLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
 check-guards: Makefile
 	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
 
