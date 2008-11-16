@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <todo version="0.1.20">
+    <note priority="medium" time="1226606810" done="1226698386">
+        Remove configure link in src/arch (it is not portable). Remove the LN_S check in configure.ac
+        <comment>
+            Removed (maybe) long time ago
+        </comment>
+    </note>
     <note priority="medium" time="1226607271" done="1226608828">
         Fix all return values (and all the referencing functions) in src/libs/c/stdio.c
         <comment>
@@ -28,10 +34,16 @@
         We should replace most of the asserts with proper checks (and expect() calls). All the useless asserts should be removed
     </note>
     <note priority="medium" time="1226585905">
-        Add mkguard script in tools/scripts/dev, remove the guard building related code in sh and awk libraries (tools/scripts)
+        Add mkguard script in tools/scripts/dev
+        <note priority="medium" time="1226868990">
+            Replace the guard building related code in sh and awk libraries (tools/scripts) with mkguard script calls
+        </note>
     </note>
     <note priority="medium" time="1226606595">
         Import (and use ...) ax_prog_doxygen.m4 macro from autoconf-archive
+        <note priority="medium" time="1226607412">
+            Add Doxygen related checks on configure.ac.in
+        </note>
     </note>
     <note priority="medium" time="1226606704">
         tools/autotools/m4/ax_string_intersect.m4: Fix the bug, its description is in the macro
@@ -42,23 +54,11 @@
     <note priority="medium" time="1226606743">
         Move the src/archs/x86/keyboard* related code to a i8042.* file
     </note>
-    <note priority="medium" time="1226606764">
-        Fix the modules build problem when compiling with bfd version 2.15 (on FreeBSD host ld exits with segmentation fault)
-    </note>
     <note priority="medium" time="1226606785">
         tools/scripts/*/*.awk.in: Remove all code that depends on 'for (x in y)' or our regression tests will fail
     </note>
     <note priority="medium" time="1226606796">
         Add regression tests in tools/scripts/libs/awk directory
-    </note>
-    <note priority="medium" time="1226606810" done="1226698386">
-        Remove configure link in src/arch (it is not portable). Remove the LN_S check in configure.ac
-        <comment>
-            Removed (maybe) long time ago
-        </comment>
-    </note>
-    <note priority="medium" time="1226606821">
-        Complete debugger-completion related code in kernel/dbg/debugger/completion.c
     </note>
     <note priority="medium" time="1226606835">
         tools/scripts/*.awk: Start using the strerror() function to display all the system errors
@@ -96,9 +96,6 @@
     <note priority="medium" time="1226607179">
         Check in tools/scripts/*/*.in the awk scripts in order to verify that they do not depend upon `for' on arrays, its execution order IS NOT deterministic. From the autoconf info page 'Limitations of Usual Tools'
     </note>
-    <note priority="medium" time="1226607229">
-        Add the sub-command functionality in src/dbg/debugger/builtin-commands.c in order to have commands like 'memory pmm' and 'memory heap' instead of 'pmm' and 'heap' separately (like gdb commands)
-    </note>
     <note priority="medium" time="1226607297">
         Add a check in 'check' target in order to see if panic() gets called with some '\n' (only at end of line)
     </note>
@@ -114,8 +111,20 @@
     <note priority="medium" time="1226607378">
         Fix the checks for needed and wanted packages in configure.ac.in (they should bail-out or printing a message then stop/continue depending on what is need)
     </note>
-    <note priority="medium" time="1226607412">
-        Add more Doxygen related checks on configure.ac.in
+    <note priority="medium" time="1226869560">
+        Re-introduce the modules infrastructure
+        <note priority="medium" time="1226606764">
+            Fix the modules build problem when compiling with bfd version 2.15 (on FreeBSD host ld exits with segmentation fault)
+        </note>
+    </note>
+    <note priority="medium" time="1226869651">
+        Enhance the integrated debugger
+        <note priority="medium" time="1226606821">
+            Complete debugger-completion related code in kernel/dbg/debugger/completion.c
+        </note>
+        <note priority="medium" time="1226607229">
+            Add the sub-command functionality in src/dbg/debugger/builtin-commands.c in order to have commands like 'memory pmm' and 'memory heap' instead of 'pmm' and 'heap' separately (like gdb commands)
+        </note>
     </note>
     <note priority="low" time="1226606652">
         Move less useful tools related parameters from src/Makefile.am to src/Makefile.def
