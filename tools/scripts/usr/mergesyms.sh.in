@@ -1,5 +1,5 @@
 #
-# mergesyms_new
+# mergesyms
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #                    Alessandro Massignan
@@ -20,7 +20,7 @@
 #
 
 # Required variables
-PROGNAME="mergesyms_new"
+PROGNAME="mergesyms"
 PROGVERSION="0.0.1"
 
 # System tools
