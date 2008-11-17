@@ -113,6 +113,8 @@ tools/scripts/usr/sh2h
 tools/scripts/usr/sh2h.sh
 tools/scripts/usr/flhandler
 tools/scripts/usr/flhandler.sh
+tools/scripts/usr/mergesyms_new
+tools/scripts/usr/mergesyms_new.sh
 # XXX FIXME: To be removed ASAP
 tools/scripts/usr/grub1-config
 tools/scripts/usr/grub1-config.sh
