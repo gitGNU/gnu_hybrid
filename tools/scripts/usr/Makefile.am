@@ -223,7 +223,6 @@ CLEANFILES += mkiso-grub2
 check_PASS_SCRPTS =				\
 	test-rules2syms-1			\
 	test-rules2syms-2			\
-	test-mergesyms-1			\
 	test-getdefine-1			\
 	test-getdefine-2			\
 	test-getdefine-4			\
@@ -233,7 +232,7 @@ check_PASS_SCRPTS =				\
 	test-sh2h-4				\
 	test-flhandler-1			\
 	test-flhandler-2			\
-	test-mergesyms_new-1
+	test-mergesyms-1
 
 
 check_FAIL_SCRPTS =				\
@@ -241,11 +240,11 @@ check_FAIL_SCRPTS =				\
 	test-sh2h-6				\
 	test-getdefine-3			\
 	test-flhandler-3			\
-	test-mergesyms_new-2			\
-	test-mergesyms_new-3			\
-	test-mergesyms_new-4			\
-	test-mergesyms_new-5			\
-	test-mergesyms_new-6
+	test-mergesyms-2			\
+	test-mergesyms-3			\
+	test-mergesyms-4			\
+	test-mergesyms-5			\
+	test-mergesyms-6
 
 check_SCRIPTS =					\
 	$(check_PASS_SCRPTS)			\
