@@ -132,4 +132,7 @@
     <note priority="low" time="1226606652">
         Move less useful tools related parameters from src/Makefile.am to src/Makefile.def
     </note>
+    <note priority="low" time="1226963666">
+        Upgrade tools/scripts/dev in order to remove awk dependency (move them all to perl)
+    </note>
 </todo>
