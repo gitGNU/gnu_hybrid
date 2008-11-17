@@ -160,8 +160,9 @@ $AWK -v guard=$GUARD -v prefix=$PREFIX  \
 	count = split($0, temp, " ");
 
 	if (count != 2) {
-	    print "'$PROGNAME': " \
-		  "Wrong input format while looking for option name";
+	    print "'$PROGNAME': "                                    \
+		  "Wrong input format while looking for option name" \
+		  > "/dev/stderr";
 	    retval = 1;
 	    exit 1;
 	}
@@ -173,8 +174,9 @@ $AWK -v guard=$GUARD -v prefix=$PREFIX  \
 	count = split($0, temp, " ");
 
 	if (count != 2) {
-	    print "'$PROGNAME': " \
-		  "Wrong input format while looking for option name";
+	    print "'$PROGNAME': "                                    \
+		  "Wrong input format while looking for option name" \
+		  > "/dev/stderr";
 	    retval = 1;
 	    exit 1;
 	}
@@ -192,8 +194,9 @@ $AWK -v guard=$GUARD -v prefix=$PREFIX  \
 	count = split($0, temp, " ");
 
 	if (count != 2) {
-	    print "'$PROGNAME': " \
-		  "Wrong input format while looking for option name";
+	    print "'$PROGNAME': "                                    \
+		  "Wrong input format while looking for option name" \
+		  > "/dev/stderr";
 	    retval = 1;
 	    exit 1;
 	}
@@ -205,8 +208,9 @@ $AWK -v guard=$GUARD -v prefix=$PREFIX  \
 	count = split($0, temp, " ");
 
 	if (count != 2) {
-	    print "'$PROGNAME': " \
-		  "Wrong input format while looking for option name";
+	    print "'$PROGNAME': "                                    \
+		  "Wrong input format while looking for option name" \
+		  > "/dev/stderr";
 	    retval = 1;
 	    exit 1;
 	}
@@ -220,12 +224,13 @@ $AWK -v guard=$GUARD -v prefix=$PREFIX  \
     }
 
     /.*/ {
-	print "'$PROGNAME': Unrecognized input line `" $0 "`";
+	print "'$PROGNAME': Unrecognized input line `" $0 "`" > "/dev/stderr";
 	retval = 1;
 	exit 1;
     }
     END {
 	if (retval != 0) {
+	    close("/dev/stderr");
 	    exit retval;
 	}
 
@@ -258,10 +263,9 @@ $AWK -v guard=$GUARD -v prefix=$PREFIX  \
 	print "";
 	print "/* " defscount " definitions processed */";
     }
-    ' <$INFILE >$OUTFILE
+    ' <$INFILE 1>$OUTFILE
 
 if test $? != 0; then
-    cat $OUTFILE
     rm -f $OUTFILE 2>/dev/null
     exit $?
 fi
