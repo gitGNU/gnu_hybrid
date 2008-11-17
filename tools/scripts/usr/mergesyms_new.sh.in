@@ -1,0 +1,289 @@
+#
+# mergesyms_new
+#
+# Copyright (C) 2008 Francesco Salvestrini
+#                    Alessandro Massignan
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+# Required variables
+PROGNAME="mergesyms_new"
+PROGVERSION="0.0.1"
+
+# System tools
+SED="@SED@"
+AWK="@AWK@"
+
+# Script variables
+INFILE_ALL=""
+INFILE_USR=""
+OUTFILE=""
+
+#
+# Internal functions
+#
+help () {
+    echo "Usage: $PROGNAME [OPTION]"
+    echo
+    echo "Check a kernel image for multiboot compliance"
+    echo
+    echo "  -i <ARG>    set the file containing all the symbols"
+    echo "  -j <ARG>    set the file containing user defined symbols"
+    echo "  -o <ARG>    set the output file"
+    echo "  -v          enable verbose messages"
+    echo "  -d          enable debugging"
+    echo "  -h          display this help and exit"
+    echo "  -V          display program version"
+    echo
+    echo "Report bugs to <@PACKAGE_BUGREPORT@>."
+}
+
+#
+# Libraries initialization
+#
+lib_init
+
+#
+# Parsing command line arguments
+#
+if test x"$*" = x"" ; then
+    hint "Missing required options"
+    exit 1
+fi
+
+while test ! x"$1" = x""
+do
+    case $1 in
+	-i)
+	    shift && INFILE_ALL=$1
+	    ;;
+	-j)
+	    shift && INFILE_USR=$1
+	    ;;
+	-o)
+	    shift && OUTFILE=$1
+	    ;;
+	-d)
+	    DEBUG=1
+	    ;;
+	-v)
+	    VERBOSE=1
+	    ;;
+	-h)
+	    help && exit 0
+	    ;;
+	-V)
+	    version && exit 0
+	    ;;
+	*)
+	    hint "Wrong option \`$1'"
+	    exit 1
+	    ;;
+    esac
+    shift
+done
+
+#
+# Checking command line arguments
+#
+if test x"$INFILE_ALL" = x"" ; then
+    hint "Missing first input file(s)"
+    exit 1
+fi
+
+if test ! -r $INFILE_ALL; then
+    error "File \`$INFILE_ALL' is not readable"
+    exit 1
+fi
+
+if test x"$INFILE_USR" = x"" ; then
+    hint "Missing input file(s)"
+    exit 1
+fi
+
+if test ! -r $INFILE_USR; then
+    error "File \`$INFILE_USR' is not readable"
+    exit 1
+fi
+
+if test x"$OUTFILE" = x"" ; then
+    hint "Missing output file"
+    exit 1
+fi
+
+: 2>/dev/null 1>$OUTFILE || \
+    { error "File \`$OUTFILE' is not writable" ; exit 1 ; }
+
+#
+# Start the real job
+#
+$AWK -v infile_all="$INFILE_ALL" \
+     -v infile_usr="$INFILE_USR" \
+    '
+    function read_file_all ()
+    {
+	lineno = 0;
+
+	while ((getline line <infile_all) !=0) {
+	    lineno++;
+
+	    if ((line ~ /^[ \t]*\#/) || (line ~ /^[ \t]*$/)) {
+		continue;
+	    }
+
+	    sub(/\#.*$/, "", line);
+	    sub(/^[ \t]*/, "", line);
+	    sub(/[ \t]*$/, "", line);
+
+	    if (match(line, /^[A-Z][A-Z0-9_]*$/) != 0) {
+
+		if (line in defs_out) {
+		    print "Duplicated symbol `" line "`" \
+			  " in file `" infile_all "`" > "/dev/stderr";
+		    close(infile_usr);
+		    return 0;
+		}
+
+		defs_out[line] = 0;
+		syms_all++;
+	    } else {
+		print "Bad input line in file `" infile_all "` " \
+		      "[" lineno "]: `" line "`" > "/dev/stderr";
+		close(infile_all);
+		return 0;
+	    }
+	}
+	close(infile_all);
+
+	return 1;
+    }
+    function read_file_usr ()
+    {
+	lineno = 0;
+
+	while ((getline line <infile_usr) !=0) {
+	    lineno++;
+
+	    if ((line ~ /^[ \t]*\#/) || (line ~ /^[ \t]*$/)) {
+		continue;
+	    }
+
+	    sub(/\#.*$/, "", line);
+	    sub(/^[ \t]*/, "", line);
+	    sub(/[ \t]*$/, "", line);
+
+	    if (line ~ /^$/) {
+		continue;
+	    }
+
+	    if (match(line, /^[A-Z][A-Z0-9_]*[ \t]*=[ \t]*.*$/) != 0) {
+		delete data;
+
+		sub(/[ \t]*=[ \t]*/, "=", line);
+		split(line, data, "=");
+
+		if (!(data[1] in defs_out)) {
+		    print "Invalid user symbol `" data[1] "`" \
+			  " in file `" infile_usr "`" > "/dev/stderr";
+		    close(infile_usr);
+		    return 0;
+		}
+
+		if (defs_out[data[1]] != 0) {
+		    print "Duplicated symbol `" data[1] "`" \
+			  " in file `" infile_usr "`" > "/dev/stderr";
+		    close(infile_usr);
+		    return 0;
+		}
+
+		defs_out[data[1]] = data[2];
+		syms_usr++;
+	    } else {
+		print "Bad input line in file `" infile_usr "` " \
+		      "[" lineno "]: `" line "`" > "/dev/stderr";
+		close(infile_usr);
+		return 0;
+	    }
+	}
+	close(infile_usr);
+
+	return 1;
+    }
+    BEGIN {
+	syms_all = 0;
+	syms_usr = 0;
+	retval   = 0;
+
+	delete defs_out;
+
+	if (!read_file_all()) {
+	    retval = 1;
+	    exit 1;
+	}
+
+	if (!read_file_usr()) {
+	    retval = 1;
+	    exit 1;
+	}
+
+	if (syms_usr > syms_all) {
+	    print "User symbols exceed [" syms_usr "/" syms_all "]" \
+		  > "/dev/stderr";
+	    retval = 1;
+	    exit 1;
+	}
+	exit 0;
+    }
+    END {
+	if (retval != 0) {
+	    close("/dev/stderr");
+	    exit retval;
+	}
+
+	maxlength = 0;
+	defscount = 0;
+
+	for (sym in defs_out) {
+	    l = length(sym)
+
+	    if (maxlength < l) {
+		maxlength = l;
+	    }
+	    defscount++;
+	}
+
+	for (sym in defs_out) {
+	    printf("%-" maxlength"s %s\n", sym, defs_out[sym]);
+	}
+
+	exit retval;
+    }
+    ' 1>$OUTFILE
+
+if test $? != 0; then
+    rm -f $OUTFILE 2>/dev/null
+    exit $?
+fi
+
+#
+# Libraries finalization
+#
+lib_fini
+
+#
+# All done!
+#
+exit 0
