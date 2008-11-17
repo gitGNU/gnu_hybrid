@@ -32,13 +32,11 @@ scripts =					\
 	mkbuild					\
 	rules2syms				\
 	sh2h					\
-	flhandler				\
-	mergesyms_new
+	flhandler
 
 noinst_SCRIPTS = $(scripts)
 
-awk_scripts_SRCS =				\
-	mergesyms.awk.in
+awk_scripts_SRCS =
 
 sh_scripts_SRCS =				\
 	grub1-config.sh.in			\
@@ -51,7 +49,7 @@ sh_scripts_SRCS =				\
 	mkbuild.sh.in				\
 	getdefine.sh.in				\
 	flhandler.sh.in				\
-	mergesyms_new.sh.in
+	mergesyms.sh.in
 
 pl_scripts_SRCS =
 
@@ -64,19 +62,19 @@ EXTRA_DIST +=					\
 	$(pl_scripts_SRCS)
 
 
-mergesyms_new.sh: Makefile $(sh_lib_SRC) mergesyms_new.sh.in
-	INFILE=mergesyms_new.sh.in ;		\
-	OUTFILE=mergesyms_new.sh ;		\
+mergesyms.sh: Makefile $(sh_lib_SRC) mergesyms.sh.in
+	INFILE=mergesyms.sh.in ;		\
+	OUTFILE=mergesyms.sh ;			\
 	$(transform_sh_in_2_sh) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mergesyms_new.sh
+CLEANFILES += mergesyms.sh
 
-mergesyms_new: Makefile mergesyms_new.sh
-	INFILE=mergesyms_new.sh ;		\
-	OUTFILE=mergesyms_new ;			\
+mergesyms: Makefile mergesyms.sh
+	INFILE=mergesyms.sh ;			\
+	OUTFILE=mergesyms ;			\
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mergesyms_new
+CLEANFILES += mergesyms
 
 flhandler.sh: Makefile $(sh_lib_SRC) flhandler.sh.in
 	INFILE=flhandler.sh.in ;		\
@@ -217,28 +215,6 @@ mkiso-grub2: Makefile mkiso-grub2.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mkiso-grub2
-
-## mergesyms
-mergesyms.awk: Makefile $(awk_lib_SRC) mergesyms.awk.in
-	INFILE=mergesyms.awk.in ;		\
-	OUTFILE=mergesyms.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mergesyms.awk
-
-mergesyms.sh: Makefile $(sh_lib_SRC) mergesyms.awk
-	INFILE=mergesyms.awk ;			\
-	OUTFILE=mergesyms.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mergesyms.sh
-
-mergesyms: Makefile mergesyms.sh
-	INFILE=mergesyms.sh ;			\
-	OUTFILE=mergesyms ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mergesyms
 
 
 ##
