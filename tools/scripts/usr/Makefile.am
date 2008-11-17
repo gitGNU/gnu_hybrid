@@ -32,7 +32,8 @@ scripts =					\
 	mkbuild					\
 	rules2syms				\
 	sh2h					\
-	flhandler
+	flhandler				\
+	mergesyms_new
 
 noinst_SCRIPTS = $(scripts)
 
@@ -49,7 +50,8 @@ sh_scripts_SRCS =				\
 	sh2h.sh.in				\
 	mkbuild.sh.in				\
 	getdefine.sh.in				\
-	flhandler.sh.in
+	flhandler.sh.in				\
+	mergesyms_new.sh.in
 
 pl_scripts_SRCS =
 
@@ -61,6 +63,20 @@ EXTRA_DIST +=					\
 	$(sh_scripts_SRCS)			\
 	$(pl_scripts_SRCS)
 
+
+mergesyms_new.sh: Makefile $(sh_lib_SRC) mergesyms_new.sh.in
+	INFILE=mergesyms_new.sh.in ;		\
+	OUTFILE=mergesyms_new.sh ;		\
+	$(transform_sh_in_2_sh) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += mergesyms_new.sh
+
+mergesyms_new: Makefile mergesyms_new.sh
+	INFILE=mergesyms_new.sh ;		\
+	OUTFILE=mergesyms_new ;			\
+	$(transform_sh_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += mergesyms_new
 
 flhandler.sh: Makefile $(sh_lib_SRC) flhandler.sh.in
 	INFILE=flhandler.sh.in ;		\
@@ -240,13 +256,20 @@ check_PASS_SCRPTS =				\
 	test-sh2h-3				\
 	test-sh2h-4				\
 	test-flhandler-1			\
-	test-flhandler-2
+	test-flhandler-2			\
+	test-mergesyms_new-1
+
 
 check_FAIL_SCRPTS =				\
 	test-sh2h-5				\
 	test-sh2h-6				\
 	test-getdefine-3			\
-	test-flhandler-3
+	test-flhandler-3			\
+	test-mergesyms_new-2			\
+	test-mergesyms_new-3			\
+	test-mergesyms_new-4			\
+	test-mergesyms_new-5			\
+	test-mergesyms_new-6
 
 check_SCRIPTS =					\
 	$(check_PASS_SCRPTS)			\
