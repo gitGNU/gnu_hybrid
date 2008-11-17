@@ -24,7 +24,7 @@ TEST_FILENAME_IN2=./test-in2.txt
 TEST_FILENAME_OUT=./test-out.txt
 TEST_FILENAME_EXP=./test-exp.txt
 
-MERGESYMS_NEW="./mergesyms_new"
+MERGESYMS="./mergesyms"
 
 rm -f $TEST_FILENAME_IN1
 rm -f $TEST_FILENAME_IN2
@@ -59,10 +59,10 @@ cat << EOF > $TEST_FILENAME_EXP
 This test must fail!
 EOF
 
-$MERGESYMS_NEW -i $TEST_FILENAME_IN1 \
-	       -j $TEST_FILENAME_IN2 \
-	       -o $TEST_FILENAME_OUT \
-	       >/dev/null 2>&1 || exit 1
+$MERGESYMS -i $TEST_FILENAME_IN1		\
+    -j $TEST_FILENAME_IN2			\
+    -o $TEST_FILENAME_OUT			\
+    >/dev/null 2>&1 || exit 1
 
 diff $TEST_FILENAME_OUT $TEST_FILENAME_EXP > /dev/null 2>&1 || exit 1
 
