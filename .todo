@@ -135,4 +135,7 @@
     <note priority="low" time="1226963666">
         Upgrade tools/scripts/dev in order to remove awk dependency (move them all to perl)
     </note>
+    <note priority="low" time="1227122747">
+        Rearrange the build process in order to use EXEEXT (if needed)
+    </note>
 </todo>
