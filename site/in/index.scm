@@ -1,10 +1,10 @@
-(h3 "DESCRIPTION")
+(h2 "DESCRIPTION")
 (p "Hybrid is a kernel being developed with an emphasis on design and "
    "portability. It is largely implemented in C/C++, with a small amount of "
    "assembly. The kernel is built on top of "
    (a (@ (href "http://www.nongnu.org/elklib")) "elklib") ".")
 
-(h4 "Features")
+(h3 "Features")
 (p "The architecture indipendent features are:")
 (ul
  (li "Strict architecture-independant layer that allows clean porting "
@@ -18,7 +18,7 @@
  (li "Interrupts / DMA handling")
  (li "Scheduling"))
 
-(h4 "Ports")
+(h3 "Ports")
 (p "The only available port is for the x86 architecture")
 (p "The x86 port supports the following features/hardware (maybe not updated):")
 (ul
@@ -32,21 +32,21 @@
  (li "Debugging via Bochs (e9 port)")
  (li "Debugging via RS232"))
 
-(h3 "COPYING")
+(h2 "COPYING")
 (p "The project is licensed under the "
    (a (@ (href "http://www.gnu.org/licenses/licenses.html"))
       "GNU General Public License, version 2"))
 
-(h3 "MAINTAINERS")
+(h2 "MAINTAINERS")
 (p "Francesco Salvestrini <salvestrini AT gmail DOT com>")
 
-(h3 "AUTHORS")
+(h2 "AUTHORS")
 (p "Francesco Salvestrini <salvestrini AT gmail DOT com>")
 
-(h3 "RELEASES")
+(h2 "RELEASES")
 (p "Sorry, no public release available at the moment.")
 
-(h3 "MAILING LISTS")
+(h2 "MAILING LISTS")
 (p "The project has a single moderated mailing list, with an archive. "
    "In order to post a message to the mailing list you must be subscribed. "
    "Please consult the "
@@ -54,7 +54,7 @@
       "mailing list page")
    " for more information on subscribing to the mailing list.")
 
-(h3 "REPORT A BUG")
+(h2 "REPORT A BUG")
 (p "If you think you have found a bug then please send as complete a report "
    "as possible to "
    "<hybrid-generic AT nongnu DOT org>. "
@@ -65,9 +65,9 @@
    "latest repository sources, please be so kind to create it using the "
    "repository sources, not the release sources.")
 
-(h3 "DEVELOPMENT")
+(h2 "DEVELOPMENT")
 
-(h4 "Browsing sources")
+(h3 "Browsing sources")
 (p "You can browse the "
    (a (@ (href "http://git.savannah.nongnu.org/gitweb/?p=hybrid.git"))
       "Git repository")
@@ -76,13 +76,13 @@
    "the complete histories of any file in the repository as well as "
    "differences among two versions.")
 
-(h4 "Getting a copy of the Git Repository")
+(h3 "Getting a copy of the Git Repository")
 (p "Anonymous checkout:")
 (pre (@ class "terminal")
      (a (@ (href "http://savannah.gnu.org/maintenance/UsingGit")) "git")
      " clone git://git.savannah.nongnu.org/hybrid.git")
 
-(h4 "Contribute")
+(h3 "Contribute")
 (p "If you have time and programming skills, you can help us by developing "
    "missing features, regression tests or bug-fixing the present codebase. "
    "Subscribe to the "
