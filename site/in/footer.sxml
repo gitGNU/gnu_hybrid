@@ -30,11 +30,11 @@
  (a (@ (href "http://www.nongnu.org/hybrid"))
   ,as_site_variable_PROGRAMNAME)
  ", hosted at "
- (a (@ (href "http://"))
+ (a (@ (href "http://savannah.nongnu.org/projects/hybrid"))
   "Savannah")
  (br)
  "Please send broken links and other web page suggestions to "
- "<sitetool-generic AT nongnu DOT org>, thank you."
+ "<hybrid-generic AT nongnu DOT org>, thank you."
  (br)
  "This page was last modified on "
  ,(strftime "%A %d %B %Y" (localtime (current-time)))
