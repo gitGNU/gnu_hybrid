@@ -47,6 +47,14 @@ missing ()
 }
 
 #
+# Prevent running bootstrap on a non-repository copy
+#
+git log > /dev/null 2>&1 || {
+    echo "$ME: I must run on a git clone ..."
+    exit 1
+}
+
+#
 # External tools
 #
 AUTOHEADER=`missing autoheader`
