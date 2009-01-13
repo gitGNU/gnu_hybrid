@@ -30,7 +30,9 @@ EXTRA_DIST =					\
 	map.as					\
 	pages.as				\
 	site.as					\
-	site.css
+	site.css				\
+	menu.scm				\
+	tree.scm
 
 site:
 	$(SITETOOL) -v --mode initialize && \
