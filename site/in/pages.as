@@ -6,9 +6,10 @@ pages = {
 			body   = "p1_body";
 			header = "header";
 			footer = "footer";
+                        map    = "p1_map";
 		};
 		vars = {
-			title = "Hybrid";
+			title = "Home";
 			css   = "site.css";
 		};
 	};
