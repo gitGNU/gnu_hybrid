@@ -11,6 +11,18 @@ contents = {
 		};
 	};
 
+	content = {
+		id      = "p1_map";
+		source  = "@work_dir@/maps/p1.map";
+		filters = {
+			filter[0] = {
+				source      = "map";
+				destination = "sxml";
+				parameters  = "-l menu.scm -l tree.scm";
+			};
+		};
+	};
+
         content = {
                 id     = "footer";
                 source = "./footer.sxml";
