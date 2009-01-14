@@ -27,7 +27,7 @@
   (img (@ (alt "Valid XHTML10")
           (src "http://www.w3.org/Icons/valid-xhtml10.png"))))
  "Powered by "
- (a (@ (href "http://www.nongnu.org/hybrid"))
+ (a (@ (href "http://www.nongnu.org/sitetool"))
   ,as_site_variable_PROGRAMNAME)
  ", hosted at "
  (a (@ (href "http://savannah.nongnu.org/projects/hybrid"))
