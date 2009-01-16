@@ -47,14 +47,6 @@ missing ()
 }
 
 #
-# Prevent running bootstrap on a non-repository copy
-#
-git log > /dev/null 2>&1 || {
-    echo "$ME: I must run on a git clone ..."
-    exit 1
-}
-
-#
 # External tools
 #
 AUTOHEADER=`missing autoheader`
@@ -65,12 +57,16 @@ AUTORECONF=`missing autoreconf`
 LIBTOOL=`( missing glibtool || missing libtool )`
 LIBTOOLIZE=`( missing glibtoolize || missing libtoolize)`
 GNULIBTOOL=`missing gnulib-tool`
+GIT=`missing git`
+SED=`missing sed`
 
 #
 # Dump some useful informations
 #
 echo "$ME: Dumping build-tools information ..."
 for tool in	\
+    $SED        \
+    $GIT        \
     $AUTOHEADER	\
     $AUTOCONF	\
     $LIBTOOL	\
@@ -86,6 +82,18 @@ do
 	echo "$ME:  $tool -> $TOOLVER"
     fi
 done
+
+#
+# Prevent running bootstrap on a non-repository copy
+#
+$GIT log > /dev/null 2>&1 || {
+    echo "$ME: I must run on a git clone ..."
+    exit 1
+}
+if test x"`$GIT tag -l 2>/dev/null | $SED -n '$='`" = x""; then
+    echo "$ME: I require a repository tag in order to run ..."
+    exit 1
+fi
 
 #
 # Remove files left from the previous run
