@@ -179,7 +179,7 @@ body {
   border-style: none;
 }
 
-.float_clear {
+.clear_both {
   clear: both;
   margin: 0px;
   padding: 0px;
