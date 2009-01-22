@@ -18,7 +18,79 @@ contents = {
 			filter[0] = {
 				source      = "map";
 				destination = "sxml";
-				parameters  = "-l menu.scm -l tree.scm";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "p2_body";
+		source  = "development.scm";
+		filters = {
+			filter[0] = {
+				source      = "sxml";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "p2_map";
+		source  = "@work_dir@/maps/p2.map";
+		filters = {
+			filter[0] = {
+				source      = "map";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "p3_body";
+		source  = "downloads.scm";
+		filters = {
+			filter[0] = {
+				source      = "sxml";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "p3_map";
+		source  = "@work_dir@/maps/p3.map";
+		filters = {
+			filter[0] = {
+				source      = "map";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "p4_body";
+		source  = "installation.scm";
+		filters = {
+			filter[0] = {
+				source      = "sxml";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "p4_map";
+		source  = "@work_dir@/maps/p4.map";
+		filters = {
+			filter[0] = {
+				source      = "map";
+				destination = "sxml";
+				parameters  = "";
 			};
 		};
 	};

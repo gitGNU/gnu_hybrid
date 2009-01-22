@@ -20,19 +20,25 @@
 
 include $(top_srcdir)/Makefile.sub
 
-EXTRA_DIST =					\
+SITE_SRCS =					\
 	contents.as				\
 	files.as				\
 	footer.sxml				\
 	header.sxml				\
-	index.scm				\
 	layout.sxml				\
 	map.as					\
 	pages.as				\
 	site.as					\
-	site.css
+	site.css				\
+						\
+	index.scm				\
+	installation.scm			\
+	downloads.scm				\
+	development.scm
 
-site:
+EXTRA_DIST = $(SITE_SRCS)
+
+site: $(SITE_SRCS)
 	$(SITETOOL) -v --mode initialize && \
 	$(SITETOOL) -v --mode build && \
 	$(SITETOOL) -v --mode validate && \
