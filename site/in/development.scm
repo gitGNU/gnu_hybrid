@@ -15,6 +15,13 @@
      (a (@ (href "http://savannah.gnu.org/maintenance/UsingGit")) "git")
      " clone git://git.savannah.nongnu.org/hybrid.git")
 
+(h3 "Bootstrapping the sources")
+(p "Once you have the repository on your machine you must run the convenience "
+   "script " (kbd "bootstrap") " located on the root of the downloaded "
+   "directory. The script will look for the required tools and will (re)build "
+   "some files. If everything works as supposed you will be able to "
+   "configure the package")
+
 (h3 "Contribute")
 (p "If you have time and programming skills, you can help us by developing "
    "missing features, regression tests or bug-fixing the present codebase. "
