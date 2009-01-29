@@ -136,8 +136,13 @@ EXTRA_DIST +=							\
 ## Maintainer related targets
 ##
 
-TODO: .todo
-	$(DEVTODO) -T || {			\
+TODO:
+	$(DNT) --database=$(top_srcdir)/.dnt.db	\
+	       --mono				\
+	       dump				\
+	       --format="* %t"			\
+	       --width 0			\
+	       --output TODO || {		\
 		rm -f TODO ;			\
 		exit 1 ;			\
 	}
