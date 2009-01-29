@@ -162,4 +162,6 @@ tools/choose/tools/scripts/whitespace-detect
 
 site/in/.sitetool
 site/in/site.stamp
+site/in/todos.sxml
+site/in/todos.dump
 site/out/*
