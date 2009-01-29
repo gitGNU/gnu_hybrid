@@ -30,6 +30,21 @@ pages = {
 	};
 
 	page = {
+		id          = "todos";
+		destination = "todos.html";
+		contents = {
+			body   = "todos_body";
+			header = "header";
+			footer = "footer";
+			map    = "todos_map";
+		};
+		vars = {
+			title = "TODOs";
+			css   = "site.css";
+		};
+	};
+
+	page = {
 		id          = "p3";
 		destination = "downloads.html";
 		contents = {

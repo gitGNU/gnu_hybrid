@@ -48,6 +48,30 @@ contents = {
 	};
 
 	content = {
+		id      = "todos_body";
+		source  = "todos.sxml";
+		filters = {
+			filter[0] = {
+				source      = "sxml";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "todos_map";
+		source  = "@work_dir@/maps/todos.map";
+		filters = {
+			filter[0] = {
+				source      = "map";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
 		id      = "p3_body";
 		source  = "downloads.scm";
 		filters = {
