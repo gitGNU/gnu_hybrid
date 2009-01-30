@@ -16,11 +16,11 @@
      " clone git://git.savannah.nongnu.org/hybrid.git")
 
 (h3 "Bootstrapping the sources")
-(p "Once you have the repository on your machine you must run the convenience "
-   "script " (kbd "bootstrap") " located on the root of the downloaded "
-   "directory. The script will look for the required tools and will (re)build "
+(p "Once you have the repository on your machine you should run the "
+   "convenience script " (kbd "bootstrap") " located in the root directory. "
+   "The script will look for the required tools and will (re)build "
    "some files. If everything works as supposed you will be able to "
-   "configure the package")
+   "configure the package using the " (kbd "configure") " script")
 
 (h3 "Contribute")
 (p "If you have time and programming skills, you can help us by developing "
