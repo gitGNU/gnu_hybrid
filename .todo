@@ -55,7 +55,7 @@
         tools/autotools/m4/ax_string_intersect.m4: Fix the bug, its description is in the macro
     </note>
     <note priority="medium" time="1226606727">
-        Add a test in the `make check' target in order to avoid the use of multibyte character ('\') in sed substitution command (s///) in order to gain more portability (ex. do not use things like this: `sed -e 's/^.*/\t/' on FreeBSD)
+        Add a test into the check target in order to detect the use of multibyte character into substitution commands, gaining more portability (eg. do not use s/^.*/\t/ on FreeBSD)
     </note>
     <note priority="medium" time="1226606743">
         Move the src/archs/x86/keyboard* related code to a i8042.* file
