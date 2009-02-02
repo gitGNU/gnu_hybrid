@@ -4,6 +4,10 @@ map = {
 		parent = "";
 	};
 	node = {
+		id     = "news";
+		parent = "p1";
+	};
+	node = {
 		id     = "p2";
 		parent = "";
 	};

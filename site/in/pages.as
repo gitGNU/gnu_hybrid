@@ -30,6 +30,21 @@ pages = {
 	};
 
 	page = {
+		id          = "news";
+		destination = "news.html";
+		contents = {
+			body   = "news_body";
+			header = "header";
+			footer = "footer";
+			map    = "news_map";
+		};
+		vars = {
+			title = "NEWs";
+			css   = "site.css";
+		};
+	};
+
+	page = {
 		id          = "todos";
 		destination = "todos.html";
 		contents = {

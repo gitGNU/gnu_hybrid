@@ -48,6 +48,30 @@ contents = {
 	};
 
 	content = {
+		id      = "news_body";
+		source  = "news.sxml";
+		filters = {
+			filter[0] = {
+				source      = "sxml";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
+		id      = "news_map";
+		source  = "@work_dir@/maps/news.map";
+		filters = {
+			filter[0] = {
+				source      = "map";
+				destination = "sxml";
+				parameters  = "";
+			};
+		};
+	};
+
+	content = {
 		id      = "todos_body";
 		source  = "todos.sxml";
 		filters = {
