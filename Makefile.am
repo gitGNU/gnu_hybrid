@@ -136,13 +136,15 @@ EXTRA_DIST +=							\
 ## Maintainer related targets
 ##
 
-TODO:
-	$(DNT) --database=$(top_srcdir)/.dnt.db	\
+DNT_DB = $(top_srcdir)/.dnt.db
+TODO: $(DNT_DB)
+	$(DNT) --database=$(DNT_DB)		\
 	       --mono				\
 	       dump				\
 	       --format="* %t"			\
-	       --width 0			\
-	       --output TODO || {		\
+	       --width=0			\
+	       --filter=not-done		\
+	       --output=TODO || {		\
 		rm -f TODO ;			\
 		exit 1 ;			\
 	}
