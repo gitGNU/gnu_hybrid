@@ -53,7 +53,7 @@ AC_DEFUN([AX_GCC_VERSION], [
     ax_gcc_version_option=no
   ])
   AS_IF([test "x$GCC" = "xyes"],[
-    AS_IF([test "x$ax_gcc_version_option" != "no"],[
+    AS_IF([test "x$ax_gcc_version_option" != "xno"],[
       AC_CACHE_CHECK([gcc version],[ax_cv_gcc_version],[
         ax_cv_gcc_version="`$CC -dumpversion`"
         AS_IF([test "x$ax_cv_gcc_version" = "x"],[
