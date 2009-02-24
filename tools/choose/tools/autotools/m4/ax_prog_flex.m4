@@ -13,7 +13,7 @@
 #
 # LAST MODIFICATION
 #
-#   2008-04-12
+#   2009-02-23
 #
 # COPYLEFT
 #
@@ -47,8 +47,10 @@
 
 AC_DEFUN([AX_PROG_FLEX], [
   AC_REQUIRE([AM_PROG_LEX])
+  AC_REQUIRE([AC_PROG_SED])
+
   AC_CACHE_CHECK([if flex is the lexer generator],[ax_cv_prog_flex],[
-    AS_IF([test -n "`echo $LEX | sed 's/^.*\(flex\).*/\1/'`"],[
+    AS_IF([test "`echo \"$LEX\" | $SED 's,^.*\(flex\).*$,\1,'`" = "flex"],[
       ax_cv_prog_flex=yes
     ],[
       ax_cv_prog_flex=no
