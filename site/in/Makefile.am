@@ -45,7 +45,9 @@ news.dump: $(top_srcdir)/.dnt.db
 	$(DNT) --database=$(top_srcdir)/.dnt.db \
 	       --mono \
 	       dump \
-	       --format="(li \"%t\")" \
+	       --indent-format="(ul " \
+	       --line-format="(li \"%t\")" \
+	       --unindent-format=")" \
 	       --width=0 \
 	       --output=news.dump \
 	       --filter="done" || { \
@@ -58,9 +60,7 @@ news.sxml: news.dump
 	rm -f news.sxml && \
 	touch news.sxml && \
 	echo "(h2 \"NEWs\")" >> news.sxml && \
-	echo "(ul"           >> news.sxml && \
-	cat news.dump        >> news.sxml && \
-	echo ")"             >> news.sxml || { \
+	cat news.dump >> news.sxml || { \
 		rm -f news.sxml ; \
 		exit 1 ; \
 	}
@@ -70,7 +70,9 @@ todos.dump: $(top_srcdir)/.dnt.db
 	$(DNT) --database=$(top_srcdir)/.dnt.db \
 	       --mono \
 	       dump \
-	       --format="(li \"%t\")" \
+	       --indent-format="(ul " \
+	       --line-format="(li \"%t\")" \
+	       --unindent-format=")" \
 	       --width=0 \
 	       --output=todos.dump \
 	       --filter="not-done" || { \
@@ -83,9 +85,7 @@ todos.sxml: todos.dump
 	rm -f todos.sxml && \
 	touch todos.sxml && \
 	echo "(h2 \"TODOs\")" >> todos.sxml && \
-	echo "(ul"            >> todos.sxml && \
-	cat todos.dump        >> todos.sxml && \
-	echo ")"              >> todos.sxml || { \
+	cat todos.dump >> todos.sxml || { \
 		rm -f todos.sxml ; \
 		exit 1 ; \
 	}
