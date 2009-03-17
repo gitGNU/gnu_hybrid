@@ -40,37 +40,6 @@ AC_CANONICAL_TARGET
 #
 AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
 
-AX_SPLIT_VERSION($PACKAGE_VERSION)
-#AC_MSG_CHECKING([package major version])
-#AS_IF([test x"$AX_MAJOR_VERSION" = x""],[
-#  AC_MSG_RESULT([none specified])
-#],[
-#  AC_MSG_RESULT([$AX_MAJOR_VERSION])
-#])
-#AC_MSG_CHECKING([package minor version])
-#AS_IF([test x"$AX_MINOR_VERSION" = x""],[
-#  AC_MSG_RESULT([none specified])
-#],[
-#  AC_MSG_RESULT([$AX_MINOR_VERSION])
-#])
-#AC_MSG_CHECKING([package micro version])
-#AS_IF([test x"$AX_MICRO_VERSION" = x""],[
-#  AC_MSG_RESULT([none specified])
-#],[
-#  AC_MSG_RESULT([$AX_MICRO_VERSION])
-#])
-#AC_MSG_CHECKING([package extra version])
-#AS_IF([test x"$AX_EXTRA_VERSION" = x""],[
-#  AC_MSG_RESULT([none specified])
-#],[
-#  AC_MSG_RESULT([$AX_EXTRA_VERSION])
-#])
-
-AC_SUBST(AX_PACKAGE_MAJOR,$AX_MAJOR_VERSION)
-AC_SUBST(AX_PACKAGE_MINOR,$AX_MINOR_VERSION)
-AC_SUBST(AX_PACKAGE_MICRO,$AX_MICRO_VERSION)
-AC_SUBST(AX_PACKAGE_EXTRA,$AX_EXTRA_VERSION)
-
 #
 # Checks for needed programs
 #
@@ -81,6 +50,14 @@ AX_PATH_MISSING([DOXYGEN],  [doxygen])
 AX_PATH_MISSING([SITETOOL], [sitetool])
 AX_PATH_MISSING([WGET],     [wget])
 AX_PATH_MISSING([DNT],      [dnt])
+
+#
+# Retrieve version parts
+#
+AX_SPLIT_VERSION($PACKAGE_VERSION)
+AC_SUBST(AX_PACKAGE_MAJOR,$AX_MAJOR_VERSION)
+AC_SUBST(AX_PACKAGE_MINOR,$AX_MINOR_VERSION)
+AC_SUBST(AX_PACKAGE_MICRO,$AX_POINT_VERSION)
 
 #
 # Check for programs that SHOULD (or MUST) be available into the system

@@ -58,11 +58,12 @@ int main(int argc, char * argv[])
 #endif
 	printf("Welcome to Hybrid kernel "
 	       "v%d.%d.%d "
-	       "%s"
 	       "(build #%d, built on %s)\n",
-	       VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO,
-	       strlen(VERSION_EXTRA) ? "(" VERSION_EXTRA ") " : "",
-	       BUILD_NUMBER, BUILD_DATE);
+	       VERSION_MAJOR,
+               VERSION_MINOR,
+               VERSION_MICRO,
+	       BUILD_NUMBER,
+               BUILD_DATE);
 
 	printf("Using elklib %s\n", ELKLIB_VERSION);
 
