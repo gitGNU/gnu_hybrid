@@ -26,6 +26,7 @@ include $(top_srcdir)/Makefile.sub
 HOST = "http://autoconf-archive.cryp.to"
 
 DOWNLOAD =						\
+	ax_split_version.m4				\
 	ax_with_prog.m4					\
 	ax_prog_bison.m4				\
 	ax_prog_flex.m4					\
@@ -130,7 +131,6 @@ MACROS =					\
 	ax_getopt_long.m4			\
 	ax_ld_check_flag.m4			\
 	ax_remove_forbidden.m4			\
-	ax_split_version.m4			\
 	ax_string_clean.m4			\
 	ax_string_intersect.m4			\
 	ax_test.m4				\
