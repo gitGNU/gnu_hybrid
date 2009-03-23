@@ -9,9 +9,9 @@
             Fix all return values (and all the referencing functions) in src/libs/c/stdio.c
             </entry><entry priority="medium" start="1226607282" end="1226608734">
             Fix eof and error indicator in streams (src/libs/c/stdio.c)
-            </entry><entry priority="veryhigh" start="1235495501">
+            </entry><entry priority="veryhigh" start="1235495501" end="1235682741">
             Fix the NEWS and TODOs site pages generation in site/in directory
-        </entry><entry priority="high" start="1226606961">
+            </entry><entry priority="high" start="1226606961">
             Replace AC_PATH_PROG with AC_CHECK_TOOL. The proposed approach should handle cross-compilation cases better
             <entry priority="medium" start="1226606992">
                 Use AC_CHECK_TOOL instead of AC_PATH_PROG for nm, objdump and so on in configure.ac.in

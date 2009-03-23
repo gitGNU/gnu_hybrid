@@ -45,9 +45,9 @@ news.dump: $(top_srcdir)/.dnt.db
 	$(DNT) --database=$(top_srcdir)/.dnt.db \
 	       --mono \
 	       show \
-	       --indent-format="(ul " \
+	       --indent-fill="(ul " \
+	       --unindent-fill=")" \
 	       --line-format="(li \"%t\")" \
-	       --unindent-format=")" \
 	       --width=0 \
 	       --output=news.dump \
 	       --filter="done" || { \
@@ -70,9 +70,9 @@ todos.dump: $(top_srcdir)/.dnt.db
 	$(DNT) --database=$(top_srcdir)/.dnt.db \
 	       --mono \
 	       show \
-	       --indent-format="(ul " \
+	       --indent-fill="(ul " \
+	       --unindent-fill=")" \
 	       --line-format="(li \"%t\")" \
-	       --unindent-format=")" \
 	       --width=0 \
 	       --output=todos.dump \
 	       --filter="not-done" || { \
