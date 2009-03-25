@@ -26,8 +26,8 @@ include $(top_srcdir)/Makefile.sub
 ##
 
 # No documentation yet
-#info_TEXINFOS = choicetool.texi
-#choicetool_TEXINFOS = gpl.texi standards.texi
+#info_TEXINFOS = choose.texi
+#choose_TEXINFOS = gpl.texi standards.texi
 
 ##
 ## Maintainer related targets
