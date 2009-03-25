@@ -186,7 +186,7 @@ $ACLOCAL    --force --install -I ./tools/autotools/m4 && \
 #
 # bootstrap other packages
 #
-cd tools/choose && ./bootstrap || {
+(cd tools/choose && ./bootstrap) || {
     echo "$ME: Cannot bootstrap tools/choose directory"
     exit 1
 }
