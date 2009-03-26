@@ -116,63 +116,6 @@ cat configure.ac.in | sed -e 's,[@]VERSION[@],'$VERSION',' > configure.ac || \
 chmod a-w configure.ac
 
 #
-# src/config/Makefile.cfg
-#
-echo "$ME: Building src/config/Makefile.cfg ..."
-OUTPUT_CFG=src/config/Makefile.cfg
-INPUT_CFGS=`find ./ -name "rules.cfg"`
-
-for i in $INPUT_CFGS ; do
-    CURRENT=`echo $i | sed -e 's,./,$(top_srcdir)/,'`
-    FILES="$FILES \\
-$CURRENT"
-done
-
-rm -f $OUTPUT_CFG || exit 1
-touch $OUTPUT_CFG || exit 1
-
-cat > $OUTPUT_CFG <<EOF
-##
-## Include file for automake
-##
-## This file has been generated automatically, DO NOT EDIT!
-##
-
-CFG_FILES = $FILES
-
-EOF
-
-#
-# src/*/Makefile.am generation from src/*/Makefile.am.in
-#
-for i in `find ./src -name "Makefile.inc.in"` ; do
-    srcfile=$i
-    dstfile=`dirname $i`/`basename $i .in`
-    relativepath=`echo $i | sed -e 's,\.\/src/,,' | sed -e 's,/Makefile\.inc\.in,,'`
-
-    #echo "$ME: Generating $dstfile from $srcfile ($relativepath)"
-    #echo "$ME: Generating $dstfile ($relativepath)"
-    echo "$ME: Generating $relativepath"
-
-    #cat $srcfile | sed \
-    #	-e "s,@subdir_srcdir@,$\(top_srcdir\)\/src/$relativepath,g" \
-    #	-e "s,@subdir_builddir@,$\(top_builddir\)\/src/$relativepath,g" \
-    #	> $dstfile
-    #cat $srcfile | sed \
-    #	-e "s,@subdir_srcdir@,$relativepath,g" \
-    #	-e "s,@subdir_builddir@,$relativepath,g" \
-    #	-e "s,@reldir@,$relativepath,g" \
-    #	-e "s,@reldir@,$relativepath,g" \
-    #	> $dstfile
-    cat $srcfile | sed \
-	-e "s,@reldir@,$relativepath,g" \
-	> $dstfile || {
-	echo "$ME: Cannot rearrange $srcfile into $dstfile"
-	exit 1
-    }
-done
-
-#
 # autoreconf
 #
 echo "$ME: Handling autotools bootstrap ..."
@@ -180,18 +123,6 @@ echo "$ME: Handling autotools bootstrap ..."
 echo "$ME: Running autoreconf ..."
 $ACLOCAL    --force --install -I ./tools/autotools/m4 && \
     $AUTORECONF --verbose --force --install -Wall         || {
-    exit 1
-}
-
-#
-# bootstrap other packages
-#
-(cd tools/choose && ./bootstrap) || {
-    echo "$ME: Cannot bootstrap tools/choose directory"
-    exit 1
-}
-(cd tools/blink && ./bootstrap) || {
-    echo "$ME: Cannot bootstrap tools/blink directory"
     exit 1
 }
 

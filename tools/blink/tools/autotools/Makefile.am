@@ -1,7 +1,7 @@
 ##
 ## Input file for automake
 ##
-## Copyright (C) 2008 Francesco Salvestrini
+## Copyright (C) 2007, 2008 Francesco Salvestrini
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,20 +20,8 @@
 
 include $(top_srcdir)/Makefile.sub
 
-## Always put libs first !!!
 SUBDIRS =					\
-	maint					\
-	scripts					\
-	choose					\
-	blink					\
-	autotools
-
-##
-## NOTE:
-##     autotools dir is already shipped by autotools ... :-)
-##
-##EXTRA_DIST =                                  \
-##	autotools
+	m4
 
 ##
 ## Maintainer related targets

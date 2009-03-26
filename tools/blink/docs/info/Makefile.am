@@ -20,20 +20,8 @@
 
 include $(top_srcdir)/Makefile.sub
 
-## Always put libs first !!!
-SUBDIRS =					\
-	maint					\
-	scripts					\
-	choose					\
-	blink					\
-	autotools
-
-##
-## NOTE:
-##     autotools dir is already shipped by autotools ... :-)
-##
-##EXTRA_DIST =                                  \
-##	autotools
+info_TEXINFOS  = blink.texi
+blink_TEXINFOS = fdl.texi
 
 ##
 ## Maintainer related targets

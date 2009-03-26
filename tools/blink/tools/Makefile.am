@@ -20,12 +20,8 @@
 
 include $(top_srcdir)/Makefile.sub
 
-## Always put libs first !!!
 SUBDIRS =					\
 	maint					\
-	scripts					\
-	choose					\
-	blink					\
 	autotools
 
 ##

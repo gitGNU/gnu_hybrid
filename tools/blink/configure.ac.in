@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #
-# configure.ac for Hybrid
+# configure.ac for BLink
 #
 # Copyright (C) 2008 Francesco Salvestrini
 #
@@ -20,7 +20,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-AC_INIT([Hybrid],[@VERSION@],[salvestrini@gmail.com],[hybrid])
+AC_INIT([BLink],[@VERSION@],[salvestrini@gmail.com],[blink])
 
 # Check for a recent version of autoconf
 AC_PREREQ([2.61])
@@ -28,7 +28,7 @@ AC_PREREQ([2.61])
 # Place/find all autotools related files in the following directories
 AC_CONFIG_AUX_DIR([tools/autotools])
 AC_CONFIG_MACRO_DIR([tools/autotools/m4])
-AC_CONFIG_SRCDIR([src/core/main.cxx])
+AC_CONFIG_SRCDIR([src/main.c])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -46,15 +46,22 @@ AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
 AC_PROG_GREP
 AC_PROG_SED
 
-AX_PATH_MISSING([DOXYGEN],  [doxygen])
-AX_PATH_MISSING([SITETOOL], [sitetool])
 AX_PATH_MISSING([WGET],     [wget])
 AX_PATH_MISSING([DNT],      [dnt])
 
 #
-# Retrieve version parts
+# The API version is the base version.  We must guarantee
+# compatibility for all releases with the same API version.
+# Our current rule is that:
+#
+# * All releases, including the prereleases, in an X.Y series
+#   are compatible.  So 1.5.1 is compatible with 1.5.
+#
+# * Prereleases on the trunk are all incompatible -- 1.5.1 and 1.5.2
+#   aren't the same.
 #
 AX_SPLIT_VERSION($PACKAGE_VERSION)
+API_VERSION="${AX_MAJOR_VERSION}.${AX_MINOR_VERSION}"
 AC_SUBST(AX_PACKAGE_MAJOR,$AX_MAJOR_VERSION)
 AC_SUBST(AX_PACKAGE_MINOR,$AX_MINOR_VERSION)
 AC_SUBST(AX_PACKAGE_MICRO,$AX_POINT_VERSION)
@@ -71,54 +78,6 @@ AX_PATH_MISSING([PERL],[perl],[perl seems missing ...])
 
 AC_ARG_VAR(PYTHON, [Full path to the 'python' executable])
 AX_PATH_MISSING([PYTHON],[python],[python seems missing ...])
-
-AC_ARG_VAR(NM, [Full path to the 'nm' executable])
-AX_PATH_MISSING([NM],[nm],[nm seems missing ...])
-
-AC_ARG_VAR(OBJDUMP, [Full path to the 'objdump' executable])
-AX_PATH_MISSING([OBJDUMP],[objdump],[objdump seems missing ...])
-
-AC_ARG_VAR(CXXFILT, [Full path to the 'c++filt' executable])
-AX_PATH_MISSING([CXXFILT],[c++filt],[c++filt seems missing])
-
-AC_ARG_VAR(SIZE, [Full path to the 'size' executable])
-AX_PATH_MISSING([SIZE],[size],[size seems missing])
-
-#
-# Program needed by scripts that must be present
-#
-# NOTE:
-#     date is used by mkbuild.sh.in in tools/scripts/usr
-#
-AX_PATH_MISSING([DATE],[date],[date seems missing])
-
-#
-# Image build support (XXX FIXME: TO BE MOVED ELSEWHERE ASAP)
-#
-AX_PROG_GRUB1([$PATH:/bin:/sbin],[grub1_support=yes],[grub1_support=no])
-AM_CONDITIONAL(GRUB1_SUPPORT,[test "$grub1_support" = "yes"])
-AX_PROG_GRUB2([$PATH:/bin:/sbin],[grub2_support=yes],[grub2_support=no])
-AM_CONDITIONAL(GRUB2_SUPPORT,[test "$grub2_support" = "yes"])
-AX_WITH_PROG([MKISOFS],[mkisofs])
-
-#
-# Check for programs that MUST be available
-#
-AX_TEST_S([],[
-  AC_MSG_ERROR([your system test program seems to not support -s option])
-])
-AX_TEST_E([],[
-  AC_MSG_ERROR([your system test program seems to not support -e option])
-])
-AX_TEST_X([],[
-  AC_MSG_ERROR([your system test program seems to not support -x option])
-])
-AX_TEST_R([],[
-  AC_MSG_ERROR([your system test program seems to not support -r option])
-])
-AX_TEST_W([],[
-  AC_MSG_ERROR([your system test program seems to not support -w option])
-])
 
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
@@ -435,118 +394,6 @@ AC_ARG_ENABLE([bt_verbose],
 ])
 
 #
-# Needed by some scripts in tools/scripts directory
-#
-AC_PROG_AWK
-AS_IF([test -z "$AWK"],[
-  AX_MISSING_PROG(AWK,[awk],[awk seems missing ...])
-])
-
-AX_AWK_FUNCTIONALITY_BARRIER
-
-AX_CHECK_AWK__V([],[])
-AX_CHECK_AWK_VARIABLE_VALUE_PAIRS([],[])
-AX_CHECK_AWK_USER_DEFINED_FUNCTIONS([],[])
-AX_CHECK_AWK_EXIT([],[
-  AX_AWK_EXPECTED_FUNCTIONALITY_BARRIER
-])
-
-AX_CHECK_AWK_ARGIND([],[])
-AX_CHECK_AWK_ERRNO([],[])
-AX_CHECK_AWK_ENVIRON([],[])
-AX_CHECK_AWK_IGNORECASE([],[])
-AX_CHECK_AWK__X_ESCAPES([],[])
-
-#AX_CHECK_AWK_ASSIGNMENT_TO_0([],[])
-
-AX_CHECK_AWK_ARRAY_DELETE_ELEM([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_ARRAY_DELETE([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_ARRAY_IN([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_ASSOCIATIVE_ARRAY([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-
-AX_CHECK_AWK_ATAN2([],[])
-AX_CHECK_AWK_SIN([],[])
-AX_CHECK_AWK_COS([],[])
-AX_CHECK_AWK_EXP([],[])
-
-AX_CHECK_AWK_GETLINE([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_INT([],[])
-AX_CHECK_AWK_INDEX([],[])
-AX_CHECK_AWK_LENGTH([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_LOG([],[])
-AX_CHECK_AWK_GENSUB([],[])
-AX_CHECK_AWK_GSUB([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_MATCH_2PARMS([],[])
-AX_CHECK_AWK_MATCH_3PARMS([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-
-AX_CHECK_AWK_OPERATOR_MULTIPLY_MULTIPLY([],[])
-AX_CHECK_AWK_OPERATOR_SQUARE([],[])
-
-AX_CHECK_AWK_PRINTF([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_RAND([],[])
-AX_CHECK_AWK_SPLIT([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_SPRINTF([],[])
-AX_CHECK_AWK_SQRT([],[])
-AX_CHECK_AWK_SRAND([],[])
-AX_CHECK_AWK_SUB([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_SUBSTR([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_SYSTEM([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_SYSTIME([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_STRFTIME([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_STRTONUM([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_CONDITIONAL_EXPRESSION([],[])
-AX_CHECK_AWK_TOUPPER([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_TOLOWER([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_VAR_REGEXP([],[])
-AX_CHECK_AWK_ASORT([],[
-  AX_AWK_REQUIRED_FUNCTIONALITY_BARRIER
-])
-AX_CHECK_AWK_ASORTI([],[])
-
-AX_CHECK_AWK_AND([],[])
-AX_CHECK_AWK_OR([],[])
-AX_CHECK_AWK_XOR([],[])
-AX_CHECK_AWK_COMPL([],[])
-AX_CHECK_AWK_LSHIFT([],[])
-AX_CHECK_AWK_RSHIFT([],[])
-
-#
 # Script flags
 #
 AX_TOOL_FLAGS=""
@@ -561,34 +408,6 @@ AS_IF([test "x$enable_build_tools_debug" = "xyes"],[
   AX_TOOL_FLAGS="$AX_TOOL_FLAGS -d"
 ])
 AC_SUBST(AX_TOOL_FLAGS)
-
-#
-# Lex (Flex) is needed in the tools directory
-#
-AM_PROG_LEX
-LEX_FLAGS=""
-# Use short options for compatibility (-v=--verbose, -d=--debug)
-AX_PROG_FLEX([
-  LEX_FLAGS="$LEX_FLAGS -v"
-  AS_IF([test "x$enable_build_tools_debug" = "xyes"],[
-    LEX_FLAGS="$LEX_FLAGS -d"
-  ])
-])
-AC_SUBST(LEX_FLAGS)
-
-#
-# Yacc (Bison) is needed in the tools directory
-#
-AC_PROG_YACC
-YACC_FLAGS=""
-# Use short options for compatibility (-v=--verbose, -t=--debug)
-AX_PROG_BISON([
-  YACC_FLAGS="$YACC_FLAGS -v"
-  AS_IF([test "x$enable_build_tools_debug" = "xyes"],[
-    YACC_FLAGS="$YACC_FLAGS -t"
-  ])
-])
-AC_SUBST(YACC_FLAGS)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -654,24 +473,16 @@ AM_CONDITIONAL([SUPPORT_ARCH_PPC32], [ test x"$architecture" = x"ppc32" ])
 #
 # Autoheader support
 #
-AC_CONFIG_HEADERS([src/config/autoconfig.h])
+AC_CONFIG_HEADERS([src/config.h])
 
-# Place header guard (C style)
-AH_TOP([
-#ifndef CONFIG_AUTOCONFIG_H
-#define CONFIG_AUTOCONFIG_H
-])
-AH_BOTTOM([
-#endif /* CONFIG_AUTOCONFIG_H */
-])
-
-# Check for getopt_long support
-AX_GETOPT_LONG
-
-AC_CONFIG_SUBDIRS([
-	tools/choose
-	tools/blink
-])
+## Place header guard (C style)
+#AH_TOP([
+##ifndef CONFIG_AUTOCONFIG_H
+##define CONFIG_AUTOCONFIG_H
+#])
+#AH_BOTTOM([
+##endif /* CONFIG_AUTOCONFIG_H */
+#])
 
 #
 # Finally output the configuration
@@ -679,28 +490,15 @@ AC_CONFIG_SUBDIRS([
 AC_CONFIG_FILES([
 	Makefile
 
-	tools/Makefile
+	docs/Makefile
+        docs/info/Makefile
 
-	tools/scripts/Makefile
-	tools/scripts/libs/Makefile
-	tools/scripts/libs/sh/Makefile
-	tools/scripts/libs/awk/Makefile
-	tools/scripts/libs/perl/Makefile
-	tools/scripts/usr/Makefile
-	tools/scripts/dev/Makefile
-	tools/scripts/maint/Makefile
+	src/Makefile
+
+	tools/Makefile
 	tools/maint/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile
-
-	site/Makefile
-	site/in/Makefile
-
-	docs/Makefile
-	docs/info/Makefile
-
-	src/Makefile
-	src/config/version.h
 ])
 
 AC_CONFIG_FILES([tools/maint/fetch],               [chmod +x tools/maint/fetch])
@@ -715,6 +513,14 @@ AC_CONFIG_FILES([tools/maint/gitlog-to-committers],[chmod +x tools/maint/gitlog-
 
 AC_OUTPUT
 
+# Header
+cat <<EOF
+
+  ${PACKAGE_NAME} ${API_VERSION} (${PACKAGE_VERSION}) configuration summary
+
+EOF
+
+# Body
 cat <<EOF
 
    ${PACKAGE_NAME} configuration summary
@@ -735,16 +541,6 @@ cat <<EOF
      Assembler        : ${CCAS}
      Archive handler  : ${RANLIB}
 
-     nm               : ${NM}
-     size             : ${SIZE}
-     objdump          : ${OBJDUMP}
-     c++filt          : ${CXXFILT}
-
-     Awk              : ${AWK}
-     Grep             : ${GREP}
-     Lex              : ${LEX}
-     Yacc             : ${YACC}
-
      Int. tools flags : ${AX_TOOL_FLAGS}
 
      C pp flags       : ${AX_CONFIG_CPPFLAGS}
@@ -760,7 +556,10 @@ cat <<EOF
      C++ compiler flags : ${ELKLIB_CXXFLAGS}
      LDADD              : ${ELKLIB_LDADD}
 
-   ${PACKAGE_NAME} ${PACKAGE_VERSION} configured.
+EOF
+
+# Footer
+cat <<EOF
 
    Copyright (C) 2007, 2008 Francesco Salvestrini
    All Rights Reserved.
@@ -776,10 +575,5 @@ cat <<EOF
    GNU General Public License for more details.
 
    Francesco Salvestrini <salvestrini@gmail.com>
-
-Type \`make help' in order to get some extra targets infos
-Type \`make' to build the software. Type \`make install' to install it
-in ${prefix}.
-After installing, please read the accompanied documentation.
 
 EOF

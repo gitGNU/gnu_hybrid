@@ -20,24 +20,29 @@
 
 include $(top_srcdir)/Makefile.sub
 
-## Always put libs first !!!
-SUBDIRS =					\
-	maint					\
-	scripts					\
-	choose					\
-	blink					\
-	autotools
+AUTOMAKE_OPTIONS = subdir-objects
 
-##
-## NOTE:
-##     autotools dir is already shipped by autotools ... :-)
-##
-##EXTRA_DIST =                                  \
-##	autotools
+bin_PROGRAMS = blink
+
+blink_SOURCES =					\
+	main.c
+#	asm.c
+#	multiboot.c
+
+blink_LDADD        =
+blink_LDFLAGS      = $(ELKLIB_LDFLAGS)
+blink_CCASFLAGS    = $(ELKLIB_CCASFLAGS)
+blink_CPPFLAGS     = $(ELKLIB_CPPFLAGS)
+blink_CFLAGS       = $(ELKLIB_CFLAGS)
+blink_CXXFLAGS     = $(ELKLIB_CXXFLAGS)
 
 ##
 ## Maintainer related targets
 ##
 update-local: Makefile
 
+all_SRCS =					\
+	$(blink_SOURCES)
+
 maintainer-check-local: Makefile
+	$(WHITESPACE_DETECT)  $(all_SRCS)
