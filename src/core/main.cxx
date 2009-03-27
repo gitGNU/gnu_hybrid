@@ -29,7 +29,6 @@
 #include "core/cpu.h"
 #include "core/scheduler.h"
 #include "archs/boot/option.h"
-#include "core/build.h"
 #include "libc++/cstdlib"
 
 #if CONFIG_INIT_DEBUG
@@ -56,14 +55,8 @@ int main(int argc, char * argv[])
 	unused_argument(argc);
 	unused_argument(argv);
 #endif
-	printf("Welcome to Hybrid kernel "
-	       "v%d.%d.%d "
-	       "(build #%d, built on %s)\n",
-	       VERSION_MAJOR,
-               VERSION_MINOR,
-               VERSION_MICRO,
-	       BUILD_NUMBER,
-               BUILD_DATE);
+	printf("Welcome to Hybrid kernel v%d.%d.%d\n",
+	       VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
 
 	printf("Using elklib %s\n", ELKLIB_VERSION);
 

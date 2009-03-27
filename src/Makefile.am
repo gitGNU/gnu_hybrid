@@ -108,17 +108,6 @@ MAINTAINERCLEANFILES += $(CFG_MAINTAINERCLEANFILES)
 noinst_PROGRAMS  = kernel$(EXEEXT)
 noinst_LIBRARIES = $(MODULES_BUILTIN)
 
-
-BUILD_FILE   = core/build.h
-BUILD_NUMBER = `if test -e "$(BUILD_FILE)" ; then $(GETDEFINE) $(GETDEFINE_FLAGS) -s BUILD_NUMBER -i $(BUILD_FILE) ; else echo 0 ; fi`
-## Rebuilt every time BUILD_FILE but don't ship it because it will be
-## re-built at the first make ...
-.PHONY:	$(BUILD_FILE)
-$(BUILD_FILE):
-	$(MKBUILD) $(MKBUILD_FLAGS) -g BUILD_H -F $(BUILD_FILE)
-BUILT_SOURCES        += $(BUILD_FILE)
-MAINTAINERCLEANFILES += $(BUILD_FILE)
-
 ##
 ## NOTE:
 ##     kernel.ld and module.ld are obtained from kernel.ld.in and module.ld.in
@@ -225,9 +214,7 @@ $(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
 ##
 stats: all
 	@echo ""
-	@echo "  Build number:" $(BUILD_NUMBER)
-	@echo ""
-	@echo "  Sections:"
+	@echo "Sections:"
 	@echo ""
 	@$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
@@ -307,7 +294,6 @@ maintainer-clean-local:
 ##
 dist-hook:
 	rm -f $(distdir)/arch
-	rm -f $(BUILD_FILE)
 
 ##
 ## Maintainer related targets

@@ -44,7 +44,6 @@ src/rules.pkg
 src/arch
 src/archs/*/kernel.ld
 src/archs/*/module.ld
-src/core/build.h
 
 image.iso
 
