@@ -26,6 +26,7 @@ SUBDIRS =					\
 	scripts					\
 	choose					\
 	blink					\
+	serdes					\
 	autotools
 
 ##
