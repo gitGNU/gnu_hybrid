@@ -194,5 +194,9 @@ $ACLOCAL    --force --install -I ./tools/autotools/m4 && \
     echo "$ME: Cannot bootstrap tools/blink directory"
     exit 1
 }
+(cd tools/serdes && ./bootstrap) || {
+    echo "$ME: Cannot bootstrap tools/serdes directory"
+    exit 1
+}
 
 exit 0
