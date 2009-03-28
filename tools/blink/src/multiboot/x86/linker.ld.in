@@ -1,0 +1,132 @@
+/* Linker script for kernel */
+
+OUTPUT_FORMAT("elf32-i386", "elf32-i386", "elf32-i386")
+OUTPUT_ARCH(i386)
+ENTRY(entry_point)
+
+/* XXX FIXME: Should we use PROVIDE() for _data, _edata, _text ... ??? */
+/* XXX FIXME: Should we use KEEP() ??? */
+
+SECTIONS {
+
+	 /* NOTE: CONFIG_LMA and CONFIG_VMA extracted from src/mem/rules.cfg */
+	. = @CONFIG_LMA@;
+
+	_kernel = .;
+
+	.text : {
+		_text = .; /* Text start address: used for backtraces */
+
+		*(.multiboot) /* XXX FIXME: Remove ASAP */
+		*(.text)
+		*(.text.*)
+
+		_etext = .;  /* Text end address: used for backtraces */
+	}
+
+	.rodata : {
+		_rodata = .; /* Read-only data start address: unused */
+
+		*(.rodata)
+		*(.rodata.*)
+
+		_erodata = .; /* Read-only data end address: unused */
+	}
+
+	.data : {
+		_data = .;
+
+		*(.data)
+		*(.data.*)
+
+		/* C++ constructors */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__CTOR_LIST__ = .;
+		*(.ctors)
+		__CTOR_END__ = .;
+
+		/* C++ destructors */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__DTOR_LIST__ = .;
+		*(.dtors)
+		__DTOR_END__ = .;
+
+		/* C initializers */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__INIT_LIST__ = .;
+		*(.init)
+		__INIT_END__ = .;
+
+		/* C finalizers */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__FINI_LIST__ = .;
+		*(.fini)
+		__FINI_END__ = .;
+
+		/* Options descriptors */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__OPTS_LIST__ = .;
+		*(.opts)
+		__OPTS_END__ = .;
+
+		/* Resources descriptors */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__RSRCS_LIST__ = .;
+		*(.rsrcs)
+		__RSRCS_END__ = .;
+
+		/* Debugger commands descriptors */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__DBGCMDS_LIST__ = .;
+		*(.dbgcmds)
+		__DBGCMDS_END__ = .;
+
+		/* Debugger variables descriptors */
+		/* . = ALIGN(4096); */ /* Needed for skipping auto-fill */
+		__DBGVARS_LIST__ = .;
+		*(.dbgvars)
+		__DBGVARS_END__ = .;
+
+		_edata = .;
+	}
+
+	.bss : {
+		_bss = .;
+
+		*(.bss)
+
+		_ebss = .;
+	}
+
+	.cxx : {
+		*(.eh_frame)
+		*(.gcc_except_table)
+	}
+
+	.syscall : {
+		*(.syscall)
+	}
+
+	/* Other sections */
+	.debug : {
+		_debug = .;
+
+		*(.debug*)
+
+		_edebug = .;
+	}
+
+	_ekernel = .;
+
+	/* Will be discarded after bootstrap */
+	.bootstrap : {
+		    *(.bootstrap*)
+	}
+
+	/* Discard unnecessary stuff */
+	/DISCARD/ : {
+		/* *(.comment) */
+		/* *(.note*) */
+		/* *(.note.*) */
+	}
+}

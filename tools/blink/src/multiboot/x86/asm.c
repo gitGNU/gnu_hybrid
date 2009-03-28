@@ -17,4 +17,22 @@
  *
  */
 
-unsigned long cr0_get(void);
+#include "config.h"
+
+unsigned long cr0_get(void)
+{
+	register unsigned long cr0;
+
+	__asm__ volatile ("movl %%cr0, %0" : "=r" (cr0) : );
+
+	return cr0;
+}
+
+unsigned long eflags_get(void)
+{
+	unsigned long ef;
+
+	__asm__ volatile ("pushf; popl %0" : "=r" (ef));
+
+	return ef;
+}

@@ -42,8 +42,8 @@ static int multiboot_modules(multiboot_info_t* mbi,
 		unsigned int i;
 		unsigned int j;
 
-		dprintf("Handling modules (count = %d, addr = 0x%x)\n",
-			(int) mbi->mods_count, (int) mbi->mods_addr);
+		printf("Handling modules (count = %d, addr = 0x%x)\n",
+                       (int) mbi->mods_count, (int) mbi->mods_addr);
 
 		/* NOTE: mods_count may be 0 */
 		assert((int) mbi->mods_count >= 0);
@@ -53,11 +53,11 @@ static int multiboot_modules(multiboot_info_t* mbi,
 		for (i = 0; i < mbi->mods_count; i++) {
 			assert(mod);
 
-			dprintf("   0x%x: (0x%x-0x%x) '%s'\n",
-				mod,
-				(unsigned) mod->mod_start,
-				(unsigned) mod->mod_end,
-				(char *)   mod->string);
+			printf("   0x%x: (0x%x-0x%x) '%s'\n",
+                               mod,
+                               (unsigned) mod->mod_start,
+                               (unsigned) mod->mod_end,
+                               (char *)   mod->string);
 
 			assert(mod->mod_start);
 			assert(mod->mod_end);
@@ -66,8 +66,8 @@ static int multiboot_modules(multiboot_info_t* mbi,
 
 			/* Fill bootinfo structure for module */
 			if (j >= BOOTINFO_MODULES) {
-				dprintf("Too many modules (%d >= %d)...\n",
-					j, BOOTINFO_MODULES);
+				printf("Too many modules (%d >= %d)...\n",
+                                       j, BOOTINFO_MODULES);
 				return 0;
 			}
 
@@ -84,7 +84,7 @@ static int multiboot_modules(multiboot_info_t* mbi,
 		}
 
 	} else {
-		dprintf("No mod_* infos available in multiboot header\n");
+		printf("No mod_* infos available in multiboot header\n");
 	}
 
 	return 1;
@@ -111,7 +111,7 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 		unsigned                    addr;
 		unsigned                    shndx;
 
-		dprintf("elf section header table:\n");
+		printf("elf section header table:\n");
 
 		elf_sec = &(mbi->u.elf_sec);
 		num   = (unsigned) elf_sec->num;
@@ -119,8 +119,8 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 		addr  = (unsigned) elf_sec->addr;
 		shndx = (unsigned) elf_sec->shndx;
 
-		dprintf("  num = %u, size = 0x%x, addr = 0x%x, shndx = 0x%x\n",
-			num, size, addr, shndx);
+		printf("  num = %u, size = 0x%x, addr = 0x%x, shndx = 0x%x\n",
+                       num, size, addr, shndx);
 
 		bi->kernel.data.elf.num   = num;
 		bi->kernel.data.elf.size  = size;
@@ -129,7 +129,7 @@ static int multiboot_kernel(multiboot_info_t* mbi,
 
 		bi->kernel.type           = BOOTINFO_IMAGE_ELF;
 	} else {
-		dprintf("No elf section header table available\n");
+		printf("No elf section header table available\n");
 	}
 
 	return (bi->kernel.type != BOOTINFO_IMAGE_UNKNOWN) ? 1 : 0;
@@ -141,7 +141,7 @@ static void bootinfo_memory_records_clear(bootinfo_t* bi)
 
 	assert(bi);
 
-	dprintf("Clearing bootinfo records\n");
+	printf("Clearing bootinfo records\n");
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		bi->mem[i].type = BOOTINFO_MEM_UNKNOWN;
 		bi->mem[i].base = 0;
@@ -156,13 +156,13 @@ static void bootinfo_memory_records_dump(bootinfo_t* bi)
 
 	assert(bi);
 
-	dprintf("Bootinfo records:\n");
+	printf("Bootinfo records:\n");
 	for (i = 0; i < BOOTINFO_MEM_REGIONS; i++) {
 		if (bi->mem[i].type != BOOTINFO_MEM_UNKNOWN) {
-			dprintf("  base = 0x%08x, size = 0x%08x, type = %s\n",
-				bi->mem[i].base,
-				bi->mem[i].size,
-				BOOTINFO_MEMTYPE2STRING(bi->mem[i].type));
+			printf("  base = 0x%08x, size = 0x%08x, type = %s\n",
+                               bi->mem[i].base,
+                               bi->mem[i].size,
+                               BOOTINFO_MEMTYPE2STRING(bi->mem[i].type));
 		}
 	}
 }
@@ -189,20 +189,20 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 		int           i;
 		int           j;
 
-		dprintf("map infos available in multiboot header:\n");
+		printf("map infos available in multiboot header:\n");
 #if 0
-		dprintf("  mmap_addr = 0x%08x, mmap_length = 0x%08x\n",
-			(unsigned) mbi->mmap_addr,
-			(unsigned) mbi->mmap_length);
+		printf("  mmap_addr = 0x%08x, mmap_length = 0x%08x\n",
+                       (unsigned) mbi->mmap_addr,
+                       (unsigned) mbi->mmap_length);
 #endif
 
 		for (i = 0, j = 0, mmap = (memory_map_t *) mbi->mmap_addr;
 		     ((unsigned long) mmap < (mbi->mmap_addr +
-					       mbi->mmap_length));
+                                              mbi->mmap_length));
 		     i++, mmap = (memory_map_t *)
 			     ((unsigned long) mmap
 			      + mmap->size + sizeof (mmap->size))) {
-			     int    reject;
+                        int    reject;
 			uint_t base;
 			uint_t length;
 
@@ -213,15 +213,15 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 				reject = 1;
 			}
 #if CONFIG_MULTIBOOT_MEM_VERBOSE
-			dprintf("  mmap-%02d: "
-				"0x%08x%08x/0x%08x%08x/0x%x %s\n",
-				i,
-				(unsigned) mmap->base_addr_high,
-				(unsigned) mmap->base_addr_low,
-				(unsigned) mmap->length_high,
-				(unsigned) mmap->length_low,
-				(unsigned) mmap->type,
-				(reject ? "Rejected" : "Ok"));
+			printf("  mmap-%02d: "
+                               "0x%08x%08x/0x%08x%08x/0x%x %s\n",
+                               i,
+                               (unsigned) mmap->base_addr_high,
+                               (unsigned) mmap->base_addr_low,
+                               (unsigned) mmap->length_high,
+                               (unsigned) mmap->length_low,
+                               (unsigned) mmap->type,
+                               (reject ? "Rejected" : "Ok"));
 #endif
 			if (!reject) {
 				base   = mmap->base_addr_low;
@@ -232,7 +232,7 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 				j++;
 
 				if (j >= BOOTINFO_MEM_REGIONS) {
-					dprintf("Too many map infos\n");
+					printf("Too many map infos\n");
 					return 0;
 				}
 			}
@@ -240,19 +240,19 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 
 		regions = j;
 	} else {
-		dprintf("No valid map infos available in multiboot header\n");
+		printf("No valid map infos available in multiboot header\n");
 		return 0;
 	}
 
-	dprintf("Filled %d bootinfo regions\n", regions);
+	printf("Filled %d bootinfo regions\n", regions);
 	if (regions == 0) {
-		dprintf("No memory regions available ?\n");
+		printf("No memory regions available ?\n");
 		return 0;
 	}
 
 	/* Are mem_* valid?  */
 	if (CHECK_FLAG(mbi->flags, 0)) {
-		dprintf("mem infos available in multiboot header:\n");
+		printf("mem infos available in multiboot header:\n");
 
 		/* Store values in order to use them later */
 
@@ -261,9 +261,9 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 		upper_base = 1024 * 1024;
 		upper_size = (unsigned) mbi->mem_upper;
 
-		dprintf("  lower = (0x%08x, %uKB), upper = (0x%08x, %uKB)\n",
-			lower_base, lower_size,
-			upper_base, upper_size);
+		printf("  lower = (0x%08x, %uKB), upper = (0x%08x, %uKB)\n",
+                       lower_base, lower_size,
+                       upper_base, upper_size);
 
 		/* Fix-up junky infos */
 		if (lower_size > 640) {
@@ -272,11 +272,11 @@ static int multiboot_memory(const multiboot_info_t* mbi,
 			lower_size = 640;
 		}
 #if 0
-		dprintf("Total available memory = %uKB\n",
+		printf("Total available memory = %uKB\n",
 		       lower_size + upper_size);
 #endif
 	} else {
-		dprintf("No mem infos available in multiboot header\n");
+		printf("No mem infos available in multiboot header\n");
 		return 0;
 	}
 
@@ -300,7 +300,7 @@ static int multiboot_commandline(const multiboot_info_t* mbi,
 
 		tmp   = (char *) mbi->cmdline;
 		count = strlen(tmp);
-		dprintf("Original cmdline = '%s' (%d chars)\n", tmp, count);
+		printf("Original cmdline = '%s' (%d chars)\n", tmp, count);
 
 		/* Skip kernel name */
 		while (count && !isspace(*tmp)) {
@@ -323,44 +323,15 @@ static int multiboot_commandline(const multiboot_info_t* mbi,
 		bi->args[strnlen(bi->args, BOOTINFO_ARGS_SIZE)] = 0;
 
 	} else {
-		dprintf("No cmdline infos available in multiboot header\n");
+		printf("No cmdline infos available in multiboot header\n");
 	}
 
-	dprintf("cmdline = '%s'\n", bi->args);
+	printf("cmdline = '%s'\n", bi->args);
 
 	return 1;
 }
 #endif /* CONFIG_OPTIONS */
 #endif /* 0 */
-
-static int check_machine_state(void)
-{
-	uint32_t tmp;
-
-	/* Check CR0 state */
-	tmp = cr0_get();
-	if (tmp & CR0_PG) {
-		dprintf("Paging flag already set\n");
-		return 0;
-	}
-	if (!(tmp & CR0_PE)) {
-		dprintf("No protected mode flag set\n");
-		return 0;
-	}
-
-	/* Check eflags state */
-	tmp = eflags_get();
-	if (tmp & EFLAGS_VM) {
-		dprintf("Virtual mode flag already set\n");
-		return 0;
-	}
-	if (tmp & EFLAGS_IF) {
-		dprintf("Interrupt flag already set\n");
-		return 0;
-	}
-
-	return 1;
-}
 
 /*
  * NOTE:
@@ -373,36 +344,27 @@ void multiboot(unsigned long magic,
 {
 	multiboot_info_t * mbi;
 
-	/*
-	 * NOTE:
-	 *     Add early support, call it as soon as possible
-	 */
-	bootstrap_early();
-
 	/* Am I booted by a Multiboot-compliant boot loader?  */
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
 		panic("Invalid magic number: 0x%x", (unsigned) magic);
 	}
 	/* Yes, it seems so ... */
-
+#if 0
 	if (CHECK_FLAG(mbi->flags, 9)) {
-		dprintf("We have been booted by: '%s'\n",
-			(char *) mbi->boot_loader_name);
+		printf("We have been booted by: '%s'\n",
+                       (char *) mbi->boot_loader_name);
 	}
-
-	if (!check_machine_state()) {
-		panic("Wrong machine state");
-	}
+#endif
 
 	/* Set MBI to the address of the Multiboot information structure.  */
 	mbi = (multiboot_info_t *) addr;
 
 	/* Print out the flags */
-	dprintf("Multiboot flags = 0x%x\n", (unsigned) mbi->flags);
+	printf("Multiboot flags = 0x%x\n", (unsigned) mbi->flags);
 
 	/* Is boot_device valid?  */
 	if (CHECK_FLAG(mbi->flags, 1)) {
-		dprintf("boot_device = 0x%x\n", (unsigned) mbi->boot_device);
+		printf("boot_device = 0x%x\n", (unsigned) mbi->boot_device);
 	}
 
 #if 0
@@ -423,5 +385,7 @@ void multiboot(unsigned long magic,
 	}
 #endif
 
+#if 0
 	bootstrap_late(&bootinfo);
+#endif
 }

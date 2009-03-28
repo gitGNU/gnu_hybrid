@@ -17,37 +17,11 @@
  *
  */
 
-#include "config/config.h"
+#include "config.h"
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
-#include "libbfd/bfd.h"
-#include "archs/linker.h"
-#include "archs/arch.h"
-#include "archs/boot/option.h"
-#include "archs/boot/bootinfo.h"
-#include "archs/boot/bootram.h"
-#include "archs/boot/bootstrap.h"
-#include "libs/debug.h"
-#include "dbg/panic.h"
-#include "dbg/debugger.h"
-#include "dbg/log.h"
-#include "core/resource.h"
-#include "core/semaphore.h"
-#include "core/mutex.h"
-#include "mem/heap.h"
-#include "mem/pmm.h"
-#include "mem/vmm.h"
-
 #include "elklib.h"
-
-#define BANNER          "bootstrap: "
-
-#if CONFIG_BOOTSTRAP_DEBUG
-#define dprintf(F,A...) printf(BANNER F,##A)
-#else
-#define dprintf(F,A...)
-#endif
 
 /* main entry point */
 extern int main(int argc, char* argv[]);
@@ -66,36 +40,20 @@ void bootstrap_early(void)
 	 */
 
 	/* C library (glue) startup */
-	dprintf("Initializing C support\n");
+	printf("Initializing C support\n");
 	elklib_c_init();
 
-#if CONFIG_DEBUG
-	if (arch_dbg_init()) {
-		FILE_set(stdin,  NULL, arch_dbg_getchar, NULL, NULL);
-		FILE_set(stdout, arch_dbg_putchar, NULL, NULL, NULL);
-		FILE_set(stderr, arch_dbg_putchar, NULL, NULL, NULL);
-		/* We should have printf() and puts() now */
-	}
-#else
 	/* No debugging required, turn off all streams ... */
 	FILE_set(stdin,  NULL, NULL, NULL, NULL);
 	FILE_set(stdout, NULL, NULL, NULL, NULL);
 	FILE_set(stderr, NULL, NULL, NULL, NULL);
-#endif /* CONFIG_DEBUG */
-
-#if CONFIG_DEBUGGER
-	if (!dbg_init()) {
-		panic("Cannot initialize the debugger");
-	}
-	/* Now we should enter the debugger safely ... */
-#endif
 
 	if (!bootram_init()) {
 		panic("Cannot initialize bootram");
 	}
 
 	/* Mark kernel areas of physical memory as "used" */
-	dprintf("Marking unavailable region 0x%p-0x%p\n",
+	printf("Marking unavailable region 0x%p-0x%p\n",
 		&_kernel, &_ekernel);
 	if (!bootram_reserve((paddr_t) &_kernel, (paddr_t) &_ekernel)) {
 		panic("Cannot mark kernel region as used");
@@ -131,27 +89,27 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	 *     arch_dbg_init() has been called in early_init() so we can
 	 *     use [vs]printf() functions ...
 	 */
-	dprintf("Bootstrapping the system ...\n");
+	printf("Bootstrapping the system ...\n");
 
 #if CONFIG_BOOTINFO_DEBUG
 	/* Save last bootinfo structure for debugging purposes */
 	bootinfo_last = bootinfo;
 #endif /* CONFIG_BOOTINFO_DEBUG */
 
-	dprintf("Bootinfos at 0x%p\n", bootinfo);
+	printf("Bootinfos at 0x%p\n", bootinfo);
 
-	dprintf("Kernel spans 0x%08x-0x%08x (%d)\n",
+	printf("Kernel spans 0x%08x-0x%08x (%d)\n",
 		&_kernel, &_ekernel, &_ekernel - &_kernel);
-	dprintf("Sections:\n");
-	dprintf("  .text   = 0x%08x-0x%08x (%d)\n",
+	printf("Sections:\n");
+	printf("  .text   = 0x%08x-0x%08x (%d)\n",
 		&_text,   &_etext,   &_etext - &_text);
-	dprintf("  .data   = 0x%08x-0x%08x (%d)\n",
+	printf("  .data   = 0x%08x-0x%08x (%d)\n",
 		&_data,   &_edata,   &_edata - &_data);
-	dprintf("  .rodata = 0x%08x-0x%08x (%d)\n",
+	printf("  .rodata = 0x%08x-0x%08x (%d)\n",
 		&_rodata, &_erodata, &_erodata - &_rodata);
-	dprintf("  .bss    = 0x%08x-0x%08x (%d)\n",
+	printf("  .bss    = 0x%08x-0x%08x (%d)\n",
 		&_bss,    &_ebss,    &_ebss - &_bss);
-	dprintf("  .debug  = 0x%08x-0x%08x (%d)\n",
+	printf("  .debug  = 0x%08x-0x%08x (%d)\n",
 		&_debug,  &_edebug,  &_edebug - &_debug);
 
 	/*
@@ -223,7 +181,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	 * NOTE:
 	 *     Translate bootinfo memory resources into physical memory infos
 	 */
-	dprintf("Initializing pmm\n");
+	printf("Initializing pmm\n");
 	if (!pmm_init()) {
 		panic("Cannot initialize physical memory manager");
 	}
@@ -231,7 +189,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 
 #if 0
 	/* Initialize virtual memory */
-	dprintf("Initializing vmm\n");
+	printf("Initializing vmm\n");
 	if (!vmm_init()) {
 		panic("Cannot initialize virtual memory");
 	}
@@ -243,7 +201,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 #endif
 
 	/* Setting up the heap ! */
-	dprintf("Initializing heap\n");
+	printf("Initializing heap\n");
 	heap_size = CONFIG_HEAP_SIZE;
 	heap_base = bootram_alloc(heap_size);
 	if (!heap_base) {
@@ -254,7 +212,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	/* Now we could dispose the bootram layer */
 	bootram_fini();
 
-	dprintf("Heap base 0x%x, size 0x%x\n", heap_base, heap_size);
+	printf("Heap base 0x%x, size 0x%x\n", heap_base, heap_size);
 	if (!heap_init(heap_base, heap_size)) {
 		panic("Cannot initialize heap");
 	}
@@ -269,20 +227,20 @@ void bootstrap_late(bootinfo_t * bootinfo)
 
 
 #if CONFIG_OPTIONS
-	dprintf("Initializing options\n");
+	printf("Initializing options\n");
 	if (!option_init()) {
 		panic("Cannot initialize options");
 	}
 
-	dprintf("Parsing options\n");
+	printf("Parsing options\n");
 	if (!option_parse(bootinfo->args)) {
-		dprintf("Cannot parse options\n");
+		printf("Cannot parse options\n");
 	}
 	/* Huh we have options now (at least the default values ...) */
 #endif /* CONFIG_OPTIONS */
 
 	/* C++ library (glue) startup */
-	dprintf("Initializing C++ support\n");
+	printf("Initializing C++ support\n");
 	elklib_cxx_init();
 
 	/*
@@ -290,7 +248,7 @@ void bootstrap_late(bootinfo_t * bootinfo)
 	 *     We have new, delete ... now
 	 */
 
-	dprintf("Calling main()\n");
+	printf("Calling main()\n");
 	main(0, 0);
 
 	/* C++ (glue) Shutdown */

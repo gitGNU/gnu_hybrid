@@ -19,11 +19,8 @@
 
 #include "config.h"
 
-unsigned long cr0_get(void)
-{
-	register unsigned long cr0;
-
-	__asm__ volatile ("movl %%cr0, %0" : "=r" (cr0) : );
-
-	return cr0;
-}
+#ifdef HAVE_ASM_USCORE
+# define EXT_C(sym)			_ ## sym
+#else
+# define EXT_C(sym)			sym
+#endif
