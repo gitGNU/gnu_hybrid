@@ -12,6 +12,7 @@
 #  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Debug.py
 #  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Configuration.py
 #  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Exceptions.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Autoconfiguration.py
 #
 
 AC_DEFUN([PYTHON_AUTOFRISK_CHECKS],[
