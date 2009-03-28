@@ -2,6 +2,12 @@
 <todo version="0.1.20">
     <note priority="veryhigh" time="1233771509">
         Release 0.1.0
+        <note priority="veryhigh" time="1235495501" done="1235682741">
+            Fix the NEWS and TODOs site pages generation in site/in directory
+            <comment>
+                Done
+            </comment>
+        </note>
         <note priority="high" time="1226871211" done="1233306208">
             Rearrange the site in order to be multi-page
             <comment>
@@ -26,17 +32,14 @@
                 Moved to ELKlib
             </comment>
         </note>
-        <note priority="veryhigh" time="1235495501" done="1235682741">
-            Fix the NEWS and TODOs site pages generation in site/in directory
-            <comment>
-                Done
-            </comment>
-        </note>
         <note priority="high" time="1226606961">
             Replace AC_PATH_PROG with AC_CHECK_TOOL. The proposed approach should handle cross-compilation cases better
             <note priority="medium" time="1226606992">
                 Use AC_CHECK_TOOL instead of AC_PATH_PROG for nm, objdump and so on in configure.ac.in
             </note>
+        </note>
+        <note priority="verylow" time="1238244128">
+            Update all copyright dates
         </note>
     </note>
     <note priority="high" time="1233771513">
