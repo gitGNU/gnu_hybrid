@@ -1,5 +1,3 @@
-/* Linker script for kernel */
-
 OUTPUT_FORMAT("elf32-i386", "elf32-i386", "elf32-i386")
 OUTPUT_ARCH(i386)
 ENTRY(entry_point)
@@ -12,7 +10,7 @@ SECTIONS {
 	 /* NOTE: CONFIG_LMA and CONFIG_VMA extracted from src/mem/rules.cfg */
 	. = @CONFIG_LMA@;
 
-	_kernel = .;
+	_start = .;
 
 	.text : {
 		_text = .; /* Text start address: used for backtraces */
@@ -116,12 +114,7 @@ SECTIONS {
 		_edebug = .;
 	}
 
-	_ekernel = .;
-
-	/* Will be discarded after bootstrap */
-	.bootstrap : {
-		    *(.bootstrap*)
-	}
+	_end = .;
 
 	/* Discard unnecessary stuff */
 	/DISCARD/ : {
