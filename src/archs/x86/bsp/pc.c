@@ -60,7 +60,7 @@ void arch_halt(void)
 	hlt();
 }
 
-void arch_poweroff(void)
+void arch_power_off(void)
 {
 	missing();
 

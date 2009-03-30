@@ -80,13 +80,13 @@ DBG_COMMAND_DECLARE(halt,
 		    NULL);
 #endif
 
-SYSCALL(2,poweroff);
+SYSCALL(2,power_off);
 
-int poweroff(void)
+int power_off(void)
 {
 	printf("Power-off in progress ...\n");
 
-	arch_poweroff();
+	arch_power_off();
 
 	printf("... Cannot power-off!\n");
 
@@ -96,9 +96,9 @@ int poweroff(void)
 }
 
 #if CONFIG_DEBUGGER
-static dbg_result_t command_poweroff_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+static dbg_result_t command_power_off_on_execute(FILE* stream,
+                                                 int   argc,
+                                                 char* argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
@@ -109,18 +109,18 @@ static dbg_result_t command_poweroff_on_execute(FILE* stream,
 
 	unused_argument(argv);
 
-	if (!poweroff()) {
+	if (!power_off()) {
 		return DBG_RESULT_ERROR;
 	}
 
 	return DBG_RESULT_OK;
 }
 
-DBG_COMMAND_DECLARE(poweroff,
+DBG_COMMAND_DECLARE(power_off,
 		    "Power-offs the system",
 		    NULL,
 		    NULL,
-		    command_poweroff_on_execute,
+		    command_power_off_on_execute,
 		    NULL);
 #endif
 

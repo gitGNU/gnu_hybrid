@@ -24,7 +24,7 @@
 __BEGIN_DECLS
 
 int halt(void);
-int poweroff(void);
+int power_off(void);
 int reboot(void);
 
 __END_DECLS

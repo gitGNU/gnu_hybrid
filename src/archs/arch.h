@@ -105,7 +105,7 @@ void              arch_context_switch(vaddr_t old_stack,
 				      vaddr_t new_mm);
 
 void	          arch_halt(void);
-void	          arch_poweroff(void);
+void	          arch_power_off(void);
 void	          arch_reset(void);
 
 uint_t            arch_backtrace_store(uint_t * backtrace,
