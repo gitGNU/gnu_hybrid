@@ -22,7 +22,8 @@
 
 /* Standard ELF types.  */
 
-#include <grub/types.h>
+#include "libc/stdint.h"
+#include "libc/stddef.h"
 
 /* Type for a 16-bit quantity.  */
 typedef uint16_t   Elf32_Half;
