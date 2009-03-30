@@ -22,11 +22,14 @@
 
 #include "config.h"
 #include "libc/stdint.h"
+#include "dl.h"
 
 void   arch_halt(void);
 void   arch_power_off(void);
 void   arch_reset(void);
 uint_t arch_backtrace_store(uint_t * backtrace,
 			    uint_t   max_len);
+int    arch_dl_check_header(void * ehdr);
+int    arch_dl_relocate_symbols(dl_t mod, void * ehdr);
 
 #endif /* ARCHS_ARCH_H */
