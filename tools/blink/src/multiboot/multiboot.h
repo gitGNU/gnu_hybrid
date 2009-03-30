@@ -112,7 +112,8 @@ typedef struct memory_map
   unsigned long type;
 } memory_map_t;
 
-void multiboot(unsigned long magic, unsigned long addr);
+void multiboot(unsigned long magic,
+               unsigned long addr);
 
 #endif /* ! ASM */
 #endif /* MULTIBOOT_H */
