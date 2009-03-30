@@ -17,20 +17,26 @@
  *
  */
 
-#ifndef ARCHS_ARCH_H
-#define ARCHS_ARCH_H
+#ifndef DL_H
+#define DL_H
 
-#include "config.h"
-#include "libc/stdint.h"
-#include "dl.h"
+struct dl_segment {
+        struct dl_segment * next;
+        void *              addr;
+        size_t              size;
+        unsigned int        section;
+};
+typedef struct dl_segment * dl_segment_t;
 
-void   arch_halt(void);
-void   arch_power_off(void);
-void   arch_reset(void);
-uint_t arch_backtrace_store(uint_t * backtrace,
-			    uint_t   max_len);
-int    arch_dl_check_header(void * ehdr);
-int    arch_dl_relocate_symbols(dl_t   mod,
-                                void * ehdr);
+struct dl;
 
-#endif /* ARCHS_ARCH_H */
+struct dl {
+        char *       name;
+        dl_segment_t segment;
+};
+typedef struct dl * dl_t;
+
+int dl_load(void * addr,
+            size_t size);
+
+#endif /* DL_H */

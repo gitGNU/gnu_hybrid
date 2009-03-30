@@ -39,7 +39,8 @@ blink_archs_x86_SRCS =				\
 	archs/x86/power.c			\
 	archs/x86/port.c			\
 	archs/x86/port.h			\
-	archs/x86/backtrace.c
+	archs/x86/backtrace.c			\
+	archs/x86/dl.c
 
 blink_archs_SRCS =				\
 	$(blink_archs_x86_SRCS)			\
@@ -52,7 +53,8 @@ blink_SOURCES =					\
 	heap.c					\
 	heap.h					\
 	panic.c					\
-	elf.h
+	dl.c					\
+	elf.h					\
 	main.c
 
 LDSCRIPT = $(top_builddir)/src/multiboot/$(architecture)/linker.ld
