@@ -27,7 +27,7 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 
-static unsigned     backtrace[CONFIG_MAX_STACK_LEVELS];
+static unsigned int backtrace[CONFIG_MAX_STACK_LEVELS];
 
 #define MAX_SYMBOL_LENGTH 512
 static char         mangled_symbol[MAX_SYMBOL_LENGTH];
@@ -74,8 +74,8 @@ void backtrace_show(FILE * stream)
 					      mangled_symbol,
 					      MAX_SYMBOL_LENGTH,
 					      &base)) {
-			unsigned delta;
-			int      free_it;
+			unsigned int delta;
+			int          free_it;
 
 			/* Try to demangle the symbol */
 			free_it = 1;
@@ -91,7 +91,7 @@ void backtrace_show(FILE * stream)
 			 *     Compute the difference between backtrace
 			 *     and base ...
 			 */
-			delta = backtrace[i] - (unsigned) base;
+			delta = backtrace[i] - (unsigned int) base;
 			if (delta) {
 				/* Delta is precious ... */
 				fprintf(stream, "  %p <%s+0x%x>\n",
