@@ -17,17 +17,22 @@
  *
  */
 
-#ifndef BOOTSTRAP_H
-#define BOOTSTRAP_H
+#include "config.h"
+#include "libc/stdint.h"
+#include "libc/stdio.h"
 
-#include "config/config.h"
-#include "archs/boot/bootinfo.h"
+uint_t arch_backtrace_store(uint_t * backtrace,
+			    uint_t   max_len)
+{
+	uint_t * ebp;
+	uint_t   i;
 
-__BEGIN_DECLS
+	__asm__ volatile ("movl %%ebp,%0" : "=r" (ebp));
 
-void bootstrap_early(void);
-void bootstrap_late(bootinfo_t* bootinfo);
+	for (i = 0; i < max_len; i++) {
+		backtrace[i] = ebp[1];
+		ebp          = (uint_t *) ebp[0];
+	}
 
-__END_DECLS
-
-#endif /* BOOTSTRAP_H */
+	return i; /* Return the saved amount count */
+}

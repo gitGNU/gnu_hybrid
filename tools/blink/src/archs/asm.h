@@ -17,10 +17,15 @@
  *
  */
 
+#ifndef ARCHS_ASM_H
+#define ARCHS_ASM_H
+
 #include "config.h"
 
 #ifdef HAVE_ASM_USCORE
-# define EXT_C(sym)			_ ## sym
+# define EXT_C(sym) _ ## sym
 #else
-# define EXT_C(sym)			sym
+# define EXT_C(sym) sym
 #endif
+
+#endif /* ARCHS_ASM_H */

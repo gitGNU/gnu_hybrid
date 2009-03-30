@@ -26,22 +26,33 @@ CLEANFILES =
 
 bin_PROGRAMS = blink
 
-blink_multiboot_x86_SOURCES =			\
+blink_multiboot_x86_SRCS =			\
 	multiboot/x86/crt0.S			\
-	multiboot/x86/crt1.c			\
-	multiboot/x86/asm.c			\
-	multiboot/x86/asm.h
+	multiboot/x86/crt1.c
 
-blink_multiboot_SOURCES =			\
-	$(blink_multiboot_x86_SOURCES)		\
+blink_multiboot_SRCS =				\
+	$(blink_multiboot_x86_SRCS)		\
 	multiboot/multiboot.c			\
 	multiboot/multiboot.h
 
+blink_archs_x86_SRCS =				\
+	archs/x86/power.c			\
+	archs/x86/port.c			\
+	archs/x86/port.h			\
+	archs/x86/backtrace.c
+
+blink_archs_SRCS =				\
+	$(blink_archs_x86_SRCS)			\
+	archs/arch.h				\
+	archs/asm.h
+
 blink_SOURCES =					\
-	$(blink_multiboot_SOURCES)		\
+	$(blink_multiboot_SRCS)			\
+	$(blink_archs_SRCS)			\
 	heap.c					\
 	heap.h					\
 	panic.c					\
+	elf.h
 	main.c
 
 LDSCRIPT = $(top_builddir)/src/multiboot/$(architecture)/linker.ld
