@@ -22,27 +22,23 @@
 #include "libc/stdio.h"
 #include "libc/stdarg.h"
 #include "libc/unistd.h"
+#include "archs/arch.h"
 
-#if CONFIG_REBOOT_ON_PANIC
-static int panic_timeout = CONFIG_PANIC_TIMEOUT;
-#endif /* REBOOT_ON_PANIC */
+#define MAX_STACK_LEVELS  32
 
-#define NO_PANIC_ON_PANIC 1
+static unsigned int backtrace[MAX_STACK_LEVELS];
+extern void         _start;
 
 void arch_panic(const char* message)
 {
-#if NO_PANIC_ON_PANIC
-	static int panic_in_progress = 0;
-#endif
+	static int   panic_in_progress = 0;
+        unsigned int frames;
 
-#if NO_PANIC_ON_PANIC
-	/* A panic is in progress */
 	panic_in_progress++;
 	if (panic_in_progress > 1) {
-		/* Don't panic too much, let the previous panic finish ;-) */
+                printf("Panic in progress ...\n");
 		return;
 	}
-#endif
 
 	/* Print the message (if any) */
 	if (!message) {
@@ -50,16 +46,34 @@ void arch_panic(const char* message)
 	}
 	printf("Kernel panic: %s\n", message);
 
-#if 0
-	backtrace_save();
-	backtrace_show(stdout);
-#endif
+	frames = arch_backtrace_store(backtrace, MAX_STACK_LEVELS);
+        if (frames == 0) {
+                printf("No backtrace available ...\n");
+        } else {
+                int i;
 
-#if NO_PANIC_ON_PANIC
-	/* We could panic again here ... is it correct ? */
+                for (i = 0; i < frames; i++) {
+                        unsigned int delta;
+                        char *       symbol = "?";
+
+                        /* _start is the base address */
+                        delta = backtrace[i] - (unsigned int) &_start;
+                        if (delta) {
+                                printf("  %p <%s+0x%x>\n",
+                                       backtrace[i], symbol, delta);
+                        } else {
+                                /* Huh ... hang in function call ? */
+                                printf("  %p <%s>\n",
+                                       backtrace[i], symbol);
+                        }
+                }
+        }
+
 	panic_in_progress--;
-#endif
 
-	//halt();
-        do { } while (1);
+        arch_halt();
+        arch_reset();
+
+	printf("Cannot halt or reset the hardware ...\n");
+        for (;;) { /* hmmmm .... */ }
 }
