@@ -34,7 +34,7 @@ static int check_modules(multiboot_info_t * mbi)
 
 	/* Are mods_* valid?  */
 	if (CHECK_FLAG(mbi->flags, 3)) {
-		module_t*    mod;
+		module_t *   mod;
 		unsigned int i;
 		unsigned int j;
 
