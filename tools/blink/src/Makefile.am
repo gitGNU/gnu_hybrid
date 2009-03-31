@@ -32,7 +32,7 @@ blink_multiboot_x86_SRCS =			\
 
 blink_multiboot_SRCS =				\
 	$(blink_multiboot_x86_SRCS)		\
-	multiboot/multiboot.c			\
+	multiboot/crt2.c			\
 	multiboot/multiboot.h
 
 blink_archs_x86_SRCS =				\
@@ -54,7 +54,6 @@ blink_SOURCES =					\
 	heap.h					\
 	panic.c					\
 	dl.c					\
-	elf.h					\
 	main.c
 
 LDSCRIPT = $(top_builddir)/src/multiboot/$(architecture)/linker.ld

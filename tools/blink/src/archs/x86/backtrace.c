@@ -21,8 +21,8 @@
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 
-uint_t arch_backtrace_store(uint_t * backtrace,
-			    uint_t   max_len)
+uint_t arch_backtrace_store(unsigned long * backtrace,
+			    uint_t          max_len)
 {
 	uint_t * ebp;
 	uint_t   i;
