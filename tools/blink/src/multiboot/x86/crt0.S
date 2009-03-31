@@ -99,7 +99,7 @@ multiboot_entry:
 #endif
 
 	/* Call the entry point */
-	call    EXT_C(crt1_multiboot)
+	call    EXT_C(crt1)
 
 	/* We shouldn't reach this point ... */
 loop:   hlt

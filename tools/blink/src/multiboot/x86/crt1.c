@@ -24,9 +24,8 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "libc/ctype.h"
+#include "libc/assert.h"
 #include "multiboot/multiboot.h"
-
-#define CHECK_FLAG(flags,bit)	((flags) & (1 << (bit)))
 
 /*
  * CR0 flags
@@ -111,22 +110,16 @@ static int check_machine_state(void)
 	return 1;
 }
 
-/*
- * NOTE:
- *     This is our starting point, we start from here directly from the
- *     boot-loader with a (probably good) multiboot info structure.
- *     structure.
- */
-void crt1_multiboot(unsigned long magic,
-                    unsigned long addr)
-{
-	multiboot_info_t * mbi;
+extern void crt2(multiboot_info_t * mbi);
 
+void crt1(unsigned long magic,
+          unsigned long addr)
+{
 	/*
 	 * NOTE:
 	 *     Add early support, call it as soon as possible
 	 */
-        elklib_c_init();
+        (void) elklib_c_init();
 
         /* Turn off all streams ... */
         FILE_set(stdin,  NULL, NULL, NULL, NULL);
@@ -143,5 +136,10 @@ void crt1_multiboot(unsigned long magic,
 		panic("Wrong machine state");
 	}
 
-        multiboot(magic, addr);
+        multiboot_info_t * mbi;
+
+        mbi = (multiboot_info_t *) addr;
+        assert(mbi);
+
+        crt2(mbi);
 }
