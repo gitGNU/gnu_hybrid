@@ -18,21 +18,30 @@
  */
 
 #include "config.h"
+#include "libc/assert.h"
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stdarg.h"
 #include "libc/unistd.h"
+#include "libbfd/bfd.h"
+#include "libcompiler/compiler.h"
+#include "libcompiler/demangle.h"
+#include "libbfd/elf-format.h"
 #include "archs/arch.h"
 
 #define MAX_STACK_LEVELS  32
+#define MAX_SYMBOL_LENGTH 512
 
-static unsigned int backtrace[MAX_STACK_LEVELS];
-extern void         _start;
+static unsigned long backtrace[MAX_STACK_LEVELS];
+static char          mangled_symbol[MAX_SYMBOL_LENGTH];
+extern unsigned long _start;
+extern unsigned long _end;
 
-void arch_panic(const char* message)
+void arch_panic(const char * message)
 {
 	static int   panic_in_progress = 0;
         unsigned int frames;
+        int          i;
 
 	panic_in_progress++;
 	if (panic_in_progress > 1) {
@@ -47,26 +56,49 @@ void arch_panic(const char* message)
 	printf("Kernel panic: %s\n", message);
 
 	frames = arch_backtrace_store(backtrace, MAX_STACK_LEVELS);
-        if (frames == 0) {
-                printf("No backtrace available ...\n");
-        } else {
-                int i;
+	assert(frames <= MAX_STACK_LEVELS);
 
-                for (i = 0; i < frames; i++) {
-                        unsigned int delta;
-                        char *       symbol = "?";
+        for (i = 0; i < frames; i++) {
+		void * base;
+		char * symbol;
 
-                        /* _start is the base address */
-                        delta = backtrace[i] - (unsigned int) &_start;
-                        if (delta) {
-                                printf("  %p <%s+0x%x>\n",
-                                       backtrace[i], symbol, delta);
-                        } else {
-                                /* Huh ... hang in function call ? */
-                                printf("  %p <%s>\n",
-                                       backtrace[i], symbol);
+#if 0
+                assert(backtrace[i] >= &_start);
+                assert(backtrace[i] <= &_end);
+#endif
+
+		/* Resolve the symbol base */
+		if (bfd_symbol_reverse_lookup((void *) backtrace[i],
+					      mangled_symbol,
+					      MAX_SYMBOL_LENGTH,
+					      &base)) {
+			unsigned int delta;
+
+			symbol  = demangle(mangled_symbol);
+			if (!symbol) {
+				/* No luck this time */
+				symbol  = mangled_symbol;
                         }
-                }
+
+			/*
+			 * NOTE:
+			 *     Compute the difference between backtrace
+			 *     and base ...
+			 */
+			delta = backtrace[i] - (unsigned int) base;
+			if (delta) {
+				/* Delta is precious ... */
+				printf("  %p <%s+0x%x>\n",
+					base, symbol, delta);
+			} else {
+				/* Huh ... hang in function call ? */
+				printf("  %p <%s>\n",
+				       base, symbol);
+			}
+		} else {
+			/* Hmm ... No symbol found ??? */
+			printf("  %08x <?>\n", backtrace[i]);
+		}
         }
 
 	panic_in_progress--;
