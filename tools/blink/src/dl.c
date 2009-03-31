@@ -17,11 +17,11 @@
  *
  */
 #include "config.h"
-#include "elf.h"
 #include "libc/stdlib.h"
 #include "libc/stdio.h"
 #include "libc/string.h"
 #include "libc/assert.h"
+#include "libbfd/elf-format.h"
 #include "dl.h"
 
 #if __WORDSIZE == 32
@@ -51,13 +51,6 @@ typedef Elf64_Sym  Elf_Sym;
 #error No __WORDSIZE defined
 
 #endif
-
-struct dl_list
-{
-        struct dl_list * next;
-        dl_t             mod;
-};
-typedef struct dl_list * dl_list_t;
 
 static dl_list_t dl_head;
 

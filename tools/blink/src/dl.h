@@ -36,7 +36,14 @@ struct dl {
 };
 typedef struct dl * dl_t;
 
-int dl_load(void * addr,
-            size_t size);
+struct dl_list
+{
+        struct dl_list * next;
+        dl_t             mod;
+};
+typedef struct dl_list * dl_list_t;
+
+int  dl_load(void * addr,
+             size_t size);
 
 #endif /* DL_H */
