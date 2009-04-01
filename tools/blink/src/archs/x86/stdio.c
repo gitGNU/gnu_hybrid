@@ -17,76 +17,20 @@
  *
  */
 
-#include "config/config.h"
+#include "config.h"
 #include "libc/stdio.h"
 #include "libc/string.h"
 #include "libc/stddef.h"
 #include "libc/ctype.h"
-#include "libs/debug.h"
-#include "dbg/debugger.h"
+#include "archs/x86/vga.h"
 
-#if CONFIG_DEBUG
-
-extern int  rs232_init(void);
-extern int  rs232_getchar(void);
-extern int  rs232_putchar(int c);
-extern void rs232_fini(void);
-
-extern int  kbd_init(void);
-extern int  kbd_getchar(void);
-extern void kbd_fini(void);
-
-extern int  vga_init(void);
-extern int  vga_putchar(int c);
-extern void vga_fini(void);
-
-extern int  bochs_init(void);
-extern int  bochs_putchar(int c);
-extern void bochs_fini(void);
-
-/* getchar() is from the AT keyboard or RS232 */
-int arch_dbg_getchar(void)
-{
-#if CONFIG_HOSTED_DEBUGGER
-	return kbd_getchar();
-#endif
-#if CONFIG_RS232_DEBUGGER
-	return rs232_getchar();
-#endif
-#if CONFIG_BOCHS_DEBUGGER
-	/* XXX FIXME: Are we sure ? */
-	return EOF;
-#endif
-}
-
-/* putchar() sends output to the VGA or RS232 (tees output to bochs console) */
 int arch_dbg_putchar(int c)
 {
-	int r;
-
-#if CONFIG_BOCHS_DEBUGGER
-	/* Tee the output to the bochs console */
-	(void) bochs_putchar(c);
-#endif
-
-	r = EOF;
-
-#if CONFIG_HOSTED_DEBUGGER
-	r = vga_putchar(c);
-#endif
-#if CONFIG_RS232_DEBUGGER
-	r = rs232_putchar(c);
-#endif
-
-	return r;
+	return vga_putchar(c);
 }
 
 int arch_dbg_init(void)
 {
-#if CONFIG_BOCHS_DEBUGGER
-	(void) bochs_init();
-#endif
-#if CONFIG_HOSTED_DEBUGGER
 	if (!vga_init()) {
 		/*
 		 * NOTE:
@@ -96,35 +40,11 @@ int arch_dbg_init(void)
 		 */
 		return 0;
 	}
-	if (!kbd_init()) {
-		/*
-		 * NOTE:
-		 *     The keyboard is not correctly initialized, we should
-		 *     return 0 and stopping other activities ... but we have
-		 *     the output available so we can continue ...
-		 *
-		 */
-	}
-#endif
-#if CONFIG_RS232_DEBUGGER
-	if (!rs232_init()) {
-		return 0;
-	}
-#endif
+
 	return 1;
 }
 
 void arch_dbg_fini(void)
 {
-#if CONFIG_RS232_DEBUGGER
-	rs232_fini();
-#endif
-#if CONFIG_HOSTED_DEBUGGER
 	vga_fini();
-	kbd_fini();
-#endif
-#if CONFIG_BOCHS_DEBUGGER
-	bochs_fini();
-#endif
 }
-#endif /* CONFIG_DEBUG */
