@@ -56,9 +56,9 @@
 #define VGA_ROWS             25
 
 static struct {
-	uint8_t* base;
-	uint_t   row;
-	uint_t   column;
+	uint8_t * base;
+	uint_t    row;
+	uint_t    column;
 } vga;
 
 static void vga_move_cursor(uint_t row,
