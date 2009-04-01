@@ -26,6 +26,7 @@
 #include "libc/ctype.h"
 #include "libc/assert.h"
 #include "multiboot/multiboot.h"
+#include "archs/x86/stdio.h"
 
 /*
  * CR0 flags
@@ -125,6 +126,14 @@ void crt1(unsigned long magic,
         FILE_set(stdin,  NULL, NULL, NULL, NULL);
         FILE_set(stdout, NULL, NULL, NULL, NULL);
         FILE_set(stderr, NULL, NULL, NULL, NULL);
+
+        (void) arch_stdio_init();
+
+        /* Turn on all needed streams ... */
+        FILE_update(stdout, arch_stdio_putchar, NULL, NULL, NULL);
+        FILE_update(stderr, arch_stdio_putchar, NULL, NULL, NULL);
+
+        printf("%s booting ...\n", PACKAGE_NAME);
 
 	/* Am I booted by a Multiboot-compliant boot loader?  */
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
