@@ -39,6 +39,7 @@ blink_archs_x86_SRCS =				\
 	archs/x86/vga.c				\
 	archs/x86/vga.h				\
 	archs/x86/stdio.c			\
+	archs/x86/stdio.h			\
 	archs/x86/power.c			\
 	archs/x86/port.c			\
 	archs/x86/port.h			\

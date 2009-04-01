@@ -485,8 +485,9 @@ AC_CONFIG_HEADERS([src/config.h])
 ##endif /* CONFIG_AUTOCONFIG_H */
 #])
 
-AC_SUBST(CONFIG_LMA, 0x20000000)
-AC_SUBST(CONFIG_VMA, 0x10000000)
+# XXX FIXME: Awful, please change it ASAP
+AC_SUBST(CONFIG_LMA, 0x00100000)
+AC_SUBST(CONFIG_VMA, 0x00100000)
 
 #
 # Finally output the configuration
