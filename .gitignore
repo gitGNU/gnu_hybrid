@@ -1,7 +1,8 @@
 *~
 
-/site/Makefile
-/site/Makefile.in
+Makefile
+Makefile.in
+
 /site/in/.sitetool
 /site/in/site.stamp
 /site/in/todos.sxml
@@ -11,16 +12,17 @@
 /site/out/*
 
 .dnt.db
-/Makefile
-/Makefile.in
-/aclocal.m4
-/autom4te.cache
-/config.log
-/config.status
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+
 /configure
 /configure.ac
-/site/in/Makefile
-/site/in/Makefile.in
-/tools/autotools/
-/tools/maint/
-/utils/
+/utils
+
+/tools/autotools/install-sh
+/tools/autotools/missing
+/tools/maint/fetch
+/tools/maint/gitlog-to-committers
+/tools/maint/whitespace-detect
