@@ -25,8 +25,6 @@ SUBDIRS =					\
 	maint					\
 	scripts					\
 	choose					\
-	blink					\
-	serdes					\
 	autotools
 
 ##

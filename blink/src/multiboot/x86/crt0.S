@@ -34,12 +34,12 @@ entry_point:
 
 	jmp	multiboot_entry
 
-	/* Align 32 bits boundary.  */
+	/* Align 32 bits boundary */
 	.align	4
 
 	.section .multiboot
 
-	/* Multiboot header.  */
+	/* Multiboot header */
 multiboot_header:
 	/* magic */
 	.long	MULTIBOOT_HEADER_MAGIC
@@ -47,23 +47,9 @@ multiboot_header:
 	.long	MULTIBOOT_HEADER_FLAGS
 	/* checksum */
 	.long	-(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
-#ifndef __ELF__
-	/* header_addr */
-	.long	multiboot_header
-	/* load_addr */
-	.long	_kernel //entry_point
-	/* load_end_addr */
-	.long	_ekernel //_edata
-	/* bss_end_addr */
-	.long	_ebss //_end
-	/* entry_addr */
-	.long	multiboot_entry
-#endif /* ! __ELF__ */
-
-	.section .text
 
 multiboot_entry:
-	/* Switch to our stack pointer.  */
+	/* Switch to our stack pointer */
 	movl	$(stack + STACK_SIZE), %esp
 
 	/* Save multiboot infos */

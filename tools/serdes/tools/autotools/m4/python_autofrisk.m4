@@ -5,14 +5,13 @@
 #
 # Files matching regexps:
 #
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Command.py
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/__init__.py
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Trace.py
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/idlgen.in
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Debug.py
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Configuration.py
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Exceptions.py
-#  /home/francesco/Sviluppo/hybrid/hybrid/tools/serdes/src/Autoconfiguration.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/Command.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/__init__.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/Trace.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/idlgen.in
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/Debug.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/Configuration.py
+#  /home/francesco/Sviluppo/hybrid/hybrid/kernel/tools/serdes/src/Exceptions.py
 #
 
 AC_DEFUN([PYTHON_AUTOFRISK_CHECKS],[
