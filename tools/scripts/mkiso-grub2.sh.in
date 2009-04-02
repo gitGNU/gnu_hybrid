@@ -29,6 +29,9 @@ case $1 in
     echo ""
     echo "Build an ISO image file using grub (2.x) as boot loader"
     echo ""
+    echo "  -b, --boot FILE      file to boot"
+    echo "  -o, --output FILE    output ISO image file"
+    echo ""
     echo "Report bugs to <@PACKAGE_BUGREPORT@>"
     exit 0
     ;;
@@ -44,13 +47,18 @@ case $1 in
     ;;
 
     -o|--output)
-    output=$2
-    if test -z "$output" ; then
-	echo "$me: Missing output file"
-	exit 1
-    fi
     ;;
 esac
+
+if test -z "$boot" ; then
+    echo "$me: Missing boot file"
+    exit 1
+fi
+
+if test -z "$output" ; then
+    echo "$me: Missing output file"
+    exit 1
+fi
 
 missing ()
 {
@@ -165,10 +173,10 @@ $GRUB2_MKIMAGE -v -d $GRUB_LIB_DIR $GRUB_MOD_LIST 2>/dev/null \
 	   exit 1;                                            \
        }
 
-$CP $KERNEL $TMP_DIR/boot ||      \
-{                                        \
-    error "Failed to copy kernel image"; \
-    exit 1;                              \
+$CP $KERNEL $TMP_DIR/${boot} ||                 \
+{                                               \
+    error "Failed to copy ${boot} image";       \
+    exit 1;                                     \
 }
 
 $CAT >$TMP_DIR/boot/grub/menu.lst <<EOF
