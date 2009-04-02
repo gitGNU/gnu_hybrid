@@ -39,3 +39,4 @@ config.status
 /tools/scripts/mkiso-grub1.sh
 /tools/scripts/mkiso-grub2
 /tools/scripts/mkiso-grub2.sh
+/image.iso
