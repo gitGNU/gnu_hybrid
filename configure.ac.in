@@ -77,6 +77,11 @@ AC_CONFIG_FILES([
 
 	tools/Makefile
 	tools/maint/Makefile
+	tools/libs/Makefile
+	tools/libs/awk/Makefile
+	tools/libs/perl/Makefile
+	tools/libs/sh/Makefile
+	tools/scripts/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile
 

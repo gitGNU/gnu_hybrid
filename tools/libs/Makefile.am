@@ -21,17 +21,9 @@
 include $(top_srcdir)/Makefile.sub
 
 SUBDIRS =					\
-	maint					\
-	libs					\
-	scripts					\
-	autotools
-
-##
-## NOTE:
-##     autotools dir is already shipped by autotools ... :-)
-##
-##EXTRA_DIST =                                  \
-##	autotools
+	sh					\
+	awk					\
+	perl
 
 ##
 ## Maintainer related targets

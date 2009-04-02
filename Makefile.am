@@ -23,6 +23,7 @@ include $(top_srcdir)/Makefile.sub
 ACLOCAL_AMFLAGS = -I tools/autotools/m4
 
 SUBDIRS =					\
+	tools					\
 	blink					\
 	kernel
 

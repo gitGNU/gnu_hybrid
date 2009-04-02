@@ -26,3 +26,16 @@ config.status
 /tools/maint/fetch
 /tools/maint/gitlog-to-committers
 /tools/maint/whitespace-detect
+/tools/libs/awk/lib.awk
+/tools/libs/perl/lib.pl
+/tools/libs/sh/lib.sh
+/tools/scripts/bootcheck
+/tools/scripts/bootcheck.sh
+/tools/scripts/grub1-config
+/tools/scripts/grub1-config.sh
+/tools/scripts/grub2-config
+/tools/scripts/grub2-config.sh
+/tools/scripts/mkiso-grub1
+/tools/scripts/mkiso-grub1.sh
+/tools/scripts/mkiso-grub2
+/tools/scripts/mkiso-grub2.sh

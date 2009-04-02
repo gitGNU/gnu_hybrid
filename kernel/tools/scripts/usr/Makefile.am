@@ -22,12 +22,7 @@ include $(top_srcdir)/Makefile.sub
 include $(top_srcdir)/tools/scripts/Makefile.sub
 
 scripts =					\
-	bootcheck				\
 	getdefine				\
-	grub1-config				\
-	grub2-config				\
-	mkiso-grub1				\
-	mkiso-grub2				\
 	mergesyms				\
 	mkbuild					\
 	rules2syms				\
@@ -39,12 +34,7 @@ noinst_SCRIPTS = $(scripts)
 awk_scripts_SRCS =
 
 sh_scripts_SRCS =				\
-	grub1-config.sh.in			\
-	grub2-config.sh.in			\
-	mkiso-grub1.sh.in			\
-	mkiso-grub2.sh.in			\
 	rules2syms.sh.in			\
-	bootcheck.sh.in				\
 	sh2h.sh.in				\
 	mkbuild.sh.in				\
 	getdefine.sh.in				\
@@ -132,20 +122,6 @@ sh2h: Makefile sh2h.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += sh2h
 
-bootcheck.sh: Makefile $(sh_lib_SRC) bootcheck.sh.in
-	INFILE=bootcheck.sh.in ;		\
-	OUTFILE=bootcheck.sh ;			\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck.sh
-
-bootcheck: Makefile bootcheck.sh
-	INFILE=bootcheck.sh ;			\
-	OUTFILE=bootcheck ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += bootcheck
-
 rules2syms.sh: Makefile $(sh_lib_SRC) rules2syms.sh.in
 	INFILE=rules2syms.sh.in ;		\
 	OUTFILE=rules2syms.sh ;			\
@@ -159,62 +135,6 @@ rules2syms: Makefile rules2syms.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += rules2syms
-
-grub1-config.sh: Makefile $(sh_lib_SRC) grub1-config.sh.in
-	INFILE=grub1-config.sh.in ;		\
-	OUTFILE=grub1-config.sh ;		\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += grub1-config.sh
-
-grub1-config: Makefile grub1-config.sh
-	INFILE=grub1-config.sh ;		\
-	OUTFILE=grub1-config ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += grub1-config
-
-grub2-config.sh: Makefile $(sh_lib_SRC) grub2-config.sh.in
-	INFILE=grub2-config.sh.in ;		\
-	OUTFILE=grub2-config.sh ;		\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += grub2-config.sh
-
-grub2-config: Makefile grub2-config.sh
-	INFILE=grub2-config.sh ;		\
-	OUTFILE=grub2-config ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += grub2-config
-
-mkiso-grub1.sh: Makefile $(sh_lib_SRC) mkiso-grub1.sh.in
-	INFILE=mkiso-grub1.sh.in ;		\
-	OUTFILE=mkiso-grub1.sh ;		\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkiso-grub1.sh
-
-mkiso-grub1: Makefile mkiso-grub1.sh
-	INFILE=mkiso-grub1.sh ;			\
-	OUTFILE=mkiso-grub1 ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkiso-grub1
-
-mkiso-grub2.sh: Makefile $(sh_lib_SRC) mkiso-grub2.sh.in
-	INFILE=mkiso-grub2.sh.in ;		\
-	OUTFILE=mkiso-grub2.sh ;		\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkiso-grub2.sh
-
-mkiso-grub2: Makefile mkiso-grub2.sh
-	INFILE=mkiso-grub2.sh ;			\
-	OUTFILE=mkiso-grub2 ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkiso-grub2
 
 
 ##

@@ -20,22 +20,32 @@
 
 include $(top_srcdir)/Makefile.sub
 
-SUBDIRS =					\
-	maint					\
-	libs					\
-	scripts					\
-	autotools
+CLEANFILES =
 
-##
-## NOTE:
-##     autotools dir is already shipped by autotools ... :-)
-##
-##EXTRA_DIST =                                  \
-##	autotools
+all-local: lib.sh
+
+sh_libs_SRCS =					\
+	libtrace.sh.in				\
+	libmisc.sh.in				\
+	libcore.sh.in
+
+lib.sh: Makefile $(sh_libs_SRCS)
+	{ rm -f lib.sh &&						\
+	  touch lib.sh &&						\
+	  for i in $(sh_libs_SRCS) ; do					\
+		cat $(srcdir)/$$i | $(SED) -e '1,/^$$/d' >> lib.sh ;	\
+	  done ; } || { rm -f lib.sh ; exit 1 ; }
+CLEANFILES += lib.sh
+
+EXTRA_DIST =					\
+	$(sh_libs_SRCS)
 
 ##
 ## Maintainer related targets
 ##
 update-local: Makefile
 
-maintainer-check-local: Makefile
+maintainer-check-whitespaces: Makefile $(sh_libs_SRCS)
+	$(WHITESPACE_DETECT) $(sh_libs_SRCS)
+
+maintainer-check-local: Makefile maintainer-check-whitespaces
