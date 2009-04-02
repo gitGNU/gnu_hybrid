@@ -110,7 +110,7 @@ test -d $ISO_DIR || {                                \
     };                                               \
 }
 
-GRUB1_CONFIG="@abs_top_builddir@/tools/scripts/usr/grub1-config"
+GRUB1_CONFIG="@abs_top_builddir@/tools/scripts/grub1-config"
 test -r $GRUB1_CONFIG || {             \
     error "Missing tool: grub1-config"; \
     exit 1;                            \

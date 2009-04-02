@@ -61,44 +61,6 @@ debug:
 	(cd src && $(MAKE) $(AM_MAKEFLAGS) system.map)
 
 ##
-## XXX FIXME: The "iso" rules are temporary and for debugging purposes only.
-##            Please move them somewhere else ASAP
-##
-if GRUB1_SUPPORT
-image.iso: Makefile all
-	rm -r -f image-fs && \
-	mkdir image-fs && \
-	cp src/kernel image-fs && \
-	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/usr/mkiso-grub1 -o $(abs_top_builddir)/image.iso ) || { \
-		rm -r -f image-fs ; \
-		exit 1 ; \
-	} && \
-	rm -r -f image-fs
-
-CLEANFILES += image.iso
-else
-image.iso: all Makefile
-endif
-
-if GRUB2_SUPPORT
-image.iso: Makefile all
-	rm -r -f image-fs && \
-	mkdir image-fs && \
-	cp src/kernel image-fs && \
-	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/usr/mkiso-grub2 -o $(abs_top_builddir)/image.iso ) || { \
-		rm -r -f image-fs ; \
-		exit 1 ; \
-	} && \
-	rm -r -f image-fs
-
-CLEANFILES += image.iso
-else
-image.iso: all Makefile
-endif
-
-##
 ## help related target
 ##
 help:
@@ -112,7 +74,6 @@ help:
 	@echo "    old-config          -- Reconfigure using old configuration"
 	@echo "    stats               -- Dump some stats"
 	@echo "    debug               -- Generate (useful) debugging files"
-	@echo "    image.iso           -- Generate a bootable ISO image"
 	@echo "    doxygen             -- Build doxygen documentation (in docs directory)"
 	@echo ""
 	@echo "    *automake*          -- Standard automake targets"

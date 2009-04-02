@@ -236,9 +236,6 @@ check-ifdefs: Makefile
 check-stack: Makefile
 	$(STACKCHECK) $(STACKCHECK_FLAGS) -a $(architecture) -s $(STACKSIZE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
-check-boot: Makefile
-	$(BOOTCHECK) $(BOOTCHECK_FLAGS) -a $(architecture) -i $(KERNEL_OBJ) || exit 1
-
 HDRS = `$(FLHANDLER) $(FLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
 check-guards: Makefile
 	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
@@ -246,7 +243,7 @@ check-guards: Makefile
 check-sections:
 	$(SECTIONS) $(SECTIONS_FLAGS) -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
-check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards check-boot
+check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards
 
 ##
 ## install target related

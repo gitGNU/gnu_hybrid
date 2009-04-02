@@ -27,6 +27,53 @@ SUBDIRS =					\
 	blink					\
 	kernel
 
+help:
+	@echo ""
+	@echo "  Targets:"
+	@echo ""
+	@echo "    image.iso           -- Generate a bootable ISO image"
+	@echo ""
+	@echo "    *automake*          -- Standard automake targets"
+	@echo ""
+
+CLEANFILES =
+
+if GRUB1_SUPPORT
+image.iso: Makefile all
+	rm -r -f image-fs && \
+	mkdir image-fs && \
+	cp $(abs_top_builddir)/blink/src/blink   image-fs && \
+	cp $(abs_top_builddir)/kernel/src/kernel image-fs && \
+	( cd image-fs &&	\
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 -o $(abs_top_builddir)/image.iso ) || { \
+		rm -r -f image-fs ; \
+		exit 1 ; \
+	} && \
+	rm -r -f image-fs
+
+CLEANFILES += image.iso
+else
+image.iso: all Makefile
+endif
+
+if GRUB2_SUPPORT
+image.iso: Makefile all
+	rm -r -f image-fs && \
+	mkdir image-fs && \
+	cp $(abs_top_builddir)/blink/src/blink   image-fs && \
+	cp $(abs_top_builddir)/kernel/src/kernel image-fs && \
+	( cd image-fs &&	\
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 -o $(abs_top_builddir)/image.iso ) || { \
+		rm -r -f image-fs ; \
+		exit 1 ; \
+	} && \
+	rm -r -f image-fs
+
+CLEANFILES += image.iso
+else
+image.iso: all Makefile
+endif
+
 ##
 ## Maintainer related targets
 ##
