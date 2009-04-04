@@ -43,8 +43,8 @@ AC_PROG_GREP
 AC_PROG_SED
 
 AX_PATH_MISSING([SITETOOL], [sitetool])
-AX_PATH_MISSING([DNT],      [dnt])
 AX_PATH_MISSING([WGET],     [wget])
+AX_PATH_MISSING([DNT],      [dnt])
 
 #
 # Retrieve version parts
