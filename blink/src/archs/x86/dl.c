@@ -17,6 +17,7 @@
  *
  */
 #include "config.h"
+#include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "libc/assert.h"
 #include "libbfd/elf-format.h"
