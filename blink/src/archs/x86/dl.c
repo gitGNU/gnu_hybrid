@@ -112,6 +112,9 @@ int arch_dl_relocate_symbols(dl_t   mod,
                                                           (Elf32_Word) seg->addr -
                                                           rel->r_offset);
                                                 break;
+                                        default:
+                                                assert(0);
+                                                break;
                                 }
                         }
                 }
