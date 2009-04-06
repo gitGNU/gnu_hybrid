@@ -24,10 +24,13 @@
 
 int main(int argc, char * argv[])
 {
+        (void) argc;
+        (void) argv;
+
         printf("%s version %s running ...\n",
                PACKAGE_NAME, PACKAGE_VERSION);
         printf("(C) 2008 Francesco Salvestrini <salvestrini@gmail.com>\n",
                PACKAGE_NAME, PACKAGE_VERSION);
 
-        exit(0);
+        return 0;
 }
