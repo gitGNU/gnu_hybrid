@@ -23,6 +23,7 @@
 #include "libc/assert.h"
 #include "libbfd/elf-format.h"
 #include "dl.h"
+#include "archs/arch.h"
 
 #if __WORDSIZE == 32
 
@@ -52,6 +53,7 @@ typedef Elf64_Sym  Elf_Sym;
 
 #endif
 
+#if 0
 static dl_list_t dl_head;
 
 static dl_t dl_get(const char * name)
@@ -103,6 +105,7 @@ static void dl_remove(dl_t mod)
                 }
         }
 }
+#endif
 
 struct symbol
 {
@@ -177,6 +180,7 @@ static int dl_register_symbol(const char * name,
         return 1;
 }
 
+#if 0
 static void dl_unregister_symbols(dl_t mod)
 {
         unsigned i;
@@ -198,6 +202,7 @@ static void dl_unregister_symbols(dl_t mod)
                 }
         }
 }
+#endif
 
 static void * dl_get_section_addr(dl_t         mod,
                                   unsigned int n)
@@ -218,9 +223,8 @@ static int dl_check_header(void * ehdr,
 {
         Elf_Ehdr * e;
 
-        assert(e);
-
         e = ehdr;
+        assert(e);
 
         if (size < sizeof(Elf_Ehdr)) {
                 printf("ELF header smaller than expected\n");
@@ -340,7 +344,7 @@ int dl_load(void * addr,
         Elf_Ehdr * e;
         dl_t       mod;
 
-        printf("modules", "module at %p, size 0x%lx\n",
+        printf("module at %p, size 0x%lx\n",
                addr,
                (unsigned long) size);
         e = addr;
@@ -349,7 +353,7 @@ int dl_load(void * addr,
         }
 
         if (e->e_type != ET_REL) {
-                printf("Invalid ELF file type for module `%s'\n", mod->name);
+                printf("Invalid ELF file type\n");
                 return 0;
         }
 
