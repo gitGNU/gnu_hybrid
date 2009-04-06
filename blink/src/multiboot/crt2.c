@@ -25,6 +25,7 @@
 #include "libc/assert.h"
 #include "libbfd/bfd.h"
 #include "multiboot/multiboot.h"
+#include "heap.h"
 #include "dl.h"
 
 #define CHECK_FLAG(FLAGS,BIT) ((FLAGS) & (1 << (BIT)))
@@ -144,12 +145,13 @@ void crt2(multiboot_info_t * mbi)
 		panic("Cannot scan modules infos correctly");
 	}
 
+        /* Find heap base */
+#if 0
+        /* Initialize heap */
         if (!heap_init()) {
                 panic("Cannot initialize heap\n");
         }
-
-        /* Find heap base */
-        /* Initialize heap */
+#endif
         /* Move interesting information inside dl data */
 
 #if 0
