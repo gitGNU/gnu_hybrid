@@ -76,17 +76,23 @@ CLEANFILES += $(LDSCRIPT)
 
 blink_DEPENDENCIES = $(LDSCRIPT)
 blink_CCASFLAGS    =				\
+	$(AX_CONFIG_CCASFLAGS)			\
 	$(ELKLIB_CCASFLAGS)			\
 	-I$(top_srcdir)/src			\
 	-I$(top_builddir)/src
 blink_CPPFLAGS     =				\
+	$(AX_CONFIG_CPPFLAGS)			\
 	$(ELKLIB_CPPFLAGS)			\
 	-I$(top_srcdir)/src			\
 	-I$(top_builddir)/src
-blink_CFLAGS       = $(ELKLIB_CFLAGS)
-blink_CXXFLAGS     = $(ELKLIB_CXXFLAGS)
-blink_LDADD        = $(ELKLIB_LDADD)
+blink_CFLAGS       =				\
+	$(AX_CONFIG_CFLAGS)			\
+	$(ELKLIB_CFLAGS)
+blink_CXXFLAGS     =				\
+	$(AX_CONFIG_CXXFLAGS)			\
+	$(ELKLIB_CXXFLAGS)
 blink_LDFLAGS      =				\
+	$(AX_CONFIG_LDFLAGS)			\
 	$(ELKLIB_LDFLAGS)			\
 	-static					\
 	-T $(LDSCRIPT)				\
@@ -99,6 +105,8 @@ blink_LDFLAGS      =				\
         --no-gc-sections                        \
         --fatal-warnings                        \
         -Wl,--as-needed	
+blink_LDADD        =				\
+	$(ELKLIB_LDADD)
 
 ##
 ## Maintainer related targets
