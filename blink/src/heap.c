@@ -28,6 +28,11 @@
 
 #define BANNER          "heap: "
 
+#define CONFIG_DEBUG_HEAP           0
+#define CONFIG_DEBUG_HEAP_NOISY     0
+#define CONFIG_DEBUG_HEAP_PARANOID  0
+#define CONFIG_DEBUG_HEAP_SIGNATURE 0
+
 #if CONFIG_DEBUG_HEAP
 #define dprintf(F,A...) printf(BANNER F,##A)
 #else
@@ -397,93 +402,3 @@ void arch_heap_free(void * address)
 	bin->alloc_count--;
 	bin->free_count++;
 }
-
-#if CONFIG_DEBUGGER
-static FILE * heap_stream;
-
-static int heap_iterator(uint_t bin_index,
-			 uint_t bin_element_size,
-			 uint_t bin_grow_size,
-			 uint_t bin_alloc_count,
-			 uint_t bin_free_count,
-			 uint_t bin_raw_count)
-{
-	assert(heap_stream);
-
-	/*
-	 * NOTE:
-	 *     heap_foreach() calls us for-each region, even for those with
-	 *     0 length ... so we need to remove the useless ones.
-	 */
-	fprintf(heap_stream,
-		"  %2d   0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n",
-		bin_index,
-		bin_element_size,
-		bin_grow_size,
-		bin_alloc_count,
-		bin_free_count,
-		bin_raw_count);
-
-	return 1;
-}
-
-
-static int heap_foreach(int (* callback)(uint_t bin_index,
-					 uint_t bin_element_size,
-					 uint_t bin_grow_size,
-					 uint_t bin_alloc_count,
-					 uint_t bin_free_count,
-					 uint_t bin_raw_count))
-{
-	size_t i;
-
-	assert(callback);
-
-	for (i = 0; i < bin_count; i++) {
-		if (!callback(i,
-			      bins[i].element_size,
-			      bins[i].grow_size,
-			      bins[i].alloc_count,
-			      bins[i].free_count,
-			      bins[i].raw_count)) {
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
-static dbg_result_t command_heap_on_execute(FILE * stream,
-					    int    argc,
-					    char * argv[])
-{
-	assert(stream);
-	assert(argc >= 0);
-
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
-
-	unused_argument(argv);
-
-	heap_stream = stream;
-
-	fprintf(stream, "Heap infos:\n");
-	fprintf(stream, "\n");
-	fprintf(stream,
-		"Index  Elemt-size Grow-size  Alloc      Free       Raw\n");
-
-	heap_foreach(heap_iterator);
-
-	fprintf(stream, "\n");
-
-	return DBG_RESULT_OK;
-}
-
-DBG_COMMAND_DECLARE(heap,
-		    "Dumps heap infos",
-		    "Dumps heap infos, showing allocation unit infos too",
-		    NULL,
-		    command_heap_on_execute,
-		    NULL);
-#endif
