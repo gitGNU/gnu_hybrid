@@ -39,9 +39,9 @@ extern unsigned long _end;
 
 void arch_panic(const char * message)
 {
-	static int   panic_in_progress = 0;
-        unsigned int frames;
-        int          i;
+	static int panic_in_progress = 0;
+        uint_t     frames;
+        uint_t     i;
 
 	panic_in_progress++;
 	if (panic_in_progress > 1) {
