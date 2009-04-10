@@ -17,6 +17,7 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include <assert.h>
@@ -115,7 +116,7 @@ static void help(void)
 		lmsg << "  -" << (char) options[i].val
 		     << ", "
 		     << "--"  << (char *) options[i].name;
-		
+
 		for (j = 0; j < (max_val - strlen(options[i].name)); j++) {
 			lmsg << " ";
 		}

@@ -80,9 +80,11 @@ libzconf_a_SOURCES  =				\
 	zconf-parser.y				\
 	zconf-scanner.l
 libzconf_a_CPPFLAGS =				\
-	$(COMMONCPPFLAGS)
+	$(COMMONCPPFLAGS)			\
+	-DYY_NO_INPUT
 libzconf_a_CFLAGS =				\
-	$(COMMONCFLAGS)
+	$(COMMONCFLAGS)				\
+	-DYY_NO_INPUT
 
 conf_SOURCES  =					\
 	conf.c
