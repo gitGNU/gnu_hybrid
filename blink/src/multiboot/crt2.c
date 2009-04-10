@@ -118,6 +118,8 @@ static int check_kernel_and_setup(multiboot_info_t * mbi,
 
 bfd_image_t blink_image;
 
+extern int main(int argc, char * argv[]);
+
 void crt2(multiboot_info_t * mbi)
 {
         assert(mbi);
@@ -163,4 +165,5 @@ void crt2(multiboot_info_t * mbi)
 #endif
 
         /* Call main program */
+        (void) main(0, 0);
 }
