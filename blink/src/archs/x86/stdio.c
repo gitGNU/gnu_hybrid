@@ -31,17 +31,7 @@ int arch_stdio_putchar(int c)
 
 int arch_stdio_init(void)
 {
-	if (!vga_init()) {
-		/*
-		 * NOTE:
-		 *     We don't have output ... output is prioritary over
-		 *     input, so this condition is an hard-error. We will
-		 *     return 0 in order to notify back the problem
-		 */
-		return 0;
-	}
-
-	return 1;
+	return vga_init();
 }
 
 void arch_stdio_fini(void)
