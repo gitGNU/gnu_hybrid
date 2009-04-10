@@ -22,8 +22,8 @@
 #include "archs/boot/multiboot.h"
 #include "archs/common/asm.h"
 
-#define RESET_EFLAGS 1
-#define CLEAR_BSS    1
+#define RESET_EFLAGS 0
+#define CLEAR_BSS    0
 
 	.section .text
 
