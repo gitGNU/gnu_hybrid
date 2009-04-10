@@ -17,7 +17,7 @@
  *
  */
 
-#define ASM	1
+#define ASM	     1
 
 #include "config.h"
 #include "multiboot/multiboot.h"
