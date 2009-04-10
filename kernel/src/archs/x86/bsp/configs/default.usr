@@ -3,7 +3,7 @@
 #
 
 #
-# Intel ia-32 architecture
+# x86 architecture
 #
 HZ=100
 # ARCH_DEBUG is not set
@@ -14,12 +14,12 @@ MAX_CPU_COUNT=1
 #
 # Specific CPU support
 #
-ARCH_CPU_INTEL=y
-ARCH_CPU_AMD=y
+# ARCH_CPU_INTEL is not set
+# ARCH_CPU_AMD is not set
 ARCH_CPU_GENERIC=y
-BOCHS_DEBUGGER=y
+# BOCHS_DEBUGGER is not set
 # RS232_DEBUGGER is not set
-# HOSTED_DEBUGGER is not set
+HOSTED_DEBUGGER=y
 
 #
 # RS232 parameters
@@ -28,6 +28,11 @@ BOCHS_DEBUGGER=y
 #
 # Hosted debugger parameters
 #
+VGA_DEBUGGER_BASE=0x000B8000
+VGA_DEBUGGER_ROWS=25
+VGA_DEBUGGER_COLUMNS=80
+# VGA_DEBUG is not set
+# ATKBD_SCANCODES_DEBUG is not set
 
 #
 # Architecture boot settings
