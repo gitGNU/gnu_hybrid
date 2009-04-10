@@ -29,7 +29,8 @@ int main(int argc, char * argv[])
 
         printf("%s version %s running ...\n",
                PACKAGE_NAME, PACKAGE_VERSION);
-        printf("(C) 2008 Francesco Salvestrini <salvestrini@gmail.com>\n",
+        printf("(C) 2008, 2009 "
+               "Francesco Salvestrini <salvestrini@gmail.com>\n",
                PACKAGE_NAME, PACKAGE_VERSION);
 
         return 0;
