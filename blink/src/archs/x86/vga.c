@@ -51,7 +51,7 @@
 #define VGA_COMMAND_PORT     0x3D4
 #define VGA_DATA_PORT        0x3D5
 
-#define VGA_BASE             0xB000
+#define VGA_BASE             0xB8000
 #define VGA_COLUMNS          80
 #define VGA_ROWS             25
 
@@ -284,7 +284,7 @@ int vga_init(void)
 	port_out8(VGA_COMMAND_PORT, VGA_SET_CURSOR_START);
 	port_out8(VGA_DATA_PORT,    ((0x2 << 5) | 11));
 
-	vga_clear();
+        vga_clear();
 
 	initialized = 1;
 
