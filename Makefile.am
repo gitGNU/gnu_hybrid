@@ -45,7 +45,7 @@ image.iso: Makefile all
 	cp $(abs_top_builddir)/blink/src/blink   image-fs && \
 	cp $(abs_top_builddir)/kernel/src/kernel image-fs && \
 	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 -b blink -o $(abs_top_builddir)/image.iso ) || { \
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 -k blink -o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
 	} && \

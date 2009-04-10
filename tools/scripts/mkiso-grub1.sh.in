@@ -31,7 +31,8 @@ while test $# -gt 0 ; do
             echo ""
             echo "Build an ISO image file using grub (1.x) as boot loader"
             echo ""
-            echo "  -b, --boot FILE      file to boot"
+            echo "  -k, --kernel FILE    kernel to boot"
+            echo "  -m, --module FILE    module to load"
             echo "  -o, --output FILE    output ISO image file"
             echo ""
             echo "Report bugs to <@PACKAGE_BUGREPORT@>"
@@ -48,9 +49,9 @@ while test $# -gt 0 ; do
             exit 0
             ;;
 
-        -b|--boot)
+        -k|--kernel)
             shift
-            boot=$1
+            kernel=$1
             ;;
 
         -o|--output)
@@ -65,8 +66,8 @@ while test $# -gt 0 ; do
     shift
 done
 
-if test -z "$boot" ; then
-    echo "$me: Missing boot file"
+if test -z "$kernel" ; then
+    echo "$me: Missing kernel file"
     exit 1
 fi
 
@@ -77,8 +78,8 @@ fi
 
 @MKDIR_P@ iso/boot/grub && \
     cp -f `@abs_top_builddir@/tools/scripts/grub1-config -D`/stage2_eltorito iso/boot/grub && \
-    cp -f $boot iso/boot && \
-    echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/${boot}" > iso/boot/grub/menu.lst && \
+    cp -f $kernel iso/boot && \
+    echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/${kernel}" > iso/boot/grub/menu.lst && \
     @MKISOFS@ -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o $output iso || { \
     rm -r -f iso ; \
     rm -f $output ; \
