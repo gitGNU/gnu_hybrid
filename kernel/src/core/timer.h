@@ -59,13 +59,12 @@ typedef struct timer timer_t;
 }
 #define TIMER_FILL(TIMER,CALLBACK,DATA,DELAY,TYPE)	\
 	__BEGIN_MACRO					\
-	assert(TIMER);					\
-	assert((DELAY) >= 0);				\
 	(TIMER)->callback   = CALLBACK;			\
 	(TIMER)->data       = DATA;			\
 	(TIMER)->expiration = DELAY;			\
 	(TIMER)->type       = TYPE;			\
 	__END_MACRO
+
 #define TIMER_GOOD(TIMER)			\
 	((TIMER) &&				\
 	 ((TIMER)->callback != NULL) &&		\
