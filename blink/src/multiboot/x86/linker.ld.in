@@ -50,7 +50,11 @@ SECTIONS {
 	}
 
 	.bss : {
+                _bss = .;
+
 		*(.bss)
+
+                _ebss = .;
 	}
 
 	.cxx : {
