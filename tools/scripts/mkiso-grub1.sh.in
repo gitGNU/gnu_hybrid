@@ -22,7 +22,9 @@
 me="mkiso-grub1"
 version="0.1"
 output=""
-boot=""
+
+kernel=""
+modules=""
 
 while test $# -gt 0 ; do
     case $1 in
@@ -54,6 +56,11 @@ while test $# -gt 0 ; do
             kernel=$1
             ;;
 
+        -m|--module)
+            shift
+            modules="$modules $1"
+            ;;
+
         -o|--output)
             shift
             output=$1
@@ -77,9 +84,19 @@ if test -z "$output" ; then
 fi
 
 @MKDIR_P@ iso/boot/grub && \
-    cp -f `@abs_top_builddir@/tools/scripts/grub1-config -D`/stage2_eltorito iso/boot/grub && \
+    cp -f \
+    	`@abs_top_builddir@/tools/scripts/grub1-config -D`/stage2_eltorito \
+    	iso/boot/grub && \
     cp -f $kernel iso/boot && \
-    echo -e "timeout=1\ntitle Hybrid\n\tkernel /boot/${kernel}" > iso/boot/grub/menu.lst && \
+    for i in $modules ; do \
+    	cp -f $i iso/boot ; \
+    done && \
+    touch                                       iso/boot/grub/menu.lst && \
+    echo "title Hybrid"                      >> iso/boot/grub/menu.lst && \
+    echo "kernel /boot/`basename ${kernel}`" >> iso/boot/grub/menu.lst && \
+    for i in $modules ; do \
+    	echo "module /boot/`basename $i`"    >> iso/boot/grub/menu.lst ; \
+    done && \
     @MKISOFS@ -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o $output iso || { \
     rm -r -f iso ; \
     rm -f $output ; \
