@@ -17,21 +17,12 @@
  *
  */
 
+#ifndef CORE_H
+#define CORE_H
+
 #include "config.h"
-#include "elklib.h"
-#include "libc/stdlib.h"
-#include "libc/stdio.h"
+#include "dl.h"
 
-int main(int argc, char * argv[])
-{
-        (void) argc;
-        (void) argv;
+void core(dl_list_t dl);
 
-        printf("%s version %s running ...\n",
-               PACKAGE_NAME, PACKAGE_VERSION);
-        printf("(C) 2008, 2009 "
-               "Francesco Salvestrini <salvestrini@gmail.com>\n",
-               PACKAGE_NAME, PACKAGE_VERSION);
-
-        return 0;
-}
+#endif /* CORE_H */
