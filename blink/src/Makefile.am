@@ -58,7 +58,8 @@ blink_SOURCES =					\
 	heap.h					\
 	panic.c					\
 	dl.c					\
-	main.c
+	core.c					\
+	core.h
 
 LDSCRIPT = $(top_builddir)/src/multiboot/$(architecture)/linker.ld
 $(top_builddir)/src/multiboot/$(architecture)/linker.ld: Makefile $(top_srcdir)/src/multiboot/$(architecture)/linker.ld.in
