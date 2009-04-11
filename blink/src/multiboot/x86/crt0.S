@@ -23,8 +23,8 @@
 #include "multiboot/multiboot.h"
 #include "archs/asm.h"
 
-#define RESET_EFLAGS 0
-#define CLEAR_BSS    0
+#define RESET_EFLAGS 1
+#define CLEAR_BSS    1
 
 	.section .text
 
@@ -87,9 +87,15 @@ multiboot_entry:
 	/* Call the entry point */
 	call    EXT_C(crt1)
 
+        pushl   $halt_message
+        call    EXT_C(printf)
+
 	/* We shouldn't reach this point ... */
 loop:   hlt
 	jmp     loop
+
+halt_message:
+        .asciz  "BLink halted ..."
 
 	/* Our stack area */
 	.comm	stack, STACK_SIZE
