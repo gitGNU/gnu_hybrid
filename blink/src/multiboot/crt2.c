@@ -34,8 +34,10 @@ static int check_modules(multiboot_info_t * mbi)
 {
 	assert(mbi);
 
+        printf("Checking multiboot modules ...\n");
+
 	/* Are mods_* valid?  */
-	if (CHECK_FLAG(mbi->flags, 3)) {
+        if (CHECK_FLAG(mbi->flags, 3)) {
 		module_t *   mod;
 		unsigned int i;
 		unsigned int j;
@@ -69,14 +71,16 @@ static int check_modules(multiboot_info_t * mbi)
 	return 1;
 }
 
-static int check_kernel_and_setup(multiboot_info_t * mbi,
-                                  bfd_image_t *      img)
+static int check_kernel(multiboot_info_t * mbi,
+                        bfd_image_t *      img)
 {
 	assert(mbi);
         assert(img);
 
+        printf("Checking multiboot kernel ...\n");
+
 	/* Bits 4 and 5 are mutually exclusive!  */
-	if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5)) {
+        if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5)) {
                 printf("Kernel image format is both ELF and AOUT ?");
 		return 0;
 	}
@@ -139,7 +143,7 @@ void crt2(multiboot_info_t * mbi)
 		printf("boot_device = 0x%x\n", (unsigned int) mbi->boot_device);
 	}
 
-	if (!check_kernel_and_setup(mbi, &blink_image)) {
+	if (!check_kernel(mbi, &blink_image)) {
 		panic("Cannot scan image info correctly");
 	}
 
