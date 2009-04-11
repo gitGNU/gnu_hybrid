@@ -23,10 +23,12 @@
 #include "libc/string.h"
 #include "libc/ctype.h"
 #include "libc/assert.h"
+#include "libc/stdlib.h"
 #include "libbfd/bfd.h"
 #include "multiboot/multiboot.h"
 #include "heap.h"
 #include "dl.h"
+#include "core.h"
 
 #define CHECK_FLAG(FLAGS,BIT) ((FLAGS) & (1 << (BIT)))
 
@@ -120,9 +122,11 @@ static int check_kernel(multiboot_info_t * mbi,
 	return 1;
 }
 
-bfd_image_t blink_image;
-
-extern int main(int argc, char * argv[]);
+static bfd_image_t blink_image;
+#if 0
+static uint_t      heap_base;
+static uint_t      heap_size;
+#endif
 
 void crt2(multiboot_info_t * mbi)
 {
@@ -151,23 +155,27 @@ void crt2(multiboot_info_t * mbi)
 		panic("Cannot scan modules infos correctly");
 	}
 
+#if 0
         /* Find heap base */
-#if 0
-        /* Initialize heap */
-        if (!heap_init()) {
-                panic("Cannot initialize heap\n");
-        }
-#endif
-        /* Move interesting information inside dl data */
+	if (!heap_init(heap_base, heap_size)) {
+		panic("Cannot initialize heap");
+	}
 
-#if 0
+	/* From this point on we can issue malloc() and free() ... */
+	assert(heap_initialized());
+#endif
+
         dl_list_t dl;
+        dl = 0;
+#if 0
         dl = (dl_list_t) malloc(sizeof(dl_list_t));
         if (!dl) {
                 panic("Cannot allocate dl head");
         }
+
+        /* Move interesting information inside dl data */
 #endif
 
         /* Call main program */
-        (void) main(0, 0);
+        core(dl);
 }
