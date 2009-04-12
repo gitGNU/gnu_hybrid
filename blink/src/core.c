@@ -26,8 +26,7 @@
 
 void core(dl_list_t dl)
 {
-        /* assert(dl); */
-        (void) dl;
+        assert(dl);
 
         printf("%s version %s running ...\n",
                PACKAGE_NAME, PACKAGE_VERSION);

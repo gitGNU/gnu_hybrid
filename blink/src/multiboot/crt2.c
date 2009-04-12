@@ -28,13 +28,16 @@
 #include "multiboot/multiboot.h"
 #include "heap.h"
 #include "dl.h"
+#include "mem.h"
 #include "core.h"
 
 #define CHECK_FLAG(FLAGS,BIT) ((FLAGS) & (1 << (BIT)))
 
-static int check_modules(multiboot_info_t * mbi)
+static int check_modules(multiboot_info_t * mbi,
+                         uint_t *           base)
 {
 	assert(mbi);
+        assert(base);
 
         printf("Checking multiboot modules ...\n");
 
@@ -74,10 +77,12 @@ static int check_modules(multiboot_info_t * mbi)
 }
 
 static int check_kernel(multiboot_info_t * mbi,
-                        bfd_image_t *      img)
+                        bfd_image_t *      img,
+                        uint_t *           base)
 {
 	assert(mbi);
         assert(img);
+        assert(base);
 
         printf("Checking multiboot kernel ...\n");
 
@@ -109,10 +114,7 @@ static int check_kernel(multiboot_info_t * mbi,
 
                 (void) bfd_init();
 
-                bfd_image_elf_add(img,
-                                  (Elf32_Shdr *) addr,
-                                  num,
-                                  shndx);
+                bfd_image_elf_add(img, (Elf32_Shdr *) addr, num, shndx);
 
         } else {
 		printf("No ELF section header table available\n");
@@ -123,13 +125,12 @@ static int check_kernel(multiboot_info_t * mbi,
 }
 
 static bfd_image_t blink_image;
-#if 0
-static uint_t      heap_base;
-static uint_t      heap_size;
-#endif
 
 void crt2(multiboot_info_t * mbi)
 {
+        uint_t heap_base;
+        uint_t heap_size;
+
         assert(mbi);
 
 #if 0
@@ -144,37 +145,34 @@ void crt2(multiboot_info_t * mbi)
 
 	/* Is boot_device valid?  */
 	if (CHECK_FLAG(mbi->flags, 1)) {
-		printf("boot_device = 0x%x\n", (unsigned int) mbi->boot_device);
+		printf("boot_device = 0x%x\n",
+                       (unsigned int) mbi->boot_device);
 	}
 
-	if (!check_kernel(mbi, &blink_image)) {
+        heap_base = 0;
+        heap_size = 0;
+
+        /* Check multiboot infos and find heap base/size */
+	if (!check_kernel(mbi, &blink_image, &heap_base)) {
 		panic("Cannot scan image info correctly");
 	}
 
-	if (!check_modules(mbi)) {
+	if (!check_modules(mbi, &heap_base)) {
 		panic("Cannot scan modules infos correctly");
 	}
 
-#if 0
-        /* Find heap base */
+        /* Initialize the heap */
 	if (!heap_init(heap_base, heap_size)) {
 		panic("Cannot initialize heap");
 	}
-
-	/* From this point on we can issue malloc() and free() ... */
 	assert(heap_initialized());
-#endif
+
+	/* From this point on we are allowed to use malloc() and free() ... */
 
         dl_list_t dl;
-        dl = 0;
-#if 0
-        dl = (dl_list_t) malloc(sizeof(dl_list_t));
-        if (!dl) {
-                panic("Cannot allocate dl head");
-        }
+        dl = (dl_list_t) xmalloc(sizeof(dl_list_t));
 
         /* Move interesting information inside dl data */
-#endif
 
         /* Call main program */
         core(dl);
