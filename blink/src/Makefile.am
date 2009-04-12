@@ -58,6 +58,9 @@ blink_SOURCES =					\
 	heap.h					\
 	panic.c					\
 	dl.c					\
+	dl.h					\
+	mem.c					\
+	mem.h					\
 	core.c					\
 	core.h
 
