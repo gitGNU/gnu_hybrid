@@ -110,6 +110,14 @@ NEWS: $(DNT_DB)
 	echo "$$r_head:" >> NEWS;				\
 	echo "* $$d_tail -> $$d_head" >> NEWS
 
+ChangeLog:
+	$(GITLOG_TO_CHANGELOG) > ChangeLog || {	\
+		rm -f ChangeLog ;		\
+		exit 1 ;			\
+	}
+
+dist-hook: NEWS TODO ChangeLog
+
 announcement:
 	$(ANNOUNCE_GEN)				\
 	  --release-type=alpha			\
@@ -119,11 +127,7 @@ announcement:
 	  --gpg-key-id=TEST			\
 	  --url-dir=TEST
 
-dist-hook: NEWS
-	$(GITLOG_TO_CHANGELOG) > $(distdir)/ChangeLog || {	\
-		rm -f ChangeLog ;				\
-		exit 1 ;					\
-	}
+HOST = "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;hb=HEAD;f="
 
 update-download:
 	rm -r -f fetch-dir && \
