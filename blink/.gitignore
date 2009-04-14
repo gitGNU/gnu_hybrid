@@ -34,6 +34,7 @@ docs/info/blink.info
 tools/maint/fetch
 tools/maint/whitespace-detect
 tools/maint/gitlog-to-committers
+tools/maint/gittag-to-date
 
 tools/autotools/compile
 tools/autotools/config.guess
