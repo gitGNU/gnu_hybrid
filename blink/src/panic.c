@@ -29,19 +29,24 @@
 #include "libbfd/elf-format.h"
 #include "archs/arch.h"
 
+#define DEMANGLE          0
 #define MAX_STACK_LEVELS  32
 #define MAX_SYMBOL_LENGTH 512
 
+#if DEMANGLE
 static unsigned long backtrace[MAX_STACK_LEVELS];
 static char          mangled_symbol[MAX_SYMBOL_LENGTH];
 extern unsigned long _start;
 extern unsigned long _end;
+#endif
 
 void arch_panic(const char * message)
 {
 	static int panic_in_progress = 0;
+#if DEMANGLE
         uint_t     frames;
         uint_t     i;
+#endif
 
 	panic_in_progress++;
 	if (panic_in_progress > 1) {
@@ -55,6 +60,7 @@ void arch_panic(const char * message)
 	}
 	printf("Kernel panic: %s\n", message);
 
+#if DEMANGLE
 	frames = arch_backtrace_store(backtrace, MAX_STACK_LEVELS);
 	assert(frames <= MAX_STACK_LEVELS);
 
@@ -97,9 +103,10 @@ void arch_panic(const char * message)
 			}
 		} else {
 			/* Hmm ... No symbol found ??? */
-			printf("  %08x <?>\n", backtrace[i]);
+			printf("  %p <?>\n", backtrace[i]);
 		}
         }
+#endif
 
 	panic_in_progress--;
 

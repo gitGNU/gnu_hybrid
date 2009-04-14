@@ -33,8 +33,8 @@
 
 #define CHECK_FLAG(FLAGS,BIT) ((FLAGS) & (1 << (BIT)))
 
-static int check_modules(multiboot_info_t * mbi,
-                         uint_t *           base)
+static int scan_modules(multiboot_info_t * mbi,
+                        uint_t *           base)
 {
 	assert(mbi);
         assert(base);
@@ -68,6 +68,16 @@ static int check_modules(multiboot_info_t * mbi,
 			assert(mod->mod_start);
 			assert(mod->mod_end);
 			assert(mod->mod_start <= mod->mod_end);
+
+                        /*
+                         * XXX FIXME:
+                         *     We can't assume that modules are ordered in
+                         *     memory ...
+                         */
+                        if (*base <= mod->mod_end) {
+                                *base = mod->mod_end + 1;
+                                printf("Heap base moved to %x\n", *base);
+                        }
 		}
 	} else {
 		printf("No mod_* infos available in multiboot header\n");
@@ -76,9 +86,9 @@ static int check_modules(multiboot_info_t * mbi,
 	return 1;
 }
 
-static int check_kernel(multiboot_info_t * mbi,
-                        bfd_image_t *      img,
-                        uint_t *           base)
+static int scan_kernel(multiboot_info_t * mbi,
+                       bfd_image_t *      img,
+                       uint_t *           base)
 {
 	assert(mbi);
         assert(img);
@@ -112,9 +122,17 @@ static int check_kernel(multiboot_info_t * mbi,
                 printf("  num = %u, size = 0x%x, addr = 0x%x, shndx = 0x%x\n",
                        num, size, addr, shndx);
 
-                (void) bfd_init();
-
                 bfd_image_elf_add(img, (Elf32_Shdr *) addr, num, shndx);
+
+                /*
+                 * XXX FIXME:
+                 *     We can't assume that modules are ordered in
+                 *     memory ...
+                 */
+                if (*base <= (uint_t) (&(mbi->u.elf_sec) + size)) {
+                        *base = (uint_t) (&(mbi->u.elf_sec) + size) + 1;
+                        printf("Heap base moved to %x\n", *base);
+                }
 
         } else {
 		printf("No ELF section header table available\n");
@@ -125,6 +143,9 @@ static int check_kernel(multiboot_info_t * mbi,
 }
 
 static bfd_image_t blink_image;
+
+#define KB 1024
+#define MB (1024 * KB)
 
 void crt2(multiboot_info_t * mbi)
 {
@@ -143,25 +164,44 @@ void crt2(multiboot_info_t * mbi)
 	/* Print out the flags */
 	printf("Multiboot flags = 0x%x\n", (unsigned int) mbi->flags);
 
-	/* Is boot_device valid?  */
-	if (CHECK_FLAG(mbi->flags, 1)) {
-		printf("boot_device = 0x%x\n",
-                       (unsigned int) mbi->boot_device);
-	}
-
         heap_base = 0;
         heap_size = 0;
 
-        /* Check multiboot infos and find heap base/size */
-	if (!check_kernel(mbi, &blink_image, &heap_base)) {
+	/* Is memory information available ? */
+	if (CHECK_FLAG(mbi->flags, 0)) {
+		printf("mem_lower = %d KB, mem_upper = %d KB\n",
+                       (unsigned int) mbi->mem_lower,
+                       (unsigned int) mbi->mem_upper);
+	}
+
+        if (!bfd_init()) {
+                panic("Cannot initialize bfd subsystem");
+        }
+
+        /* Check multiboot infos while looking for our heap base */
+	if (!scan_kernel(mbi, &blink_image, &heap_base)) {
 		panic("Cannot scan image info correctly");
 	}
-
-	if (!check_modules(mbi, &heap_base)) {
+	if (!scan_modules(mbi, &heap_base)) {
 		panic("Cannot scan modules infos correctly");
 	}
+        if (heap_base == 0) {
+                panic("Cannot detect heap base");
+        }
 
-        /* Initialize the heap */
+        /* Look for heap size */
+        if (heap_base < 1 * MB) {
+                /* Consider lower memory */
+        } else {
+                /* Consider only upper memory */
+                heap_size = (unsigned int) mbi->mem_upper;
+        }
+
+        if (heap_size == 0) {
+                panic("Cannot detect heap size");
+        }
+
+        /* Initialize the heap now */
 	if (!heap_init(heap_base, heap_size)) {
 		panic("Cannot initialize heap");
 	}
