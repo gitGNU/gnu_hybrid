@@ -45,7 +45,7 @@ int arch_init(void)
 {
 	dprintf("Initializing architecture\n");
 
-	/* Reserve lower memory */
+	/* XXX FIXME: Reserve lower memory (it is not assured!) */
 	bootram_reserve(0, 1024 * 1024);
 
 	if (!bios_init()) {

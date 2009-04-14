@@ -107,7 +107,7 @@ void backtrace_show(FILE * stream)
 			}
 		} else {
 			/* Hmm ... No symbol found ??? */
-			fprintf(stream, "  %08x <?>\n", backtrace[i]);
+			fprintf(stream, "  %p <?>\n", backtrace[i]);
 		}
 	}
 }
