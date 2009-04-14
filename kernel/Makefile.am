@@ -125,18 +125,38 @@ TODO: $(DNT_DB)
 	}
 
 NEWS: $(DNT_DB)
-	$(DNT) $(DNT_FLAGS)			\
-	       show				\
-	       --filter=done			\
-	       --line-format="* %t"		\
-	       --width=0			\
-	       --indent-fill=""			\
-	       --unindent-fill=""		\
-	       --level-fill=""			\
-	       --output=NEWS || {		\
-		rm -f NEWS ;			\
-		exit 1 ;			\
-	}
+	touch NEWS
+	echo "${PACKAGE_VERSION}:" >> NEWS
+	script="$(top_builddir)/tools/maint/gittag-to-date";	\
+	r_head="";						\
+	d_head="";						\
+	r_tail="";						\
+	d_tail="";						\
+	for i in `$$script | $$SED 's/\ /:/g' | sort -r -k 1`;	\
+	do							\
+		if test "x$$r_head" = "x"; then			\
+			r_head="`echo $$i | sed 's/^.*://'`"; 	\
+			d_head="`echo $$i | sed 's/:.*$$//'`";	\
+			continue;				\
+		else						\
+			if test "x$$d_head" = "x"; then		\
+				rm -f NEWS;			\
+				exit 1;				\
+			fi;					\
+		fi;						\
+		r_tail="`echo $$i | sed 's/^.*://'`";		\
+		d_tail="`echo $$i | sed 's/:.*$$//'`";		\
+		echo "$$r_head:" >> NEWS;			\
+		echo "* $$d_tail -> $$d_head" >> NEWS;		\
+		r_head="$$r_tail";				\
+		d_head="$$d_tail";				\
+	done || {						\
+		rm -f NEWS ;					\
+		exit 1;						\
+	};							\
+	d_tail="1970-01-01";					\
+	echo "$$r_head:" >> NEWS;				\
+	echo "* $$d_tail -> $$d_head" >> NEWS
 
 announcement:
 	$(ANNOUNCE_GEN)				\
@@ -147,7 +167,7 @@ announcement:
 	  --gpg-key-id=TEST			\
 	  --url-dir=TEST
 
-dist-hook:
+dist-hook: NEWS
 	$(GITLOG_TO_CHANGELOG) > $(distdir)/ChangeLog || {	\
 		rm -f ChangeLog ;				\
 		exit 1 ;					\

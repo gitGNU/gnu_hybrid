@@ -65,6 +65,7 @@ tools/autotools/ylwrap
 tools/maint/fetch
 tools/maint/whitespace-detect
 tools/maint/gitlog-to-committers
+tools/maint/gittag-to-date
 
 tools/scripts/libs/awk/lib.awk
 tools/scripts/libs/sh/lib.sh
