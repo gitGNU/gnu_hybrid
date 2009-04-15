@@ -79,6 +79,28 @@ endif
 ## Maintainer related targets
 ##
 
+MAINTAINERCLEANFILES =
+
+dist-gpg: dist
+	gpg --yes -b --use-agent					   \
+		-o $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig	   \
+		$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz          &&   \
+	gpg --verify $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig || { \
+		rm -f $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig ;   \
+		exit 1 ;						   \
+	}
+MAINTAINERCLEANFILES += $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig
+
+dist-upload: dist-gpg
+	chmod 644 $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz     &&	\
+	chmod 644 $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig &&	\
+	echo scp $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz		\
+	    $${USER}@dl.sv.nongnu.org:/releases/hybrid     	   &&	\
+	echo scp $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig	\
+	    $${USER}@dl.sv.nongnu.org:/releases/hybrid     	   || {	\
+		exit 1 ;						\
+	}
+
 site: all
 	(cd site && $(MAKE) $(AM_MAKEFLAGS) site)
 
