@@ -1,3 +1,6 @@
 (h2 "DOWNLOADS")
 
-(p "Sorry, no public release available at the moment.")
+(p "Please use one of the Savannah "
+(a (@ (href "http://savannah.nongnu.org/files/?group=hybrid"))
+      "mirrors")
+)
