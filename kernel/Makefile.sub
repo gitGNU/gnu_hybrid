@@ -106,6 +106,7 @@ do_subst = $(SED) \
   $(do_subst_SPECIFIC)
 
 WHITESPACE_DETECT   = $(top_builddir)/tools/maint/whitespace-detect
+GITTAG_TO_DATE      = $(top_builddir)/tools/maint/gittag-to-date
 FETCH               = $(top_builddir)/tools/maint/fetch
 GITLOG_TO_CHANGELOG = $(top_srcdir)/tools/maint/gitlog-to-changelog
 GIT_VERSION_GEN     = $(top_srcdir)/tools/maint/git-version-gen

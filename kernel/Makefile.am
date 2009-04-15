@@ -97,6 +97,8 @@ EXTRA_DIST +=						\
 ## Maintainer related targets
 ##
 
+MAINTAINERCLEANFILES +=
+
 DNT_DB     = $(top_builddir)/.dnt.db
 DEVTODO_DB = $(top_srcdir)/.todo
 DNT_FLAGS  = --database=$(DNT_DB) --mono
@@ -123,19 +125,19 @@ TODO: $(DNT_DB)
 		rm -f TODO ;			\
 		exit 1 ;			\
 	}
+MAINTAINERCLEANFILES += TODO
 
 NEWS: $(DNT_DB)
-	touch NEWS
-	echo "${PACKAGE_VERSION}:" >> NEWS
-	script="$(top_builddir)/tools/maint/gittag-to-date";	\
+	echo "${PACKAGE_VERSION}:" > NEWS
+	script="$(GITTAG_TO_DATE)";				\
 	r_head="";						\
 	d_head="";						\
 	r_tail="";						\
 	d_tail="";						\
-	for i in `$$script | $$SED 's/\ /:/g' | sort -r -k 1`;	\
+	for i in `$$script | sed -e 's/\ /:/g' | sort -r -k 2`;	\
 	do							\
 		if test "x$$r_head" = "x"; then			\
-			r_head="`echo $$i | sed 's/^.*://'`"; 	\
+			r_head="`echo $$i | sed 's/^.*://'`";	\
 			d_head="`echo $$i | sed 's/:.*$$//'`";	\
 			continue;				\
 		else						\
@@ -157,14 +159,36 @@ NEWS: $(DNT_DB)
 	d_tail="1970-01-01";					\
 	echo "$$r_head:" >> NEWS;				\
 	echo "* $$d_tail -> $$d_head" >> NEWS
+MAINTAINERCLEANFILES += NEWS
 
 ChangeLog:
 	$(GITLOG_TO_CHANGELOG) > ChangeLog || {	\
 		rm -f ChangeLog ;		\
 		exit 1 ;			\
 	}
+MAINTAINERCLEANFILES += ChangeLog
 
 dist-hook: NEWS TODO ChangeLog
+
+dist-gpg: dist
+	gpg --yes -b --use-agent					   \
+		-o $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig	   \
+		$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz          &&   \
+	gpg --verify $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig || { \
+		rm -f $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig ;   \
+		exit 1 ;						   \
+	}
+MAINTAINERCLEANFILES += $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig
+
+dist-upload: dist-gpg
+	chmod 644 $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz     &&	\
+	chmod 644 $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig &&	\
+	echo scp $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz		\
+	    $${USER}@dl.sv.nongnu.org:/releases/hybrid     	   &&	\
+	echo scp $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz.sig	\
+	    $${USER}@dl.sv.nongnu.org:/releases/hybrid     	   || {	\
+		exit 1 ;						\
+	}
 
 announcement:
 	$(ANNOUNCE_GEN)				\
