@@ -30,6 +30,7 @@
 #include "dl.h"
 #include "mem.h"
 #include "core.h"
+#include "constants.h"
 
 #define CHECK_FLAG(FLAGS,BIT) ((FLAGS) & (1 << (BIT)))
 
@@ -76,7 +77,7 @@ static int scan_modules(multiboot_info_t * mbi,
                          */
                         if (*base <= mod->mod_end) {
                                 *base = mod->mod_end + 1;
-                                printf("Heap base moved to %x\n", *base);
+                                printf("Heap base moved to 0x%x\n", *base);
                         }
 		}
 	} else {
@@ -86,7 +87,7 @@ static int scan_modules(multiboot_info_t * mbi,
 	return 1;
 }
 
-static int scan_kernel(multiboot_info_t * mbi,
+static int scan_myself(multiboot_info_t * mbi,
                        bfd_image_t *      img,
                        uint_t *           base)
 {
@@ -94,11 +95,11 @@ static int scan_kernel(multiboot_info_t * mbi,
         assert(img);
         assert(base);
 
-        printf("Checking multiboot kernel ...\n");
+        printf("Checking multiboot image ...\n");
 
 	/* Bits 4 and 5 are mutually exclusive!  */
         if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5)) {
-                printf("Kernel image format is both ELF and AOUT ?");
+                printf("Multiboot image format is both ELF and AOUT ?");
 		return 0;
 	}
 
@@ -131,7 +132,7 @@ static int scan_kernel(multiboot_info_t * mbi,
                  */
                 if (*base <= (uint_t) (&(mbi->u.elf_sec) + size)) {
                         *base = (uint_t) (&(mbi->u.elf_sec) + size) + 1;
-                        printf("Heap base moved to %x\n", *base);
+                        printf("Heap base moved to 0x%x\n", *base);
                 }
 
         } else {
@@ -143,9 +144,6 @@ static int scan_kernel(multiboot_info_t * mbi,
 }
 
 static bfd_image_t blink_image;
-
-#define KB 1024
-#define MB (1024 * KB)
 
 void crt2(multiboot_info_t * mbi)
 {
@@ -179,7 +177,7 @@ void crt2(multiboot_info_t * mbi)
         }
 
         /* Check multiboot infos while looking for our heap base */
-	if (!scan_kernel(mbi, &blink_image, &heap_base)) {
+	if (!scan_myself(mbi, &blink_image, &heap_base)) {
 		panic("Cannot scan image info correctly");
 	}
 	if (!scan_modules(mbi, &heap_base)) {
@@ -196,7 +194,6 @@ void crt2(multiboot_info_t * mbi)
                 /* Consider only upper memory */
                 heap_size = (unsigned int) mbi->mem_upper;
         }
-
         if (heap_size == 0) {
                 panic("Cannot detect heap size");
         }
@@ -206,6 +203,9 @@ void crt2(multiboot_info_t * mbi)
 		panic("Cannot initialize heap");
 	}
 	assert(heap_initialized());
+
+        printf("Heap base = 0x%x\n",  heap_base);
+        printf("Heap size = %d KB\n", heap_size);
 
 	/* From this point on we are allowed to use malloc() and free() ... */
 
