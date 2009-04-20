@@ -27,13 +27,29 @@ SUBDIRS =					\
 	blink					\
 	kernel
 
+##
+## Miscellaneous targets
+##
+stats:
+	(cd blink  && $(MAKE) $(AM_MAKEFLAGS) stats)
+	(cd kernel && $(MAKE) $(AM_MAKEFLAGS) stats)
+
+debug:
+	(cd blink  && $(MAKE) $(AM_MAKEFLAGS) map)
+	(cd kernel && $(MAKE) $(AM_MAKEFLAGS) map)
+
+##
+## help related target
+##
 help:
 	@echo ""
 	@echo "  Targets:"
 	@echo ""
-	@echo "    image.iso           -- Generate a bootable ISO image"
+	@echo "    stats      -- Dump some stats"
+	@echo "    debug      -- Generate debugging files"
+	@echo "    image.iso  -- Generate a bootable ISO image"
 	@echo ""
-	@echo "    *automake*          -- Standard automake targets"
+	@echo "    *automake* -- Standard automake targets"
 	@echo ""
 
 CLEANFILES =

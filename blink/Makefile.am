@@ -35,6 +35,34 @@ SUBDIRS =					\
 AUTOMAKE_OPTIONS = check-news
 
 ##
+## Miscellaneous targets
+##
+stats:
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) stats)
+
+map:
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) map)
+
+##
+## help related target
+##
+help:
+	@echo ""
+	@echo "  Targets:"
+	@echo ""
+	@echo "    default-config-load -- Retrieve default configuration"
+	@echo "    default-config-save -- Saves current config as default"
+	@echo "    text-config         -- Interactive configuration (text)"
+	@echo "    menu-config         -- Interactive configuration (dialog)"
+	@echo "    old-config          -- Reconfigure using old configuration"
+	@echo "    stats               -- Dump some stats"
+	@echo "    debug               -- Generate debugging files"
+	@echo "    doxygen             -- Build doxygen documentation (in docs directory)"
+	@echo ""
+	@echo "    *automake*          -- Standard automake targets"
+	@echo ""
+
+##
 ## NOTE:
 ##     Makefile.sub is automatically distributed by automake rules
 ##

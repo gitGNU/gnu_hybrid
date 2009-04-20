@@ -62,7 +62,8 @@ blink_SOURCES =					\
 	mem.c					\
 	mem.h					\
 	core.c					\
-	core.h
+	core.h					\
+	constants.h
 
 LDSCRIPT = $(top_builddir)/src/multiboot/$(architecture)/linker.ld
 $(top_builddir)/src/multiboot/$(architecture)/linker.ld: Makefile $(top_srcdir)/src/multiboot/$(architecture)/linker.ld.in
@@ -111,6 +112,13 @@ blink_LDFLAGS      =				\
         -Wl,--as-needed	
 blink_LDADD        =				\
 	$(ELKLIB_LDADD)
+
+##
+## Miscellaneous targets
+##
+stats:
+
+map:
 
 ##
 ## Maintainer related targets

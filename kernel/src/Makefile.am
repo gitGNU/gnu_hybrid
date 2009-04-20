@@ -200,6 +200,7 @@ $(MAPFILE): Makefile $(SYMSFILE) $(SYMSTAB2MAP)
 		rm -f $(MAPFILE) ; \
 		exit 1 ; \
 	}
+map: $(MAPFILE)
 
 SYMSFILE    = system.sym
 CLEANFILES += $(SYMSFILE)

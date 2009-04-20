@@ -57,8 +57,8 @@ text-config:
 stats:
 	(cd src && $(MAKE) $(AM_MAKEFLAGS) stats)
 
-debug:
-	(cd src && $(MAKE) $(AM_MAKEFLAGS) system.map)
+map:
+	(cd src && $(MAKE) $(AM_MAKEFLAGS) map)
 
 ##
 ## help related target
@@ -72,8 +72,8 @@ help:
 	@echo "    text-config         -- Interactive configuration (text)"
 	@echo "    menu-config         -- Interactive configuration (dialog)"
 	@echo "    old-config          -- Reconfigure using old configuration"
-	@echo "    stats               -- Dump some stats"
-	@echo "    debug               -- Generate (useful) debugging files"
+	@echo "    stats               -- Dump some statistics"
+	@echo "    map                 -- Generate debugging files"
 	@echo "    doxygen             -- Build doxygen documentation (in docs directory)"
 	@echo ""
 	@echo "    *automake*          -- Standard automake targets"
