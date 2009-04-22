@@ -107,8 +107,7 @@ static void dl_remove(dl_t mod)
 }
 #endif
 
-struct symbol
-{
+struct symbol {
         struct symbol * next;
         const char *    name;
         void *          addr;
@@ -171,7 +170,7 @@ static int dl_register_symbol(const char * name,
         }
 
         sym->addr = addr;
-        sym->mod = mod;
+        sym->mod  = mod;
 
         k         = symbol_hash(name);
         sym->next = symtab[k];
@@ -272,7 +271,9 @@ static int dl_resolve_symbols(dl_t       mod,
         size    = s->sh_size;
         entsize = s->sh_entsize;
 
-        s   = (Elf_Shdr *) ((char *) e + e->e_shoff + e->e_shentsize * s->sh_link);
+        s   = (Elf_Shdr *) ((char *) e +
+                            e->e_shoff +
+                            e->e_shentsize * s->sh_link);
         str = (char *) e + s->sh_offset;
 
         for (i = 0;
@@ -288,7 +289,8 @@ static int dl_resolve_symbols(dl_t       mod,
                                 if (sym->st_name != 0 && sym->st_shndx == 0) {
                                         sym->st_value = (Elf_Addr) dl_resolve_symbol(name);
                                         if (!sym->st_value)
-                                                printf("Cannot find symbol `%s'\n", name);
+                                                printf("Cannot find symbol "
+                                                       "`%s'\n", name);
                                                 return 0;
                                 } else {
                                         sym->st_value = 0;
@@ -344,9 +346,7 @@ int dl_load(void * addr,
         Elf_Ehdr * e;
         dl_t       mod;
 
-        printf("module at %p, size 0x%lx\n",
-               addr,
-               (unsigned long) size);
+        printf("module at %p, size 0x%lx\n", addr, (unsigned long) size);
         e = addr;
         if (dl_check_header(e, size)) {
                 return 0;

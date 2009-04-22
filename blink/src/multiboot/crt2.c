@@ -204,10 +204,10 @@ void crt2(multiboot_info_t * mbi)
 	}
 	assert(heap_initialized());
 
-        printf("Heap base = 0x%x\n",  heap_base);
-        printf("Heap size = %d KB\n", heap_size);
-
 	/* From this point on we are allowed to use malloc() and free() ... */
+
+        /* Print heap infos */
+        printf("Heap base = 0x%x, size = %d KB\n", heap_base, heap_size);
 
         dl_list_t dl;
         dl = (dl_list_t) xmalloc(sizeof(dl_list_t));

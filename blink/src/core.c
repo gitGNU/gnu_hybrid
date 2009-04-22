@@ -31,6 +31,14 @@ void core(dl_list_t dl)
         printf("%s version %s running ...\n",
                PACKAGE_NAME, PACKAGE_VERSION);
         printf("(C) 2008, 2009 "
-               "Francesco Salvestrini <salvestrini@gmail.com>\n",
-               PACKAGE_NAME, PACKAGE_VERSION);
+               "Francesco Salvestrini <salvestrini@gmail.com>\n");
+        printf("Please report bugs to <%s>\n",
+               PACKAGE_BUGREPORT);
+
+        /* Perform linking using dl information */
+
+        /* Jump to the entry point */
+
+        /* Argh ... */
+        panic("Cannot jump to the entry point");
 }

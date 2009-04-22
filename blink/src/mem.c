@@ -35,3 +35,9 @@ void * xmalloc(size_t size)
 
         return tmp;
 }
+
+void xfree(void * ptr)
+{
+        assert(ptr);
+        free(ptr);
+}
