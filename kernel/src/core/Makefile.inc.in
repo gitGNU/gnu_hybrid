@@ -35,6 +35,7 @@ core_SRCS =					\
 	@reldir@/power.cxx			\
 	@reldir@/resource.h			\
 	@reldir@/resource.cxx			\
+	@reldir@/task.h                         \
 	@reldir@/process.h			\
 	@reldir@/process.cxx			\
 	@reldir@/thread.h			\
