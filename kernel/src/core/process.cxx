@@ -22,6 +22,7 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "core/process.h"
+#include "core/task.h"
 #include "core/thread.h"
 
 #define BANNER          "process: "
@@ -34,11 +35,13 @@
 
 /* CONFIG_MAX_THREADS_PER_PROCESS */
 
-process::process(pid_t id) : id_(id)
+process::process(process::id_t       id,
+                 const ktl::string & name) :
+        task(id, name)
 {
 	threads_.clear();
 
-	dprintf("Process initialized\n");
+	dprintf("Process %d initialized\n", id_);
 }
 
 process::~process()
@@ -48,8 +51,7 @@ process::~process()
 		delete *iter;
 	}
 
-	dprintf("Process finalized\n");
-
+	dprintf("Process %d finalized\n", id_);
 }
 
 #if CONFIG_DEBUGGER

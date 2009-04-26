@@ -23,23 +23,21 @@
 #include "libc/stdint.h"
 #include "libc++/string"
 #include "libc++/list"
+#include "core/task.h"
 #include "core/thread.h"
 
-typedef uint_t pid_t;
-
-class process {
+class process :
+        public task {
 public:
-	process(pid_t id);
-	~process();
+        typedef task::id_t id_t;
 
-	pid_t id(void) { return id_; };
+	process(process::id_t       id,
+                const ktl::string & name);
+        ~process();
 
 protected:
-	process();
 
 private:
-	pid_t               id_;
-	ktl::string         name_;
 	ktl::list<thread *> threads_;
 };
 

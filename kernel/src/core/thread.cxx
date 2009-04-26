@@ -21,6 +21,7 @@
 #include "libc/stddef.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
+#include "core/task.h"
 #include "core/thread.h"
 
 /* CONFIG_MULTITHREADING */
@@ -34,12 +35,14 @@
 #define dprintf(F,A...)
 #endif
 
-thread::thread()
+thread::thread(thread::id_t        id,
+               const ktl::string & name) :
+        task(id, name)
 {
-	dprintf("Thread initialized\n");
+	dprintf("Thread %d initialized\n", id_);
 }
 
 thread::~thread()
 {
-	dprintf("Thread finalized\n");
+	dprintf("Thread %d finalized\n", id_);
 }

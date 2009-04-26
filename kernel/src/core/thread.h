@@ -22,19 +22,20 @@
 #include "config/config.h"
 #include "libc/stdint.h"
 #include "libc++/string"
+#include "core/task.h"
 
-typedef uint_t tid_t;
-
-class thread {
+class thread :
+        public task {
 public:
-	thread();
+        typedef task::id_t id_t;
+
+	thread(thread::id_t        id,
+               const ktl::string & name);
 	~thread();
 
-	tid_t id(void) { return id_; };
+protected:
 
 private:
-	tid_t       id_;
-	ktl::string name_;
 };
 
 #endif // CORE_THREAD_H
