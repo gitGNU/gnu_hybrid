@@ -34,7 +34,6 @@
 #include "dbg/log.h"
 #include "core/resource.h"
 #include "core/semaphore.h"
-#include "core/mutex.h"
 #include "mem/heap.h"
 #include "mem/pmm.h"
 #include "mem/vmm.h"

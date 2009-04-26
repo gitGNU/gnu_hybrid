@@ -39,4 +39,28 @@ void         semaphore_delete(semaphore_t* semaphore);
 void         semaphore_acquire(semaphore_t* semaphore);
 void         semaphore_release(semaphore_t* semaphore);
 
+// binary semaphores
+// counting semaphores
+
+struct mutex {
+	semaphore_t semaphore;
+#if CONFIG_MUTEX_DEBUG
+#endif
+};
+typedef struct mutex mutex_t;
+
+
+/* Statically allocated mutexes */
+int      mutex_init(mutex_t * mutex);
+int      mutex_fini(mutex_t * mutex);
+
+/* Dinamically allocated mutexes */
+mutex_t* mutex_new(void);
+void     mutex_delete(mutex_t * mutex);
+
+void     mutex_lock(mutex_t * mutex);
+int      mutex_locked(mutex_t * mutex);
+void     mutex_unlock(mutex_t * mutex);
+int      mutex_trylock(mutex_t * mutex);
+
 #endif // CORE_SEMAPHORE_H

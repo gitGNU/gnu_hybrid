@@ -21,11 +21,15 @@
 
 #include "config/config.h"
 #include "libc/stdint.h"
+#include "libc/limits.h"
 #include "libc++/string"
+
+#define DEFAULT_TASK_PRIORITY (UINT_MAX / 2)
 
 class task {
 public:
         typedef uint_t id_t;
+        typedef uint_t priority_t;
 
         typedef enum {
                 INITIALIZING,
@@ -38,13 +42,23 @@ public:
              const ktl::string & name) :
                 id_(id),
                 state_(INITIALIZING),
-                name_(name) { }
+                name_(name),
+                priority_(DEFAULT_TASK_PRIORITY) { }
 
 	virtual ~task() { }
 
         task::id_t id() const {
                 return id_;
         };
+
+        task::priority_t priority() const {
+                return priority_;
+        };
+
+        void priority(task::priority_t p) {
+                priority_ = p;
+        };
+
         const ktl::string & name() const {
                 return name_;
         }
@@ -53,12 +67,17 @@ public:
                 return state_;
         }
 
+        void suspend() { };
+        void resume()  { };
+        void restart() { };
+
 protected:
 	task();
 
-        task::id_t   id_;
-        state_t      state_;
-	ktl::string  name_;
+        task::id_t       id_;
+        state_t          state_;
+	ktl::string      name_;
+        task::priority_t priority_;
 
 private:
 };

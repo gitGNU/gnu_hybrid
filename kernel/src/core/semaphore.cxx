@@ -25,6 +25,10 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 
+// NOTE:
+//     We MUST NOT store the sempahore ownership. A semaphore has
+//     no ownership (in contrast to mutexes).
+
 int semaphore_init(semaphore_t* semaphore,
 		   int          count)
 {
@@ -105,5 +109,119 @@ DBG_COMMAND_DECLARE(semaphores,
 		    NULL,
 		    NULL,
 		    command_semaphores_on_execute,
+		    NULL);
+#endif
+
+// NOTE:
+//     We MUST store the sempahore ownership. A mutex has
+//     ownership (in contrast to semaphores).
+
+// NOTE:
+//     Should we allow recursive locking ??? This could
+//     enhance the recursive shared resource access case ...
+
+int mutex_init(mutex_t * mutex)
+{
+	assert(mutex);
+
+	if (!semaphore_init(&mutex->semaphore, 1)) {
+		return 0;
+	}
+
+	return 1;
+}
+
+int mutex_fini(mutex_t * mutex)
+{
+	assert(mutex);
+
+	semaphore_fini(&mutex->semaphore);
+
+	return 1;
+}
+
+mutex_t * mutex_new(void)
+{
+	mutex_t * tmp;
+
+	tmp = (mutex_t *) malloc(sizeof(mutex_t));
+	if (!tmp) {
+		return NULL;
+	}
+
+	if (!mutex_init(tmp)) {
+		free(tmp);
+		return NULL;
+	}
+
+	return tmp;
+}
+
+void mutex_delete(mutex_t * mutex)
+{
+	assert(mutex);
+
+	mutex_fini(mutex);
+	free(mutex);
+}
+
+void mutex_lock(mutex_t * mutex)
+{
+	assert(mutex);
+
+	semaphore_acquire(&mutex->semaphore);
+}
+
+void mutex_unlock(mutex_t * mutex)
+{
+	assert(mutex);
+
+	semaphore_release(&mutex->semaphore);
+}
+
+int mutex_locked(mutex_t * mutex)
+{
+	assert(mutex);
+
+	missing();
+
+	return 1;
+}
+
+int mutex_trylock(mutex_t * mutex)
+{
+	assert(mutex);
+
+	missing();
+
+	return 1;
+}
+
+#if CONFIG_DEBUGGER
+static dbg_result_t command_mutexes_on_execute(FILE* stream,
+					       int   argc,
+					       char* argv[])
+{
+	assert(stream);
+	assert(argc >= 0);
+
+	if (argc != 0) {
+		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+	}
+
+	unused_argument(argv);
+
+	fprintf(stream, "Mutexes:\n");
+
+	missing();
+
+	return DBG_RESULT_OK;
+}
+
+DBG_COMMAND_DECLARE(mutexes,
+		    "Show mutexes",
+		    NULL,
+		    NULL,
+		    command_mutexes_on_execute,
 		    NULL);
 #endif
