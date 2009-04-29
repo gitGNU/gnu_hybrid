@@ -27,7 +27,7 @@
 
 #define BANNER          "scheduler: "
 
-#if CONFIG_SCHEDULER_DEBUG
+#if CONFIG_SEMAPHORE_DEBUG
 #define dprintf(F,A...) printf(BANNER F,##A)
 #else
 #define dprintf(F,A...)

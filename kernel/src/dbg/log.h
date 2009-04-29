@@ -26,6 +26,7 @@
 __BEGIN_DECLS
 
 typedef enum {
+	LOG_DEBUG,
 	LOG_NORMAL,
 	LOG_WARNING,
 	LOG_ERROR,

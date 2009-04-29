@@ -21,47 +21,48 @@
 #include "libc/stdint.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
-#include "core/semaphore.h"
+#include "core/mutex.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 
-#define BANNER          "semaphore: "
+#define BANNER          "mutex: "
 
-#if CONFIG_SEMAPHORE_DEBUG
+#if CONFIG_MUTEX_DEBUG
 #define dprintf(F,A...) printf(BANNER F,##A)
 #else
 #define dprintf(F,A...)
 #endif
 
-int semaphore_init(semaphore_t * semaphore,
-		   int           count)
+int mutex_init(mutex_t * mutex)
 {
-	assert(semaphore);
+	assert(mutex);
 
-	semaphore->count = count;
-
-        dprintf("Semaphore 0x%x initialized\n", semaphore);
+	if (!semaphore_init(&mutex->semaphore, 1)) {
+		return 0;
+	}
 
 	return 1;
 }
 
-void semaphore_fini(semaphore_t * semaphore)
+int mutex_fini(mutex_t * mutex)
 {
-	assert(semaphore);
+	assert(mutex);
 
-        dprintf("Semaphore 0x%x finalized\n", semaphore);
+	semaphore_fini(&mutex->semaphore);
+
+	return 1;
 }
 
-semaphore_t * semaphore_new(int count)
+mutex_t * mutex_new(void)
 {
-	semaphore_t* tmp;
+	mutex_t * tmp;
 
-	tmp = (semaphore_t *) malloc(sizeof(semaphore_t));
+	tmp = (mutex_t *) malloc(sizeof(mutex_t));
 	if (!tmp) {
 		return NULL;
 	}
 
-	if (!semaphore_init(tmp, count)) {
+	if (!mutex_init(tmp)) {
 		free(tmp);
 		return NULL;
 	}
@@ -69,32 +70,50 @@ semaphore_t * semaphore_new(int count)
 	return tmp;
 }
 
-void semaphore_delete(semaphore_t * semaphore)
+void mutex_delete(mutex_t * mutex)
 {
-	assert(semaphore);
+	assert(mutex);
 
-	semaphore_fini(semaphore);
-	free(semaphore);
+	mutex_fini(mutex);
+	free(mutex);
 }
 
-void semaphore_acquire(semaphore_t * semaphore)
+void mutex_lock(mutex_t * mutex)
 {
-	assert(semaphore);
+	assert(mutex);
 
-	missing();
+	semaphore_acquire(&mutex->semaphore);
 }
 
-void semaphore_release(semaphore_t * semaphore)
+void mutex_unlock(mutex_t * mutex)
 {
-	assert(semaphore);
+	assert(mutex);
+
+	semaphore_release(&mutex->semaphore);
+}
+
+int mutex_locked(mutex_t * mutex)
+{
+	assert(mutex);
 
 	missing();
+
+	return 1;
+}
+
+int mutex_trylock(mutex_t * mutex)
+{
+	assert(mutex);
+
+	missing();
+
+	return 1;
 }
 
 #if CONFIG_DEBUGGER
-static dbg_result_t command_semaphores_on_execute(FILE * stream,
-						  int   argc,
-						  char * argv[])
+static dbg_result_t command_mutexes_on_execute(FILE * stream,
+					       int    argc,
+					       char * argv[])
 {
 	assert(stream);
 	assert(argc >= 0);
@@ -105,20 +124,17 @@ static dbg_result_t command_semaphores_on_execute(FILE * stream,
 
 	unused_argument(argv);
 
-	fprintf(stream, "Semaphores:\n");
+	fprintf(stream, "Mutexes:\n");
 
 	missing();
 
 	return DBG_RESULT_OK;
 }
 
-DBG_COMMAND_DECLARE(semaphores,
-		    "Show semaphores",
+DBG_COMMAND_DECLARE(mutexes,
+		    "Show mutexes",
 		    NULL,
 		    NULL,
-		    command_semaphores_on_execute,
+		    command_mutexes_on_execute,
 		    NULL);
-#endif
-
-#if 0
 #endif
