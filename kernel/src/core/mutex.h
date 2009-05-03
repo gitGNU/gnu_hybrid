@@ -20,23 +20,20 @@
 #define CORE_MUTEX_H
 
 #include "config/config.h"
-#include "core/semaphore.h"
+#include "core/thread.h"
+#include "core/task.h"
 
-typedef struct {
-        semaphore_t semaphore;
-} mutex_t;
+class mutex {
+ public:
+        mutex();
+        ~mutex();
 
-/* Statically allocated mutexes */
-int      mutex_init(mutex_t * mutex);
-int      mutex_fini(mutex_t * mutex);
+        void lock();
+        void unlock();
 
-/* Dinamically allocated mutexes */
-mutex_t* mutex_new(void);
-void     mutex_delete(mutex_t * mutex);
-
-void     mutex_lock(mutex_t * mutex);
-int      mutex_locked(mutex_t * mutex);
-void     mutex_unlock(mutex_t * mutex);
-int      mutex_trylock(mutex_t * mutex);
+ private:
+        task *   owner_task;
+        thread * owner_thread;
+};
 
 #endif // CORE_MUTEX_H

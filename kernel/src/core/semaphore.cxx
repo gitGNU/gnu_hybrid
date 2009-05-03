@@ -33,61 +33,25 @@
 #define dprintf(F,A...)
 #endif
 
-int semaphore_init(semaphore_t * semaphore,
-		   int           count)
+semaphore::semaphore(size_t count)
 {
-	assert(semaphore);
+	count_ = count;
 
-	semaphore->count = count;
-
-        dprintf("Semaphore 0x%x initialized\n", semaphore);
-
-	return 1;
+        dprintf("Semaphore 0x%x created\n", this);
 }
 
-void semaphore_fini(semaphore_t * semaphore)
+semaphore::~semaphore()
 {
-	assert(semaphore);
-
-        dprintf("Semaphore 0x%x finalized\n", semaphore);
+        dprintf("Semaphore 0x%x destroyed\n", this);
 }
 
-semaphore_t * semaphore_new(int count)
+void semaphore::acquire()
 {
-	semaphore_t* tmp;
-
-	tmp = (semaphore_t *) malloc(sizeof(semaphore_t));
-	if (!tmp) {
-		return NULL;
-	}
-
-	if (!semaphore_init(tmp, count)) {
-		free(tmp);
-		return NULL;
-	}
-
-	return tmp;
-}
-
-void semaphore_delete(semaphore_t * semaphore)
-{
-	assert(semaphore);
-
-	semaphore_fini(semaphore);
-	free(semaphore);
-}
-
-void semaphore_acquire(semaphore_t * semaphore)
-{
-	assert(semaphore);
-
 	missing();
 }
 
-void semaphore_release(semaphore_t * semaphore)
+void semaphore::release()
 {
-	assert(semaphore);
-
 	missing();
 }
 

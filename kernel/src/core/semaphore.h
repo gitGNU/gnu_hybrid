@@ -20,21 +20,19 @@
 #define CORE_SEMAPHORE_H
 
 #include "config/config.h"
+#include "core/task.h"
 
-typedef struct {
-	int count;
-} semaphore_t;
+class semaphore {
+ public:
+        semaphore(size_t count);
+        ~semaphore();
 
-/* Statically allocated semaphores */
-int          semaphore_init(semaphore_t * semaphore,
-			    int           count);
-void         semaphore_fini(semaphore_t * semaphore);
+        void acquire();
+        void release();
 
-/* Dinamically allocated semaphores */
-semaphore_t* semaphore_new(int count);
-void         semaphore_delete(semaphore_t * semaphore);
-
-void         semaphore_acquire(semaphore_t * semaphore);
-void         semaphore_release(semaphore_t * semaphore);
+ private:
+        task * owner_task_;
+        size_t count_;
+};
 
 #endif // CORE_SEMAPHORE_H

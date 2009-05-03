@@ -33,81 +33,24 @@
 #define dprintf(F,A...)
 #endif
 
-int mutex_init(mutex_t * mutex)
+mutex::mutex()
 {
-	assert(mutex);
-
-	if (!semaphore_init(&mutex->semaphore, 1)) {
-		return 0;
-	}
-
-	return 1;
+        dprintf("Mutex 0x%x created\n", this);
 }
 
-int mutex_fini(mutex_t * mutex)
+mutex::~mutex()
 {
-	assert(mutex);
-
-	semaphore_fini(&mutex->semaphore);
-
-	return 1;
+        dprintf("Mutex 0x%x destroyed\n", this);
 }
 
-mutex_t * mutex_new(void)
+void mutex::lock()
 {
-	mutex_t * tmp;
-
-	tmp = (mutex_t *) malloc(sizeof(mutex_t));
-	if (!tmp) {
-		return NULL;
-	}
-
-	if (!mutex_init(tmp)) {
-		free(tmp);
-		return NULL;
-	}
-
-	return tmp;
-}
-
-void mutex_delete(mutex_t * mutex)
-{
-	assert(mutex);
-
-	mutex_fini(mutex);
-	free(mutex);
-}
-
-void mutex_lock(mutex_t * mutex)
-{
-	assert(mutex);
-
-	semaphore_acquire(&mutex->semaphore);
-}
-
-void mutex_unlock(mutex_t * mutex)
-{
-	assert(mutex);
-
-	semaphore_release(&mutex->semaphore);
-}
-
-int mutex_locked(mutex_t * mutex)
-{
-	assert(mutex);
-
 	missing();
-
-	return 1;
 }
 
-int mutex_trylock(mutex_t * mutex)
+void mutex::unlock()
 {
-	assert(mutex);
-
 	missing();
-
-	return 1;
 }
 
 #if CONFIG_DEBUGGER
