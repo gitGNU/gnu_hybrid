@@ -33,7 +33,6 @@
 #include "dbg/debugger.h"
 #include "dbg/log.h"
 #include "core/resource.h"
-#include "core/semaphore.h"
 #include "mem/heap.h"
 #include "mem/pmm.h"
 #include "mem/vmm.h"
