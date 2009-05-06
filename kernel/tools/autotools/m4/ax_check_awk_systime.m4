@@ -1,5 +1,5 @@
 # ===========================================================================
-#          http://autoconf-archive.cryp.to/ax_check_awk_systime.html
+#      http://www.nongnu.org/autoconf-archive/ax_check_awk_systime.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -17,13 +17,9 @@
 #   Alessandro Massignan for his suggestions and extensive nawk tests on
 #   FreeBSD.
 #
-# LAST MODIFICATION
+# LICENSE
 #
-#   2008-04-12
-#
-# COPYLEFT
-#
-#   Copyright (c) 2008 Francesco Salvestrini <salvestrini@users.sourceforge.net>
+#   Copyright (c) 2009 Francesco Salvestrini <salvestrini@users.sourceforge.net>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
