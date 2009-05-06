@@ -15,8 +15,9 @@ autom4te.cache
 
 ChangeLog
 VERSION
-TODO
 NEWS
+TODO
+AUTHORS
 
 configure
 configure.ac
