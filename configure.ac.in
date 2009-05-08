@@ -64,9 +64,7 @@ AM_CONDITIONAL(GRUB2_SUPPORT,[test "$grub2_support" = "yes"])
 AX_WITH_PROG([MKISOFS],[mkisofs])
 
 AC_CONFIG_SUBDIRS([
-	blink
         kernel
-
 ])
 
 #

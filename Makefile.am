@@ -24,18 +24,15 @@ ACLOCAL_AMFLAGS = -I tools/autotools/m4
 
 SUBDIRS =					\
 	tools					\
-	blink					\
 	kernel
 
 ##
 ## Miscellaneous targets
 ##
 stats:
-	(cd blink  && $(MAKE) $(AM_MAKEFLAGS) stats)
 	(cd kernel && $(MAKE) $(AM_MAKEFLAGS) stats)
 
 debug:
-	(cd blink  && $(MAKE) $(AM_MAKEFLAGS) map)
 	(cd kernel && $(MAKE) $(AM_MAKEFLAGS) map)
 
 ##
@@ -58,10 +55,9 @@ if GRUB1_SUPPORT
 image.iso: Makefile all
 	rm -r -f image-fs && \
 	mkdir image-fs && \
-	( cd image-fs &&	\
+	( cd image-fs && \
 	  $(abs_top_builddir)/tools/scripts/mkiso-grub1 \
-		-k $(abs_top_builddir)/blink/src/blink \
-		-m $(abs_top_builddir)/kernel/src/kernel \
+		-k $(abs_top_builddir)/kernel/src/kernel \
 		-o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
@@ -77,10 +73,11 @@ if GRUB2_SUPPORT
 image.iso: Makefile all
 	rm -r -f image-fs && \
 	mkdir image-fs && \
-	cp $(abs_top_builddir)/blink/src/blink   image-fs && \
 	cp $(abs_top_builddir)/kernel/src/kernel image-fs && \
 	( cd image-fs &&	\
-	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 -b blink -o $(abs_top_builddir)/image.iso ) || { \
+	  $(abs_top_builddir)/tools/scripts/mkiso-grub2 \
+		-b kernel \
+		-o $(abs_top_builddir)/image.iso ) || { \
 		rm -r -f image-fs ; \
 		exit 1 ; \
 	} && \

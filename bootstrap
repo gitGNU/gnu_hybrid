@@ -129,7 +129,7 @@ $ACLOCAL    --force --install -I ./tools/autotools/m4 && \
 #
 # bootstrap other packages
 #
-for i in blink kernel ; do                              \
+for i in kernel ; do                                    \
     (cd $i && ./bootstrap) || {                         \
         echo "$ME: Cannot bootstrap $i directory" ;     \
         exit 1 ;                                        \
