@@ -26,7 +26,6 @@ scripts =					\
 	mksyscalls				\
 	obj2symstab				\
 	symstab2map				\
-	sections				\
 	includescheck				\
 	ifdefscheck
 
@@ -37,7 +36,6 @@ awk_scripts_SRCS =				\
 	mksyscalls.awk.in			\
 	obj2symstab.awk.in			\
 	symstab2map.awk.in			\
-	sections.awk.in				\
 	includescheck.awk.in			\
 	ifdefscheck.awk.in
 
@@ -119,28 +117,6 @@ obj2symstab: Makefile obj2symstab.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += obj2symstab
-
-## sections
-sections.awk: Makefile $(awk_lib_SRC) sections.awk.in
-	INFILE=sections.awk.in ;		\
-	OUTFILE=sections.awk ;			\
-	$(transform_awk_in_2_awk) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += sections.awk
-
-sections.sh: Makefile $(sh_lib_SRC) sections.awk
-	INFILE=sections.awk ;			\
-	OUTFILE=sections.sh ;			\
-	$(transform_awk_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += sections.sh
-
-sections: Makefile sections.sh
-	INFILE=sections.sh ;			\
-	OUTFILE=sections ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += sections
 
 ## includescheck
 includescheck.awk: Makefile $(awk_lib_SRC) includescheck.awk.in
