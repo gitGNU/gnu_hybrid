@@ -215,9 +215,8 @@ $(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
 ##
 stats: all
 	@echo ""
-	@echo "Sections:"
-	@echo ""
-	@$(SECTIONS) $(SECTIONS_FLAGS) -P -S -L -V -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+	@echo "Stats:"
+	@$(BFD_SECTION_STAT) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 
 ##

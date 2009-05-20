@@ -97,7 +97,8 @@ do_subst_SPECIFIC = \
   -e 's,[@]GRUB2_PE2ELF[@],$(GRUB2_PE2ELF),g' \
   -e 's,[@]MKISOFS[@],$(MKISOFS),g' \
   \
-  -e 's,[@]DATE[@],$(DATE),g'
+  -e 's,[@]DATE[@],$(DATE),g' \
+  -e 's,[@]BFD_SECTION_STAT[@],$(BFD_SECTION_STAT),g'
 
 do_subst = $(SED) \
   $(do_subst_AUTOTOOLS) \
