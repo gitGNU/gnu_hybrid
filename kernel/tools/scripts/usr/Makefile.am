@@ -24,7 +24,6 @@ include $(top_srcdir)/tools/scripts/Makefile.sub
 scripts =					\
 	getdefine				\
 	mergesyms				\
-	mkbuild					\
 	rules2syms				\
 	sh2h					\
 	flhandler
@@ -36,7 +35,6 @@ awk_scripts_SRCS =
 sh_scripts_SRCS =				\
 	rules2syms.sh.in			\
 	sh2h.sh.in				\
-	mkbuild.sh.in				\
 	getdefine.sh.in				\
 	flhandler.sh.in				\
 	mergesyms.sh.in
@@ -93,20 +91,6 @@ getdefine: Makefile getdefine.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += getdefine
-
-mkbuild.sh: Makefile $(sh_lib_SRC) mkbuild.sh.in
-	INFILE=mkbuild.sh.in ;			\
-	OUTFILE=mkbuild.sh ;			\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild.sh
-
-mkbuild: Makefile mkbuild.sh
-	INFILE=mkbuild.sh ;			\
-	OUTFILE=mkbuild ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += mkbuild
 
 sh2h.sh: Makefile $(sh_lib_SRC) sh2h.sh.in
 	INFILE=sh2h.sh.in ;			\

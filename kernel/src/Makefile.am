@@ -190,6 +190,16 @@ kernel_CXXFLAGS     = $(KERNELCXXFLAGS)
 #			{ rm -f $(MODULES_DB) ; exit 1 ; } ; \
 #	done
 
+
+##
+## statistics related
+##
+stats: all
+	@echo ""
+	@echo "Stats:"
+	@$(BFD_SECTION_STAT) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+
+
 ##
 ## map related
 ##
@@ -209,14 +219,6 @@ $(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
 		rm -f $(SYMSFILE) ; \
 		exit 1 ; \
 	} 
-
-##
-## statistics related
-##
-stats: all
-	@echo ""
-	@echo "Stats:"
-	@$(BFD_SECTION_STAT) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 
 ##
