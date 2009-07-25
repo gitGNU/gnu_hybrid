@@ -33,7 +33,8 @@
 
 /*
  * NOTE:
- *     Nobody should remove bug() or unpredictable results will happen ...
+ *     DO NOT remove bug() unless you are going to handle all the
+ *     unpredictable results that could happen ...
  */
 #define bug()					\
 	__BEGIN_MACRO				\
