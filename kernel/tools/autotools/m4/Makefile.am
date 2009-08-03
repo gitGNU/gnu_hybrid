@@ -34,6 +34,11 @@ DOWNLOAD =						\
 	ax_cflags_gcc_option.m4				\
 	ax_missing_prog.m4				\
 	ax_path_missing.m4				\
+	ax_c_check_flag.m4				\
+	ax_cxx_check_flag.m4				\
+	ax_cpp_check_flag.m4				\
+	ax_cxxcpp_check_flag.m4				\
+	ax_ld_check_flag.m4				\
 	ax_check_awk__v.m4				\
 	ax_check_awk__x_escapes.m4			\
 	ax_check_awk_and.m4				\
@@ -105,7 +110,6 @@ MACROS =					\
 	ax_c___attribute___section.m4		\
 	ax_c___attribute___unused.m4		\
 	ax_c___builtin_expect.m4		\
-	ax_c_check_flag.m4			\
 	ax_c_concatenation.m4			\
 	ax_c_empty_structs.m4			\
 	ax_c_var___date__.m4			\
@@ -116,9 +120,7 @@ MACROS =					\
 	ax_c_var___time__.m4			\
 	ax_check_symbolic_links.m4		\
 	ax_check_vpath_build.m4			\
-	ax_cpp_check_flag.m4			\
 	ax_cxx_bool.m4				\
-	ax_cxx_check_flag.m4			\
 	ax_cxx_dtor_after_atexit.m4		\
 	ax_cxx_dynamic_cast.m4			\
 	ax_cxx_exceptions.m4			\
@@ -127,9 +129,7 @@ MACROS =					\
 	ax_cxx_static_cast.m4			\
 	ax_cxx_templates.m4			\
 	ax_cxx_typename.m4			\
-	ax_cxxcpp_check_flag.m4			\
 	ax_getopt_long.m4			\
-	ax_ld_check_flag.m4			\
 	ax_remove_forbidden.m4			\
 	ax_string_clean.m4			\
 	ax_string_intersect.m4			\
