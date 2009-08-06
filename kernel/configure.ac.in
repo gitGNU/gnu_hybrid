@@ -183,7 +183,7 @@ AX_CPP_CHECK_FLAG([-Wchar-subscripts],[],[],[
 
 # C compiler
 AC_PROG_CC([gcc])
-AS_IF([test x"$CC" = x"gcc"],[
+AS_IF([test x"$GCC" = x"yes"],[
   gcc_available=1
 ],[
   gcc_available=0
