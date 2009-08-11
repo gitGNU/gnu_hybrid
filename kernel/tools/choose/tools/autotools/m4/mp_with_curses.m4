@@ -2,6 +2,10 @@
 #         http://www.nongnu.org/autoconf-archive/mp_with_curses.html
 # ===========================================================================
 #
+# OBSOLETE MACRO
+#
+#   Renamed to AX_WITH_CURSES
+#
 # SYNOPSIS
 #
 #   MP_WITH_CURSES
