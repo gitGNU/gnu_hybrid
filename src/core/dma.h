@@ -30,11 +30,11 @@ size_t dma_channels(void);
 typedef uint_t dma_channel_t;
 
 bool  dma_start_read(dma_channel_t channel,
-		     paddr_t       address,
-		     size_t        count);
+                     paddr_t       address,
+                     size_t        count);
 bool  dma_start_write(dma_channel_t channel,
-		      paddr_t       address,
-		      size_t        count);
+                      paddr_t       address,
+                      size_t        count);
 bool  dma_stop(dma_channel_t channel);
 
 __BEGIN_DECLS

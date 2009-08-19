@@ -52,8 +52,8 @@
 
 #define RTC_REGA        0xA
 #define RTC_REGA_UIP    0x80    /* Update in progress. When clear, no update
-				 * will occur for 244 micro seconds
-				 */
+                                 * will occur for 244 micro seconds
+                                 */
 
 #define RTC_REGB        0xB
 #define RTC_REGB_SET    0x80    /* Inhibit updates */
@@ -76,231 +76,231 @@
 
 int cmos_read(uint_t pos)
 {
-	int r;
+        int r;
 
-	port_out8(RTC_INDEX, pos);
-	r = port_in8(RTC_IO);
+        port_out8(RTC_INDEX, pos);
+        r = port_in8(RTC_IO);
 
-	return r;
+        return r;
 }
 
 void cmos_write(uint_t  pos,
-		uint8_t value)
+                uint8_t value)
 {
-	port_out8(RTC_INDEX, pos);
-	port_out8(RTC_IO, value);
+        port_out8(RTC_INDEX, pos);
+        port_out8(RTC_IO, value);
 }
 
 static int cmos_time_format_bcd(void)
 {
-	int bcd;
+        int bcd;
 
-	bcd = (cmos_read(RTC_REGB) & RTC_REGB_DM_BCD) ? 0 : 1;
+        bcd = (cmos_read(RTC_REGB) & RTC_REGB_DM_BCD) ? 0 : 1;
 
-	/* dprintf("date/time is in %s format\n", bcd ? "BCD" : "HEX"); */
+        /* dprintf("date/time is in %s format\n", bcd ? "BCD" : "HEX"); */
 
-	return bcd;
+        return bcd;
 }
 
 static int cmos_time_format_h12(void)
 {
-	int h12;
+        int h12;
 
-	h12 = (cmos_read(RTC_REGB) & RTC_REGB_24) ? 0 : 1;
+        h12 = (cmos_read(RTC_REGB) & RTC_REGB_24) ? 0 : 1;
 
-	/* dprintf("date/time is in %s format\n", h12 ? "H12" : "H24"); */
+        /* dprintf("date/time is in %s format\n", h12 ? "H12" : "H24"); */
 
-	return h12;
+        return h12;
 }
 
 static int cmos_state(void)
 {
-	int state;
+        int state;
 
-	state = cmos_read(CMOS_STATUS);
-	if (state & CMOS_STATUS_LOST_POWER) {
-		dprintf("CMOS RTC lost power error ...\n");
-		return 0;
-	}
-	if (state & CMOS_STATUS_BAD_CHKSUM) {
-		dprintf("CMOS RAM checksum is bad ...\n");
-		return 0;
-	}
-	if (state & CMOS_STATUS_BAD_TIME) {
-		dprintf("CMOS time invalid ...\n");
-		return 0;
-	}
+        state = cmos_read(CMOS_STATUS);
+        if (state & CMOS_STATUS_LOST_POWER) {
+                dprintf("CMOS RTC lost power error ...\n");
+                return 0;
+        }
+        if (state & CMOS_STATUS_BAD_CHKSUM) {
+                dprintf("CMOS RAM checksum is bad ...\n");
+                return 0;
+        }
+        if (state & CMOS_STATUS_BAD_TIME) {
+                dprintf("CMOS time invalid ...\n");
+                return 0;
+        }
 
-	return 1;
+        return 1;
 }
 
 int cmos_time_get(cmos_time_t * time)
 {
-	int       sec,min,hour,day,month,year;
-	int       century;
-	int       bcd_format;
-	int       h12_format;
+        int       sec,min,hour,day,month,year;
+        int       century;
+        int       bcd_format;
+        int       h12_format;
 
-	assert(time);
+        assert(time);
 
-	if (!cmos_state()) {
-		return 0;
-	}
+        if (!cmos_state()) {
+                return 0;
+        }
 
-	/*
-	 * NOTE:
-	 *
-	 *   The format of the ten clock data registers (bytes 00h-09h) is:
-	 *
-	 *   00h Seconds       (BCD 00-59, Hex 00-3B) Note: Bit 7 is read only
-	 *   01h Second Alarm  (BCD 00-59, Hex 00-3B; "don't care" if C0-FF)
-	 *   02h Minutes       (BCD 00-59, Hex 00-3B)
-	 *   03h Minute Alarm  (BCD 00-59, Hex 00-3B; "don't care" if C0-FF))
-	 *   04h Hours         (BCD 00-23, Hex 00-17 if 24 hr mode)
-	 *                     (BCD 01-12, Hex 01-0C if 12 hr am)
-	 *                     (BCD 81-92. Hex 81-8C if 12 hr pm)
-	 *   05h Hour Alarm    (same as hours; "don't care" if C0-FF))
-	 *   06h Day of Week   (01-07 Sunday=1)
-	 *   07h Date of Month (BCD 01-31, Hex 01-1F)
-	 *   08h Month         (BCD 01-12, Hex 01-0C)
-	 *   09h Year          (BCD 00-99, Hex 00-63)
-	 */
+        /*
+         * NOTE:
+         *
+         *   The format of the ten clock data registers (bytes 00h-09h) is:
+         *
+         *   00h Seconds       (BCD 00-59, Hex 00-3B) Note: Bit 7 is read only
+         *   01h Second Alarm  (BCD 00-59, Hex 00-3B; "don't care" if C0-FF)
+         *   02h Minutes       (BCD 00-59, Hex 00-3B)
+         *   03h Minute Alarm  (BCD 00-59, Hex 00-3B; "don't care" if C0-FF))
+         *   04h Hours         (BCD 00-23, Hex 00-17 if 24 hr mode)
+         *                     (BCD 01-12, Hex 01-0C if 12 hr am)
+         *                     (BCD 81-92. Hex 81-8C if 12 hr pm)
+         *   05h Hour Alarm    (same as hours; "don't care" if C0-FF))
+         *   06h Day of Week   (01-07 Sunday=1)
+         *   07h Date of Month (BCD 01-31, Hex 01-1F)
+         *   08h Month         (BCD 01-12, Hex 01-0C)
+         *   09h Year          (BCD 00-99, Hex 00-63)
+         */
 
-	/*  Are the values in BCD or HEX format?  */
-	bcd_format = cmos_time_format_bcd();
+        /*  Are the values in BCD or HEX format?  */
+        bcd_format = cmos_time_format_bcd();
 
-	/* Time is 12 or 24 h ? */
-	h12_format = cmos_time_format_h12();
+        /* Time is 12 or 24 h ? */
+        h12_format = cmos_time_format_h12();
 
-	/* XXX FIXME: We could hang here if the clock is dead ... */
-	while (cmos_read(RTC_REGA) & RTC_REGA_UIP) {
-		dprintf("CMOS update in progress ...\n");
-	}
+        /* XXX FIXME: We could hang here if the clock is dead ... */
+        while (cmos_read(RTC_REGA) & RTC_REGA_UIP) {
+                dprintf("CMOS update in progress ...\n");
+        }
 
-	sec   = cmos_read(RTC_SEC);
-	min   = cmos_read(RTC_MIN);
-	hour  = cmos_read(RTC_HOUR);
-	day   = cmos_read(RTC_MDAY);
-	month = cmos_read(RTC_MONTH);
-	year  = cmos_read(RTC_YEAR);
+        sec   = cmos_read(RTC_SEC);
+        min   = cmos_read(RTC_MIN);
+        hour  = cmos_read(RTC_HOUR);
+        day   = cmos_read(RTC_MDAY);
+        month = cmos_read(RTC_MONTH);
+        year  = cmos_read(RTC_YEAR);
 
-	/* Convert h12 to h24 */
-	if (bcd_format) {
-		/* Fix hour */
-		if (h12_format) {
-			if ((hour >= 1) && (hour <= 12)) {
-				/* am */
-				hour = hour - 1;
-			} else if ((hour >= 81) && (hour <= 92)) {
-				/* pm */
-				hour = hour - 81;
-			} else {
-				dprintf("Wrong time !!!\n");
-			}
-		}
-	} else {
-		/* Fix hour */
-		if (h12_format) {
-			if ((hour >= 0x01) && (hour <= 0x0C)) {
-				/* am */
-				hour = hour - 1;
-			} else if ((hour >= 0x81) && (hour <= 0x8C)) {
-				/* pm */
-				hour = hour - 0x81;
-			} else {
-				dprintf("Wrong time !!!\n");
-			}
-		}
-	}
+        /* Convert h12 to h24 */
+        if (bcd_format) {
+                /* Fix hour */
+                if (h12_format) {
+                        if ((hour >= 1) && (hour <= 12)) {
+                                /* am */
+                                hour = hour - 1;
+                        } else if ((hour >= 81) && (hour <= 92)) {
+                                /* pm */
+                                hour = hour - 81;
+                        } else {
+                                dprintf("Wrong time !!!\n");
+                        }
+                }
+        } else {
+                /* Fix hour */
+                if (h12_format) {
+                        if ((hour >= 0x01) && (hour <= 0x0C)) {
+                                /* am */
+                                hour = hour - 1;
+                        } else if ((hour >= 0x81) && (hour <= 0x8C)) {
+                                /* pm */
+                                hour = hour - 0x81;
+                        } else {
+                                dprintf("Wrong time !!!\n");
+                        }
+                }
+        }
 
-	/* Convert time to int */
-	if (bcd_format) {
-		sec   = BCD2INT(sec);
-		min   = BCD2INT(min);
-		hour  = BCD2INT(hour);
-		day   = BCD2INT(day);
-		month = BCD2INT(month);
-		year  = BCD2INT(year);
-	}
+        /* Convert time to int */
+        if (bcd_format) {
+                sec   = BCD2INT(sec);
+                min   = BCD2INT(min);
+                hour  = BCD2INT(hour);
+                day   = BCD2INT(day);
+                month = BCD2INT(month);
+                year  = BCD2INT(year);
+        }
 
-	/*
-	 *  TODO:  This fails if century is > 30, but I don't know of
-	 *  any other good way to protect against invalid century values.
-	 *  Century is always in BCD format (? TODO).
-	 *
-	 *  If the century value is > 30, we assume that it is invalid.
-	 *  To get the correct century value, we need to use the windowing
-	 *  trick:   we assume that the century is either 19 or 20.
-	 *  NOTE however that this will fail after the year 2069.
-	 */
-	century = BCD2INT(cmos_read(0x32));
-	if (century > 30) {
-		dprintf("Invalid century %i\n", century);
-		if (year >= 70) {
-			century = 19;
-		} else {
-			century = 20;
-		}
-	}
+        /*
+         *  TODO:  This fails if century is > 30, but I don't know of
+         *  any other good way to protect against invalid century values.
+         *  Century is always in BCD format (? TODO).
+         *
+         *  If the century value is > 30, we assume that it is invalid.
+         *  To get the correct century value, we need to use the windowing
+         *  trick:   we assume that the century is either 19 or 20.
+         *  NOTE however that this will fail after the year 2069.
+         */
+        century = BCD2INT(cmos_read(0x32));
+        if (century > 30) {
+                dprintf("Invalid century %i\n", century);
+                if (year >= 70) {
+                        century = 19;
+                } else {
+                        century = 20;
+                }
+        }
 
-	year += (100 * century);
+        year += (100 * century);
 
-	time->sec   = sec;
-	time->min   = min;
-	time->hour  = hour;
-	time->day   = day;
-	time->month = month;
-	time->year  = year;
+        time->sec   = sec;
+        time->min   = min;
+        time->hour  = hour;
+        time->day   = day;
+        time->month = month;
+        time->year  = year;
 
-	return 1;
+        return 1;
 }
 
 int cmos_init(void)
 {
-	dprintf("Initialized successfully\n");
+        dprintf("Initialized successfully\n");
 
-	return 1;
+        return 1;
 }
 
 void cmos_fini(void)
 {
-	dprintf("Finalized successfully\n");
+        dprintf("Finalized successfully\n");
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_cmos_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+                                            int   argc,
+                                            char* argv[])
 {
-	cmos_time_t t;
+        cmos_time_t t;
 
-	assert(stream);
+        assert(stream);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	fprintf(stream, "CMOS:\n");
+        fprintf(stream, "CMOS:\n");
 
-	if (!cmos_time_get(&t)) {
-		return DBG_RESULT_ERROR;
-	}
+        if (!cmos_time_get(&t)) {
+                return DBG_RESULT_ERROR;
+        }
 
-	fprintf(stream, "  %d:%d:%d %d/%d/%d (%s/%s)\n",
-		t.hour, t.min,   t.sec,
-		t.day,  t.month, t.year,
-		cmos_time_format_bcd() ? "BCD" : "HEX",
-		cmos_time_format_h12() ? "H12" : "H24");
+        fprintf(stream, "  %d:%d:%d %d/%d/%d (%s/%s)\n",
+                t.hour, t.min,   t.sec,
+                t.day,  t.month, t.year,
+                cmos_time_format_bcd() ? "BCD" : "HEX",
+                cmos_time_format_h12() ? "H12" : "H24");
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(cmos,
-		    "Show cmos time",
-		    NULL,
-		    NULL,
-		    command_cmos_on_execute,
-		    NULL);
+                    "Show cmos time",
+                    NULL,
+                    NULL,
+                    command_cmos_on_execute,
+                    NULL);
 #endif

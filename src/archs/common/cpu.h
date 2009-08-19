@@ -25,9 +25,9 @@
 #endif
 
 typedef struct {
-	int        index;  /* CPU id */
-	arch_cpu_t arch;
-	int        online; /* CPU is ok (no problems detected) */
+        int        index;  /* CPU id */
+        arch_cpu_t arch;
+        int        online; /* CPU is ok (no problems detected) */
 } cpu_t;
 
 /* XXX FIXME: This is temp */

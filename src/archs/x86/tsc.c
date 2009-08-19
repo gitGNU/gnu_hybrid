@@ -37,22 +37,22 @@
 int tsc_init(void)
 {
 #if 0
-	uint64_t start;
-	uint64_t end;
-	ulong_t  count;
+        uint64_t start;
+        uint64_t end;
+        ulong_t  count;
 #endif
 
-	dprintf("Calibrating ...\n");
+        dprintf("Calibrating ...\n");
 
 #if 0
-	rdtscll(start);
-	for (count = 0; (inb(0x61) & 0x20) == 0; count++) {
-		continue;
-	}
-	rdtscll(end);
+        rdtscll(start);
+        for (count = 0; (inb(0x61) & 0x20) == 0; count++) {
+                continue;
+        }
+        rdtscll(end);
 #endif
 
-	return 1;
+        return 1;
 }
 
 void tsc_fini(void)

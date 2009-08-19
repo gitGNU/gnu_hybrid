@@ -40,83 +40,83 @@
 
 int generic_cache_init(arch_cpu_t * cpu)
 {
-	uint_t  n;
+        uint_t  n;
 
-	assert(cpu);
+        assert(cpu);
 
-	n = cpuid_eax(0x80000000);
-	if (n >= 0x80000005) {
-		uint_t dummy1, dummy2, ecx, edx;
+        n = cpuid_eax(0x80000000);
+        if (n >= 0x80000005) {
+                uint_t dummy1, dummy2, ecx, edx;
 
-		cprintf(cpu, "CPU has L1 cache\n");
+                cprintf(cpu, "CPU has L1 cache\n");
 
-		cpuid(0x80000005, &dummy1, &dummy2, &ecx, &edx);
-		cpu->caches.l1i.size  = edx >> 24;
-		cpu->caches.l1d.size  = ecx >> 24;
-	} else {
-		cprintf(cpu, "CPU has no L1 cache\n");
-	}
+                cpuid(0x80000005, &dummy1, &dummy2, &ecx, &edx);
+                cpu->caches.l1i.size  = edx >> 24;
+                cpu->caches.l1d.size  = ecx >> 24;
+        } else {
+                cprintf(cpu, "CPU has no L1 cache\n");
+        }
 
-	/* L2 */
-	if (n < 0x80000006) {
-		/* Some chips just have a large L1 */
-		cprintf(cpu, "CPU has no L2 cache\n");
-	} else {
-		uint_t ecx;
+        /* L2 */
+        if (n < 0x80000006) {
+                /* Some chips just have a large L1 */
+                cprintf(cpu, "CPU has no L2 cache\n");
+        } else {
+                uint_t ecx;
 
-		cprintf(cpu, "CPU has L2 cache\n");
+                cprintf(cpu, "CPU has L2 cache\n");
 
-		ecx = cpuid_ecx(0x80000006);
+                ecx = cpuid_ecx(0x80000006);
 
-		cpu->caches.l2.size  = ecx >> 16;
-	}
+                cpu->caches.l2.size  = ecx >> 16;
+        }
 
-	/* L3 */
-	cprintf(cpu, "CPU has no L3 cache\n");
+        /* L3 */
+        cprintf(cpu, "CPU has no L3 cache\n");
 
-	return 1;
+        return 1;
 }
 
 void generic_cache_fini(arch_cpu_t * cpu)
 {
-	assert(cpu);
+        assert(cpu);
 
-	unused_argument(cpu);
+        unused_argument(cpu);
 }
 
 int generic_cpu_init(arch_cpu_t * cpu)
 {
-	assert(cpu);
+        assert(cpu);
 
-	unused_argument(cpu);
+        unused_argument(cpu);
 
-	return 1;
+        return 1;
 }
 
 void generic_cpu_fini(arch_cpu_t * cpu)
 {
-	assert(cpu);
+        assert(cpu);
 
-	unused_argument(cpu);
+        unused_argument(cpu);
 }
 
 int generic_infos(arch_cpu_t * cpu)
 {
-	uint_t eax, ebx, ecx, edx;
+        uint_t eax, ebx, ecx, edx;
 
-	assert(cpu);
+        assert(cpu);
 
-	/* Clear the features */
-	memset(cpu->infos.features, 0, sizeof(cpu->infos.features));
+        /* Clear the features */
+        memset(cpu->infos.features, 0, sizeof(cpu->infos.features));
 
-	/* Get features and other infos */
-	cpuid(1, &eax, &ebx, &ecx, &edx);
-	cpu->infos.family      = (eax >> 8) & 0xf;
-	cpu->infos.model       = (eax >> 4) & 0xf;
-	cpu->infos.stepping    = (eax     ) & 0xf;
-	cpu->infos.features[0] = edx;
+        /* Get features and other infos */
+        cpuid(1, &eax, &ebx, &ecx, &edx);
+        cpu->infos.family      = (eax >> 8) & 0xf;
+        cpu->infos.model       = (eax >> 4) & 0xf;
+        cpu->infos.stepping    = (eax     ) & 0xf;
+        cpu->infos.features[0] = edx;
 
-	return 1;
+        return 1;
 }
 
 #endif /* CONFIG_ARCH_CPU_GENERIC */

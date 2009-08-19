@@ -35,106 +35,106 @@ static unsigned int frames;
 
 void backtrace_clear(void)
 {
-	frames = 0;
+        frames = 0;
 }
 
 void backtrace_save(void)
 {
-	/* Save the backtrace */
-	frames = arch_backtrace_store(backtrace, CONFIG_MAX_STACK_LEVELS);
-	assert(frames <= CONFIG_MAX_STACK_LEVELS);
+        /* Save the backtrace */
+        frames = arch_backtrace_store(backtrace, CONFIG_MAX_STACK_LEVELS);
+        assert(frames <= CONFIG_MAX_STACK_LEVELS);
 }
 
 void backtrace_show(FILE * stream)
 {
-	unsigned int i;
+        unsigned int i;
 
-	assert(stream);
+        assert(stream);
 
-	/* Then dump it */
-	if (frames == 0) {
-		fprintf(stream, "Sorry, no stack backtrace available ...\n");
-		return;
-	}
+        /* Then dump it */
+        if (frames == 0) {
+                fprintf(stream, "Sorry, no stack backtrace available ...\n");
+                return;
+        }
 
-	fprintf(stream, "Stack backtrace:\n");
+        fprintf(stream, "Stack backtrace:\n");
 
-	/*
-	 * NOTE:
-	 *     We should start from i = 1, in order to avoid dumping the
-	 *     current function in the backtrace. We remove this behavior for
-	 *     debugging purposes. To be re-enabled later ...
-	 */
-	for (i = 0; i < frames; i++) {
-		void * base;
-		char * symbol;
+        /*
+         * NOTE:
+         *     We should start from i = 1, in order to avoid dumping the
+         *     current function in the backtrace. We remove this behavior for
+         *     debugging purposes. To be re-enabled later ...
+         */
+        for (i = 0; i < frames; i++) {
+                void * base;
+                char * symbol;
 
-		/* Resolve the symbol base */
-		if (bfd_symbol_reverse_lookup((void *) backtrace[i],
-					      mangled_symbol,
-					      MAX_SYMBOL_LENGTH,
-					      &base)) {
-			unsigned int delta;
-			int          free_it;
+                /* Resolve the symbol base */
+                if (bfd_symbol_reverse_lookup((void *) backtrace[i],
+                                              mangled_symbol,
+                                              MAX_SYMBOL_LENGTH,
+                                              &base)) {
+                        unsigned int delta;
+                        int          free_it;
 
-			/* Try to demangle the symbol */
-			free_it = 1;
-			symbol  = demangle(mangled_symbol);
-			if (!symbol) {
-				/* No luck this time */
-				symbol  = mangled_symbol;
-				free_it = 0;
-			}
+                        /* Try to demangle the symbol */
+                        free_it = 1;
+                        symbol  = demangle(mangled_symbol);
+                        if (!symbol) {
+                                /* No luck this time */
+                                symbol  = mangled_symbol;
+                                free_it = 0;
+                        }
 
-			/*
-			 * NOTE:
-			 *     Compute the difference between backtrace
-			 *     and base ...
-			 */
-			delta = backtrace[i] - (unsigned int) base;
-			if (delta) {
-				/* Delta is precious ... */
-				fprintf(stream, "  %p <%s+0x%x>\n",
-					base, symbol, delta);
-			} else {
-				/* Huh ... hang in function call ? */
-				fprintf(stream, "  %p <%s>\n",
-				       base, symbol);
-			}
+                        /*
+                         * NOTE:
+                         *     Compute the difference between backtrace
+                         *     and base ...
+                         */
+                        delta = backtrace[i] - (unsigned int) base;
+                        if (delta) {
+                                /* Delta is precious ... */
+                                fprintf(stream, "  %p <%s+0x%x>\n",
+                                        base, symbol, delta);
+                        } else {
+                                /* Huh ... hang in function call ? */
+                                fprintf(stream, "  %p <%s>\n",
+                                       base, symbol);
+                        }
 
-			if (free_it) {
-				free(symbol);
-			}
-		} else {
-			/* Hmm ... No symbol found ??? */
-			fprintf(stream, "  %p <?>\n", backtrace[i]);
-		}
-	}
+                        if (free_it) {
+                                free(symbol);
+                        }
+                } else {
+                        /* Hmm ... No symbol found ??? */
+                        fprintf(stream, "  %p <?>\n", backtrace[i]);
+                }
+        }
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_backtrace_on_execute(FILE * stream,
-						 int    argc,
-						 char * argv[])
+                                                 int    argc,
+                                                 char * argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	backtrace_show(stream);
+        backtrace_show(stream);
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(backtrace,
-		    "Dump backtrace",
-		    NULL,
-		    NULL,
-		    command_backtrace_on_execute,
-		    NULL);
+                    "Dump backtrace",
+                    NULL,
+                    NULL,
+                    command_backtrace_on_execute,
+                    NULL);
 #endif

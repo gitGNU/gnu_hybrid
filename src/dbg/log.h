@@ -26,11 +26,11 @@
 __BEGIN_DECLS
 
 typedef enum {
-	LOG_DEBUG,
-	LOG_NORMAL,
-	LOG_WARNING,
-	LOG_ERROR,
-	LOG_CRITICAL
+        LOG_DEBUG,
+        LOG_NORMAL,
+        LOG_WARNING,
+        LOG_ERROR,
+        LOG_CRITICAL
 } log_level_t;
 
 int  log_init(void);

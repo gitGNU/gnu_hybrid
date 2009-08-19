@@ -43,77 +43,77 @@ timer_t timer3;
 
 void timer_cb(void *)
 {
-	putchar('T');
+        putchar('T');
 }
 
 /* We reach this point from init() */
 int main(int argc, char * argv[])
 {
 #if CONFIG_INIT_DEBUG
-	dprintf("Entering main(argc = %d, argv = %p)\n", argc, argv);
+        dprintf("Entering main(argc = %d, argv = %p)\n", argc, argv);
 #else
-	unused_argument(argc);
-	unused_argument(argv);
+        unused_argument(argc);
+        unused_argument(argv);
 #endif
-	printf("Welcome to Hybrid kernel v%d.%d.%d\n",
-	       VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
+        printf("Welcome to Hybrid kernel v%d.%d.%d\n",
+               VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
 
-	printf("Using elklib %s\n", ELKLIB_VERSION);
+        printf("Using elklib %s\n", ELKLIB_VERSION);
 
-	if (!interrupts_init()) {
-		panic("Cannot initialize interrupts");
-	}
+        if (!interrupts_init()) {
+                panic("Cannot initialize interrupts");
+        }
 
-	if (!dma_init()) {
-		panic("Cannot initialize interrupts");
-	}
+        if (!dma_init()) {
+                panic("Cannot initialize interrupts");
+        }
 
-	if (!timers_init()) {
-		panic("Cannot initialize timers");
-	}
+        if (!timers_init()) {
+                panic("Cannot initialize timers");
+        }
 
-	TIMER_FILL(&timer1, timer_cb, 0, 05000, TIMER_ONE_SHOT);
-	if (!timer_add(&timer1)) {
-		panic("Cannot add timer");
-	}
-	TIMER_FILL(&timer2, timer_cb, 0, 10000, TIMER_ONE_SHOT);
-	if (!timer_add(&timer2)) {
-		panic("Cannot add timer");
-	}
-	TIMER_FILL(&timer3, timer_cb, 0, 15000, TIMER_REPETITIVE);
-	if (!timer_add(&timer3)) {
-		panic("Cannot add timer");
-	}
+        TIMER_FILL(&timer1, timer_cb, 0, 05000, TIMER_ONE_SHOT);
+        if (!timer_add(&timer1)) {
+                panic("Cannot add timer");
+        }
+        TIMER_FILL(&timer2, timer_cb, 0, 10000, TIMER_ONE_SHOT);
+        if (!timer_add(&timer2)) {
+                panic("Cannot add timer");
+        }
+        TIMER_FILL(&timer3, timer_cb, 0, 15000, TIMER_REPETITIVE);
+        if (!timer_add(&timer3)) {
+                panic("Cannot add timer");
+        }
 
-	interrupts_unlock();
+        interrupts_unlock();
 
-	scheduler * sched;
+        scheduler * sched;
 
-	sched = new scheduler();
-	assert(sched);
+        sched = new scheduler();
+        assert(sched);
 
 #define TEST 1
 #if TEST
 #include "core/delay.h"
-	static int i = 0;
+        static int i = 0;
 
-	while (1 != 0) {
-		i++;
-		if (i >= 15000) {
-			putchar('A');
+        while (1 != 0) {
+                i++;
+                if (i >= 15000) {
+                        putchar('A');
 
-			i = 0;
-		}
-	}
+                        i = 0;
+                }
+        }
 #endif
 
 #if CONFIG_DEBUGGER
-	dbg_enter();
+        dbg_enter();
 #endif
 
-	delete sched;
+        delete sched;
 
-	panic("This is a panic test ...");
+        panic("This is a panic test ...");
 
-	return 0;
+        return 0;
 }

@@ -25,13 +25,13 @@
 
 class scheduler {
 public:
-	scheduler();
-	~scheduler();
+        scheduler();
+        ~scheduler();
 
-	void run();
+        void run();
 
 private:
-	ktl::list<process *> processes_;
+        ktl::list<process *> processes_;
 };
 
 #endif // CORE_SCHEDULER_H

@@ -38,14 +38,14 @@ public:
                 READY
         } state_t;
 
-	task(task::id_t          id,
+        task(task::id_t          id,
              const ktl::string & name) :
                 id_(id),
                 state_(INITIALIZING),
                 name_(name),
                 priority_(DEFAULT_TASK_PRIORITY) { }
 
-	virtual ~task() { }
+        virtual ~task() { }
 
         task::id_t id() const {
                 return id_;
@@ -72,11 +72,11 @@ public:
         void restart() { };
 
 protected:
-	task();
+        task();
 
         task::id_t       id_;
         state_t          state_;
-	ktl::string      name_;
+        ktl::string      name_;
         task::priority_t priority_;
 
 private:

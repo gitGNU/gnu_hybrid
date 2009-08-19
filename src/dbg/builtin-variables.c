@@ -41,30 +41,30 @@
 #define DBG_LINES_DEFAULT   25
 
 DBG_VARIABLE_DECLARE(columns,
-		     "Controls debugger console columns",
-		     DBG_COLUMNS_MIN, DBG_COLUMNS_MAX, DBG_COLUMNS_DEFAULT,
-		     DBG_VAR_RW,
-		     NULL,
-		     NULL,
-		     NULL,
-		     NULL);
+                     "Controls debugger console columns",
+                     DBG_COLUMNS_MIN, DBG_COLUMNS_MAX, DBG_COLUMNS_DEFAULT,
+                     DBG_VAR_RW,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL);
 
 DBG_VARIABLE_DECLARE(lines,
-		     "Controls debugger console lines",
-		     DBG_LINES_MIN, DBG_LINES_MAX, DBG_LINES_DEFAULT,
-		     DBG_VAR_RW,
-		     NULL,
-		     NULL,
-		     NULL,
-		     NULL);
+                     "Controls debugger console lines",
+                     DBG_LINES_MIN, DBG_LINES_MAX, DBG_LINES_DEFAULT,
+                     DBG_VAR_RW,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL);
 
 DBG_VARIABLE_DECLARE(case,
-		     "Controls the debugger insensitiveness",
-		     0, 1, 1 /* Case sensitiveness enabled by default */,
-		     DBG_VAR_RW,
-		     NULL,
-		     NULL,
-		     NULL,
-		     NULL);
+                     "Controls the debugger insensitiveness",
+                     0, 1, 1 /* Case sensitiveness enabled by default */,
+                     DBG_VAR_RW,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL);
 
 #endif /* CONFIG_DEBUGGER */

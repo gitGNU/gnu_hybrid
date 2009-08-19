@@ -32,84 +32,84 @@ cpu_t cpus[CONFIG_MAX_CPU_COUNT]; /* Placeholder of all CPUs data */
  */
 int arch_cpu_count(void)
 {
-	int count;
-	int i;
+        int count;
+        int i;
 
-	count = 0;
-	for (i = 0; i < CONFIG_MAX_CPU_COUNT; i++) {
-		if (cpus[i].online) {
-			count++;
-		}
-	}
+        count = 0;
+        for (i = 0; i < CONFIG_MAX_CPU_COUNT; i++) {
+                if (cpus[i].online) {
+                        count++;
+                }
+        }
 
-	return count;
+        return count;
 }
 
 int arch_cpu_current(void)
 {
-	missing();
+        missing();
 
-	return 0;
+        return 0;
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_cpus_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+                                            int   argc,
+                                            char* argv[])
 {
-	int i;
+        int i;
 
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	for (i = 0; i < CONFIG_MAX_CPU_COUNT; i++) {
-		fprintf(stream, "CPU%d:\n", i);
-		fprintf(stream, "  Id    %d\n",
-			cpus[i].index);
-		fprintf(stream, "  State %s\n",
-			(cpus[i].online ? "online" : "offline"));
-	}
+        for (i = 0; i < CONFIG_MAX_CPU_COUNT; i++) {
+                fprintf(stream, "CPU%d:\n", i);
+                fprintf(stream, "  Id    %d\n",
+                        cpus[i].index);
+                fprintf(stream, "  State %s\n",
+                        (cpus[i].online ? "online" : "offline"));
+        }
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(cpus,
-		    "Show cpus",
-		    NULL,
-		    NULL,
-		    command_cpus_on_execute,
-		    NULL);
+                    "Show cpus",
+                    NULL,
+                    NULL,
+                    command_cpus_on_execute,
+                    NULL);
 
 static dbg_result_t command_registers_on_execute(FILE* stream,
-						 int   argc,
-						 char* argv[])
+                                                 int   argc,
+                                                 char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_WRONG_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	fprintf(stream, "Registers:\n");
+        fprintf(stream, "Registers:\n");
 
-	missing();
+        missing();
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(registers,
-		    "Show registers values",
-		    NULL,
-		    NULL,
-		    command_registers_on_execute,
-		    NULL);
+                    "Show registers values",
+                    NULL,
+                    NULL,
+                    command_registers_on_execute,
+                    NULL);
 #endif

@@ -25,21 +25,21 @@
 #include "libc/assert.h"
 #include "libcompiler/macro.h"
 
-#define missing()						\
-	__BEGIN_MACRO						\
-	printf("Missing code in function '%s' at %s:%d\n",	\
-	       __PRETTY_FUNCTION__,__FILE__,__LINE__);		\
-	__END_MACRO
+#define missing()                                               \
+        __BEGIN_MACRO                                           \
+        printf("Missing code in function '%s' at %s:%d\n",      \
+               __PRETTY_FUNCTION__,__FILE__,__LINE__);          \
+        __END_MACRO
 
 /*
  * NOTE:
  *     DO NOT remove bug() unless you are going to handle all the
  *     unpredictable results that could happen ...
  */
-#define bug()					\
-	__BEGIN_MACRO				\
-	panic("Bug found in '%s' line %d",	\
-	       __PRETTY_FUNCTION__,__LINE__);	\
-	__END_MACRO
+#define bug()                                   \
+        __BEGIN_MACRO                           \
+        panic("Bug found in '%s' line %d",      \
+               __PRETTY_FUNCTION__,__LINE__);   \
+        __END_MACRO
 
 #endif /* LIBS_DEBUG_H */

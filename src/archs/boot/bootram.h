@@ -28,9 +28,9 @@ int     bootram_init(void);
 void    bootram_fini(void);
 
 int     bootram_reserve(paddr_t start,
-			paddr_t stop);
+                        paddr_t stop);
 int     bootram_unreserve(paddr_t start,
-			  paddr_t stop);
+                          paddr_t stop);
 int     bootram_foreach(int (* op)(paddr_t start));
 paddr_t bootram_alloc(size_t size);
 

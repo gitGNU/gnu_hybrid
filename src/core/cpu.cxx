@@ -36,28 +36,28 @@ cpu::~cpu()
 
 void cpu::online()
 {
-	online_ = true;
+        online_ = true;
 }
 
 void cpu::offline()
 {
-	online_ = false;
+        online_ = false;
 }
 
 bool cpu::is_online()
 {
-	return online_;
+        return online_;
 }
 
 cpus * cpus::instance_ = 0;
 
 cpus * cpus::instance()
 {
-	if (!instance_) {
-		instance_ = new cpus;
-	}
+        if (!instance_) {
+                instance_ = new cpus;
+        }
 
-	return instance_;
+        return instance_;
 }
 
 cpus::cpus()

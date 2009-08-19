@@ -47,8 +47,8 @@ __BEGIN_DECLS
 #error Byte order must be defined !
 #endif
 
-#if ((__BYTE_ORDER != __LITTLE_ENDIAN) &&	\
-     (__BYTE_ORDER != __BIG_ENDIAN)    &&	\
+#if ((__BYTE_ORDER != __LITTLE_ENDIAN) &&       \
+     (__BYTE_ORDER != __BIG_ENDIAN)    &&       \
      (__BYTE_ORDER != __PDP_ENDIAN))
 #error Unsupported byte ordering ...
 #endif
@@ -85,7 +85,7 @@ void              arch_dbg_fini(void);
 void              arch_dbg_beep_on(uint_t frequency);
 void              arch_dbg_beep_off(void);
 
-int	          arch_init(void);
+int               arch_init(void);
 
 int               arch_vm_pagesize(void);
 
@@ -101,15 +101,15 @@ int               arch_atomic_exchange(int * pointer, int new_value);
 int               arch_atomic_test_and_set(int * pointer);
 
 void              arch_context_switch(vaddr_t old_stack,
-				      vaddr_t new_stack,
-				      vaddr_t new_mm);
+                                      vaddr_t new_stack,
+                                      vaddr_t new_mm);
 
-void	          arch_halt(void);
-void	          arch_power_off(void);
-void	          arch_reset(void);
+void              arch_halt(void);
+void              arch_power_off(void);
+void              arch_reset(void);
 
 uint_t            arch_backtrace_store(uint_t * backtrace,
-				       uint_t   max_len);
+                                       uint_t   max_len);
 
 void              arch_irqs_enable(void);
 void              arch_irqs_disable(void);
@@ -120,7 +120,7 @@ void              arch_irqs_state_set(arch_irqs_state_t * state);
 
 typedef           void (* arch_irq_handler_t)(uint_t irq);
 int               arch_irq_handler_set(uint_t             irq,
-				       arch_irq_handler_t handler);
+                                       arch_irq_handler_t handler);
 
 void              arch_delay_ms(uint32_t ms);
 void              arch_delay_us(uint32_t us);
@@ -129,16 +129,16 @@ void              arch_delay_ns(uint32_t ns);
 size_t            arch_dma_channels(void);
 size_t            arch_dma_channel_size(uint_t channel);
 int               arch_dma_start_read(uint_t  channel,
-				      paddr_t address,
-				      size_t  count);
+                                      paddr_t address,
+                                      size_t  count);
 int               arch_dma_start_write(uint_t  channel,
-				       paddr_t address,
-				       size_t  count);
+                                       paddr_t address,
+                                       size_t  count);
 int               arch_dma_stop(uint_t channel);
 
 size_t            arch_timer_granularity(void);
 
-void	          arch_fini(void);
+void              arch_fini(void);
 
 __END_DECLS
 

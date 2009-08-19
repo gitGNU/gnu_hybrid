@@ -32,21 +32,21 @@
 
 void arch_dbg_beep_on(uint_t frequency)
 {
-	int divisor;
-	int pio_word;
+        int divisor;
+        int pio_word;
 
-	divisor = (int)(CLK_FREQ / (long)(frequency));
-	port_out8(CTC_CMD, SETUP);
-	port_out8(CTC_DATA, divisor & 0xFF);
-	port_out8(CTC_DATA, divisor >> 8);
-	pio_word = port_in8(PIO);
-	port_out8(PIO, pio_word | TONE_ON);
+        divisor = (int)(CLK_FREQ / (long)(frequency));
+        port_out8(CTC_CMD, SETUP);
+        port_out8(CTC_DATA, divisor & 0xFF);
+        port_out8(CTC_DATA, divisor >> 8);
+        pio_word = port_in8(PIO);
+        port_out8(PIO, pio_word | TONE_ON);
 }
 
 void arch_dbg_beep_off(void)
 {
-	uint8_t pio_word;
+        uint8_t pio_word;
 
-	pio_word = port_in8(PIO);
-	port_out8(PIO, pio_word & TONE_OFF);
+        pio_word = port_in8(PIO);
+        port_out8(PIO, pio_word & TONE_OFF);
 }

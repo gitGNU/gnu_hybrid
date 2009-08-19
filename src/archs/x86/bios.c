@@ -41,61 +41,61 @@
 
 int bios_init(void)
 {
-	dprintf("Initialized successfully\n");
+        dprintf("Initialized successfully\n");
 
-	return 1;
+        return 1;
 }
 
 static uint8_t machine_id(void)
 {
-	return (* ((uint8_t *) MACHINE_ID_ADDR));
+        return (* ((uint8_t *) MACHINE_ID_ADDR));
 }
 
 bios_machine_t bios_machine(void)
 {
-	switch (machine_id()) {
-		case MACHINE_ID_PS_386: return BIOS_MACHINE_PS386;
-		case MACHINE_ID_PC_AT:  return BIOS_MACHINE_PCAT;
-		default:                return BIOS_MACHINE_UNKNOWN;
-	}
+        switch (machine_id()) {
+                case MACHINE_ID_PS_386: return BIOS_MACHINE_PS386;
+                case MACHINE_ID_PC_AT:  return BIOS_MACHINE_PCAT;
+                default:                return BIOS_MACHINE_UNKNOWN;
+        }
 }
 
 void bios_fini(void)
 {
-	dprintf("Finalized successfully\n");
+        dprintf("Finalized successfully\n");
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_bios_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+                                            int   argc,
+                                            char* argv[])
 {
-	bios_machine_t id;
+        bios_machine_t id;
 
-	assert(stream);
+        assert(stream);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	id = bios_machine();
+        id = bios_machine();
 
-	fprintf(stream, "BIOS:\n");
-	fprintf(stream, "  Machine: %s (id = 0x%x)\n",
-		((id == BIOS_MACHINE_PS386) ? "PS-386" :
-		 (id == BIOS_MACHINE_PCAT)  ? "PC-AT"  :
-		  "UNKNOWN"),
-		machine_id());
+        fprintf(stream, "BIOS:\n");
+        fprintf(stream, "  Machine: %s (id = 0x%x)\n",
+                ((id == BIOS_MACHINE_PS386) ? "PS-386" :
+                 (id == BIOS_MACHINE_PCAT)  ? "PC-AT"  :
+                  "UNKNOWN"),
+                machine_id());
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(bios,
-		    "Show bios infos",
-		    NULL,
-		    NULL,
-		    command_bios_on_execute,
-		    NULL);
+                    "Show bios infos",
+                    NULL,
+                    NULL,
+                    command_bios_on_execute,
+                    NULL);
 #endif

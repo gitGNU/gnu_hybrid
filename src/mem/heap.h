@@ -25,7 +25,7 @@
 #include "mem/address.h"
 
 int    heap_init(vaddr_t base,
-		 size_t size);
+                 size_t size);
 int    heap_initialized(void);
 void * heap_alloc(size_t size);
 void   heap_free(void *ptr);

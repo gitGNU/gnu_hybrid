@@ -39,48 +39,48 @@ process::process(process::id_t       id,
                  const ktl::string & name) :
         task(id, name)
 {
-	threads_.clear();
+        threads_.clear();
 
-	dprintf("Process %d initialized\n", id_);
+        dprintf("Process %d initialized\n", id_);
 }
 
 process::~process()
 {
-	ktl::list<thread *>::iterator iter;
-	for (iter = threads_.begin(); iter != threads_.end(); iter++) {
-		delete *iter;
-	}
+        ktl::list<thread *>::iterator iter;
+        for (iter = threads_.begin(); iter != threads_.end(); iter++) {
+                delete *iter;
+        }
 
-	dprintf("Process %d finalized\n", id_);
+        dprintf("Process %d finalized\n", id_);
 }
 
 #if CONFIG_DEBUGGER
 #if 0
 static dbg_result_t command_threads_on_execute(FILE* stream,
-					       int   argc,
-					       char* argv[])
+                                               int   argc,
+                                               char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	fprintf(stream, "Threads:\n");
+        fprintf(stream, "Threads:\n");
 
-	missing();
+        missing();
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(threads,
-		    "Show threads",
-		    NULL,
-		    NULL,
-		    command_threads_on_execute,
-		    NULL);
+                    "Show threads",
+                    NULL,
+                    NULL,
+                    command_threads_on_execute,
+                    NULL);
 #endif // 0
 #endif

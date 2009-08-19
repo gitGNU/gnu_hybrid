@@ -39,10 +39,10 @@ thread::thread(thread::id_t        id,
                const ktl::string & name) :
         task(id, name)
 {
-	dprintf("Thread %d initialized\n", id_);
+        dprintf("Thread %d initialized\n", id_);
 }
 
 thread::~thread()
 {
-	dprintf("Thread %d finalized\n", id_);
+        dprintf("Thread %d finalized\n", id_);
 }

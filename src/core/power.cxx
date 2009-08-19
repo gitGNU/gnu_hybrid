@@ -27,11 +27,11 @@
 
 static void hang(void)
 {
-	printf("Hanging, see the flames ...\n");
+        printf("Hanging, see the flames ...\n");
 
-	for(;;) {
-		/* Please wait, melt in progress ;-) */
-	}
+        for(;;) {
+                /* Please wait, melt in progress ;-) */
+        }
 }
 
 __BEGIN_DECLS
@@ -40,59 +40,59 @@ SYSCALL(7,halt);
 
 int halt(void)
 {
-	printf("Halt in progress ...\n");
+        printf("Halt in progress ...\n");
 
-	arch_halt();
+        arch_halt();
 
-	printf("... Cannot halt!\n");
+        printf("... Cannot halt!\n");
 
-	hang(); /* We shouldn't reach this point */
+        hang(); /* We shouldn't reach this point */
 
-	return 0;
+        return 0;
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_halt_on_execute(FILE* stream,
-					    int   argc,
-					    char* argv[])
+                                            int   argc,
+                                            char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_WRONG_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	if (!halt()) {
-		return DBG_RESULT_ERROR;
-	}
+        if (!halt()) {
+                return DBG_RESULT_ERROR;
+        }
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(halt,
-		    "Halts the system",
-		    NULL,
-		    NULL,
-		    command_halt_on_execute,
-		    NULL);
+                    "Halts the system",
+                    NULL,
+                    NULL,
+                    command_halt_on_execute,
+                    NULL);
 #endif
 
 SYSCALL(2,power_off);
 
 int power_off(void)
 {
-	printf("Power-off in progress ...\n");
+        printf("Power-off in progress ...\n");
 
-	arch_power_off();
+        arch_power_off();
 
-	printf("... Cannot power-off!\n");
+        printf("... Cannot power-off!\n");
 
-	hang(); /* We shouldn't reach this point */
+        hang(); /* We shouldn't reach this point */
 
-	return 0;
+        return 0;
 }
 
 #if CONFIG_DEBUGGER
@@ -100,72 +100,72 @@ static dbg_result_t command_power_off_on_execute(FILE* stream,
                                                  int   argc,
                                                  char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_WRONG_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	if (!power_off()) {
-		return DBG_RESULT_ERROR;
-	}
+        if (!power_off()) {
+                return DBG_RESULT_ERROR;
+        }
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(power_off,
-		    "Power-offs the system",
-		    NULL,
-		    NULL,
-		    command_power_off_on_execute,
-		    NULL);
+                    "Power-offs the system",
+                    NULL,
+                    NULL,
+                    command_power_off_on_execute,
+                    NULL);
 #endif
 
 SYSCALL(3,reboot);
 
 int reset(void)
 {
-	printf("Reboot in progress ...\n");
+        printf("Reboot in progress ...\n");
 
-	arch_reset();
+        arch_reset();
 
-	printf("... Cannot reboot!\n");
+        printf("... Cannot reboot!\n");
 
-	hang(); /* We shouldn't reach this point */
+        hang(); /* We shouldn't reach this point */
 
-	return 0;
+        return 0;
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_reset_on_execute(FILE* stream,
-					     int   argc,
-					     char* argv[])
+                                             int   argc,
+                                             char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_WRONG_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_WRONG_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	if (!reset()) {
-		return DBG_RESULT_ERROR;
-	}
+        if (!reset()) {
+                return DBG_RESULT_ERROR;
+        }
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(reset,
-		    "Resets the system",
-		    NULL,
-		    NULL,
-		    command_reset_on_execute,
-		    NULL);
+                    "Resets the system",
+                    NULL,
+                    NULL,
+                    command_reset_on_execute,
+                    NULL);
 #endif
 
 __END_DECLS

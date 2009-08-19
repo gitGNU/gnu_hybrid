@@ -37,39 +37,39 @@
 #if CONFIG_ARCH_CPU_AMD
 int amd_infos(arch_cpu_t* cpu)
 {
-	unused_argument(cpu);
+        unused_argument(cpu);
 
-	missing();
-	return 0;
+        missing();
+        return 0;
 }
 
 int amd_cache_init(arch_cpu_t* cpu)
 {
-	unused_argument(cpu);
+        unused_argument(cpu);
 
-	missing();
-	return 0;
+        missing();
+        return 0;
 }
 
 void amd_cache_fini(arch_cpu_t* cpu)
 {
-	unused_argument(cpu);
+        unused_argument(cpu);
 
-	missing();
+        missing();
 }
 
 int amd_cpu_init(arch_cpu_t* cpu)
 {
-	unused_argument(cpu);
+        unused_argument(cpu);
 
-	missing();
-	return 0;
+        missing();
+        return 0;
 }
 
 void amd_cpu_fini(arch_cpu_t* cpu)
 {
-	unused_argument(cpu);
+        unused_argument(cpu);
 
-	missing();
+        missing();
 }
 #endif /* CONFIG_ARCH_CPU_AMD */

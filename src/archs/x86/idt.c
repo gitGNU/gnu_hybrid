@@ -53,23 +53,23 @@
 #define IDT_DPL_MASK (IDT_DPL3 | IDT_DPL2 | IDT_DPL1 | IDT_DPL0)
 
 struct idt_entry {
-	uint16_t offset15_0;  /* Base-LO */
-	uint16_t segment;     /* Selector */
-	uint16_t flags;       /* reserved: 5
-			       * flags:    3
-			       * type:     3
-			       * size:     1
-			       * zero:     1
-			       * dpl:      2
-			       * present:  1
-			       */
-	uint16_t offset31_16; /* Base-HI */
+        uint16_t offset15_0;  /* Base-LO */
+        uint16_t segment;     /* Selector */
+        uint16_t flags;       /* reserved: 5
+                               * flags:    3
+                               * type:     3
+                               * size:     1
+                               * zero:     1
+                               * dpl:      2
+                               * present:  1
+                               */
+        uint16_t offset31_16; /* Base-HI */
 } ATTRIBUTE(packed);
 typedef struct idt_entry idt_entry_t;
 
 struct idt_pointer {
-	uint16_t limit;
-	uint32_t base;
+        uint16_t limit;
+        uint32_t base;
 } ATTRIBUTE(packed);
 typedef struct idt_pointer idt_pointer_t;
 
@@ -78,104 +78,104 @@ static idt_entry_t idt_table[IDT_ENTRIES];
 #if CONFIG_IDT_DEBUG
 static void idt_dump(void)
 {
-	int i;
+        int i;
 
-	for (i = 0; i < IDT_ENTRIES; i++) {
-		if (idt_table[i].flags & IDT_PRESENT) {
-			dprintf("gate %03d: "
-				"offset=0x%04x%04x "
-				"segment=0x%04x, "
-				"flags=0x%04x, "
-				"%s\n",
-				i,
-				idt_table[i].offset31_16,
-				idt_table[i].offset15_0,
-				idt_table[i].segment,
-				idt_table[i].flags,
-				((idt_table[i].flags & IDT_INT) ? "IRQ" :
-				 ((idt_table[i].flags & IDT_TRAP) ? "TRAP" :
-				  "?")));
-		}
-	}
+        for (i = 0; i < IDT_ENTRIES; i++) {
+                if (idt_table[i].flags & IDT_PRESENT) {
+                        dprintf("gate %03d: "
+                                "offset=0x%04x%04x "
+                                "segment=0x%04x, "
+                                "flags=0x%04x, "
+                                "%s\n",
+                                i,
+                                idt_table[i].offset31_16,
+                                idt_table[i].offset15_0,
+                                idt_table[i].segment,
+                                idt_table[i].flags,
+                                ((idt_table[i].flags & IDT_INT) ? "IRQ" :
+                                 ((idt_table[i].flags & IDT_TRAP) ? "TRAP" :
+                                  "?")));
+                }
+        }
 }
 #endif
 
 static void idt_gate_set(uint32_t i,
-			 uint16_t flags,
-			 uint32_t offset)
+                         uint16_t flags,
+                         uint32_t offset)
 {
-	assert(i < IDT_ENTRIES);
+        assert(i < IDT_ENTRIES);
 
-	idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
-	idt_table[i].flags       = flags | IDT_PRESENT | IDT_DPL0 | IDT_32;
-	idt_table[i].offset31_16 = (offset >> 16) & 0xFFFF;
-	idt_table[i].offset15_0  = offset & 0xFFFF;
+        idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_KERNEL_CODE);
+        idt_table[i].flags       = flags | IDT_PRESENT | IDT_DPL0 | IDT_32;
+        idt_table[i].offset31_16 = (offset >> 16) & 0xFFFF;
+        idt_table[i].offset15_0  = offset & 0xFFFF;
 }
 
 static void idt_gate_clear(uint32_t i)
 {
-	assert(i < IDT_ENTRIES);
+        assert(i < IDT_ENTRIES);
 
-	idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_NULL);
-	idt_table[i].flags       = IDT_INT | IDT_32;
-	idt_table[i].offset31_16 = 0;
-	idt_table[i].offset15_0  = 0;
+        idt_table[i].segment     = SEGMENT_BUILDER(0,0,SEGMENT_NULL);
+        idt_table[i].flags       = IDT_INT | IDT_32;
+        idt_table[i].offset31_16 = 0;
+        idt_table[i].offset15_0  = 0;
 }
 
 static void idt_interrupt_set(uint32_t i,
-			      void *   addr)
+                              void *   addr)
 {
-	idt_gate_set(i, IDT_INT, (uint32_t) addr);
+        idt_gate_set(i, IDT_INT, (uint32_t) addr);
 }
 
 static void idt_trap_set(uint32_t i,
-			 void *   addr)
+                         void *   addr)
 {
-	idt_gate_set(i, IDT_TRAP, (uint32_t) addr);
+        idt_gate_set(i, IDT_TRAP, (uint32_t) addr);
 }
 
 static void idt_load(void)
 {
-	idt_pointer_t idt_p;
+        idt_pointer_t idt_p;
 
-	idt_p.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
-	idt_p.base  = (uint32_t) idt_table;
+        idt_p.limit = (sizeof(idt_entry_t) * IDT_ENTRIES) - 1;
+        idt_p.base  = (uint32_t) idt_table;
 
 #if CONFIG_IDT_DEBUG
-	idt_dump();
+        idt_dump();
 #endif
 
-	dprintf("Loading IDT table at 0x%p (%d entries)\n",
-		idt_table, IDT_ENTRIES);
+        dprintf("Loading IDT table at 0x%p (%d entries)\n",
+                idt_table, IDT_ENTRIES);
 
-	lidt(&idt_p.limit);
+        lidt(&idt_p.limit);
 }
 
 void idt_frame_dump(regs_t * regs)
 {
-	uint_t ss, esp;
+        uint_t ss, esp;
 
-	if (regs->cs & 3) {
-		ss  = regs->ss;
-		esp = regs->esp;
-	} else {
-		ss  = regs->ds;
-		esp = (uint_t) regs;
-	}
+        if (regs->cs & 3) {
+                ss  = regs->ss;
+                esp = regs->esp;
+        } else {
+                ss  = regs->ds;
+                esp = (uint_t) regs;
+        }
 
-	printf("Frame dump (isr %d):\n", regs->isr_no);
-	printf("  eax 0x%08x ebx 0x%08x ecx 0x%08x edx 0x%08x\n",
-	       regs->eax, regs->ebx, regs->ecx, regs->edx);
-	printf("  esi 0x%08x edi 0x%08x\n",
-	       regs->esi, regs->edi);
-	printf("  eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
-	       regs->eip, esp, regs->ebp, regs->eflags);
+        printf("Frame dump (isr %d):\n", regs->isr_no);
+        printf("  eax 0x%08x ebx 0x%08x ecx 0x%08x edx 0x%08x\n",
+               regs->eax, regs->ebx, regs->ecx, regs->edx);
+        printf("  esi 0x%08x edi 0x%08x\n",
+               regs->esi, regs->edi);
+        printf("  eip 0x%08x esp 0x%08x ebp 0x%08x eflags 0x%08x\n",
+               regs->eip, esp, regs->ebp, regs->eflags);
 #if 0
-	printf("  cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
-	       regs->cs, ss, regs->ds, regs->es, tss_get());
+        printf("  cs  0x%08x ss  0x%08x ds  0x%08x es     0x%08x\n",
+               regs->cs, ss, regs->ds, regs->es, tss_get());
 #else
-	printf("  cs  0x%08x ss  0x%08x ds  0x%08x uesp   0x%08x\n",
-	       regs->cs, ss, regs->ds, regs->user_esp, tss_get());
+        printf("  cs  0x%08x ss  0x%08x ds  0x%08x uesp   0x%08x\n",
+               regs->cs, ss, regs->ds, regs->user_esp, tss_get());
 #endif
 }
 
@@ -230,111 +230,111 @@ extern void irq_14(void);
 
 void idt_clear(void)
 {
-	int i;
+        int i;
 
-	/* Clear all gates */
-	for (i = 0; i < IDT_ENTRIES; i++) {
-		idt_gate_clear(i);
-	}
+        /* Clear all gates */
+        for (i = 0; i < IDT_ENTRIES; i++) {
+                idt_gate_clear(i);
+        }
 }
 
 int idt_init(void)
 {
-	idt_clear();
+        idt_clear();
 
-	idt_trap_set(0,  trap_00);
-	idt_trap_set(1,  trap_01);
-	idt_trap_set(2,  trap_02);
-	idt_trap_set(3,  trap_03);
-	idt_trap_set(4,  trap_04);
-	idt_trap_set(5,  trap_05);
-	idt_trap_set(6,  trap_06);
-	idt_trap_set(7,  trap_07);
-	idt_trap_set(8,  trap_08);
-	idt_trap_set(9,  trap_09);
-	idt_trap_set(10, trap_10);
-	idt_trap_set(11, trap_11);
-	idt_trap_set(12, trap_12);
-	idt_trap_set(13, trap_13);
-	idt_trap_set(14, trap_14);
-	idt_trap_set(15, trap_15);
-	idt_trap_set(16, trap_16);
-	idt_trap_set(17, trap_17);
-	idt_trap_set(18, trap_18);
-	idt_trap_set(19, trap_19);
-	idt_trap_set(20, trap_20);
-	idt_trap_set(21, trap_21);
-	idt_trap_set(22, trap_22);
-	idt_trap_set(23, trap_23);
-	idt_trap_set(24, trap_24);
-	idt_trap_set(25, trap_25);
-	idt_trap_set(26, trap_26);
-	idt_trap_set(27, trap_27);
-	idt_trap_set(28, trap_28);
-	idt_trap_set(39, trap_29);
-	idt_trap_set(30, trap_30);
-	idt_trap_set(31, trap_31);
+        idt_trap_set(0,  trap_00);
+        idt_trap_set(1,  trap_01);
+        idt_trap_set(2,  trap_02);
+        idt_trap_set(3,  trap_03);
+        idt_trap_set(4,  trap_04);
+        idt_trap_set(5,  trap_05);
+        idt_trap_set(6,  trap_06);
+        idt_trap_set(7,  trap_07);
+        idt_trap_set(8,  trap_08);
+        idt_trap_set(9,  trap_09);
+        idt_trap_set(10, trap_10);
+        idt_trap_set(11, trap_11);
+        idt_trap_set(12, trap_12);
+        idt_trap_set(13, trap_13);
+        idt_trap_set(14, trap_14);
+        idt_trap_set(15, trap_15);
+        idt_trap_set(16, trap_16);
+        idt_trap_set(17, trap_17);
+        idt_trap_set(18, trap_18);
+        idt_trap_set(19, trap_19);
+        idt_trap_set(20, trap_20);
+        idt_trap_set(21, trap_21);
+        idt_trap_set(22, trap_22);
+        idt_trap_set(23, trap_23);
+        idt_trap_set(24, trap_24);
+        idt_trap_set(25, trap_25);
+        idt_trap_set(26, trap_26);
+        idt_trap_set(27, trap_27);
+        idt_trap_set(28, trap_28);
+        idt_trap_set(39, trap_29);
+        idt_trap_set(30, trap_30);
+        idt_trap_set(31, trap_31);
 
-	idt_interrupt_set(32, irq_00);
-	idt_interrupt_set(33, irq_01);
-	idt_interrupt_set(34, irq_02);
-	idt_interrupt_set(35, irq_03);
-	idt_interrupt_set(36, irq_04);
-	idt_interrupt_set(37, irq_05);
-	idt_interrupt_set(38, irq_06);
-	idt_interrupt_set(39, irq_07);
-	idt_interrupt_set(40, irq_08);
-	idt_interrupt_set(41, irq_09);
-	idt_interrupt_set(42, irq_10);
-	idt_interrupt_set(43, irq_11);
-	idt_interrupt_set(44, irq_12);
-	idt_interrupt_set(45, irq_13);
-	idt_interrupt_set(46, irq_14);
+        idt_interrupt_set(32, irq_00);
+        idt_interrupt_set(33, irq_01);
+        idt_interrupt_set(34, irq_02);
+        idt_interrupt_set(35, irq_03);
+        idt_interrupt_set(36, irq_04);
+        idt_interrupt_set(37, irq_05);
+        idt_interrupt_set(38, irq_06);
+        idt_interrupt_set(39, irq_07);
+        idt_interrupt_set(40, irq_08);
+        idt_interrupt_set(41, irq_09);
+        idt_interrupt_set(42, irq_10);
+        idt_interrupt_set(43, irq_11);
+        idt_interrupt_set(44, irq_12);
+        idt_interrupt_set(45, irq_13);
+        idt_interrupt_set(46, irq_14);
 
-	idt_load();
+        idt_load();
 
-	return 1;
+        return 1;
 }
 
 void idt_fini(void)
 {
-	idt_clear();
-	idt_load();
+        idt_clear();
+        idt_load();
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_idt_on_execute(FILE* stream,
-					   int   argc,
-					   char* argv[])
+                                           int   argc,
+                                           char* argv[])
 {
-	int i;
+        int i;
 
-	assert(stream);
+        assert(stream);
 
-	unused_argument(argc);
-	unused_argument(argv);
+        unused_argument(argc);
+        unused_argument(argv);
 
-	fprintf(stream, "IDT:\n");
+        fprintf(stream, "IDT:\n");
 
-	for (i = 0; i < IDT_ENTRIES; i++) {
-		if (idt_table[i].flags & IDT_PRESENT) {
-			fprintf(stream,
-				"  %d     0x04%x%04x/0x%04x/0x%04x\n",
-				i,
-				idt_table[i].offset31_16,
-				idt_table[i].offset15_0,
-				idt_table[i].segment,
-				idt_table[i].flags);
-		}
-	}
+        for (i = 0; i < IDT_ENTRIES; i++) {
+                if (idt_table[i].flags & IDT_PRESENT) {
+                        fprintf(stream,
+                                "  %d     0x04%x%04x/0x%04x/0x%04x\n",
+                                i,
+                                idt_table[i].offset31_16,
+                                idt_table[i].offset15_0,
+                                idt_table[i].segment,
+                                idt_table[i].flags);
+                }
+        }
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(idt,
-		    "Show idt",
-		    NULL,
-		    NULL,
-		    command_idt_on_execute,
-		    NULL);
+                    "Show idt",
+                    NULL,
+                    NULL,
+                    command_idt_on_execute,
+                    NULL);
 #endif

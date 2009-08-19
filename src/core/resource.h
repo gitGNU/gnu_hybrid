@@ -26,17 +26,17 @@
 __BEGIN_DECLS
 
 typedef enum {
-	RSRC_IO  = 1,
-	RSRC_MEM,
+        RSRC_IO  = 1,
+        RSRC_MEM,
 } resource_type_t;
 
 struct resource {
-	const char*      name;
-	uint_t           start;
-	uint_t           stop;
-	resource_type_t  type;
-	struct resource* sibling;
-	struct resource* child;
+        const char*      name;
+        uint_t           start;
+        uint_t           stop;
+        resource_type_t  type;
+        struct resource* sibling;
+        struct resource* child;
 };
 
 typedef struct resource resource_t;
@@ -46,57 +46,57 @@ typedef struct resource resource_t;
 
 /* Do not use this macro !!! */
 /* NOTE: Do not declare as static or you'll head into problems */
-#define __RESOURCE_DECLARE_RSRC_IO(VAR,NAME,START,STOP)		\
-resource_t RESOURCE_VAR(VAR) UNUSED = {				\
-	(NAME),							\
-	(START),						\
-	(STOP),							\
-	RSRC_IO,						\
-	NULL,							\
-	NULL,							\
-};								\
-								\
-resource_t* RESOURCE_PTR(VAR) SECTION(".rsrcs") UNUSED =	\
-	& RESOURCE_VAR(VAR)
+#define __RESOURCE_DECLARE_RSRC_IO(VAR,NAME,START,STOP)         \
+resource_t RESOURCE_VAR(VAR) UNUSED = {                         \
+        (NAME),                                                 \
+        (START),                                                \
+        (STOP),                                                 \
+        RSRC_IO,                                                \
+        NULL,                                                   \
+        NULL,                                                   \
+};                                                              \
+                                                                \
+resource_t* RESOURCE_PTR(VAR) SECTION(".rsrcs") UNUSED =        \
+        & RESOURCE_VAR(VAR)
 
 /* Do not use this macro !!! */
 /* NOTE: Do not declare as static or you'll head into problems */
-#define __RESOURCE_DECLARE_RSRC_MEM(VAR,NAME,START,STOP)	\
-resource_t RESOURCE_VAR(VAR) UNUSED = {				\
-	(NAME),							\
-	(START),						\
-	(STOP),							\
-	RSRC_MEM,						\
-	NULL,							\
-	NULL,							\
-};								\
-								\
-resource_t* RESOURCE_PTR(VAR) SECTION(".rsrcs") UNUSED =	\
-	& RESOURCE_VAR(VAR)
+#define __RESOURCE_DECLARE_RSRC_MEM(VAR,NAME,START,STOP)        \
+resource_t RESOURCE_VAR(VAR) UNUSED = {                         \
+        (NAME),                                                 \
+        (START),                                                \
+        (STOP),                                                 \
+        RSRC_MEM,                                               \
+        NULL,                                                   \
+        NULL,                                                   \
+};                                                              \
+                                                                \
+resource_t* RESOURCE_PTR(VAR) SECTION(".rsrcs") UNUSED =        \
+        & RESOURCE_VAR(VAR)
 
 /* Use this macro only */
-#define RESOURCE_DECLARE(VAR,NAME,TYPE,START,STOP)		\
-	__CONCAT(__RESOURCE_DECLARE_,TYPE) (VAR,NAME,START,STOP)
+#define RESOURCE_DECLARE(VAR,NAME,TYPE,START,STOP)              \
+        __CONCAT(__RESOURCE_DECLARE_,TYPE) (VAR,NAME,START,STOP)
 
 int         resource_init(void);
 
 int         resource_add(resource_t* res);
 int         resource_remove(resource_t* res);
 resource_t* resource_new(const char*     name,
-			 resource_type_t type,
-			 uint_t          start,
-			 uint_t          stop);
+                         resource_type_t type,
+                         uint_t          start,
+                         uint_t          stop);
 void        resource_delete(resource_t* res);
 
 int         resource_request(resource_type_t type,
-			     uint_t          start,
-			     uint_t          stop);
+                             uint_t          start,
+                             uint_t          stop);
 void        resource_release(resource_t* res);
 
 int         resources_config(resource_t** start,
-			     resource_t**  stop);
+                             resource_t**  stop);
 int         resources_unconfig(resource_t** start,
-			       resource_t**  stop);
+                               resource_t**  stop);
 
 void        resource_fini(void);
 

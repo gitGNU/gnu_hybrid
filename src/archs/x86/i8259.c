@@ -47,145 +47,145 @@
 
 void i8259_eoi(uint_t irq)
 {
-	CHECK_IRQ_INDEX(irq);
+        CHECK_IRQ_INDEX(irq);
 
-	/* dprintf("Sending EOI for irq %d\n", irq); */
-	if (irq >= 8) {
-		/* dprintf("Sending EOI to slave\n"); */
-		port_out8(PIC_SLAVE, 0x20);
-	}
+        /* dprintf("Sending EOI for irq %d\n", irq); */
+        if (irq >= 8) {
+                /* dprintf("Sending EOI to slave\n"); */
+                port_out8(PIC_SLAVE, 0x20);
+        }
 
-	/* dprintf("Sending EOI to master\n"); */
-	port_out8(PIC_MASTER, 0x20);
+        /* dprintf("Sending EOI to master\n"); */
+        port_out8(PIC_MASTER, 0x20);
 }
 
 void i8259_enable(uint_t irq)
 {
-	CHECK_IRQ_INDEX(irq);
+        CHECK_IRQ_INDEX(irq);
 
-	/* dprintf("Enabling irq %d\n", irq); */
+        /* dprintf("Enabling irq %d\n", irq); */
 
 #if PROTECT_CASCADE
-	if (irq == IRQ_CASCADE) {
-		dprintf("Never enable the cascade!\n");
-		return;
-	}
+        if (irq == IRQ_CASCADE) {
+                dprintf("Never enable the cascade!\n");
+                return;
+        }
 #endif
 
-	if (irq < 8) {
-		/* IRQ on master PIC */
-		port_out8(PIC_MASTER + 1,
-			  port_in8(PIC_MASTER + 1) & (~(1 << irq)));
-	} else {
-		/* IRQ on slave PIC */
-		port_out8(PIC_SLAVE + 1,
-			  port_in8(PIC_SLAVE + 1)  & (~(1 << (irq - 8))));
-	}
+        if (irq < 8) {
+                /* IRQ on master PIC */
+                port_out8(PIC_MASTER + 1,
+                          port_in8(PIC_MASTER + 1) & (~(1 << irq)));
+        } else {
+                /* IRQ on slave PIC */
+                port_out8(PIC_SLAVE + 1,
+                          port_in8(PIC_SLAVE + 1)  & (~(1 << (irq - 8))));
+        }
 }
 
 void i8259_disable(uint_t irq)
 {
-	CHECK_IRQ_INDEX(irq);
+        CHECK_IRQ_INDEX(irq);
 
-	/* dprintf("Disabling irq %d\n", irq); */
+        /* dprintf("Disabling irq %d\n", irq); */
 
 #if PROTECT_CASCADE
-	if (irq == IRQ_CASCADE) {
-		dprintf("Never disable the cascade!\n");
-		return;
-	}
+        if (irq == IRQ_CASCADE) {
+                dprintf("Never disable the cascade!\n");
+                return;
+        }
 #endif
 
-	if (irq < 8) {
-		/* IRQ on master PIC */
-		port_out8(PIC_MASTER + 1,
-			  port_in8(PIC_MASTER + 1) | (1 << irq));
-	} else {
-		/* IRQ on slave PIC */
-		port_out8(PIC_SLAVE + 1,
-			  port_in8(PIC_SLAVE + 1)  | (1 << (irq - 8)));
-	}
+        if (irq < 8) {
+                /* IRQ on master PIC */
+                port_out8(PIC_MASTER + 1,
+                          port_in8(PIC_MASTER + 1) | (1 << irq));
+        } else {
+                /* IRQ on slave PIC */
+                port_out8(PIC_SLAVE + 1,
+                          port_in8(PIC_SLAVE + 1)  | (1 << (irq - 8)));
+        }
 }
 
 i8259_mask_t i8259_mask_get(void)
 {
-	return (port_in8(PIC_SLAVE + 1) << 8 |
-		port_in8(PIC_MASTER + 1));
+        return (port_in8(PIC_SLAVE + 1) << 8 |
+                port_in8(PIC_MASTER + 1));
 }
 
 void i8259_mask_set(i8259_mask_t mask)
 {
 #if PROTECT_CASCADE
-	if (mask & ~0xFFFB) {
-		dprintf("Never disable the cascade!\n");
-		mask &= 0xFFFB;
-	}
+        if (mask & ~0xFFFB) {
+                dprintf("Never disable the cascade!\n");
+                mask &= 0xFFFB;
+        }
 #endif
-	port_out8(PIC_MASTER + 1, (mask & 0x00FF));
-	port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
+        port_out8(PIC_MASTER + 1, (mask & 0x00FF));
+        port_out8(PIC_SLAVE + 1,  (mask & 0xFF00) >> 8);
 }
 
 int i8259_init(void)
 {
-	dprintf("Initializing\n");
+        dprintf("Initializing\n");
 
-	/* Send ICW1: reset */
-	dprintf("Resetting\n");
-	port_out8(PIC_MASTER, ICU_RESET);
-	port_out8(PIC_SLAVE,  ICU_RESET);
+        /* Send ICW1: reset */
+        dprintf("Resetting\n");
+        port_out8(PIC_MASTER, ICU_RESET);
+        port_out8(PIC_SLAVE,  ICU_RESET);
 
-	/* Send ICW2: controller base address (IDT base index) */
-	dprintf("Remapping to idt-base %d\n", I8259_IDT_BASE_INDEX);
-	port_out8(PIC_MASTER + 1, I8259_IDT_BASE_INDEX);
-	port_out8(PIC_SLAVE + 1,  I8259_IDT_BASE_INDEX + 8);
+        /* Send ICW2: controller base address (IDT base index) */
+        dprintf("Remapping to idt-base %d\n", I8259_IDT_BASE_INDEX);
+        port_out8(PIC_MASTER + 1, I8259_IDT_BASE_INDEX);
+        port_out8(PIC_SLAVE + 1,  I8259_IDT_BASE_INDEX + 8);
 
-	/* Send ICW3 master: mask where the slave is connected to master */
-	port_out8(PIC_MASTER + 1, 0x04);
-	/* Send ICW3 slave: index where the slave is connected on master */
-	port_out8(PIC_SLAVE + 1,  0x02);
+        /* Send ICW3 master: mask where the slave is connected to master */
+        port_out8(PIC_MASTER + 1, 0x04);
+        /* Send ICW3 slave: index where the slave is connected on master */
+        port_out8(PIC_SLAVE + 1,  0x02);
 
-	dprintf("Setting mode\n");
-	/* Send ICW4: 8086 mode, fully nested, not bufferd, no implicit EOI */
-	port_out8(PIC_MASTER + 1, 0x01);
-	port_out8(PIC_SLAVE + 1,  0x01);
+        dprintf("Setting mode\n");
+        /* Send ICW4: 8086 mode, fully nested, not bufferd, no implicit EOI */
+        port_out8(PIC_MASTER + 1, 0x01);
+        port_out8(PIC_SLAVE + 1,  0x01);
 
-	/* Disable all IRQs except the cascade (IRQ2) */
-	i8259_mask_set(0xFFFB);
+        /* Disable all IRQs except the cascade (IRQ2) */
+        i8259_mask_set(0xFFFB);
 
-	return 1;
+        return 1;
 }
 
 void i8259_fini(void)
 {
-	dprintf("Finalizing\n");
+        dprintf("Finalizing\n");
 
-	port_out8(PIC_MASTER, ICU_RESET);
-	port_out8(PIC_SLAVE,  ICU_RESET);
+        port_out8(PIC_MASTER, ICU_RESET);
+        port_out8(PIC_SLAVE,  ICU_RESET);
 
-	/* Disable all IRQs */
-	i8259_mask_set(0xFFFF);
+        /* Disable all IRQs */
+        i8259_mask_set(0xFFFF);
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_i8259_on_execute(FILE* stream,
-					     int   argc,
-					     char* argv[])
+                                             int   argc,
+                                             char* argv[])
 {
-	assert(stream);
+        assert(stream);
 
-	unused_argument(argc);
-	unused_argument(argv);
+        unused_argument(argc);
+        unused_argument(argv);
 
-	fprintf(stream, "I8259:\n");
-	fprintf(stream, "  Mask: 0x%04x\n", i8259_mask_get());
+        fprintf(stream, "I8259:\n");
+        fprintf(stream, "  Mask: 0x%04x\n", i8259_mask_get());
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(i8259,
-		    "Show i8259",
-		    NULL,
-		    NULL,
-		    command_i8259_on_execute,
-		    NULL);
+                    "Show i8259",
+                    NULL,
+                    NULL,
+                    command_i8259_on_execute,
+                    NULL);
 #endif

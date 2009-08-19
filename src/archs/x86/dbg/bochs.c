@@ -48,30 +48,30 @@ static int initialized = 0;
 
 int bochs_init(void)
 {
-	if (port_in8(BOCHS_PORT) == BOCHS_PORT) {
-		initialized = 1;
-	} else {
-		initialized = 0;
-	}
+        if (port_in8(BOCHS_PORT) == BOCHS_PORT) {
+                initialized = 1;
+        } else {
+                initialized = 0;
+        }
 
-	return initialized;
+        return initialized;
 }
 
 int bochs_putchar(int c)
 {
-	if (initialized) {
-		port_out8(BOCHS_PORT, c);
-		return (unsigned char) c;
-	}
+        if (initialized) {
+                port_out8(BOCHS_PORT, c);
+                return (unsigned char) c;
+        }
 
-	return EOF;
+        return EOF;
 }
 
 void bochs_fini(void)
 {
-	if (initialized) {
-		initialized = 0;
-	}
+        if (initialized) {
+                initialized = 0;
+        }
 }
 
 #endif /* CONFIG_BOCHS_DEBUGGER */

@@ -28,34 +28,34 @@ __BEGIN_DECLS
 /* This struct defines the stack after an ISR (TRAP/IRQ) was running */
 struct regs {
 #if 0
-	/* Software frame */
-	uint_t ebx;
-	uint_t ecx;
-	uint_t edx;
-	uint_t esi;
-	uint_t edi;
-	uint_t ebp;
-	uint_t eax;
-	uint_t ds;
-	uint_t es;
+        /* Software frame */
+        uint_t ebx;
+        uint_t ecx;
+        uint_t edx;
+        uint_t esi;
+        uint_t edi;
+        uint_t ebp;
+        uint_t eax;
+        uint_t ds;
+        uint_t es;
 
-	/* Hardware frame */
-	uint_t isr_no;
-	uint_t err_code;
-	uint_t eip;
-	uint_t cs;
-	uint_t eflags;
-	uint_t esp;
-	uint_t ss;
+        /* Hardware frame */
+        uint_t isr_no;
+        uint_t err_code;
+        uint_t eip;
+        uint_t cs;
+        uint_t eflags;
+        uint_t esp;
+        uint_t ss;
 #endif
-	/* Data segment selector */
-	uint32_t ds;
-	/* Pushed by pusha */
-	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
-	/* Interrupt number and error code (when applicable) */
-	uint32_t isr_no, err_code;
-	/* Pushed by the processor automatically */
-	uint32_t eip, cs, eflags, user_esp, ss;
+        /* Data segment selector */
+        uint32_t ds;
+        /* Pushed by pusha */
+        uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+        /* Interrupt number and error code (when applicable) */
+        uint32_t isr_no, err_code;
+        /* Pushed by the processor automatically */
+        uint32_t eip, cs, eflags, user_esp, ss;
 };
 typedef struct regs regs_t;
 

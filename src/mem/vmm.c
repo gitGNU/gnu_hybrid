@@ -39,50 +39,50 @@ static int initialized = 0;
 int vmm_init(void)
 {
 #if 0
-	void * pdir;
+        void * pdir;
 #if 0
-	uint_t i;
+        uint_t i;
 #endif
-	assert(!initialized);
-	unused_argument(max_size);
+        assert(!initialized);
+        unused_argument(max_size);
 
-	pdir = (void *) pmm_page_alloc(CONFIG_PAGE_SIZE);
-	if (!pdir) {
-		return 0;
-	}
+        pdir = (void *) pmm_page_alloc(CONFIG_PAGE_SIZE);
+        if (!pdir) {
+                return 0;
+        }
 
-	memset((char *) pdir, 0, CONFIG_PAGE_SIZE);
+        memset((char *) pdir, 0, CONFIG_PAGE_SIZE);
 
-	dprintf("Building identity mapping up to %dMb\n",
-		max_size / (1024 * 1024));
+        dprintf("Building identity mapping up to %dMb\n",
+                max_size / (1024 * 1024));
 
 #if 0
-	for (i = 0;
-	     i < ALIGN(max_size,
-		       1024 * CONFIG_PAGE_SIZE) / (1024 * CONFIG_PAGE_SIZE);
-	     i++) {
-	}
+        for (i = 0;
+             i < ALIGN(max_size,
+                       1024 * CONFIG_PAGE_SIZE) / (1024 * CONFIG_PAGE_SIZE);
+             i++) {
+        }
 #endif
 
-	dprintf("Virtual memory initialized successfully\n");
-	initialized = 1;
+        dprintf("Virtual memory initialized successfully\n");
+        initialized = 1;
 #endif
 
-	return 1;
+        return 1;
 }
 
 int vmm_pagesize(void)
 {
-	assert(initialized);
+        assert(initialized);
 
-	return arch_vm_pagesize();
+        return arch_vm_pagesize();
 }
 
 void vmm_fini(void)
 {
-	assert(initialized);
-	dprintf("Virtual memory disposed\n");
-	initialized = 0;
+        assert(initialized);
+        dprintf("Virtual memory disposed\n");
+        initialized = 0;
 }
 
 #if CONFIG_DEBUGGER
@@ -91,52 +91,52 @@ static FILE* vmm_stream;
 #if 0
 static int vmm_iterator(uint_t indx, uint_t base, uint_t length)
 {
-	assert(vmm_stream);
+        assert(vmm_stream);
 
-	/*
-	 * NOTE:
-	 *     vmm_foreach() calls us for-each region, even for those with
-	 *     0 length ... so we need to remove the useless ones.
-	 */
-	if (length != 0) {
-		fprintf(vmm_stream, "  %2d   0x%08x  0x%08x\n",
-			indx, base, length);
-	}
+        /*
+         * NOTE:
+         *     vmm_foreach() calls us for-each region, even for those with
+         *     0 length ... so we need to remove the useless ones.
+         */
+        if (length != 0) {
+                fprintf(vmm_stream, "  %2d   0x%08x  0x%08x\n",
+                        indx, base, length);
+        }
 
-	return 1;
+        return 1;
 }
 #endif
 
 static dbg_result_t command_vmm_on_execute(FILE* stream,
-					   int   argc,
-					   char* argv[])
+                                           int   argc,
+                                           char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	vmm_stream = stream;
+        vmm_stream = stream;
 
-	fprintf(stream, "Virtual memory infos:\n");
-	fprintf(stream, "\n");
-	fprintf(stream, "  Page size: %d\n", vmm_pagesize());
+        fprintf(stream, "Virtual memory infos:\n");
+        fprintf(stream, "\n");
+        fprintf(stream, "  Page size: %d\n", vmm_pagesize());
 #if 0
-	vmm_foreach(vmm_iterator);
+        vmm_foreach(vmm_iterator);
 #endif
-	fprintf(stream, "\n");
+        fprintf(stream, "\n");
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(vmm,
-		    "Dumps virtual memory infos",
-		    "Dumps virtual memory infos, showing statistics",
-		    NULL,
-		    command_vmm_on_execute,
-		    NULL);
+                    "Dumps virtual memory infos",
+                    "Dumps virtual memory infos, showing statistics",
+                    NULL,
+                    command_vmm_on_execute,
+                    NULL);
 #endif

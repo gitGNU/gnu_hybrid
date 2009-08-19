@@ -48,83 +48,83 @@ extern void bochs_fini(void);
 int arch_dbg_getchar(void)
 {
 #if CONFIG_HOSTED_DEBUGGER
-	return kbd_getchar();
+        return kbd_getchar();
 #endif
 #if CONFIG_RS232_DEBUGGER
-	return rs232_getchar();
+        return rs232_getchar();
 #endif
 #if CONFIG_BOCHS_DEBUGGER
-	/* XXX FIXME: Are we sure ? */
-	return EOF;
+        /* XXX FIXME: Are we sure ? */
+        return EOF;
 #endif
 }
 
 /* putchar() sends output to the VGA or RS232 (tees output to bochs console) */
 int arch_dbg_putchar(int c)
 {
-	int r;
+        int r;
 
 #if CONFIG_BOCHS_DEBUGGER
-	/* Tee the output to the bochs console */
-	(void) bochs_putchar(c);
+        /* Tee the output to the bochs console */
+        (void) bochs_putchar(c);
 #endif
 
-	r = EOF;
+        r = EOF;
 
 #if CONFIG_HOSTED_DEBUGGER
-	r = vga_putchar(c);
+        r = vga_putchar(c);
 #endif
 #if CONFIG_RS232_DEBUGGER
-	r = rs232_putchar(c);
+        r = rs232_putchar(c);
 #endif
 
-	return r;
+        return r;
 }
 
 int arch_dbg_init(void)
 {
 #if CONFIG_BOCHS_DEBUGGER
-	(void) bochs_init();
+        (void) bochs_init();
 #endif
 #if CONFIG_HOSTED_DEBUGGER
-	if (!vga_init()) {
-		/*
-		 * NOTE:
-		 *     We don't have output ... output is prioritary over
-		 *     input, so this condition is an hard-error. We will
-		 *     return 0 in order to notify back the problem
-		 */
-		return 0;
-	}
-	if (!kbd_init()) {
-		/*
-		 * NOTE:
-		 *     The keyboard is not correctly initialized, we should
-		 *     return 0 and stopping other activities ... but we have
-		 *     the output available so we can continue ...
-		 *
-		 */
-	}
+        if (!vga_init()) {
+                /*
+                 * NOTE:
+                 *     We don't have output ... output is prioritary over
+                 *     input, so this condition is an hard-error. We will
+                 *     return 0 in order to notify back the problem
+                 */
+                return 0;
+        }
+        if (!kbd_init()) {
+                /*
+                 * NOTE:
+                 *     The keyboard is not correctly initialized, we should
+                 *     return 0 and stopping other activities ... but we have
+                 *     the output available so we can continue ...
+                 *
+                 */
+        }
 #endif
 #if CONFIG_RS232_DEBUGGER
-	if (!rs232_init()) {
-		return 0;
-	}
+        if (!rs232_init()) {
+                return 0;
+        }
 #endif
-	return 1;
+        return 1;
 }
 
 void arch_dbg_fini(void)
 {
 #if CONFIG_RS232_DEBUGGER
-	rs232_fini();
+        rs232_fini();
 #endif
 #if CONFIG_HOSTED_DEBUGGER
-	vga_fini();
-	kbd_fini();
+        vga_fini();
+        kbd_fini();
 #endif
 #if CONFIG_BOCHS_DEBUGGER
-	bochs_fini();
+        bochs_fini();
 #endif
 }
 #endif /* CONFIG_DEBUG */

@@ -25,7 +25,7 @@
 __BEGIN_DECLS
 
 typedef struct {
-	int dummy;
+        int dummy;
 } arch_bootinfo_t;
 
 __END_DECLS

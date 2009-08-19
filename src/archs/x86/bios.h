@@ -28,9 +28,9 @@ int            bios_init(void);
 void           bios_fini(void);
 
 typedef enum {
-	BIOS_MACHINE_UNKNOWN = 0,
-	BIOS_MACHINE_PS386,
-	BIOS_MACHINE_PCAT
+        BIOS_MACHINE_UNKNOWN = 0,
+        BIOS_MACHINE_PS386,
+        BIOS_MACHINE_PCAT
 } bios_machine_t;
 
 bios_machine_t bios_machine(void);

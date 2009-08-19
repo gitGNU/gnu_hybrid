@@ -24,30 +24,30 @@
 
 class cpu {
 public:
-	cpu();
-	~cpu();
+        cpu();
+        ~cpu();
 
-	void online();
-	void offline();
-	bool is_online();
+        void online();
+        void offline();
+        bool is_online();
 
 private:
-	bool online_;
+        bool online_;
 };
 
 // Singleton for all CPUs on the system
 class cpus {
 public:
-	static cpus * instance();
+        static cpus * instance();
 
 protected:
-	cpus();
-	cpus(const cpus &);
-	cpus & operator= (const cpus &);
+        cpus();
+        cpus(const cpus &);
+        cpus & operator= (const cpus &);
 
 private:
-	static cpus *             instance_;
-	static ktl::vector<cpu *> cpus_;
+        static cpus *             instance_;
+        static ktl::vector<cpu *> cpus_;
 };
 
 #endif // CORE_CPU_H

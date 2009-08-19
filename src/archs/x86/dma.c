@@ -30,10 +30,10 @@
 
 int dma_init(void)
 {
-	return i8237_init();
+        return i8237_init();
 }
 
 void dma_fini(void)
 {
-	i8237_fini();
+        i8237_fini();
 }

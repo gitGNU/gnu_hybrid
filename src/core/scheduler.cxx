@@ -35,63 +35,63 @@
 
 scheduler::scheduler()
 {
-	processes_.clear();
+        processes_.clear();
 
-	dprintf("Scheduler initialized\n");
+        dprintf("Scheduler initialized\n");
 }
 
 scheduler::~scheduler()
 {
-	ktl::list<process *>::iterator iter;
-	for (iter = processes_.begin(); iter != processes_.end(); iter++) {
-		delete *iter;
-	}
+        ktl::list<process *>::iterator iter;
+        for (iter = processes_.begin(); iter != processes_.end(); iter++) {
+                delete *iter;
+        }
 
-	dprintf("Scheduler finalized\n");
+        dprintf("Scheduler finalized\n");
 }
 
 void scheduler::run()
 {
-	process * & process = processes_.front();
-	assert(process);
+        process * & process = processes_.front();
+        assert(process);
 
-	processes_.pop_front();
+        processes_.pop_front();
 
-	dprintf("Scheduling process %d\n", process->id());
+        dprintf("Scheduling process %d\n", process->id());
 }
 
 #if CONFIG_DEBUGGER
 #if 0
 static dbg_result_t command_processes_on_execute(FILE* stream,
-						 int   argc,
-						 char* argv[])
+                                                 int   argc,
+                                                 char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	fprintf(stream, "Processes:\n");
+        fprintf(stream, "Processes:\n");
 
-	ktl::list<process *>::iterator iter;
-	for (iter = processes.begin(); iter != processes.end(); iter++) {
-		fprintf(stream, "  0x%p %d\n",
-			(*iter),
-			(*iter)->id());
-	}
+        ktl::list<process *>::iterator iter;
+        for (iter = processes.begin(); iter != processes.end(); iter++) {
+                fprintf(stream, "  0x%p %d\n",
+                        (*iter),
+                        (*iter)->id());
+        }
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(processes,
-		    "Show processes",
-		    NULL,
-		    NULL,
-		    command_processes_on_execute,
-		    NULL);
+                    "Show processes",
+                    NULL,
+                    NULL,
+                    command_processes_on_execute,
+                    NULL);
 #endif // 0
 #endif

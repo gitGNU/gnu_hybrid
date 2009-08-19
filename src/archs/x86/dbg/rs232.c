@@ -154,15 +154,15 @@
 
 
 typedef struct {
-	unsigned short iobase;
-	unsigned short enabled;
+        unsigned short iobase;
+        unsigned short enabled;
 } rs232_info_t;
 
 rs232_info_t rs232_info[] = {
-	{ 0x03F8, 0 },
-	{ 0x02F8, 0 },
-	{ 0x03E8, 0 },
-	{ 0x02E8, 0 }
+        { 0x03F8, 0 },
+        { 0x02F8, 0 },
+        { 0x03E8, 0 },
+        { 0x02E8, 0 }
 };
 
 RESOURCE_DECLARE(serial0,"COM1",RSRC_IO,0x03F8,0x03F8);
@@ -176,151 +176,151 @@ unsigned short unit;
 
 static int is_ready_to_receive()
 {
-	unsigned char status;
+        unsigned char status;
 
-	assert(unit < RS232_PORT_MAX);
-	status = port_in8(rs232_info[unit].iobase + UART_LSR);
+        assert(unit < RS232_PORT_MAX);
+        status = port_in8(rs232_info[unit].iobase + UART_LSR);
 
-	return (status & UART_DATA_READY) ? 1 : 0;
+        return (status & UART_DATA_READY) ? 1 : 0;
 }
 
 static int is_ready_to_transmit()
 {
-	unsigned char status;
+        unsigned char status;
 
-	assert(unit < RS232_PORT_MAX);
-	status = port_in8(rs232_info[unit].iobase + UART_LSR);
+        assert(unit < RS232_PORT_MAX);
+        status = port_in8(rs232_info[unit].iobase + UART_LSR);
 
-	return (status & UART_EMPTY_TRANSMITTER) ? 1 : 0;
+        return (status & UART_EMPTY_TRANSMITTER) ? 1 : 0;
 }
 
 int rs232_getchar(void)
 {
-	char c;
+        char c;
 
-	assert(unit < RS232_PORT_MAX);
+        assert(unit < RS232_PORT_MAX);
 
-	if (!rs232_info[unit].enabled) {
-		return EOF;
-	}
+        if (!rs232_info[unit].enabled) {
+                return EOF;
+        }
 
-	/* Wait until data is ready */
-	while (!is_ready_to_receive()) {
-		/* Maybe a delay could be used here */
-	}
+        /* Wait until data is ready */
+        while (!is_ready_to_receive()) {
+                /* Maybe a delay could be used here */
+        }
 
-	/* Read and return the data */
-	c =  (unsigned char) port_in8(rs232_info[unit].iobase + UART_RX);
+        /* Read and return the data */
+        c =  (unsigned char) port_in8(rs232_info[unit].iobase + UART_RX);
 
-	/* Translate '\r' character into '\n' */
-	if (c == '\r') {
-		c = '\n';
-	}
-	return c;
+        /* Translate '\r' character into '\n' */
+        if (c == '\r') {
+                c = '\n';
+        }
+        return c;
 }
 
 static int rs232_putchar_internal(int c)
 {
-	int timeout;
+        int timeout;
 
-	assert(unit < RS232_PORT_MAX);
+        assert(unit < RS232_PORT_MAX);
 
-	if (!rs232_info[unit].enabled) {
-		return EOF;
-	}
+        if (!rs232_info[unit].enabled) {
+                return EOF;
+        }
 
-	/* Wait until the transmitter holding register is empty */
-	timeout = 10000;
-	while (!is_ready_to_transmit()) {
-		if (--timeout == 0) {
-			/* Maybe a delay could be used here */
-			return EOF;
-		}
-	}
+        /* Wait until the transmitter holding register is empty */
+        timeout = 10000;
+        while (!is_ready_to_transmit()) {
+                if (--timeout == 0) {
+                        /* Maybe a delay could be used here */
+                        return EOF;
+                }
+        }
 
-	/* Write and return the data */
-	port_out8(rs232_info[unit].iobase + UART_TX, c);
+        /* Write and return the data */
+        port_out8(rs232_info[unit].iobase + UART_TX, c);
 
-	return (unsigned char) c;
+        return (unsigned char) c;
 }
 
 int rs232_putchar(int c)
 {
-	/* Translate '\n' character into '\r\n' */
-	if (c == '\n') {
-		if (rs232_putchar_internal('\r') == EOF) {
-			return EOF;
-		}
-	}
+        /* Translate '\n' character into '\r\n' */
+        if (c == '\n') {
+                if (rs232_putchar_internal('\r') == EOF) {
+                        return EOF;
+                }
+        }
 
-	return rs232_putchar_internal(c);
+        return rs232_putchar_internal(c);
 }
 
 static int rs232_config(unsigned short unit,
-			unsigned int   speed,
-			int            word_len,
-			int            parity,
-			int            stop_bit_len)
+                        unsigned int   speed,
+                        int            word_len,
+                        int            parity,
+                        int            stop_bit_len)
 {
-	unsigned short div;
-	unsigned char  status;
+        unsigned short div;
+        unsigned char  status;
 
-	assert(unit < RS232_PORT_MAX);
+        assert(unit < RS232_PORT_MAX);
 
-	div        = 0;
-	status     = 0;
+        div        = 0;
+        status     = 0;
 
-	/* Turn off the interrupt */
-	port_out8(rs232_info[unit].iobase + UART_IER, 0);
+        /* Turn off the interrupt */
+        port_out8(rs232_info[unit].iobase + UART_IER, 0);
 
-	/* Set DLAB */
-	port_out8(rs232_info[unit].iobase + UART_LCR, UART_DLAB);
+        /* Set DLAB */
+        port_out8(rs232_info[unit].iobase + UART_LCR, UART_DLAB);
 
-	/* Set the baud rate */
-	if (speed > UART_BAUDRATE_MAX) {
-		return 0;
-	}
+        /* Set the baud rate */
+        if (speed > UART_BAUDRATE_MAX) {
+                return 0;
+        }
 
-	div = UART_BAUDRATE_MAX / speed;
+        div = UART_BAUDRATE_MAX / speed;
 
-	port_out8(rs232_info[unit].iobase + UART_DLL, div & 0xFF);
-	port_out8(rs232_info[unit].iobase + UART_DLH, div >> 8);
+        port_out8(rs232_info[unit].iobase + UART_DLL, div & 0xFF);
+        port_out8(rs232_info[unit].iobase + UART_DLH, div >> 8);
 
-	/* Set the line status */
-	status |= parity | word_len | stop_bit_len;
-	port_out8(rs232_info[unit].iobase + UART_LCR, status);
+        /* Set the line status */
+        status |= parity | word_len | stop_bit_len;
+        port_out8(rs232_info[unit].iobase + UART_LCR, status);
 
-	/* Enable the FIFO */
-	port_out8(rs232_info[unit].iobase + UART_FCR, UART_ENABLE_FIFO);
+        /* Enable the FIFO */
+        port_out8(rs232_info[unit].iobase + UART_FCR, UART_ENABLE_FIFO);
 
-	/* Turn on DTR, RTS, and OUT2 */
-	port_out8(rs232_info[unit].iobase + UART_MCR, UART_ENABLE_MODEM);
+        /* Turn on DTR, RTS, and OUT2 */
+        port_out8(rs232_info[unit].iobase + UART_MCR, UART_ENABLE_MODEM);
 
-	/* Drain the input buffer */
-	while (is_ready_to_receive()) {
-		(void) rs232_getchar();
-	}
+        /* Drain the input buffer */
+        while (is_ready_to_receive()) {
+                (void) rs232_getchar();
+        }
 
-	rs232_info[unit].enabled = 1;
+        rs232_info[unit].enabled = 1;
 
-	return 1;
+        return 1;
 }
 
 int rs232_init(void)
 {
-	return rs232_config(UART_PORT,
-			    UART_BAUDRATE,
-			    UART_WORDLENGTH,
-			    UART_PARITY,
-			    UART_STOP);
+        return rs232_config(UART_PORT,
+                            UART_BAUDRATE,
+                            UART_WORDLENGTH,
+                            UART_PARITY,
+                            UART_STOP);
 }
 
 void rs232_fini(void)
 {
-	assert(unit < RS232_PORT_MAX);
+        assert(unit < RS232_PORT_MAX);
 
-	if (rs232_info[unit].enabled) {
-		rs232_info[unit].enabled = 0;
-	}
+        if (rs232_info[unit].enabled) {
+                rs232_info[unit].enabled = 0;
+        }
 }
 #endif /* CONFIG_RS232_DEBUGGER */

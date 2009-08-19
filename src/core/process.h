@@ -31,14 +31,14 @@ class process :
 public:
         typedef task::id_t id_t;
 
-	process(process::id_t       id,
+        process(process::id_t       id,
                 const ktl::string & name);
         ~process();
 
 protected:
 
 private:
-	ktl::list<thread *> threads_;
+        ktl::list<thread *> threads_;
 };
 
 #endif // CORE_PROCESS_H

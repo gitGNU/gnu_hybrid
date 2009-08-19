@@ -43,10 +43,10 @@ int  interrupt_enabled(uint_t vector);
 typedef void (* interrupt_handler_t)(void * opaque);
 
 int  interrupt_attach(uint_t              vector,
-		      interrupt_handler_t handler,
-		      void *              opaque);
+                      interrupt_handler_t handler,
+                      void *              opaque);
 int  interrupt_detach(uint_t              vector,
-		      interrupt_handler_t handler);
+                      interrupt_handler_t handler);
 
 __END_DECLS
 

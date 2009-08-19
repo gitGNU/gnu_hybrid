@@ -45,193 +45,193 @@ static int    length      = 0;
 static char   buffer[CONFIG_LOG_SIZE];
 
 /* Utility macro */
-#define CHECK_POSITION(P)			\
-	__BEGIN_MACRO				\
-	assert((P) >= 0);			\
-	assert((P) < CONFIG_LOG_SIZE);		\
-	__END_MACRO
+#define CHECK_POSITION(P)                       \
+        __BEGIN_MACRO                           \
+        assert((P) >= 0);                       \
+        assert((P) < CONFIG_LOG_SIZE);          \
+        __END_MACRO
 
 /* Circular buffer putchar() */
 static int log_putchar(int character)
 {
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	buffer[position] = (char) character;
-	position         = (position + 1) % CONFIG_LOG_SIZE;
+        buffer[position] = (char) character;
+        position         = (position + 1) % CONFIG_LOG_SIZE;
 
-	length           = length + 1;
+        length           = length + 1;
 
-	length           = MIN(length, CONFIG_LOG_SIZE);
+        length           = MIN(length, CONFIG_LOG_SIZE);
 
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	/* Tee the log to stdout */
-	putchar(character);
+        /* Tee the log to stdout */
+        putchar(character);
 
-	return (char) character;
+        return (char) character;
 }
 
 /* Circular buffer getchar() */
 static int log_getchar(void)
 {
-	char character;
+        char character;
 
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	character = buffer[position];
-	position  = (position + 1) % CONFIG_LOG_SIZE;
+        character = buffer[position];
+        position  = (position + 1) % CONFIG_LOG_SIZE;
 
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	return (char) character;
+        return (char) character;
 }
 
 /* XXX FIXME: See the if branch comments */
 static int log_fseek(long offset, int whence)
 {
-	long delta;
-	long new_position;
+        long delta;
+        long new_position;
 
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	/* Adjust new origin with whence */
-	new_position = position;
-	switch (whence) {
-		case SEEK_SET: new_position = position - length; break;
-		case SEEK_CUR:                                   break;
-		case SEEK_END:                                   break;
-		default:       bug();			         break;
-	}
-	/* Adjust new origin with offset */
-	new_position = new_position + offset;
+        /* Adjust new origin with whence */
+        new_position = position;
+        switch (whence) {
+                case SEEK_SET: new_position = position - length; break;
+                case SEEK_CUR:                                   break;
+                case SEEK_END:                                   break;
+                default:       bug();                            break;
+        }
+        /* Adjust new origin with offset */
+        new_position = new_position + offset;
 
-	delta = new_position - position;
-	if (delta < 0 || delta >= CONFIG_LOG_SIZE) {
-		/* Out of bounds */
-		return EOF;
-	}
+        delta = new_position - position;
+        if (delta < 0 || delta >= CONFIG_LOG_SIZE) {
+                /* Out of bounds */
+                return EOF;
+        }
 
-	position = new_position % CONFIG_LOG_SIZE;
+        position = new_position % CONFIG_LOG_SIZE;
 
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	return 0;
+        return 0;
 }
 
 static long log_ftell(void)
 {
-	return (long) position;
+        return (long) position;
 }
 
 void log_dump(FILE* stream)
 {
-	int  i;
-	long old_position;
+        int  i;
+        long old_position;
 
-	assert(stream);
+        assert(stream);
 
-	CHECK_POSITION(position);
+        CHECK_POSITION(position);
 
-	/* Save the current position */
-	old_position = position;
+        /* Save the current position */
+        old_position = position;
 
-	/* Rewind the stdlog stream */
-	position = (position - length) % CONFIG_LOG_SIZE;
-	CHECK_POSITION(position);
+        /* Rewind the stdlog stream */
+        position = (position - length) % CONFIG_LOG_SIZE;
+        CHECK_POSITION(position);
 
-	/* Dump all the log buffer to the passed stream */
-	for (i = 0; (i < length) && (i < CONFIG_LOG_SIZE) ; i++) {
-		char c;
+        /* Dump all the log buffer to the passed stream */
+        for (i = 0; (i < length) && (i < CONFIG_LOG_SIZE) ; i++) {
+                char c;
 
-		c = buffer[(position + i) % CONFIG_LOG_SIZE];
+                c = buffer[(position + i) % CONFIG_LOG_SIZE];
 
-		/* We shouldn't get non printable chars ... */
-		assert(isprint(c) || isspace(c));
+                /* We shouldn't get non printable chars ... */
+                assert(isprint(c) || isspace(c));
 
-		if (fputc(c, stream) == EOF) {
-			/* Problems ... let the caller handle them */
-			break;
-		}
-	}
+                if (fputc(c, stream) == EOF) {
+                        /* Problems ... let the caller handle them */
+                        break;
+                }
+        }
 
-	/* Restore the saved position */
-	position = old_position;
-	CHECK_POSITION(position);
+        /* Restore the saved position */
+        position = old_position;
+        CHECK_POSITION(position);
 }
 
 int log_init(void)
 {
-	assert(!initialized);
+        assert(!initialized);
 
-	/* Clear the buffer */
-	memset(buffer, 0, CONFIG_LOG_SIZE);
+        /* Clear the buffer */
+        memset(buffer, 0, CONFIG_LOG_SIZE);
 
-	/* Set the position and length */
-	position = 0;
-	length   = 0;
+        /* Set the position and length */
+        position = 0;
+        length   = 0;
 
-	/* Set the stream functions */
-	FILE_update(stdlog, log_putchar, log_getchar, log_fseek, log_ftell);
+        /* Set the stream functions */
+        FILE_update(stdlog, log_putchar, log_getchar, log_fseek, log_ftell);
 
-	/* Ok */
-	initialized = 1;
+        /* Ok */
+        initialized = 1;
 
-	dprintf("Logger initialized, buffer size is %d bytes\n",
-		CONFIG_LOG_SIZE);
+        dprintf("Logger initialized, buffer size is %d bytes\n",
+                CONFIG_LOG_SIZE);
 
-	return 1;
+        return 1;
 }
 
 int log(log_level_t level, const char* format, ...)
 {
-	va_list args;
-	int     i;
+        va_list args;
+        int     i;
 
-	unused_argument(level);
+        unused_argument(level);
 
-	dprintf("Logging at level %d\n", level);
+        dprintf("Logging at level %d\n", level);
 
-	/* XXX FIXME: We need to add the log levels ... */
-	va_start(args, format);
-	i = vfprintf(stdlog, format, args);
-	va_end(args);
+        /* XXX FIXME: We need to add the log levels ... */
+        va_start(args, format);
+        i = vfprintf(stdlog, format, args);
+        va_end(args);
 
-	return i;
+        return i;
 }
 
 void log_fini(void)
 {
-	assert(initialized);
+        assert(initialized);
 
-	/* Remove the stream hooks */
-	FILE_set(stdlog, NULL, NULL, NULL, NULL);
+        /* Remove the stream hooks */
+        FILE_set(stdlog, NULL, NULL, NULL, NULL);
 
-	initialized = 0;
+        initialized = 0;
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_log_on_execute(FILE* stream,
-					   int   argc,
-					   char* argv[])
+                                           int   argc,
+                                           char* argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	log_dump(stream);
+        log_dump(stream);
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(log,
-		    "Dumps the kernel log",
-		    NULL,
-		    NULL,
-		    command_log_on_execute,
-		    NULL);
+                    "Dumps the kernel log",
+                    NULL,
+                    NULL,
+                    command_log_on_execute,
+                    NULL);
 #endif

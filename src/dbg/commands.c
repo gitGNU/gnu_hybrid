@@ -38,178 +38,178 @@ dbg_command_t* commands = NULL;
 
 const dbg_command_t* dbg_command_lookup(const char* string)
 {
-	dbg_command_t* temp;
+        dbg_command_t* temp;
 
-	assert(string);
+        assert(string);
 
-	dprintf("Lookup for command '%s'\n", string);
+        dprintf("Lookup for command '%s'\n", string);
 
-	temp = commands;
-	while (temp) {
-		if (!strcmp(temp->name,  string)) {
-			dprintf("Found!\n");
-			return temp;
-		}
+        temp = commands;
+        while (temp) {
+                if (!strcmp(temp->name,  string)) {
+                        dprintf("Found!\n");
+                        return temp;
+                }
 
-		temp = temp->next;
-	}
+                temp = temp->next;
+        }
 
-	dprintf("Not found\n");
+        dprintf("Not found\n");
 
-	return NULL;
+        return NULL;
 }
 
 int dbg_command_add(dbg_command_t* command)
 {
-	assert(command);
+        assert(command);
 
-	/* We need the command name */
-	assert(command->name);
+        /* We need the command name */
+        assert(command->name);
 
-	/* We need at least an action */
-	assert(command->actions.on_execute ||
-	       command->actions.on_enter   ||
-	       command->actions.on_leave);
+        /* We need at least an action */
+        assert(command->actions.on_execute ||
+               command->actions.on_enter   ||
+               command->actions.on_leave);
 
-	/* We should be safe :-) */
-	command->next = commands;
-	commands      = command;
+        /* We should be safe :-) */
+        command->next = commands;
+        commands      = command;
 
-	dprintf("Command `%s` added successfully\n", command->name);
+        dprintf("Command `%s` added successfully\n", command->name);
 
-	return 1;
+        return 1;
 }
 
 int dbg_command_remove(dbg_command_t* command)
 {
-	dbg_command_t* prev;
-	dbg_command_t* curr;
+        dbg_command_t* prev;
+        dbg_command_t* curr;
 
-	assert(command);
-	assert(command->name);
+        assert(command);
+        assert(command->name);
 
-	/* Remove a command from the debugger commands list */
+        /* Remove a command from the debugger commands list */
 
-	prev = NULL;
-	curr = commands;
-	while (curr) {
-		if (curr->name == command->name) {
-			/* Found it, now simply remove it from the list */
-			if (prev) {
-				/* Not head element */
-				prev->next = curr->next;
-			} else {
-				/* Head element */
-				commands = curr->next;
-			}
+        prev = NULL;
+        curr = commands;
+        while (curr) {
+                if (curr->name == command->name) {
+                        /* Found it, now simply remove it from the list */
+                        if (prev) {
+                                /* Not head element */
+                                prev->next = curr->next;
+                        } else {
+                                /* Head element */
+                                commands = curr->next;
+                        }
 
-			/* Command successfully removed */
-			return 1;
-		}
+                        /* Command successfully removed */
+                        return 1;
+                }
 
-		/* Not found, next please ... */
-		prev = curr;
-		curr = curr->next;
-	}
+                /* Not found, next please ... */
+                prev = curr;
+                curr = curr->next;
+        }
 
-	/* Huh ... command not found ... */
-	dprintf("Command not found, removal unsuccessful\n");
+        /* Huh ... command not found ... */
+        dprintf("Command not found, removal unsuccessful\n");
 
-	return 0;
+        return 0;
 }
 
 int dbg_commands_config(dbg_command_t** start,
-			dbg_command_t** stop)
+                        dbg_command_t** stop)
 {
-	dbg_command_t** tmp;
+        dbg_command_t** tmp;
 
-	assert(start);
-	assert(stop);
-	assert(start < stop);
+        assert(start);
+        assert(stop);
+        assert(start < stop);
 
-	dprintf("Configuring debugger commands (start = 0x%x, stop = 0x%x)\n",
-		start, stop);
+        dprintf("Configuring debugger commands (start = 0x%x, stop = 0x%x)\n",
+                start, stop);
 
-	tmp = start;
-	while (tmp < stop) {
-		assert(tmp);
+        tmp = start;
+        while (tmp < stop) {
+                assert(tmp);
 
-		dprintf("Command (0x%x)\n", *tmp);
+                dprintf("Command (0x%x)\n", *tmp);
 
-		assert((*tmp)->name);
+                assert((*tmp)->name);
 
-		dprintf("  Name      = '%s'\n",
-			(*tmp)->name);
-		dprintf("  Short     = '%s'\n",
-			(*tmp)->help.short_form);
-		dprintf("  Long      = '%s'\n",
-			(*tmp)->help.long_form);
-		dprintf("  Callbacks = 0x%x/0x%x/0x%x\n",
-			(*tmp)->actions.on_enter,
-			(*tmp)->actions.on_execute,
-			(*tmp)->actions.on_leave);
+                dprintf("  Name      = '%s'\n",
+                        (*tmp)->name);
+                dprintf("  Short     = '%s'\n",
+                        (*tmp)->help.short_form);
+                dprintf("  Long      = '%s'\n",
+                        (*tmp)->help.long_form);
+                dprintf("  Callbacks = 0x%x/0x%x/0x%x\n",
+                        (*tmp)->actions.on_enter,
+                        (*tmp)->actions.on_execute,
+                        (*tmp)->actions.on_leave);
 
-		if (!dbg_command_add(*tmp)) {
-			dprintf("Cannot add debugger command '%s'",
-				(*tmp)->name);
-			return 0;
-		}
+                if (!dbg_command_add(*tmp)) {
+                        dprintf("Cannot add debugger command '%s'",
+                                (*tmp)->name);
+                        return 0;
+                }
 
-		tmp++;
-	}
+                tmp++;
+        }
 
-	return 1;
+        return 1;
 }
 
 int dbg_commands_unconfig(dbg_command_t** start,
-			  dbg_command_t** stop)
+                          dbg_command_t** stop)
 {
-	dbg_command_t** tmp;
+        dbg_command_t** tmp;
 
-	assert(start);
-	assert(stop);
-	assert(start < stop);
+        assert(start);
+        assert(stop);
+        assert(start < stop);
 
-	tmp = start;
-	while (tmp < stop) {
-		assert(tmp);
-		assert((*tmp)->name);
+        tmp = start;
+        while (tmp < stop) {
+                assert(tmp);
+                assert((*tmp)->name);
 
-		if (!dbg_command_remove(*tmp)) {
-			dprintf("Cannot remove debugger command '%s'\n",
-				(*tmp)->name);
-			return 0;
-		}
+                if (!dbg_command_remove(*tmp)) {
+                        dprintf("Cannot remove debugger command '%s'\n",
+                                (*tmp)->name);
+                        return 0;
+                }
 
-		tmp++;
-	}
+                tmp++;
+        }
 
-	return 1;
+        return 1;
 }
 
 int dbg_commands_init(void)
 {
-	assert(!commands);
+        assert(!commands);
 
-	dprintf("Initializing debugger commands\n");
+        dprintf("Initializing debugger commands\n");
 
-	if (!dbg_commands_config(&__DBGCMDS_LIST__, &__DBGCMDS_END__)) {
-		dprintf("Cannot initialize debugger commands\n");
-		return 0;
-	}
+        if (!dbg_commands_config(&__DBGCMDS_LIST__, &__DBGCMDS_END__)) {
+                dprintf("Cannot initialize debugger commands\n");
+                return 0;
+        }
 
-	return 1;
+        return 1;
 }
 
 void dbg_commands_fini(void)
 {
-	assert(commands);
+        assert(commands);
 
-	dprintf("Finalizing debugger commands\n");
+        dprintf("Finalizing debugger commands\n");
 
-	if (!dbg_commands_unconfig(&__DBGCMDS_LIST__, &__DBGCMDS_END__)) {
-		dprintf("Cannot finalize debugger commands\n");
-	}
+        if (!dbg_commands_unconfig(&__DBGCMDS_LIST__, &__DBGCMDS_END__)) {
+                dprintf("Cannot finalize debugger commands\n");
+        }
 }
 
 #endif /* CONFIG_DEBUGGER */

@@ -38,9 +38,9 @@ __BEGIN_DECLS
 #endif
 
 typedef enum {
-	BOOTINFO_MEM_UNKNOWN      = 0, /* Must be 0 */
-	BOOTINFO_MEM_RAM          = 1,
-	BOOTINFO_MEM_ROM          = 2,
+        BOOTINFO_MEM_UNKNOWN      = 0, /* Must be 0 */
+        BOOTINFO_MEM_RAM          = 1,
+        BOOTINFO_MEM_ROM          = 2,
 } bi_mem_t;
 
 /* Update the following defines accordingly to bi_mem_t typedef ... */
@@ -48,60 +48,60 @@ typedef enum {
 #define BOOTINFO_MEMTYPE_MAX BOOTINFO_MEM_ROM
 
 /* Update the following define accordingly to bi_mem_t typedef ... */
-#define BOOTINFO_MEMTYPE2STRING(T)				\
-	(((T) == BOOTINFO_MEM_UNKNOWN     ) ? "Unknown"      :	\
-	 ((T) == BOOTINFO_MEM_RAM         ) ? "RAM"          :	\
-	 ((T) == BOOTINFO_MEM_ROM         ) ? "ROM"          :	\
-	 "!!! BUG !!!")
-
-typedef	struct {
-	unsigned long num;
-	unsigned long size;
-	unsigned long addr;
-	unsigned long shndx;
-} bi_section_elf_t;
-
-typedef	struct {
-	unsigned long start;
-	unsigned long end;
-} bi_section_raw_t;
-
-typedef	enum {
-	BOOTINFO_IMAGE_UNKNOWN = 0, /* Must be 0 */
-	BOOTINFO_IMAGE_RAW,
-	BOOTINFO_IMAGE_ELF,
-} bi_section_type_t;
-
-#define BOOTINFO_IMAGETYPE2STRING(T)			\
-	(((T) == BOOTINFO_IMAGE_UNKNOWN) ? "unknown" :	\
-	 ((T) == BOOTINFO_IMAGE_RAW    ) ? "raw"     :	\
-	 ((T) == BOOTINFO_IMAGE_ELF    ) ? "elf"     :	\
-	 "!!! BUG !!!")
+#define BOOTINFO_MEMTYPE2STRING(T)                              \
+        (((T) == BOOTINFO_MEM_UNKNOWN     ) ? "Unknown"      :  \
+         ((T) == BOOTINFO_MEM_RAM         ) ? "RAM"          :  \
+         ((T) == BOOTINFO_MEM_ROM         ) ? "ROM"          :  \
+         "!!! BUG !!!")
 
 typedef struct {
-	bi_section_type_t         type;
-	union {
-		bi_section_raw_t  raw;
-		bi_section_elf_t  elf;
-	} data;
+        unsigned long num;
+        unsigned long size;
+        unsigned long addr;
+        unsigned long shndx;
+} bi_section_elf_t;
+
+typedef struct {
+        unsigned long start;
+        unsigned long end;
+} bi_section_raw_t;
+
+typedef enum {
+        BOOTINFO_IMAGE_UNKNOWN = 0, /* Must be 0 */
+        BOOTINFO_IMAGE_RAW,
+        BOOTINFO_IMAGE_ELF,
+} bi_section_type_t;
+
+#define BOOTINFO_IMAGETYPE2STRING(T)                    \
+        (((T) == BOOTINFO_IMAGE_UNKNOWN) ? "unknown" :  \
+         ((T) == BOOTINFO_IMAGE_RAW    ) ? "raw"     :  \
+         ((T) == BOOTINFO_IMAGE_ELF    ) ? "elf"     :  \
+         "!!! BUG !!!")
+
+typedef struct {
+        bi_section_type_t         type;
+        union {
+                bi_section_raw_t  raw;
+                bi_section_elf_t  elf;
+        } data;
 } bi_image_t;
 
 typedef struct {
-	bi_mem_t type;
-	uint_t   base;
-	uint_t   size;
+        bi_mem_t type;
+        uint_t   base;
+        uint_t   size;
 } bi_region_t;
 
 typedef struct {
-	/* Architecture independent infos */
-	char            args[BOOTINFO_ARGS_SIZE];
-	bi_region_t     mem[BOOTINFO_MEM_REGIONS];
+        /* Architecture independent infos */
+        char            args[BOOTINFO_ARGS_SIZE];
+        bi_region_t     mem[BOOTINFO_MEM_REGIONS];
 
-	bi_image_t      kernel;
-	bi_image_t      modules[BOOTINFO_MODULES];
+        bi_image_t      kernel;
+        bi_image_t      modules[BOOTINFO_MODULES];
 
-	/* Architecture dependent infos */
-	arch_bootinfo_t arch;
+        /* Architecture dependent infos */
+        arch_bootinfo_t arch;
 } bootinfo_t;
 
 int bootinfo_fix(bootinfo_t * bi);

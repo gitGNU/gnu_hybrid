@@ -39,73 +39,73 @@ static int panic_timeout = CONFIG_PANIC_TIMEOUT;
 void arch_panic(const char* message)
 {
 #if NO_PANIC_ON_PANIC
-	static int panic_in_progress = 0;
+        static int panic_in_progress = 0;
 #endif
-	if (interrupts_initialized()) {
-		interrupts_lock();
-	}
+        if (interrupts_initialized()) {
+                interrupts_lock();
+        }
 
 #if NO_PANIC_ON_PANIC
-	/* Remember that a panic is in progress */
-	panic_in_progress++;
-	if (panic_in_progress > 1) {
-		/* Don't panic too much, let the previous panic finish ;-) */
-		printf("Panic inside panic, bailing out ...\n");
-		if (interrupts_initialized()) {
-			interrupts_unlock();
-		}
-		return;
-	}
+        /* Remember that a panic is in progress */
+        panic_in_progress++;
+        if (panic_in_progress > 1) {
+                /* Don't panic too much, let the previous panic finish ;-) */
+                printf("Panic inside panic, bailing out ...\n");
+                if (interrupts_initialized()) {
+                        interrupts_unlock();
+                }
+                return;
+        }
 #endif
 
-	/* Print the message (if any) */
-	if (!message) {
-		message = "EMPTY ???";
-	}
-	printf("Kernel panic: %s\n", message);
+        /* Print the message (if any) */
+        if (!message) {
+                message = "EMPTY ???";
+        }
+        printf("Kernel panic: %s\n", message);
 
-	backtrace_save();
-	backtrace_show(stdout);
+        backtrace_save();
+        backtrace_show(stdout);
 
 #if (!CONFIG_DEBUGGER_ON_PANIC && \
      !CONFIG_HALT_ON_PANIC     && \
      !CONFIG_REBOOT_ON_PANIC)
 
-	/*
-	 * NOTE:
-	 *     From the menu configuration there should be no possibilities
-	 *     to reach this point ... one of CONFIG_HALT_ONPANIC,
-	 *     CONFIG_REBOOT_ON_PANIC or DEBUGGER_ON_PANIC *MUST* be set.
-	 */
+        /*
+         * NOTE:
+         *     From the menu configuration there should be no possibilities
+         *     to reach this point ... one of CONFIG_HALT_ONPANIC,
+         *     CONFIG_REBOOT_ON_PANIC or DEBUGGER_ON_PANIC *MUST* be set.
+         */
 #error No action defined when a panic occours ... fix the rules file ...
 #endif
 
 #if CONFIG_DEBUGGER_ON_PANIC
-	if (!dbg_enter()) {
-		printf("Cannot enter the integrated debugger ... \n");
-	}
+        if (!dbg_enter()) {
+                printf("Cannot enter the integrated debugger ... \n");
+        }
 #endif
 
 #if NO_PANIC_ON_PANIC
-	/* We could panic again here ... is it correct ? */
-	panic_in_progress--;
+        /* We could panic again here ... is it correct ? */
+        panic_in_progress--;
 
-	/* Reenable the interrupts to let other entities complete their work */
-	if (interrupts_initialized()) {
-		interrupts_unlock();
-	}
+        /* Reenable the interrupts to let other entities complete their work */
+        if (interrupts_initialized()) {
+                interrupts_unlock();
+        }
 #endif
 
 #if CONFIG_REBOOT_ON_PANIC
-	if (panic_timeout > 0) {
-		printf("Rebooting in %d seconds ...\n", panic_timeout);
-		delay_ms(panic_timeout * 1000);
+        if (panic_timeout > 0) {
+                printf("Rebooting in %d seconds ...\n", panic_timeout);
+                delay_ms(panic_timeout * 1000);
 
-		reboot();
-	}
+                reboot();
+        }
 #endif
 
 #if CONFIG_HALT_ON_PANIC
-	halt();
+        halt();
 #endif
 }

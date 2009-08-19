@@ -53,7 +53,7 @@ __BEGIN_DECLS
 #define X86_FEATURE_ACPI        (0*32+22) /* ACPI via MSR */
 #define X86_FEATURE_MMX         (0*32+23) /* Multimedia Extensions */
 #define X86_FEATURE_FXSR        (0*32+24) /* FXSAVE and FXRSTOR instructions (fast save and restore */
-					  /* of FPU context), and CR4.OSFXSR available */
+                                          /* of FPU context), and CR4.OSFXSR available */
 #define X86_FEATURE_XMM         (0*32+25) /* Streaming SIMD Extensions */
 #define X86_FEATURE_XMM2        (0*32+26) /* Streaming SIMD Extensions-2 */
 #define X86_FEATURE_SELFSNOOP   (0*32+27) /* CPU self snoop */
@@ -108,8 +108,8 @@ __BEGIN_DECLS
 #define X86_FEATURE_LAHF_LM     (5*32+ 0) /* LAHF/SAHF in long mode */
 #define X86_FEATURE_CMP_LEGACY  (5*32+ 1) /* If yes HyperThreading not valid */
 
-#define cpu_has(CPU,BIT)					\
-	isset((unsigned char *) (CPU)->arch.infos.features, (BIT))
+#define cpu_has(CPU,BIT)                                        \
+        isset((unsigned char *) (CPU)->arch.infos.features, (BIT))
 
 #define cpu_has_fpu(CPU)            cpu_has((CPU),X86_FEATURE_FPU)
 #define cpu_has_vme(CPU)            cpu_has((CPU),X86_FEATURE_VME)
@@ -140,10 +140,10 @@ __BEGIN_DECLS
 
 int           have_cpuid(void);
 void          cpuid(unsigned int   op,
-		    unsigned int * eax,
-		    unsigned int * ebx,
-		    unsigned int * ecx,
-		    unsigned int * edx);
+                    unsigned int * eax,
+                    unsigned int * ebx,
+                    unsigned int * ecx,
+                    unsigned int * edx);
 unsigned int  cpuid_eax(unsigned int op);
 unsigned int  cpuid_ebx(unsigned int op);
 unsigned int  cpuid_ecx(unsigned int op);

@@ -35,7 +35,7 @@
 
 semaphore::semaphore(size_t count)
 {
-	count_ = count;
+        count_ = count;
 
         dprintf("Semaphore 0x%x created\n", this);
 }
@@ -47,41 +47,41 @@ semaphore::~semaphore()
 
 void semaphore::acquire()
 {
-	missing();
+        missing();
 }
 
 void semaphore::release()
 {
-	missing();
+        missing();
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_semaphores_on_execute(FILE * stream,
-						  int   argc,
-						  char * argv[])
+                                                  int   argc,
+                                                  char * argv[])
 {
-	assert(stream);
-	assert(argc >= 0);
+        assert(stream);
+        assert(argc >= 0);
 
-	if (argc != 0) {
-		return	DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
-	}
+        if (argc != 0) {
+                return  DBG_RESULT_ERROR_TOOMANY_PARAMETERS;
+        }
 
-	unused_argument(argv);
+        unused_argument(argv);
 
-	fprintf(stream, "Semaphores:\n");
+        fprintf(stream, "Semaphores:\n");
 
-	missing();
+        missing();
 
-	return DBG_RESULT_OK;
+        return DBG_RESULT_OK;
 }
 
 DBG_COMMAND_DECLARE(semaphores,
-		    "Show semaphores",
-		    NULL,
-		    NULL,
-		    command_semaphores_on_execute,
-		    NULL);
+                    "Show semaphores",
+                    NULL,
+                    NULL,
+                    command_semaphores_on_execute,
+                    NULL);
 #endif
 
 #if 0

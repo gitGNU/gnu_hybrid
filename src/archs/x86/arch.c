@@ -43,67 +43,67 @@
 
 int arch_init(void)
 {
-	dprintf("Initializing architecture\n");
+        dprintf("Initializing architecture\n");
 
-	/* XXX FIXME: Reserve lower memory (it is not assured!) */
-	bootram_reserve(0, 1024 * 1024);
+        /* XXX FIXME: Reserve lower memory (it is not assured!) */
+        bootram_reserve(0, 1024 * 1024);
 
-	if (!bios_init()) {
-		panic("Cannot initialize BIOS");
-	}
+        if (!bios_init()) {
+                panic("Cannot initialize BIOS");
+        }
 
-	if (!cmos_init()) {
-		panic("Cannot initialize CMOS");
-	}
+        if (!cmos_init()) {
+                panic("Cannot initialize CMOS");
+        }
 
-	if (!cpus_init()) {
-		panic("Cannot initialize CPU(s)");
-	}
+        if (!cpus_init()) {
+                panic("Cannot initialize CPU(s)");
+        }
 
-	if (!gdt_init()) {
-		panic("Cannot initialize GDT");
-	}
+        if (!gdt_init()) {
+                panic("Cannot initialize GDT");
+        }
 
-	if (!idt_init()) {
-		panic("Cannot initialize IDT");
-	}
+        if (!idt_init()) {
+                panic("Cannot initialize IDT");
+        }
 
-	if (!tss_init()) {
-		panic("Cannot initialize TSS");
-	}
+        if (!tss_init()) {
+                panic("Cannot initialize TSS");
+        }
 
-	if (!irq_init()) {
-		panic("Cannot initialize IRQs");
-	}
-	/* IRQs initialized but still disabled */
+        if (!irq_init()) {
+                panic("Cannot initialize IRQs");
+        }
+        /* IRQs initialized but still disabled */
 
-	if (!i8253_init()) {
-		panic("Cannot initialize i8253");
-	}
+        if (!i8253_init()) {
+                panic("Cannot initialize i8253");
+        }
 
-	if (!tsc_init()) {
-		panic("Cannot initialize tsc");
-	}
+        if (!tsc_init()) {
+                panic("Cannot initialize tsc");
+        }
 
-	if (!dma_init()) {
-		panic("Cannot initialize DMAs");
-	}
+        if (!dma_init()) {
+                panic("Cannot initialize DMAs");
+        }
 
-	dprintf("Architecture initialized\n");
+        dprintf("Architecture initialized\n");
 
-	return 1;
+        return 1;
 }
 
 void arch_fini(void)
 {
-	dma_fini();
-	tsc_fini();
-	irq_fini();
-	i8253_fini();
-	tss_fini();
-	idt_fini();
-	gdt_fini();
-	cpus_fini();
-	cmos_fini();
-	bios_fini();
+        dma_fini();
+        tsc_fini();
+        irq_fini();
+        i8253_fini();
+        tss_fini();
+        idt_fini();
+        gdt_fini();
+        cpus_fini();
+        cmos_fini();
+        bios_fini();
 }

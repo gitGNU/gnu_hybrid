@@ -29,15 +29,15 @@ int  cmos_init(void);
 void cmos_fini(void);
 int  cmos_read(uint_t pos);
 void cmos_write(uint_t  pos,
-		uint8_t value);
+                uint8_t value);
 
 typedef struct {
         uint8_t sec;
-	uint8_t min;
-	uint8_t hour;
-	uint8_t day;
-	uint8_t month;
-	uint_t  year;
+        uint8_t min;
+        uint8_t hour;
+        uint8_t day;
+        uint8_t month;
+        uint_t  year;
 } cmos_time_t;
 
 int  cmos_time_get(cmos_time_t* time);

@@ -26,10 +26,10 @@
 __BEGIN_DECLS
 
 struct option {
-	const char*    name;   /* Cannot be changed */
-	char*          value;  /* It could be freed */
-	int            freeme; /* Do not use! */
-	struct option* next;   /* Do not use! */
+        const char*    name;   /* Cannot be changed */
+        char*          value;  /* It could be freed */
+        int            freeme; /* Do not use! */
+        struct option* next;   /* Do not use! */
 };
 
 typedef struct option option_t;
@@ -38,16 +38,16 @@ typedef struct option option_t;
 #define OPTION_PTR(NAME) __CONCAT(__option_ptr_,NAME)
 
 /* NOTE: Do not declare as static or you'll head into problems */
-#define OPTION_DECLARE(NAME,DEFAULT_VALUE)		\
-option_t OPTION_VAR(NAME) UNUSED = {			\
-	__STRING(NAME),					\
-	(DEFAULT_VALUE),				\
-	0,						\
-	NULL						\
-};							\
-							\
-option_t* OPTION_PTR(NAME) SECTION(".opts") UNUSED =	\
-	& OPTION_VAR(NAME)
+#define OPTION_DECLARE(NAME,DEFAULT_VALUE)              \
+option_t OPTION_VAR(NAME) UNUSED = {                    \
+        __STRING(NAME),                                 \
+        (DEFAULT_VALUE),                                \
+        0,                                              \
+        NULL                                            \
+};                                                      \
+                                                        \
+option_t* OPTION_PTR(NAME) SECTION(".opts") UNUSED =    \
+        & OPTION_VAR(NAME)
 
 int         option_init(void);
 

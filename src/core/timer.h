@@ -26,49 +26,49 @@
 __BEGIN_DECLS
 
 typedef enum {
-	TIMER_ONE_SHOT,
-	TIMER_REPETITIVE
+        TIMER_ONE_SHOT,
+        TIMER_REPETITIVE
 } timer_type_t;
 
 struct timer {
-	void         (* callback)(void * data);
-	void *       data;
-	int          expiration; /* Relative expiration time */
-	timer_type_t type;
+        void         (* callback)(void * data);
+        void *       data;
+        int          expiration; /* Relative expiration time */
+        timer_type_t type;
 #if CONFIG_TIMERS_DEBUG
-	int          absolute;   /* Absolute expiration time */
-	int          removable;
+        int          absolute;   /* Absolute expiration time */
+        int          removable;
 #endif
 };
 typedef struct timer timer_t;
 
 #define TIMER_EXPIRED(TIMER) (((TIMER)->expiration <= 0) ? 1 : 0)
-#define TIMER_DUMP(TIMER) {						\
-	dprintf("  Timer 0x%p:\n", (TIMER));				\
-	dprintf("    callback   = 0x%p\n", (TIMER)->callback);		\
-	dprintf("    data       = 0x%p\n", (TIMER)->data);		\
-	dprintf("    expiration = %d\n",   (TIMER)->expiration);	\
-	dprintf("    type       = %d\n",   (TIMER)->type);		\
+#define TIMER_DUMP(TIMER) {                                             \
+        dprintf("  Timer 0x%p:\n", (TIMER));                            \
+        dprintf("    callback   = 0x%p\n", (TIMER)->callback);          \
+        dprintf("    data       = 0x%p\n", (TIMER)->data);              \
+        dprintf("    expiration = %d\n",   (TIMER)->expiration);        \
+        dprintf("    type       = %d\n",   (TIMER)->type);              \
 }
-#define TIMERS_DUMP(TIMERS) {						\
-	dprintf("Timers:\n");						\
-	ktl::list<timer_t *>::iterator iter;				\
-	for (iter = (TIMERS).begin(); iter != (TIMERS).end(); iter++) {	\
-		TIMER_DUMP(*iter);					\
-	}								\
+#define TIMERS_DUMP(TIMERS) {                                           \
+        dprintf("Timers:\n");                                           \
+        ktl::list<timer_t *>::iterator iter;                            \
+        for (iter = (TIMERS).begin(); iter != (TIMERS).end(); iter++) { \
+                TIMER_DUMP(*iter);                                      \
+        }                                                               \
 }
-#define TIMER_FILL(TIMER,CALLBACK,DATA,DELAY,TYPE)	\
-	__BEGIN_MACRO					\
-	(TIMER)->callback   = CALLBACK;			\
-	(TIMER)->data       = DATA;			\
-	(TIMER)->expiration = DELAY;			\
-	(TIMER)->type       = TYPE;			\
-	__END_MACRO
+#define TIMER_FILL(TIMER,CALLBACK,DATA,DELAY,TYPE)      \
+        __BEGIN_MACRO                                   \
+        (TIMER)->callback   = CALLBACK;                 \
+        (TIMER)->data       = DATA;                     \
+        (TIMER)->expiration = DELAY;                    \
+        (TIMER)->type       = TYPE;                     \
+        __END_MACRO
 
-#define TIMER_GOOD(TIMER)			\
-	((TIMER) &&				\
-	 ((TIMER)->callback != NULL) &&		\
-	 ((TIMER)->expiration >= 0))
+#define TIMER_GOOD(TIMER)                       \
+        ((TIMER) &&                             \
+         ((TIMER)->callback != NULL) &&         \
+         ((TIMER)->expiration >= 0))
 
 int timers_init(void);
 int timers_fini(void);

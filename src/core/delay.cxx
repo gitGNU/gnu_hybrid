@@ -22,15 +22,15 @@
 
 void delay_ms(uint32_t ms)
 {
-	arch_delay_ms(ms);
+        arch_delay_ms(ms);
 }
 
 void delay_us(uint32_t us)
 {
-	arch_delay_us(us);
+        arch_delay_us(us);
 }
 
 void delay_ns(uint32_t ns)
 {
-	arch_delay_ns(ns);
+        arch_delay_ns(ns);
 }
