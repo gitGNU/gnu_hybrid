@@ -52,6 +52,7 @@ EXTRA_DIST =					\
 ##
 ## Maintainer related targets
 ##
+update-local: Makefile
 
 ##
 ## XXX FIXME:
@@ -59,8 +60,6 @@ EXTRA_DIST =					\
 ##     calls; GNU awk will reject it. Add a check in order to detect such
 ##     condition
 ##
-maintainer-check-whitespaces: Makefile $(awk_libs_SRCS)
-	$(WHITESPACE_DETECT) $(awk_libs_SRCS)
 
 ##
 ## NOTE:
@@ -109,11 +108,7 @@ maintainer-check-init-fini-functions: Makefile $(awk_libs_SRCS)
 		fi ; \
 	done
 
+maintainer-check-whitespaces: Makefile
+	$(WHITESPACE_DETECT) $(awk_libs_SRCS)
+
 maintainer-check-local: maintainer-check-whitespaces maintainer-check-init-fini-functions maintainer-check-unallowed-function
-
-##
-## Maintainer related targets
-##
-update-local: Makefile
-
-maintainer-check-local: Makefile
