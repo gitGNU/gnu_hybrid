@@ -30,6 +30,7 @@
 #include "core/scheduler.h"
 #include "archs/boot/option.h"
 #include "libc++/cstdlib"
+#include "init/version.h"
 
 #if CONFIG_INIT_DEBUG
 #define dprintf(F,A...) printf("main: " F,##A)

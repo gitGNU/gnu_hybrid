@@ -26,17 +26,18 @@ Makefile
 /src/system.map
 /src/system.sym
 
+/src/init/version.h
+/src/core/syscalls.h
+
 /src/config/rules.usr
 /src/config/autoconfig.h.in
 /src/config/autoconfig.h
 /src/config/stamp-h1
-/src/config/version.h
 /src/config/Makefile.cfg
 
 /src/config/rules.all
 /src/config/rules.out
 /src/config/userconfig.h
-/src/core/syscalls.h
 /src/rules.pkg
 
 /src/arch

@@ -20,9 +20,6 @@
 #ifndef CONFIG_CONFIG_H
 #define CONFIG_CONFIG_H
 
-/* Other configurations could depend on the version */
-#include "config/version.h"
-
 /* The auto-configuration first */
 #include "config/autoconfig.h"
 

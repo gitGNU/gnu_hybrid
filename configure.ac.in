@@ -676,7 +676,7 @@ AC_CONFIG_FILES([
 	Makefile
 
 	src/Makefile
-	src/config/version.h
+	src/init/version.h
 
 	tools/Makefile
 
