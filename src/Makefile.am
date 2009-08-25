@@ -198,8 +198,6 @@ kernel_CXXFLAGS     = $(KERNELCXXFLAGS)
 ## statistics related
 ##
 stats: all
-	@echo ""
-	@echo "Stats:"
 	@$(BFD_SECTION_STAT) $(BFD_SECTION_STAT_FLAGS) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 
