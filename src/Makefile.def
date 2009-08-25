@@ -71,10 +71,13 @@ FLHANDLER           = $(USR_SCRIPTSDIR)/flhandler
 FLHANDLER_FLAGS     = $(TOOL_FLAGS)
 
 # Useful binaries
-CHOOSE             = $(CHOOSEDIR)/choose
-CHOOSE_FLAGS       = $(TOOL_FLAGS)
-PACKRULES          = $(CHOOSEDIR)/packrules/packrules
-PACKRULES_FLAGS    = $(TOOL_FLAGS)
+CHOOSE                 = $(CHOOSEDIR)/choose
+CHOOSE_FLAGS           = $(TOOL_FLAGS)
+PACKRULES              = $(CHOOSEDIR)/packrules/packrules
+PACKRULES_FLAGS        = $(TOOL_FLAGS)
+#BFD_SECTION_STAT       = THIS-PROGRAM-IS-EXTERNAL
+#BFD_SECTION_STAT_FLAGS = $(TOOL_FLAGS)
+BFD_SECTION_STAT_FLAGS = -d
 
 # Directories
 SYSTEMdir    = ${exec_prefix}/sys

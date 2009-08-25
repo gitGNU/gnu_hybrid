@@ -200,7 +200,7 @@ kernel_CXXFLAGS     = $(KERNELCXXFLAGS)
 stats: all
 	@echo ""
 	@echo "Stats:"
-	@$(BFD_SECTION_STAT) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+	@$(BFD_SECTION_STAT) $(BFD_SECTION_STAT_FLAGS) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 
 ##
