@@ -77,7 +77,6 @@ PACKRULES              = $(CHOOSEDIR)/packrules/packrules
 PACKRULES_FLAGS        = $(TOOL_FLAGS)
 #BFD_SECTION_STAT       = THIS-PROGRAM-IS-EXTERNAL
 BFD_SECTION_STAT_FLAGS = $(TOOL_FLAGS)
-#BFD_SECTION_STAT_FLAGS = -d --sort
 
 # Directories
 SYSTEMdir    = ${exec_prefix}/sys
