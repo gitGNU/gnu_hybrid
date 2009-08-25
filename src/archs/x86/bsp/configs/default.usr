@@ -71,13 +71,21 @@ PAGE_SIZE=4096
 # DEBUG_HEAP is not set
 
 #
-# Core
+# Integrated debugger
 #
+# DEBUGGER is not set
 
 #
-# Init
+# Panic
 #
-# INIT_DEBUG is not set
+MAX_STACK_LEVELS=16
+# DEBUGGER_ON_PANIC is not set
+HALT_ON_PANIC=y
+# REBOOT_ON_PANIC is not set
+
+#
+# Core
+#
 
 #
 # Scheduler
@@ -120,14 +128,6 @@ CHECK_STACK=y
 # REGRESSION is not set
 
 #
-# Integrated debugger
+# Init
 #
-# DEBUGGER is not set
-
-#
-# Panic
-#
-MAX_STACK_LEVELS=16
-# DEBUGGER_ON_PANIC is not set
-HALT_ON_PANIC=y
-# REBOOT_ON_PANIC is not set
+INIT_DEBUG=y

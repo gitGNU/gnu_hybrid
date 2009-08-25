@@ -56,5 +56,4 @@ core_SRCS =					\
 	@reldir@/delay.h			\
 	@reldir@/delay.cxx			\
 	@reldir@/scheduler.h			\
-	@reldir@/scheduler.cxx			\
-	@reldir@/main.cxx
+	@reldir@/scheduler.cxx

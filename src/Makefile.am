@@ -25,10 +25,11 @@ AUTOMAKE_OPTIONS = subdir-objects
 include $(srcdir)/Makefile.def
 include $(srcdir)/config/Makefile.inc
 include $(srcdir)/libs/Makefile.inc
-include $(srcdir)/core/Makefile.inc
 include $(srcdir)/mem/Makefile.inc
 include $(srcdir)/archs/Makefile.inc
 include $(srcdir)/dbg/Makefile.inc
+include $(srcdir)/core/Makefile.inc
+include $(srcdir)/init/Makefile.inc
 
 EXTRA_DIST += rules.cfg
 
@@ -156,8 +157,10 @@ kernel_SOURCES      =				\
 	$(boot_SRCS)				\
 	$(mem_SRCS)				\
 	$(libs_SRCS)				\
+	$(dbg_SRCS)				\
 	$(core_SRCS)				\
-	$(dbg_SRCS)
+	$(init_SRCS)
+
 kernel_LDADD        = $(MODULES_BUILTIN) $(ELKLIB_LDADD)
 kernel_DEPENDENCIES = $(KERNELLDSCRIPT) $(CFG_ALL)
 kernel_LDFLAGS      = $(KERNELLDFLAGS)
