@@ -344,7 +344,8 @@ AC_SUBST(AX_CONFIG_CXXFLAGS)
 AC_PROG_RANLIB
 #AC_PROG_LIBTOOL
 
-#AC_PROG_LN_S
+AC_PROG_LN_S
+
 #AX_CHECK_VPATH_BUILD([
 #  AX_CHECK_SYMBOLIC_LINKS([],[
 #    AC_MSG_ERROR([you are building in a separate directory than the source directory but your system does not support symbolic links ...])

@@ -105,7 +105,7 @@ MAINTAINERCLEANFILES += $(CFG_MAINTAINERCLEANFILES)
 ##
 ## kernel related
 ##
-noinst_PROGRAMS  = kernel$(EXEEXT)
+noinst_PROGRAMS  = kernel
 noinst_LIBRARIES = $(MODULES_BUILTIN)
 
 ##
@@ -214,7 +214,7 @@ map: $(MAPFILE)
 
 SYMSFILE    = system.sym
 CLEANFILES += $(SYMSFILE)
-$(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
+$(SYMSFILE): Makefile kernel $(MODULES_OBJS) $(OBJ2SYMSTAB)
 	$(OBJ2SYMSTAB) $(OBJ2SYMSTAB_FLAGS) -m -X -n -o $(SYMSFILE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || { \
 		rm -f $(SYMSFILE) ; \
 		exit 1 ; \
@@ -226,7 +226,7 @@ $(SYMSFILE): Makefile kernel$(EXEEXT) $(MODULES_OBJS) $(OBJ2SYMSTAB)
 ##
 STACKSIZE = `$(GETDEFINE) $(GETDEFINE_FLAGS) -i $(top_builddir)/src/config/userconfig.h -s CONFIG_PAGE_SIZE`
 
-KERNEL_OBJ   = kernel$(EXEEXT)
+KERNEL_OBJ   = kernel
 #MODULES_OBJS = $(MODULES_PRELOAD) $(MODULES_AUTOLOAD)
 
 check-includes: Makefile
@@ -262,9 +262,11 @@ check-local: Makefile check-stack check-sections check-includes check-ifdefs che
 
 install-data-hook:
 
-install-exec-local: Makefile kernel$(EXEEXT)
+install-exec-local: Makefile kernel
 	$(MKDIR_P) $(DESTDIR)$(SYSTEMdir)
-	$(INSTALL_PROGRAM) kernel$(EXEEXT) $(DESTDIR)$(SYSTEMdir)/kernel-$(VERSION)
+	$(INSTALL_PROGRAM) kernel $(DESTDIR)$(SYSTEMdir)/kernel-$(VERSION)
+	rm -f $(DESTDIR)$(SYSTEMdir)/kernel && \
+	$(LN_S) kernel-$(VERSION) $(DESTDIR)$(SYSTEMdir)/kernel
 
 install-exec-hook:
 
