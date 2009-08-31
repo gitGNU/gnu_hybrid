@@ -1,31 +1,31 @@
 Brandon F.:
-	For his tutorials
+        For his tutorials
 
 Mike Sharov:
-	For its ustl library
+        For its ustl library
 
 Todd Veldhuizen and Luc Maisonobe:
-	For their autoconf macros
+        For their autoconf macros
 
 Heiner Steven:
-	For his testawk script (at http://www.shelldorado.com)
+        For his testawk script (at http://www.shelldorado.com)
 
 Wiesner Thomas:
-	For his muchine project
+        For his muchine project
 
 the KTorrent (KDE) authors
 
 Markus F.X.J. Oberhumer:
-	For the LZO library
+        For the LZO library
 
 Niels Kristian Bech Jensen:
-	For his checkincludes.pl
+        For his checkincludes.pl
 
 Arnold Robbins:
-	For his awk-scripts (getopt(), ord() etc.).
+        For his awk-scripts (getopt(), ord() etc.).
 
 Julian Seward:
-	For his libbzip2
+        For his libbzip2
 
 Flex & Bison authors
 
@@ -38,13 +38,13 @@ The OSKit team
 The KOS team
 
 Kohsuke Ohtani:
-	For his Prex
+        For his Prex
 
 Mike Gleason:
-	For his ccdv wrapper
+        For his ccdv wrapper
 
 Joern Engel, Keith Owens, Dan Kegel and others:
-	For their check_stack.pl script
+        For their check_stack.pl script
 
 Vojtech Pavlik and all the volunteers that contributed to the usb.ids file
 
@@ -53,62 +53,62 @@ Martin Mares and all the volunteers that contributed to the pci.ids file
 All peoples involved in GNU MACH
 
 Joe Orton:
-	For his configure.ac/VERSION trick (as seen on his sitecopy) that 
-	we have adopted.
+        For his configure.ac/VERSION trick (as seen on his sitecopy) that 
+        we have adopted.
 
 Alexander Blessing:
-	For his Giggle
+        For his Giggle
 
 All peoples involved in ChaOS kernel
 
 David H. Hovemeyer:
-	For his GeekOS
+        For his GeekOS
 
 fiasco and pistachio peoples
 
 Gareth Owen:
-	For his GazOS
+        For his GazOS
 
 Guido de Jong and Kasper Verdich Lund:
-	For their Gemini Nucleus.
+        For their Gemini Nucleus.
 
 Larry Wall & the Perl developers:
-	For Perl ...
+        For Perl ...
 
 David J. MacKenzie and Paul Eggbert:
-	For their 'ifnames' script that inspired the 'scanconditional.pl'
-	script.
+        For their 'ifnames' script that inspired the 'scanconditional.pl'
+        script.
 
 David J. MacKenzie and Akim Demaille:
-	For autoconf.
+        For autoconf.
 
 Roland McGrath:
-	For autoheader
+        For autoheader
 
 Andrew M. Bishop:
-	For his 'FAQ-html' script.
+        For his 'FAQ-html' script.
 
 Clark Cooper:
-	For EXPAT package that gave me some hints
+        For EXPAT package that gave me some hints
 
 Peter Miller:
-	For the "Recursive Make considered harmuful" document 
-	(Miller, P.A. (1998), Recursive Make Considered Harmuful, AUUGN
-	Journal of AUUG Inc, 19(1), pp. 14-25)
+        For the "Recursive Make considered harmuful" document 
+        (Miller, P.A. (1998), Recursive Make Considered Harmuful, AUUGN
+        Journal of AUUG Inc, 19(1), pp. 14-25)
 
 The gcc, make, automake, autoconf etc. authors and supporters:
-	For their great work.
+        For their great work.
 
 Travis Geiselbrecht and all the newos folks
 
 Silvio Abruzzo and all the ItaliOs folks
 
 Durand John Miller:
-	For his 'Making a bootable floppy image using grub'
-	(http://www.djm.co.za/spoon/grub/floppy.php)
+        For his 'Making a bootable floppy image using grub'
+        (http://www.djm.co.za/spoon/grub/floppy.php)
 
 Emanuele Bassi:
-	author of gitlog2ChangeLog script
+        author of gitlog2ChangeLog script
 
-	Thank you all,
-		Francesco
+        Thank you all,
+                Francesco
