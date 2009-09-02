@@ -31,7 +31,8 @@ include $(srcdir)/dbg/Makefile.inc
 include $(srcdir)/core/Makefile.inc
 include $(srcdir)/init/Makefile.inc
 
-EXTRA_DIST += rules.cfg
+EXTRA_DIST +=					\
+	rules.cfg
 
 ##
 ## Configuration related targets
