@@ -1,0 +1,68 @@
+#
+# bootstrap
+#
+# Copyright (C) 2008, 2009 Francesco Salvestrini
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+ME=bootstrap.aux
+
+#
+# External tools
+#
+SED=sed
+
+# src/config/Makefile.cfg generation
+echo "$ME: Generating src/config/Makefile.cfg ..."
+OUTPUT_CFG=src/config/Makefile.cfg
+INPUT_CFGS=`find ./ -name "rules.cfg"`
+
+for i in $INPUT_CFGS ; do
+    CURRENT=`echo $i | $SED -e 's,./,$(top_srcdir)/,'`
+    FILES="$FILES \\
+$CURRENT"
+done
+
+rm -f $OUTPUT_CFG || exit 1
+touch $OUTPUT_CFG || exit 1
+
+cat > $OUTPUT_CFG <<EOF
+##
+## Include file for automake
+##
+## This file has been generated automatically, DO NOT EDIT!
+##
+
+CFG_FILES = $FILES
+
+EOF
+
+# src/*/Makefile.am generation
+for i in `find ./src -name "Makefile.inc.in"` ; do
+    srcfile=$i
+    dstfile=`dirname $i`/`basename $i .in`
+    relativepath=`echo $i | $SED -e 's,\.\/src/,,' | $SED -e 's,/Makefile\.inc\.in,,'`
+
+    echo "$ME: Generating $dstfile"
+    cat $srcfile | $SED \
+	-e "s,@reldir@,$relativepath,g" \
+	> $dstfile || {
+	echo "$ME: Cannot rearrange $srcfile into $dstfile"
+	exit 1
+    }
+done
+
+exit 0

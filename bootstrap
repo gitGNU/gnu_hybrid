@@ -4,6 +4,7 @@
 # bootstrap
 #
 # Copyright (C) 2008, 2009 Francesco Salvestrini
+#                          Alessandro Massignan
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,18 +31,57 @@ missing ()
     PROGRAM=$1
 
     if test x"$PROGRAM" = x""; then
-	return 1
+        return 1
     fi
     IFS=":"
 
     for i in $PATH
     do
-
-	if test -f $i/$PROGRAM; then
-	    echo $i/$PROGRAM
-	    return 0
-	fi
+        test -f $i/$PROGRAM && { echo $i/$PROGRAM; return 0; }
     done
+
+    return 1
+}
+
+optional ()
+{
+    PROGRAM=$1
+
+    if test "x${PROGRAM}" = "x"; then
+        return 1
+    fi
+
+    X=`missing ${PROGRAM}` && { echo $X; }
+
+    return 0
+}
+
+required_one ()
+{
+    PROGRAMS=$1
+
+    if test "x${PROGRAMS}" = "x"; then
+        return 1
+    fi
+
+    IFS=' '
+
+    for i in $PROGRAMS
+    do
+        X=`missing ${i}` && { echo $X; return 0; }
+    done
+
+    return 1
+}
+
+required ()
+{
+    PROGRAM=$1
+
+    if test "x${PROGRAM}" = "x"; then
+        return 1
+    fi
+    X=`missing ${PROGRAM}` && { echo $X; return 0; }
 
     return 1
 }
@@ -49,37 +89,30 @@ missing ()
 #
 # External tools
 #
-AUTOHEADER=`missing autoheader`
-ACLOCAL=`missing aclocal`
-AUTOCONF=`missing autoconf`
-AUTOMAKE=`missing automake`
-AUTORECONF=`missing autoreconf`
-LIBTOOL=`( missing glibtool || missing libtool )`
-LIBTOOLIZE=`( missing glibtoolize || missing libtoolize)`
-GNULIBTOOL=`missing gnulib-tool`
-GIT=`missing git`
-SED=`missing sed`
+DOT_BOOTSTRAP="`pwd`/.bootstrap"
+if test ! -r $DOT_BOOTSTRAP; then
+    echo "$ME: Missing file \`${DOT_BOOTSTRAP}'"
+    exit 1
+fi
+source $DOT_BOOTSTRAP
 
 #
 # Dump some useful informations
 #
 echo "$ME: Dumping build-tools information ..."
-for tool in	\
-    $SED        \
-    $GIT        \
-    $AUTOHEADER	\
-    $AUTOCONF	\
-    $LIBTOOL	\
-    $LIBTOOLIZE	\
-    $ACLOCAL	\
-    $AUTOMAKE	\
-    $AUTORECONF \
-    $GNULIBTOOL \
+for tool in                                     \
+    $SED                                        \
+    $GIT                                        \
+    $AUTORECONF                                 \
+    $GNULIBTOOL                                 \
+    $GUILE_TOOLS                                \
+    $PYTHON_AUTOFRISK                           \
+    $PERL_AUTOFRISK                             \
     ;
 do
     if test -n "$tool" ; then
-	TOOLVER=`$tool --version | head -1`
-	echo "$ME:  $tool -> $TOOLVER"
+        VERSION=`$tool --version | head -1`
+        echo "$ME:  $tool -> $VERSION"
     fi
 done
 
@@ -96,99 +129,120 @@ if test x"`$GIT tag -l 2>/dev/null | $SED -n '$='`" = x""; then
 fi
 
 #
+# Build configure.ac from git configure.ac.in
+#
+echo "$ME: Building configure.ac from configure.ac.in"
+rm -f configure.ac
+VERSION=`git tag -l | sort -s -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1`
+cat configure.ac.in | \
+    sed -e 's,[@]VERSION[@],'$VERSION',' > configure.ac || {
+    echo "$ME: Problems building version stamp'"
+    rm -f configure.ac
+    exit 1
+}
+chmod a-w configure.ac
+
+#
+# Autofrisk modules
+#
+if test -e ./python.af ; then
+    echo "$ME: Python autofrisk ..."
+    $PYTHON_AUTOFRISK ./python.af && \
+        cat ./python.af.m4 > ./tools/autotools/m4/python-autofrisk-data.m4 && \
+        rm -f ./python.af.m4 || {
+        echo "$ME: Problems during python-autofrisk run'"
+        rm -f ./python.af.m4
+        rm -f ./tools/autotools/m4/python-autofrisk-data.m4
+        exit 1
+    }
+fi
+if test -e ./perl.af ; then
+    echo "$ME: Perl autofrisk ..."
+    $PERL_AUTOFRISK ./perl.af && \
+        cat ./perl.af.m4 > ./tools/autotools/m4/perl-autofrisk-data.m4 && \
+        rm -f ./perl.af.m4 || {
+        echo "$ME: Problems during perl-autofrisk run'"
+        rm -f ./perl.af.m4
+        rm -f ./tools/autotools/m4/perl-autofrisk-data.m4
+        exit 1
+    }
+fi
+if test -e ./guile.af ; then
+    echo "$ME: Guile autofrisk ..."
+    $GUILE_TOOLS autofrisk ./guile.af && \
+        cat ./guile.af.m4 | sed -e 's/AUTOFRISK_/GUILE_AUTOFRISK_/g' > ./tools/autotools/m4/guile-autofrisk-data.m4 && \
+        rm -f ./guile.af.m4 || {
+        echo "$ME: Problems during guile-autofrisk run'"
+        rm -f ./guile.af.m4
+        rm -f ./tools/autotools/m4/guile-autofrisk-data.m4
+        exit 1
+    }
+fi
+
+#
+# Gather AC_CONFIG_AUX_DIR directly from configure.ac
+#
+AC_CONFIG_AUX_DIR=`cat configure.ac|grep AC_CONFIG_AUX_DIR|sed -e 's,^.*\[,,' | sed -e 's,\].*,,'`
+if test -z "$AC_CONFIG_AUX_DIR" ; then
+    echo "$ME: Cannot retrieve AC_CONFIG_AUX_DIR value from configure.ac"
+    exit 1
+fi
+
+#
 # Remove files left from the previous run
 #
 echo "$ME: Removing autotools related files and directories ..."
 rm -f  `find ./ -name "Makefile.in"`                 || exit 1
 rm -f  config.cache aclocal.m4 config.h.in configure || exit 1
-rm -f  config.guess config.sub ltmain.sh             || exit 1
+rm -f  config.guess config.sub                       || exit 1
+rm -f  libtool $AC_CONFIG_AUX_DIR/ltmain.sh          || exit 1
 rm -rf autom4te.cache                                || exit 1
 rm -rf `find ./ -name ".deps"`                       || exit 1
 
 #
-# configure.ac
+# Call gnulib
 #
-echo "$ME: Building configure.ac from configure.ac.in"
-rm -f configure.ac
-VERSION=`git tag -l | sort -s -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1`
-cat configure.ac.in | sed -e 's,[@]VERSION[@],'$VERSION',' > configure.ac || \
-    { rm -f configure.ac ; exit 1 ; }
-chmod a-w configure.ac
-
-#
-# src/config/Makefile.cfg
-#
-echo "$ME: Building src/config/Makefile.cfg ..."
-OUTPUT_CFG=src/config/Makefile.cfg
-INPUT_CFGS=`find ./ -name "rules.cfg"`
-
-for i in $INPUT_CFGS ; do
-    CURRENT=`echo $i | sed -e 's,./,$(top_srcdir)/,'`
-    FILES="$FILES \\
-$CURRENT"
-done
-
-rm -f $OUTPUT_CFG || exit 1
-touch $OUTPUT_CFG || exit 1
-
-cat > $OUTPUT_CFG <<EOF
-##
-## Include file for automake
-##
-## This file has been generated automatically, DO NOT EDIT!
-##
-
-CFG_FILES = $FILES
-
-EOF
-
-#
-# src/*/Makefile.am generation from src/*/Makefile.am.in
-#
-for i in `find ./src -name "Makefile.inc.in"` ; do
-    srcfile=$i
-    dstfile=`dirname $i`/`basename $i .in`
-    relativepath=`echo $i | sed -e 's,\.\/src/,,' | sed -e 's,/Makefile\.inc\.in,,'`
-
-    #echo "$ME: Generating $dstfile from $srcfile ($relativepath)"
-    #echo "$ME: Generating $dstfile ($relativepath)"
-    echo "$ME: Generating $relativepath"
-
-    #cat $srcfile | sed \
-    #	-e "s,@subdir_srcdir@,$\(top_srcdir\)\/src/$relativepath,g" \
-    #	-e "s,@subdir_builddir@,$\(top_builddir\)\/src/$relativepath,g" \
-    #	> $dstfile
-    #cat $srcfile | sed \
-    #	-e "s,@subdir_srcdir@,$relativepath,g" \
-    #	-e "s,@subdir_builddir@,$relativepath,g" \
-    #	-e "s,@reldir@,$relativepath,g" \
-    #	-e "s,@reldir@,$relativepath,g" \
-    #	> $dstfile
-    cat $srcfile | sed \
-	-e "s,@reldir@,$relativepath,g" \
-	> $dstfile || {
-	echo "$ME: Cannot rearrange $srcfile into $dstfile"
-	exit 1
+if test -n "$GNULIBMODULES" ; then
+    echo "$ME: Calling gnulib-tool (importing modules $GNULIBMODULES)"
+    rm -r -f ./src/gnulib
+    $GNULIBTOOL \
+        --lgpl \
+        --no-changelog \
+        --macro-prefix GNULIB \
+        --no-vc-files \
+        --aux-dir=./tools/autotools \
+        --m4-base=./tools/autotools/m4 \
+        --source-base=./src/gnulib \
+        --import $GNULIBMODULES || {
+        echo "$ME: Problems running gnulib-tool'"
+        exit 1
     }
-done
+fi
 
 #
 # autoreconf
 #
-echo "$ME: Handling autotools bootstrap ..."
-
-echo "$ME: Running autoreconf ..."
-$ACLOCAL    --force --install -I ./tools/autotools/m4 && \
-    $AUTORECONF --verbose --force --install -Wall         || {
+echo "$ME: Running autoreconf (autoreconf extra flags $AUTORECONF_FLAGS)..."
+$AUTORECONF \
+    --force \
+    --install \
+    --warnings=all \
+    $AUTORECONF_FLAGS || {
+    echo "$ME: Problems during auto-reconfiguration'"
     exit 1
 }
 
 #
 # bootstrap other packages
 #
-(cd tools/choose && ./bootstrap) || {
-    echo "$ME: Cannot bootstrap tools/choose directory"
-    exit 1
-}
+for i in $BOOTSTRAPS
+do
+    j=`dirname $i`
+    k=`basename $i`
+    (cd $j && if test -x $k ; then ./$k ; else sh ./$k ; fi) || {
+        echo "$ME: Cannot call $k inside $j directory"
+        exit 1
+    }
+done
 
 exit 0
