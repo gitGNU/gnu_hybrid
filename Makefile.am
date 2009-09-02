@@ -90,10 +90,9 @@ doxygen: all
 EXTRA_DIST +=						\
 	TODO NEWS 					\
 	BUGS README COPYING AUTHORS INSTALL THANKS	\
-	bootstrap					\
+	bootstrap .bootstrap bootstrap.aux		\
 	configure.ac.in					\
-	.todo						\
-	.dnt.db
+	.todo .dnt.db
 
 ##
 ## Maintainer related targets

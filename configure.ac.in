@@ -23,7 +23,7 @@
 AC_INIT([Hybrid],[@VERSION@],[salvestrini@gmail.com],[hybrid])
 
 # Check for a recent version of autoconf
-AC_PREREQ([2.61])
+AC_PREREQ([2.64])
 
 # Place/find all autotools related files in the following directories
 AC_CONFIG_AUX_DIR([tools/autotools])
@@ -39,7 +39,7 @@ AC_CANONICAL_TARGET
 # file, AUTOMAKE_OPTIONS variable
 #
 #AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
-AM_INIT_AUTOMAKE([1.10 foreign nostdinc std-options -Wall])
+AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo nostdinc std-options -Wall])
 
 #
 # Checks for needed programs
@@ -693,7 +693,6 @@ AC_CONFIG_FILES([
 	tools/autotools/m4/Makefile
 
 	docs/Makefile
-	docs/info/Makefile
 
         site/Makefile
         site/in/Makefile
