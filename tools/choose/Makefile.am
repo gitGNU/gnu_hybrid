@@ -22,6 +22,16 @@ include $(top_srcdir)/Makefile.sub
 
 ACLOCAL_AMFLAGS = -I tools/autotools/m4
 
+##
+## NOTE:
+##     Makefile.sub is automatically distributed by automake rules
+##
+EXTRA_DIST =						\
+	TODO NEWS 					\
+	BUGS README COPYING AUTHORS INSTALL THANKS	\
+	bootstrap .bootstrap 				\
+	configure.ac.in
+
 CLEANFILES =
 
 SUBDIRS =					\
@@ -40,7 +50,8 @@ CLEANFILES += $(scripts)
 sh_lib_SRC  = $(top_builddir)/tools/libs/sh/lib.sh
 
 EXTRA_DIST =					\
-	choose.sh.in
+	choose.sh.in				\
+	bootstrap .bootstrap
 
 transform_sh_in_2_sh =				\
 	{ { $(header_sh) &&			\
