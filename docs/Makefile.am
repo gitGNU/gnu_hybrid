@@ -20,9 +20,6 @@
 
 include $(top_srcdir)/Makefile.sub
 
-SUBDIRS =					\
-	info
-
 EXTRA_DIST =					\
 	Doxyfile.in
 
