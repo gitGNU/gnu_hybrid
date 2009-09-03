@@ -8,13 +8,13 @@
 #
 # DESCRIPTION
 #
-#   Splits a version number in the format MAJOR.MINOR.POINT into its
-#   separate components.
-#
-#   Sets the variables.
+#   Splits a version number in the format MAJOR.MINOR.MICRO-EXTRA into its
+#   separate components. MAJOR, MINOR and MICRO are recognized as numbers
+#   while EXTRA could be whatever.
 #
 # LICENSE
 #
+#   Copyright (c) 2009 Francesco Salvestrini <salvestrini@users.sourceforge.net>
 #   Copyright (c) 2008 Tom Howard <tomhoward@users.sf.net>
 #
 #   Copying and distribution of this file, with or without modification, are
@@ -22,13 +22,34 @@
 #   and this notice are preserved.
 
 AC_DEFUN([AX_SPLIT_VERSION],[
-    AX_MAJOR_VERSION=`echo "$VERSION" | $SED 's/\([[^.]][[^.]]*\).*/\1/'`
-    AX_MINOR_VERSION=`echo "$VERSION" | $SED 's/[[^.]][[^.]]*.\([[^.]][[^.]]*\).*/\1/'`
-    AX_POINT_VERSION=`echo "$VERSION" | $SED 's/[[^.]][[^.]]*.[[^.]][[^.]]*.\(.*\)/\1/'`
+    AC_REQUIRE([AC_PROG_SED])
+    AC_REQUIRE([AC_PROG_GREP])
+
+    AC_MSG_CHECKING([version])
+    AC_MSG_RESULT([$VERSION])
+
     AC_MSG_CHECKING([Major version])
+    AX_MAJOR_VERSION=`echo "$VERSION" | $SED 's/\([[^.]0-9][0-9]*\).*/\1/'`
+    AS_IF([test `echo $AX_MAJOR_VERSION | $GREP '[[0-9]]*'`],[
+        AX_MAJOR_VERSION=0
+    ])
     AC_MSG_RESULT([$AX_MAJOR_VERSION])
+
     AC_MSG_CHECKING([Minor version])
+    AX_MINOR_VERSION=`echo "$VERSION" | $SED 's/[[^.]0-9][0-9]*.\([[^.]0-9][0-9]*\).*/\1/'`
+    AS_IF([test `echo $AX_MINOR_VERSION | $GREP '[[0-9]]*'`],[
+        AX_MINOR_VERSION=0
+    ])
     AC_MSG_RESULT([$AX_MINOR_VERSION])
+
     AC_MSG_CHECKING([Point version])
-    AC_MSG_RESULT([$AX_POINT_VERSION])
+    AX_MICRO_VERSION=`echo "$VERSION" | $SED 's/[[^.]0-9][0-9]*.[[^.]0-9][0-9]*.\([[^.]0-9][0-9]*\).*/\1/'`
+    AS_IF([test `echo $AX_MICRO_VERSION | $GREP '[[0-9]]*'`],[
+        AX_MICRO_VERSION=0
+    ])
+    AC_MSG_RESULT([$AX_MICRO_VERSION])
+
+    AC_MSG_CHECKING([Extra version])
+    AX_EXTRA_VERSION=`echo "$VERSION" | $SED 's/[[^.]0-9][0-9]*.[[^.]0-9][0-9]*.[[^.]0-9][0-9]*\-\(.*\)/\1/'`
+    AC_MSG_RESULT([$AX_EXTRA_VERSION])
 ])
