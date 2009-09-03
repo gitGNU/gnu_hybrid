@@ -27,10 +27,11 @@ ACLOCAL_AMFLAGS = -I tools/autotools/m4
 ##     Makefile.sub is automatically distributed by automake rules
 ##
 EXTRA_DIST =						\
-	TODO NEWS 					\
+	TODO NEWS					\
 	BUGS README COPYING AUTHORS INSTALL THANKS	\
-	bootstrap .bootstrap 				\
-	configure.ac.in
+	bootstrap .bootstrap				\
+	choose.sh.in
+
 
 CLEANFILES =
 
@@ -48,10 +49,6 @@ all-local: $(scripts)
 CLEANFILES += $(scripts)
 
 sh_lib_SRC  = $(top_builddir)/tools/libs/sh/lib.sh
-
-EXTRA_DIST =					\
-	choose.sh.in				\
-	bootstrap .bootstrap
 
 transform_sh_in_2_sh =				\
 	{ { $(header_sh) &&			\
@@ -84,6 +81,16 @@ choose: Makefile choose.sh
 ##
 ## Maintainer related targets
 ##
+
+BUILT_SOURCES = $(top_srcdir)/.version
+
+$(top_srcdir)/.version:
+	echo $(VERSION) > $@-t && mv $@-t $@
+
+dist-hook:
+	echo $(VERSION) > $(distdir)/.tarball-version
+
+
 update-local: Makefile
 
 maintainer-check-local: Makefile
