@@ -21,6 +21,7 @@
 include $(top_srcdir)/Makefile.sub
 
 SUBDIRS =					\
+	maint					\
 	scripts					\
 	autotools
 
