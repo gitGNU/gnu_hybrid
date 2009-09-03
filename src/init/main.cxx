@@ -30,7 +30,6 @@
 #include "core/scheduler.h"
 #include "archs/boot/option.h"
 #include "libc++/cstdlib"
-#include "init/version.h"
 
 #if CONFIG_INIT_DEBUG
 #define dprintf(F,A...) printf("main: " F,##A)
@@ -56,8 +55,8 @@ int main(int argc, char * argv[])
         unused_argument(argc);
         unused_argument(argv);
 #endif
-        printf("Welcome to Hybrid kernel v%d.%d.%d\n",
-               VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
+        printf("Welcome to Hybrid kernel %s\n", PACKAGE_VERSION);
+        printf("Please report bugs to <%s>\n", PACKAGE_BUGREPORT);
 
         printf("Using elklib %s\n", ELKLIB_VERSION);
 
