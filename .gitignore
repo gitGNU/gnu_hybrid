@@ -7,18 +7,20 @@ Makefile.inc
 Makefile.in
 Makefile
 
-/aclocal.m4
-/autom4te.cache
-
 /ChangeLog
 /VERSION
 /NEWS
 /TODO
 /AUTHORS
+
+/.version
+/.tarball-version
+
 /TAGS
+/aclocal.m4
+/autom4te.cache
 
 /configure
-/configure.ac
 /config.log
 /config.status
 
@@ -113,40 +115,6 @@ Makefile
 /tools/scripts/usr/flhandler.sh
 /tools/scripts/usr/mergesyms_new
 /tools/scripts/usr/mergesyms_new.sh
-
-/tools/choose/aclocal.m4
-/tools/choose/autom4te.cache
-/tools/choose/config.log
-/tools/choose/config.status
-/tools/choose/configure
-/tools/choose/configure.ac
-/tools/choose/choose
-/tools/choose/choose.sh
-/tools/choose/lkc/conf
-/tools/choose/lkc/mconf
-/tools/choose/lkc/zconf-parser.output
-/tools/choose/lkc/zconf-parser.c
-/tools/choose/lkc/zconf-parser.h
-/tools/choose/lkc/zconf-scanner.c
-/tools/choose/lkc/lkc_defs.h
-/tools/choose/packrules/packrules
-/tools/choose/include/config.h.in
-/tools/choose/include/config.h
-/tools/choose/include/stamp-h1
-/tools/choose/tools/autotools/compile
-/tools/choose/tools/autotools/config.guess
-/tools/choose/tools/autotools/config.sub
-/tools/choose/tools/autotools/depcomp
-/tools/choose/tools/autotools/install-sh
-/tools/choose/tools/autotools/mdate-sh
-/tools/choose/tools/autotools/missing
-/tools/choose/tools/autotools/mkinstalldirs
-/tools/choose/tools/autotools/texinfo.tex
-/tools/choose/tools/autotools/ylwrap
-/tools/choose/tools/scripts/NEWS-query
-/tools/choose/tools/scripts/fetch
-/tools/choose/tools/scripts/gitlog2ChangeLog
-/tools/choose/tools/scripts/whitespace-detect
 
 /site/in/.sitetool
 /site/in/site.stamp

@@ -20,7 +20,11 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-AC_INIT([Hybrid],[@VERSION@],[salvestrini@gmail.com],[hybrid])
+AC_INIT([Hybrid],
+        m4_esyscmd([tools/maint/git-version-gen .tarball-version]),
+        [salvestrini@gmail.com],
+        [hybrid],
+        [http://savannah.nongnu.org/projects/hybrid])
 
 # Check for a recent version of autoconf
 AC_PREREQ([2.64])
@@ -61,7 +65,8 @@ AX_PATH_MISSING([BFD_SECTION_STAT], [bfd-section-stat])
 AX_SPLIT_VERSION($PACKAGE_VERSION)
 AC_SUBST(AX_PACKAGE_MAJOR,$AX_MAJOR_VERSION)
 AC_SUBST(AX_PACKAGE_MINOR,$AX_MINOR_VERSION)
-AC_SUBST(AX_PACKAGE_MICRO,$AX_POINT_VERSION)
+AC_SUBST(AX_PACKAGE_MICRO,$AX_MICRO_VERSION)
+AC_SUBST(AX_PACKAGE_EXTRA,$AX_EXTRA_VERSION)
 
 #
 # Check for programs that SHOULD (or MUST) be available into the system
@@ -676,10 +681,8 @@ AC_CONFIG_FILES([
 	Makefile
 
 	src/Makefile
-	src/init/version.h
 
 	tools/Makefile
-
 	tools/scripts/Makefile
 	tools/scripts/libs/Makefile
 	tools/scripts/libs/sh/Makefile
