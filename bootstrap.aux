@@ -20,18 +20,13 @@
 
 ME=bootstrap.aux
 
-#
-# External tools
-#
-SED=sed
-
 # src/config/Makefile.cfg generation
 echo "$ME: Generating src/config/Makefile.cfg ..."
 OUTPUT_CFG=src/config/Makefile.cfg
 INPUT_CFGS=`find ./ -name "rules.cfg"`
 
 for i in $INPUT_CFGS ; do
-    CURRENT=`echo $i | $SED -e 's,./,$(top_srcdir)/,'`
+    CURRENT=`echo $i | sed -e 's,./,$(top_srcdir)/,'`
     FILES="$FILES \\
 $CURRENT"
 done
@@ -54,10 +49,10 @@ EOF
 for i in `find ./src -name "Makefile.inc.in"` ; do
     srcfile=$i
     dstfile=`dirname $i`/`basename $i .in`
-    relativepath=`echo $i | $SED -e 's,\.\/src/,,' | $SED -e 's,/Makefile\.inc\.in,,'`
+    relativepath=`echo $i | sed -e 's,\.\/src/,,' | sed -e 's,/Makefile\.inc\.in,,'`
 
     echo "$ME: Generating $dstfile"
-    cat $srcfile | $SED \
+    cat $srcfile | sed \
 	-e "s,@reldir@,$relativepath,g" \
 	> $dstfile || {
 	echo "$ME: Cannot rearrange $srcfile into $dstfile"
