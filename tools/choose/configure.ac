@@ -20,10 +20,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-AC_INIT([Choose],[@VERSION@],[salvestrini@gmail.com],[choose])
+AC_INIT([Choose],
+        m4_esyscmd([tools/maint/git-version-gen .tarball-version]),
+        [salvestrini@gmail.com],
+        [choose],
+        [...])
 
 # Check for a recent version of autoconf
-AC_PREREQ(2.61)
+AC_PREREQ(2.64)
 
 # Place/find all autotools related files in the following directories
 AC_CONFIG_SRCDIR([choose.sh.in])
@@ -117,6 +121,7 @@ AC_CONFIG_FILES([
 	lkc/Makefile
 	packrules/Makefile
 	tools/Makefile
+	tools/maint/Makefile
 	tools/scripts/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile
