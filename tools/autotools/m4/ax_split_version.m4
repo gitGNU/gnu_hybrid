@@ -4,7 +4,7 @@
 #
 # SYNOPSIS
 #
-#   AX_SPLIT_VERSION
+#   AX_SPLIT_VERSION(VERSION)
 #
 # DESCRIPTION
 #
@@ -26,30 +26,30 @@ AC_DEFUN([AX_SPLIT_VERSION],[
     AC_REQUIRE([AC_PROG_GREP])
 
     AC_MSG_CHECKING([version])
-    AC_MSG_RESULT([$VERSION])
+    AC_MSG_RESULT([$1])
 
-    AC_MSG_CHECKING([Major version])
-    AX_MAJOR_VERSION=`echo "$VERSION" | $SED 's/\([[^.]0-9][0-9]*\).*/\1/'`
+    AC_MSG_CHECKING([major version])
+    AX_MAJOR_VERSION=`echo "$1" | $SED -e 's/^\([[0-9]][[0-9]]*\).*/\1/'`
     AS_IF([test `echo $AX_MAJOR_VERSION | $GREP '[[0-9]]*'`],[
         AX_MAJOR_VERSION=0
     ])
     AC_MSG_RESULT([$AX_MAJOR_VERSION])
 
-    AC_MSG_CHECKING([Minor version])
-    AX_MINOR_VERSION=`echo "$VERSION" | $SED 's/[[^.]0-9][0-9]*.\([[^.]0-9][0-9]*\).*/\1/'`
+    AC_MSG_CHECKING([minor version])
+    AX_MINOR_VERSION=`echo "$1" | $SED -e 's/^[[0-9]][[0-9]]*\.\([[0-9]][[0-9]]*\).*/\1/'`
     AS_IF([test `echo $AX_MINOR_VERSION | $GREP '[[0-9]]*'`],[
         AX_MINOR_VERSION=0
     ])
     AC_MSG_RESULT([$AX_MINOR_VERSION])
 
-    AC_MSG_CHECKING([Point version])
-    AX_MICRO_VERSION=`echo "$VERSION" | $SED 's/[[^.]0-9][0-9]*.[[^.]0-9][0-9]*.\([[^.]0-9][0-9]*\).*/\1/'`
+    AC_MSG_CHECKING([micro version])
+    AX_MICRO_VERSION=`echo "$1" | $SED -e 's/^[[0-9]][[0-9]]*\.[[0-9]][[0-9]]*\.\([[0-9]][[0-9]]*\).*/\1/'`
     AS_IF([test `echo $AX_MICRO_VERSION | $GREP '[[0-9]]*'`],[
         AX_MICRO_VERSION=0
     ])
     AC_MSG_RESULT([$AX_MICRO_VERSION])
 
-    AC_MSG_CHECKING([Extra version])
-    AX_EXTRA_VERSION=`echo "$VERSION" | $SED 's/[[^.]0-9][0-9]*.[[^.]0-9][0-9]*.[[^.]0-9][0-9]*\-\(.*\)/\1/'`
+    AC_MSG_CHECKING([extra version])
+    AX_EXTRA_VERSION=`echo "$1" | $SED -e 's/[[0-9]][[0-9]]*.[[0-9]][[0-9]]*.[[0-9]][[0-9]]*\-\(.*\)/\1/'`
     AC_MSG_RESULT([$AX_EXTRA_VERSION])
 ])
