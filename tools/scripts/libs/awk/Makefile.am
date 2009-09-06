@@ -108,7 +108,7 @@ maintainer-check-init-fini-functions: Makefile $(awk_libs_SRCS)
 		fi ; \
 	done
 
-maintainer-check-whitespaces: Makefile
+maintainer-check-whitespaces: Makefile $(awk_libs_SRCS)
 	$(WHITESPACE_DETECT) $(awk_libs_SRCS)
 
 maintainer-check-local: maintainer-check-whitespaces maintainer-check-init-fini-functions maintainer-check-unallowed-function

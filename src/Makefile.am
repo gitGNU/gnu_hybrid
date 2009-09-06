@@ -303,7 +303,7 @@ dist-hook:
 ##
 update-local: Makefile
 
-maintainer-check-whitespaces: Makefile
+maintainer-check-whitespaces: Makefile $(SOURCES)
 	$(WHITESPACE_DETECT) $(SOURCES)
 
 maintainer-check-local: Makefile maintainer-check-whitespaces
