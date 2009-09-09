@@ -223,6 +223,24 @@ announcement:
 site: all
 	(cd site && $(MAKE) $(AM_MAKEFLAGS) site)
 
+URL_BU = "http://github.com/salvestrini/build-utils/tree/master/maint"
+
+EXTERNAL =                                      \
+        $(URL_BU)/bootstrap
+
 update-local: Makefile
+	rm -r -f fetch-dir && \
+	mkdir fetch-dir && \
+	for i in $(EXTERNAL) ; do \
+	        URL="$$i" ; \
+	        NAME=`echo "$$i" | $(SED) -e 's,^.*/,,'` ; \
+	        $(FETCH) $$URL?raw=true fetch-dir/$$NAME && \
+	        mv fetch-dir/$$NAME $$NAME || { \
+	                rm -f fetch-dir/$$NAME ; \
+	                exit 1 ; \
+	        } \
+	done && \
+	rm -r -f fetch-dir
+	chmod a+x bootstrap || { exit 1 ; }
 
 maintainer-check-local: Makefile
