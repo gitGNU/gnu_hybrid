@@ -31,6 +31,9 @@
             <comment>
                 Done
             </comment></entry>
+    <entry priority="veryhigh" start="1252443524">
+            Rearrange the build-related code (macros, makefiles, bootstrap, gnulib-use)
+        </entry>
     <entry priority="high" start="1226606961">
             Replace AC_PATH_PROG with AC_CHECK_TOOL. The proposed approach should handle cross-compilation cases better
             <entry priority="medium" start="1226606992">
