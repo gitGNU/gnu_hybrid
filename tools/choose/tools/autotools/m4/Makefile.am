@@ -23,34 +23,34 @@ include $(top_srcdir)/Makefile.sub
 ##
 ## Maintainer related targets
 ##
-HOST = "http://git.savannah.gnu.org/cgit/autoconf-archive.git/plain/m4"
+URL_AA = "http://git.savannah.gnu.org/cgit/autoconf-archive.git/plain/m4"
+URL_BU = "http://github.com/salvestrini/build-utils/tree/master/m4"
 
-DOWNLOAD =					\
-	ax_prog_bison.m4			\
-	ax_prog_flex.m4				\
-	ax_path_missing.m4			\
-	ax_missing_prog.m4			\
-	mp_with_curses.m4
+EXTERNAL =					\
+	$(URL_AA)/ax_prog_bison.m4		\
+	$(URL_AA)/ax_prog_flex.m4		\
+	$(URL_AA)/ax_path_missing.m4		\
+	$(URL_AA)/ax_missing_prog.m4		\
+	$(URL_AA)/mp_with_curses.m4
 
-MACROS =					\
-	$(DOWNLOAD)
+INTERNAL =
+
+MACROS =                                        \
+        $(EXTERNAL)                             \
+        $(INTERNAL)
 
 update-local: Makefile
 	rm -r -f fetch-dir && \
 	mkdir fetch-dir && \
-	for i in $(DOWNLOAD) ; do \
-		$(FETCH) $(HOST)/$$i fetch-dir/$$i || { \
-			rm -f fetch-dir/$$i ; \
-			exit 1 ; \
-		} \
-	done && \
-	for i in $(DOWNLOAD) ; do \
-		mv fetch-dir/$$i $$i && \
-		touch $$i || { \
-			exit 1 ; \
-		} \
+	for i in $(EXTERNAL) ; do \
+	        URL="$$i" ; \
+	        NAME=`echo "$$i" | $(SED) -e 's,^.*/,,'` ; \
+	        $(FETCH) $$URL?raw=true fetch-dir/$$NAME && \
+	        mv fetch-dir/$$NAME $$NAME || { \
+	                rm -f fetch-dir/$$NAME ; \
+	                exit 1 ; \
+	        } \
 	done && \
 	rm -r -f fetch-dir
-
 
 maintainer-check-local: Makefile

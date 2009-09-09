@@ -23,82 +23,82 @@ include $(top_srcdir)/Makefile.sub
 ##
 ## Maintainer related targets
 ##
-HOST = "http://git.savannah.gnu.org/cgit/autoconf-archive.git/plain/m4"
+URL_AA = "http://git.savannah.gnu.org/cgit/autoconf-archive.git/plain/m4"
+URL_BU = "http://github.com/salvestrini/build-utils/tree/master/m4"
 
-DOWNLOAD =						\
-	ax_split_version.m4				\
-	ax_with_prog.m4					\
-	ax_prog_bison.m4				\
-	ax_prog_flex.m4					\
-	ax_compare_version.m4				\
-	ax_cflags_gcc_option.m4				\
-	ax_missing_prog.m4				\
-	ax_path_missing.m4				\
-	ax_c_check_flag.m4				\
-	ax_cxx_check_flag.m4				\
-	ax_cpp_check_flag.m4				\
-	ax_cxxcpp_check_flag.m4				\
-	ax_ld_check_flag.m4				\
-	ax_check_awk__v.m4				\
-	ax_check_awk__x_escapes.m4			\
-	ax_check_awk_and.m4				\
-	ax_check_awk_argind.m4				\
-	ax_check_awk_array_delete.m4			\
-	ax_check_awk_array_delete_elem.m4		\
-	ax_check_awk_array_in.m4			\
-	ax_check_awk_asort.m4				\
-	ax_check_awk_asorti.m4				\
-	ax_check_awk_associative_array.m4		\
-	ax_check_awk_atan2.m4				\
-	ax_check_awk_compl.m4				\
-	ax_check_awk_conditional_expression.m4		\
-	ax_check_awk_cos.m4				\
-	ax_check_awk_environ.m4				\
-	ax_check_awk_errno.m4				\
-	ax_check_awk_exit.m4				\
-	ax_check_awk_exp.m4				\
-	ax_check_awk_gensub.m4				\
-	ax_check_awk_getline.m4				\
-	ax_check_awk_gsub.m4				\
-	ax_check_awk_ignorecase.m4			\
-	ax_check_awk_index.m4				\
-	ax_check_awk_int.m4				\
-	ax_check_awk_length.m4				\
-	ax_check_awk_log.m4				\
-	ax_check_awk_lshift.m4				\
-	ax_check_awk_match_2parms.m4			\
-	ax_check_awk_match_3parms.m4			\
-	ax_check_awk_operator_multiply_multiply.m4	\
-	ax_check_awk_operator_square.m4			\
-	ax_check_awk_or.m4				\
-	ax_check_awk_printf.m4				\
-	ax_check_awk_rand.m4				\
-	ax_check_awk_rshift.m4				\
-	ax_check_awk_sin.m4				\
-	ax_check_awk_split.m4				\
-	ax_check_awk_sprintf.m4				\
-	ax_check_awk_sqrt.m4				\
-	ax_check_awk_srand.m4				\
-	ax_check_awk_strftime.m4			\
-	ax_check_awk_strtonum.m4			\
-	ax_check_awk_sub.m4				\
-	ax_check_awk_substr.m4				\
-	ax_check_awk_system.m4				\
-	ax_check_awk_systime.m4				\
-	ax_check_awk_tolower.m4				\
-	ax_check_awk_toupper.m4				\
-	ax_check_awk_user_defined_functions.m4		\
-	ax_check_awk_var_regexp.m4			\
-	ax_check_awk_variable_value_pairs.m4		\
-	ax_check_awk_xor.m4				\
-	ax_try_awk_anyout.m4				\
-	ax_try_awk_expout.m4				\
-	ax_gcc_version.m4				\
-	ax_gxx_version.m4				\
-	ax_gcc_option.m4
+EXTERNAL =							\
+	$(URL_BU)/ax_split_version.m4				\
+	$(URL_AA)/ax_with_prog.m4				\
+	$(URL_AA)/ax_prog_bison.m4				\
+	$(URL_AA)/ax_prog_flex.m4				\
+	$(URL_AA)/ax_compare_version.m4				\
+	$(URL_AA)/ax_cflags_gcc_option.m4			\
+	$(URL_AA)/ax_missing_prog.m4				\
+	$(URL_AA)/ax_path_missing.m4				\
+	$(URL_AA)/ax_c_check_flag.m4				\
+	$(URL_AA)/ax_cxx_check_flag.m4				\
+	$(URL_AA)/ax_cpp_check_flag.m4				\
+	$(URL_AA)/ax_cxxcpp_check_flag.m4			\
+	$(URL_AA)/ax_ld_check_flag.m4				\
+	$(URL_AA)/ax_check_awk__v.m4				\
+	$(URL_AA)/ax_check_awk__x_escapes.m4			\
+	$(URL_AA)/ax_check_awk_and.m4				\
+	$(URL_AA)/ax_check_awk_argind.m4			\
+	$(URL_AA)/ax_check_awk_array_delete.m4			\
+	$(URL_AA)/ax_check_awk_array_delete_elem.m4		\
+	$(URL_AA)/ax_check_awk_array_in.m4			\
+	$(URL_AA)/ax_check_awk_asort.m4				\
+	$(URL_AA)/ax_check_awk_asorti.m4			\
+	$(URL_AA)/ax_check_awk_associative_array.m4		\
+	$(URL_AA)/ax_check_awk_atan2.m4				\
+	$(URL_AA)/ax_check_awk_compl.m4				\
+	$(URL_AA)/ax_check_awk_conditional_expression.m4	\
+	$(URL_AA)/ax_check_awk_cos.m4				\
+	$(URL_AA)/ax_check_awk_environ.m4			\
+	$(URL_AA)/ax_check_awk_errno.m4				\
+	$(URL_AA)/ax_check_awk_exit.m4				\
+	$(URL_AA)/ax_check_awk_exp.m4				\
+	$(URL_AA)/ax_check_awk_gensub.m4			\
+	$(URL_AA)/ax_check_awk_getline.m4			\
+	$(URL_AA)/ax_check_awk_gsub.m4				\
+	$(URL_AA)/ax_check_awk_ignorecase.m4			\
+	$(URL_AA)/ax_check_awk_index.m4				\
+	$(URL_AA)/ax_check_awk_int.m4				\
+	$(URL_AA)/ax_check_awk_length.m4			\
+	$(URL_AA)/ax_check_awk_log.m4				\
+	$(URL_AA)/ax_check_awk_lshift.m4			\
+	$(URL_AA)/ax_check_awk_match_2parms.m4			\
+	$(URL_AA)/ax_check_awk_match_3parms.m4			\
+	$(URL_AA)/ax_check_awk_operator_multiply_multiply.m4	\
+	$(URL_AA)/ax_check_awk_operator_square.m4		\
+	$(URL_AA)/ax_check_awk_or.m4				\
+	$(URL_AA)/ax_check_awk_printf.m4			\
+	$(URL_AA)/ax_check_awk_rand.m4				\
+	$(URL_AA)/ax_check_awk_rshift.m4			\
+	$(URL_AA)/ax_check_awk_sin.m4				\
+	$(URL_AA)/ax_check_awk_split.m4				\
+	$(URL_AA)/ax_check_awk_sprintf.m4			\
+	$(URL_AA)/ax_check_awk_sqrt.m4				\
+	$(URL_AA)/ax_check_awk_srand.m4				\
+	$(URL_AA)/ax_check_awk_strftime.m4			\
+	$(URL_AA)/ax_check_awk_strtonum.m4			\
+	$(URL_AA)/ax_check_awk_sub.m4				\
+	$(URL_AA)/ax_check_awk_substr.m4			\
+	$(URL_AA)/ax_check_awk_system.m4			\
+	$(URL_AA)/ax_check_awk_systime.m4			\
+	$(URL_AA)/ax_check_awk_tolower.m4			\
+	$(URL_AA)/ax_check_awk_toupper.m4			\
+	$(URL_AA)/ax_check_awk_user_defined_functions.m4	\
+	$(URL_AA)/ax_check_awk_var_regexp.m4			\
+	$(URL_AA)/ax_check_awk_variable_value_pairs.m4		\
+	$(URL_AA)/ax_check_awk_xor.m4				\
+	$(URL_AA)/ax_try_awk_anyout.m4				\
+	$(URL_AA)/ax_try_awk_expout.m4				\
+	$(URL_AA)/ax_gcc_version.m4				\
+	$(URL_AA)/ax_gxx_version.m4				\
+	$(URL_AA)/ax_gcc_option.m4
 
-MACROS =					\
-	$(DOWNLOAD)				\
+INTERNAL =					\
 	ax_awk_functionality.m4			\
 	ax_arg_with.m4				\
 	ax_asm_uscore.m4			\
@@ -137,20 +137,21 @@ MACROS =					\
 	ax_prog_grub1.m4			\
 	ax_prog_grub2.m4
 
+MACROS =                                        \
+        $(EXTERNAL)                             \
+        $(INTERNAL)
+
 update-local: Makefile
 	rm -r -f fetch-dir && \
 	mkdir fetch-dir && \
-	for i in $(DOWNLOAD) ; do \
-		$(FETCH) $(HOST)/$$i fetch-dir/$$i || { \
-			rm -f fetch-dir/$$i ; \
-			exit 1 ; \
-		} \
-	done && \
-	for i in $(DOWNLOAD) ; do \
-		mv fetch-dir/$$i $$i && \
-		touch $$i || { \
-			exit 1 ; \
-		} \
+	for i in $(EXTERNAL) ; do \
+	        URL="$$i" ; \
+	        NAME=`echo "$$i" | $(SED) -e 's,^.*/,,'` ; \
+	        $(FETCH) $$URL?raw=true fetch-dir/$$NAME && \
+	        mv fetch-dir/$$NAME $$NAME || { \
+	                rm -f fetch-dir/$$NAME ; \
+	                exit 1 ; \
+	        } \
 	done && \
 	rm -r -f fetch-dir
 
