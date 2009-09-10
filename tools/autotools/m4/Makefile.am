@@ -99,6 +99,7 @@ EXTERNAL =							\
 	$(URL_AA)/ax_gcc_option.m4
 
 INTERNAL =					\
+	gnulib-cache.m4				\
 	ax_awk_functionality.m4			\
 	ax_arg_with.m4				\
 	ax_asm_uscore.m4			\
