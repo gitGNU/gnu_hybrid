@@ -51,13 +51,11 @@ AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo nostdinc std-options
 AC_PROG_GREP
 AC_PROG_SED
 
+AX_PATH_MISSING([BFD_SECTION_STAT], [bfd-section-stat])
 AX_PATH_MISSING([DOXYGEN],          [doxygen])
 AX_PATH_MISSING([SITETOOL],         [sitetool])
 AX_PATH_MISSING([WGET],             [wget])
 AX_PATH_MISSING([DNT],              [dnt])
-AX_PATH_MISSING([DEVTODO_TO_DNT],   [devtodo-to-dnt])
-
-AX_PATH_MISSING([BFD_SECTION_STAT], [bfd-section-stat])
 
 #
 # Retrieve version parts
