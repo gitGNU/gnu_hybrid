@@ -19,11 +19,7 @@
 ##
 
 # Definitions
-CLEANFILES           =
 DISTCLEANFILES       =
-MAINTAINERCLEANFILES =
-EXTRA_DIST           =
-BUILT_SOURCES        =
 
 MODULES_BUILTIN      =
 MODULES_PRELOAD      =

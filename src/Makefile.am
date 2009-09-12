@@ -20,6 +20,12 @@
 
 include $(top_srcdir)/Makefile.sub
 
+EXTRA_DIST           =
+BUILT_SOURCES        =
+CLEANFILES           =
+MAINTAINERCLEANFILES =
+
+
 AUTOMAKE_OPTIONS = subdir-objects
 
 include $(srcdir)/Makefile.def
