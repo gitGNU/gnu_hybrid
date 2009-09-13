@@ -52,8 +52,10 @@ AC_PROG_GREP
 AC_PROG_SED
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
+
 AX_PATH_MISSING([PERL], [perl])
 AX_PATH_MISSING([WGET], [wget])
+AX_PATH_MISSING([DNT],  [dnt])
 
 # C Preprocessor
 AC_PROG_CPP
@@ -122,9 +124,13 @@ AC_CONFIG_FILES([
 	packrules/Makefile
 	tools/Makefile
 	tools/maint/Makefile
-	tools/scripts/Makefile
 	tools/autotools/Makefile
 	tools/autotools/m4/Makefile
 ])
+
+AC_CONFIG_FILES([tools/maint/fetch],               [chmod +x tools/maint/fetch])
+AC_CONFIG_FILES([tools/maint/whitespace-detect],   [chmod +x tools/maint/whitespace-detect])
+AC_CONFIG_FILES([tools/maint/gitlog-to-committers],[chmod +x tools/maint/gitlog-to-committers])
+AC_CONFIG_FILES([tools/maint/gittag-to-date],      [chmod +x tools/maint/gittag-to-date])
 
 AC_OUTPUT
