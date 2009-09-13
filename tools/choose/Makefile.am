@@ -20,26 +20,29 @@
 
 include $(top_srcdir)/Makefile.sub
 
-ACLOCAL_AMFLAGS = -I tools/autotools/m4 --install
-
-##
-## NOTE:
-##     Makefile.sub is automatically distributed by automake rules
-##
-EXTRA_DIST =					\
-	TODO NEWS				\
-	README COPYING AUTHORS INSTALL THANKS	\
-	bootstrap .bootstrap			\
-	choose.sh.in
-
-
+EXTRA_DIST =
+BUILT_SOURCES =
 CLEANFILES =
+MAINTAINERCLEANFILES =
+
+include $(top_srcdir)/Makefile.top
+
+ACLOCAL_AMFLAGS = -I tools/autotools/m4 --install
 
 SUBDIRS =					\
 	lkc					\
 	packrules				\
 	tools					\
 	docs
+
+##
+## NOTE:
+##     Makefile.sub is automatically distributed by automake rules
+##
+EXTRA_DIST +=					\
+	README COPYING INSTALL THANKS		\
+	bootstrap .bootstrap			\
+	choose.sh.in
 
 scripts =					\
 	choose
@@ -81,15 +84,6 @@ choose: Makefile choose.sh
 ##
 ## Maintainer related targets
 ##
-
-BUILT_SOURCES = $(top_srcdir)/.version
-
-$(top_srcdir)/.version:
-	echo $(VERSION) > $@-t && mv $@-t $@
-
-dist-hook:
-	echo $(VERSION) > $(distdir)/.tarball-version
-
 
 update-local: Makefile
 
