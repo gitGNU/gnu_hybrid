@@ -130,7 +130,6 @@ INTERNAL =					\
 	ax_cxx_static_cast.m4			\
 	ax_cxx_templates.m4			\
 	ax_cxx_typename.m4			\
-	ax_getopt_long.m4			\
 	ax_remove_forbidden.m4			\
 	ax_string_clean.m4			\
 	ax_string_intersect.m4			\

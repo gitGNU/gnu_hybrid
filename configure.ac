@@ -665,9 +665,6 @@ AH_BOTTOM([
 #endif /* CONFIG_AUTOCONFIG_H */
 ])
 
-# Check for getopt_long support
-AX_GETOPT_LONG
-
 AC_CONFIG_SUBDIRS([
 	tools/choose
 ])
