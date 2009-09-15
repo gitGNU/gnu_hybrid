@@ -34,7 +34,6 @@ SCRIPTSDIR           = $(TOOLSDIR_BUILD)/scripts
 USR_SCRIPTSDIR       = $(SCRIPTSDIR)/usr
 DEV_SCRIPTSDIR       = $(SCRIPTSDIR)/dev
 MAINT_SCRIPTSDIR     = $(SCRIPTSDIR)/maint
-CHOOSEDIR            = $(TOOLSDIR_BUILD)/choose
 
 TOOL_FLAGS = $(AX_TOOL_FLAGS)
 
@@ -67,10 +66,6 @@ FLHANDLER           = $(USR_SCRIPTSDIR)/flhandler
 FLHANDLER_FLAGS     = $(TOOL_FLAGS)
 
 # Useful binaries
-CHOOSE                 = $(CHOOSEDIR)/choose
-CHOOSE_FLAGS           = $(TOOL_FLAGS)
-PACKRULES              = $(CHOOSEDIR)/packrules/packrules
-PACKRULES_FLAGS        = $(TOOL_FLAGS)
 #BFD_SECTION_STAT       = THIS-PROGRAM-IS-EXTERNAL
 BFD_SECTION_STAT_FLAGS = $(TOOL_FLAGS)
 

@@ -51,6 +51,8 @@ AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo nostdinc std-options
 AC_PROG_GREP
 AC_PROG_SED
 
+AX_PATH_MISSING([CHOOSE],           [choose])
+AX_PATH_MISSING([CHOOSE_PACKRULES], [choose-packrules])
 AX_PATH_MISSING([BFD_SECTION_STAT], [bfd-section-stat])
 AX_PATH_MISSING([DOXYGEN],          [doxygen])
 AX_PATH_MISSING([SITETOOL],         [sitetool])

@@ -68,41 +68,41 @@ pre-config:
 	$(MAKE) all -C $(top_builddir)/tools
 
 $(CFG_ALL): $(CFG_FILES)
-	$(PACKRULES) $(PACKRULES_FLAGS) -p $(top_srcdir)/src -i archs/$(architecture)/rules.cfg -o $(CFG_ALL) || {	\
-		rm -f $(CFG_ALL) ;											\
-		exit 1;													\
+	$(CHOOSE_PACKRULES) -p $(top_srcdir)/src -i archs/$(architecture)/rules.cfg -o $(CFG_ALL) || {	\
+		rm -f $(CFG_ALL) ;									\
+		exit 1;											\
 	}
 
 menu-config: pre-config $(CFG_ALL)
-	{																\
-		if test ! -f $(CFG_USER) ; then												\
-			touch $(CFG_USER) ;												\
-		fi ;															\
-		cp -f $(CFG_USER) $(CFG_USER).old ;											\
-		cp -f $(CFG_USER) $(CFG_USER).new ;											\
-		$(CHOOSE) $(CHOOSE_FLAGS) -m curses -p $(CHOOSEDIR)/lkc -r $(CFG_ALL) -i $(CFG_USER).old -o $(CFG_USER).new || exit 1 ;	\
-		cp -f $(CFG_USER).new $(CFG_USER) ;											\
-	} || {																\
-		rm -f $(CFG_USER).old ;													\
-		rm -f $(CFG_USER).new ;													\
-		exit 1 ;														\
+	{												\
+		if test ! -f $(CFG_USER) ; then								\
+			touch $(CFG_USER) ;								\
+		fi ;											\
+		cp -f $(CFG_USER) $(CFG_USER).old ;							\
+		cp -f $(CFG_USER) $(CFG_USER).new ;							\
+		$(CHOOSE) -m ncurses -r $(CFG_ALL) -i $(CFG_USER).old -o $(CFG_USER).new || exit 1 ;	\
+		cp -f $(CFG_USER).new $(CFG_USER) ;							\
+	} || {												\
+		rm -f $(CFG_USER).old ;									\
+		rm -f $(CFG_USER).new ;									\
+		exit 1 ;										\
 	}
 	rm -f $(CFG_USER).old
 	rm -f $(CFG_USER).new
 
 text-config: pre-config $(CFG_ALL)
-	{																\
-		if test ! -f $(CFG_USER) ; then												\
-			touch $(CFG_USER) ;												\
-		fi ;															\
-		cp -f $(CFG_USER) $(CFG_USER).old ;											\
-		cp -f $(CFG_USER) $(CFG_USER).new ;											\
-		$(CHOOSE) $(CHOOSE_FLAGS) -m text -p $(CHOOSEDIR)/lkc -r $(CFG_ALL) -i $(CFG_USER).old -o $(CFG_USER).new || exit 1 ;	\
-		cp -f $(CFG_USER).new $(CFG_USER) ;											\
-	} || {																\
-		rm -f $(CFG_USER).old ;													\
-		rm -f $(CFG_USER).new ;													\
-		exit 1 ;														\
+	{												\
+		if test ! -f $(CFG_USER) ; then								\
+			touch $(CFG_USER) ;								\
+		fi ;											\
+		cp -f $(CFG_USER) $(CFG_USER).old ;							\
+		cp -f $(CFG_USER) $(CFG_USER).new ;							\
+		$(CHOOSE) -m text -r $(CFG_ALL) -i $(CFG_USER).old -o $(CFG_USER).new || exit 1 ;	\
+		cp -f $(CFG_USER).new $(CFG_USER) ;							\
+	} || {												\
+		rm -f $(CFG_USER).old ;									\
+		rm -f $(CFG_USER).new ;									\
+		exit 1 ;										\
 	}
 	rm -f $(CFG_USER).old
 	rm -f $(CFG_USER).new
