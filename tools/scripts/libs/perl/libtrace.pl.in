@@ -137,5 +137,5 @@ sub message ($)
 
     defined($string)   or die "Missing message string";
 
-    print STDOUT $string;
+    print STDOUT $string . "\n";
 }
