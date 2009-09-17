@@ -1,0 +1,12 @@
+# Input file for perl-autofrisk
+
+files-glob tools/scripts/libs/perl/.*\.pl\.in
+files-glob tools/scripts/usr/.*\.pl\.in
+
+non-critical-external strict[ \t]*.*
+non-critical-external diagnostics[ \t]*.*
+non-critical-external warnings[ \t]*.*
+non-critical-external vars[ \t]*.*
+non-critical-external [0-9]\..*
+non-critical-external POSIX[ \t]*.*
+non-critical-external base[ \t]*.*
