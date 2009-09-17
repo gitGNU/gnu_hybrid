@@ -1,0 +1,161 @@
+#
+# packrules
+#
+# Copyright (C) 2008, 2009 Francesco Salvestrini
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+use Getopt::Std;
+
+# Required variables
+my $PROGRAM_NAME="packrules";
+
+sub HELP_MESSAGE ()
+{
+    message("Usage: ${PROGRAM_NAME} [OPTION]...");
+    message("");
+    message("  -i    set input file");
+    message("  -o    set output file");
+    message("  -p    set path");
+    message("  -V    dump version information, then exit");
+    message("  -d    enable debugging");
+    message("  -v    enable verbose messages");
+    message("  -h    display this help and exit");
+    message("");
+    message("Report bugs to <" . '@PACKAGE_BUGREPORT@' . ">");
+}
+
+sub VERSION_MESSAGE ()
+{
+    message("${PROGRAM_NAME} " .
+            "(" . '@PACKAGE_NAME@' . " " . '@PACKAGE_VERSION@' . ")");
+    message("Written by Francesco Salvestrini");
+    message("");
+    message("This is free software; see the source for copying conditions." .
+            "There is NO");
+    message("warranty; not even for MERCHANTABILITY or FITNESS FOR A " .
+            "PARTICULAR PURPOSE.");
+}
+
+sub hint ($)
+{
+    my $s = shift;
+
+    message($s);
+    message("Try \`${PROGRAM_NAME} --help' for more information.");
+}
+
+sub process ($$$)
+{
+    my $input             = shift;
+    my $path              = shift;
+    my $output_filehandle = shift;
+
+    my $input_filename    = $path . "/" . $input;
+
+    debug("Processing \`" . $input_filename . "'");
+
+    my $input_filehandle;
+    debug("Opening filehandle for file \`" . $input_filename . "'");
+    if (!open($input_filehandle, "<", $input_filename)) {
+        error("Cannot open file \`" . $input_filename . "' for reading");
+        return 0;
+    }
+
+    my $line;
+    while (<$input_filehandle>) {
+        debug("Fetching new line");
+
+        $line = $_;
+        chomp($line);
+
+        debug("Got line \`" . $line . "'");
+
+        if ($line =~ /^[\t ]*source[ \t]+\"(.*)\"[\t ]*$/) {
+            $source =  $1;
+
+            debug("Got source \`" . $source . "'");
+            if (!process($source, $path, $output_filehandle)) {
+                return 0;
+            }
+        } elsif ($line =~ /^[\t ]*\#.*$/) {
+            # Discard comments
+        } elsif ($line =~ /^[\t ]*$/) {
+            # Discard empty lines
+        } else {
+            debug("Writing \`" . $line . "' to output");
+            print $output_filehandle $line . "\n";
+        }
+    }
+
+    close($filehandle);
+
+    return 1;
+}
+
+#
+# main
+#
+
+trace_prefix_set($PROGRAM_NAME);
+verbose_set(0);
+debug_set(1);
+
+$Getopt::Std::STANDARD_HELP_VERSION = 1;
+
+getopts('i:o:p:dv', \%opts);
+if (defined($opts{'d'})) {
+    debug_set(1);
+}
+if (defined($opts{'v'})) {
+    verbose_set(1);
+}
+
+my $input_filename  = $opts{'i'};
+my $output_filename = $opts{'o'};
+my $path            = $opts{'p'};
+
+if (!defined($input_filename)) {
+    hint("Missing input file");
+    exit(1);
+}
+if (!defined($output_filename)) {
+    error("Missing output file");
+    exit(1);
+}
+if (!defined($path)) {
+    error("Missing path");
+    exit(1);
+}
+
+debug("input-filename  = \`" . ${input_filename}  . "'");
+debug("output-filename = \`" . ${output_filename} . "'");
+debug("path            = \`" . ${path}            . "'");
+
+my $output_filehandle;
+if (!open($output_filehandle, ">", $output_filename)) {
+   error("Cannot open \`" . $output_filename . "' for writing");
+   exit(1);
+}
+
+my $retval = process($input_filename, $path, $output_filehandle);
+
+if (!$retval) {
+    error("Error during processing");
+    exit(1);
+}
+
+exit(0);

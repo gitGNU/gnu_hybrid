@@ -26,7 +26,8 @@ scripts =					\
 	mergesyms				\
 	rules2syms				\
 	sh2h					\
-	flhandler
+	flhandler				\
+	packrules
 
 noinst_SCRIPTS = $(scripts)
 
@@ -39,7 +40,8 @@ sh_scripts_SRCS =				\
 	flhandler.sh.in				\
 	mergesyms.sh.in
 
-pl_scripts_SRCS =
+pl_scripts_SRCS =				\
+	packrules.pl.in
 
 CLEANFILES =
 EXTRA_DIST =
@@ -120,6 +122,19 @@ rules2syms: Makefile rules2syms.sh
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += rules2syms
 
+packrules.pl: Makefile $(pl_lib_SRC) packrules.pl.in
+	INFILE=packrules.pl.in ;		\
+	OUTFILE=packrules.pl ;			\
+	$(transform_pl_in_2_pl) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += packrules.pl
+
+packrules: Makefile packrules.pl
+	INFILE=packrules.pl ;			\
+	OUTFILE=packrules ;			\
+	$(transform_pl_2_script) ||		\
+	{ rm -f $$OUTFILE ; exit 1 ; }
+CLEANFILES += packrules
 
 ##
 ## Checks
