@@ -61,6 +61,8 @@ Makefile
 /tools/autotools/texinfo.tex
 /tools/autotools/ylwrap
 
+/tools/autotools/m4/perl-autofrisk-data.m4
+
 /tools/maint/fetch
 /tools/maint/whitespace-detect
 /tools/maint/gitlog-to-committers
@@ -115,6 +117,8 @@ Makefile
 /tools/scripts/usr/flhandler.sh
 /tools/scripts/usr/mergesyms_new
 /tools/scripts/usr/mergesyms_new.sh
+/tools/scripts/usr/packrules
+/tools/scripts/usr/packrules.pl
 
 /site/in/.sitetool
 /site/in/site.stamp
