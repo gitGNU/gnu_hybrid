@@ -68,7 +68,7 @@ pre-config:
 	$(MAKE) all -C $(top_builddir)/tools
 
 $(CFG_ALL): $(CFG_FILES)
-	$(CHOOSE_PACKRULES) -p $(top_srcdir)/src -i archs/$(architecture)/rules.cfg -o $(CFG_ALL) || {	\
+	$(PACKRULES) $(PACKRULES_FLAGS)-p $(top_srcdir)/src -i archs/$(architecture)/rules.cfg -o $(CFG_ALL) || {	\
 		rm -f $(CFG_ALL) ;									\
 		exit 1;											\
 	}

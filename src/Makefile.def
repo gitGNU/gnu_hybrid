@@ -37,7 +37,7 @@ MAINT_SCRIPTSDIR     = $(SCRIPTSDIR)/maint
 
 TOOL_FLAGS = $(AX_TOOL_FLAGS)
 
-# Useful scripts
+# Useful (internal) programs
 STACKCHECK          = $(DEV_SCRIPTSDIR)/stackcheck
 STACKCHECK_FLAGS    = $(TOOL_FLAGS)
 OBJ2SYMSTAB         = $(DEV_SCRIPTSDIR)/obj2symstab
@@ -64,8 +64,10 @@ MKSYSCALLS          = $(DEV_SCRIPTSDIR)/mksyscalls
 MKSYSCALLS_FLAGS    = $(TOOL_FLAGS)
 FLHANDLER           = $(USR_SCRIPTSDIR)/flhandler
 FLHANDLER_FLAGS     = $(TOOL_FLAGS)
+PACKRULES           = $(USR_SCRIPTSDIR)/packrules
+PACKRULES_FLAGS     = $(TOOL_FLAGS)
 
-# Useful binaries
+# Useful (external) program
 #BFD_SECTION_STAT       = THIS-PROGRAM-IS-EXTERNAL
 BFD_SECTION_STAT_FLAGS = $(TOOL_FLAGS)
 
