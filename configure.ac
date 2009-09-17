@@ -52,7 +52,6 @@ AC_PROG_GREP
 AC_PROG_SED
 
 AX_PATH_MISSING([CHOOSE],           [choose])
-AX_PATH_MISSING([CHOOSE_PACKRULES], [choose-packrules])
 AX_PATH_MISSING([BFD_SECTION_STAT], [bfd-section-stat])
 AX_PATH_MISSING([DOXYGEN],          [doxygen])
 AX_PATH_MISSING([SITETOOL],         [sitetool])
@@ -72,35 +71,23 @@ AX_SPLIT_VERSION($PACKAGE_VERSION, AX_MAJOR_VERSION, AX_MINOR_VERSION, AX_MICRO_
 # Check for programs that SHOULD (or MUST) be available into the system
 #
 # NOTE:
-#     Some of them (perl, python) are maintainer related, don't remove those
-#     checks ...
+#     Some of them are maintainer, others are user related ...
 #
-AC_ARG_VAR(PERL, [Full path to the 'perl' executable])
-AX_PATH_MISSING([PERL],[perl],[perl seems missing ...])
+AX_WITH_PERL
+AS_IF([test -z "$PERL"],[
+        AC_MSG_ERROR([Missing required Perl interpreter])
+],[
+        AX_PROG_PERL_VERSION([5.8.0],[],[
+                AC_MSG_ERROR([Missing required Perl interpreter version >= 5.8.0])
+        ])
 
-AC_ARG_VAR(PYTHON, [Full path to the 'python' executable])
-AX_PATH_MISSING([PYTHON],[python],[python seems missing ...])
+        PERL_AUTOFRISK_CHECKS
+        PERL_AUTOFRISK_SUMMARY
+])
 
-AC_ARG_VAR(NM, [Full path to the 'nm' executable])
-AX_PATH_MISSING([NM],[nm],[nm seems missing ...])
-
-AC_ARG_VAR(OBJDUMP, [Full path to the 'objdump' executable])
-AX_PATH_MISSING([OBJDUMP],[objdump],[objdump seems missing ...])
-
-AC_ARG_VAR(CXXFILT, [Full path to the 'c++filt' executable])
-AX_PATH_MISSING([CXXFILT],[c++filt],[c++filt seems missing])
-
-AC_ARG_VAR(SIZE, [Full path to the 'size' executable])
-AX_PATH_MISSING([SIZE],[size],[size seems missing])
-
-#
-# Image build support (XXX FIXME: TO BE MOVED ELSEWHERE ASAP)
-#
-AX_PROG_GRUB1([$PATH:/bin:/sbin],[grub1_support=yes],[grub1_support=no])
-AM_CONDITIONAL(GRUB1_SUPPORT,[test "$grub1_support" = "yes"])
-AX_PROG_GRUB2([$PATH:/bin:/sbin],[grub2_support=yes],[grub2_support=no])
-AM_CONDITIONAL(GRUB2_SUPPORT,[test "$grub2_support" = "yes"])
-AX_WITH_PROG([MKISOFS],[mkisofs])
+AX_WITH_PROG([CXXFILT], [c++filt])
+AX_WITH_PROG([OBJDUMP], [objdump])
+AX_WITH_PROG([NM],      [nm])
 
 #
 # Check for programs that MUST be available
@@ -665,10 +652,6 @@ AH_TOP([
 ])
 AH_BOTTOM([
 #endif /* CONFIG_AUTOCONFIG_H */
-])
-
-AC_CONFIG_SUBDIRS([
-	tools/choose
 ])
 
 #
