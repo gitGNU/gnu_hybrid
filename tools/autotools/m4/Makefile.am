@@ -29,6 +29,8 @@ URL_BU = "http://github.com/salvestrini/build-utils/tree/master/m4"
 EXTERNAL =							\
 	$(URL_BU)/ax_split_version.m4				\
 	$(URL_AA)/ax_with_prog.m4				\
+	$(URL_AA)/ax_with_perl.m4				\
+	$(URL_AA)/ax_prog_perl_version.m4			\
 	$(URL_AA)/ax_prog_bison.m4				\
 	$(URL_AA)/ax_prog_flex.m4				\
 	$(URL_AA)/ax_compare_version.m4				\
