@@ -48,6 +48,24 @@
 				Use AC_CHECK_TOOL instead of AC_PATH_PROG for nm, objdump and so on in configure.ac.in
 			</entry>
 		</entry>
+		<entry priority="high" start="1253138972">
+			Update build
+			<entry priority="high" start="1253138972">
+				Fix package version in order to handle git versioning
+			</entry>
+			<entry priority="medium" start="1253138972">
+				Use PACKAGE_URL in site building
+			</entry>
+			<entry priority="high" start="1253138972">
+				Move internal macros to build-utils package
+			</entry>
+			<entry priority="high" start="1253138972">
+				Create AX_PACKAGE_API macro
+				<entry priority="high" start="1253138973">
+					Update configure.ac replacing API-handling with AX_PACKAGE_API
+				</entry>
+			</entry>
+		</entry>
 	</entry>
 	<entry priority="high" start="1233771513">
 		Release 0.2.0
