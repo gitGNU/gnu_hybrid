@@ -51,7 +51,8 @@ AUTOMAKE_OPTIONS = check-news
 ##
 EXTRA_DIST +=					\
 	README COPYING INSTALL THANKS		\
-	bootstrap .bootstrap bootstrap.aux
+	bootstrap .bootstrap bootstrap.aux	\
+	perl.af
 
 ##
 ## Configuration related targets
