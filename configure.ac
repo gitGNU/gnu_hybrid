@@ -22,7 +22,7 @@
 
 AC_INIT([Hybrid],
         m4_esyscmd([tools/maint/git-version-gen .tarball-version]),
-        [salvestrini@gmail.com],
+        [hybrid-generic@nongnu.org],
         [hybrid],
         [http://savannah.nongnu.org/projects/hybrid])
 
