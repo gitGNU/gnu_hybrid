@@ -734,10 +734,10 @@ cat <<EOF
 
    ELKLib configuration summary
 
-     Preprocessor flags : ${ELKLIB_CPPFLAGS}
-     C compiler flags   : ${ELKLIB_CFLAGS}
-     C++ compiler flags : ${ELKLIB_CXXFLAGS}
-     LDADD              : ${ELKLIB_LDADD}
+     C pp flags       : ${ELKLIB_CPPFLAGS}
+     C flags          : ${ELKLIB_CFLAGS}
+     C++ flags        : ${ELKLIB_CXXFLAGS}
+     Linker flags     : ${ELKLIB_LDADD}
 
    ${PACKAGE_NAME} ${PACKAGE_VERSION} configured.
 
