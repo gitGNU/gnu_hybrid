@@ -120,10 +120,11 @@ Makefile
 /tools/scripts/usr/packrules
 /tools/scripts/usr/packrules.pl
 
+/site/out/*
 /site/in/.sitetool
+/site/in/site.as
 /site/in/site.stamp
 /site/in/todos.sxml
 /site/in/todos.dump
 /site/in/news.sxml
 /site/in/news.dump
-/site/out/*
