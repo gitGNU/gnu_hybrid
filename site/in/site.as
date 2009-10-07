@@ -7,7 +7,7 @@ common = {
 vars = {
         sitename          = "Hybrid";
         package_url       = "http://savannah.nongnu.org/projects/hybrid";
-        package_bugreport = "salvestrini@gmail.com";
+        package_bugreport = "hybrid-generic@nongnu.org";
         ohloh_badge_url   = "http://www.ohloh.net/p/26028/widgets/project_partner_badge.js";
 };
 
