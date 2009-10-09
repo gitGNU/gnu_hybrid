@@ -121,6 +121,28 @@ maintainer-clean-local:
 ##
 ## Maintainer related targets
 ##
+URL_SITE = "http://github.com/salvestrini/build-utils/tree/master/site"
+
+SITE_SRCS_EXTERNAL =					\
+	$(URL_SITE)/footer.sxml			\
+	$(URL_SITE)/header.sxml			\
+	$(URL_SITE)/layout.sxml			\
+	$(URL_SITE)/site.css
+
+update-local-site: Makefile
+	rm -r -f fetch-dir && \
+	mkdir fetch-dir && \
+	for i in $(SITE_SRCS_EXTERNAL) ; do \
+	        URL="$$i" ; \
+	        NAME=`echo "$$i" | $(SED) -e 's,^.*/,,'` ; \
+	        $(FETCH) $$URL?raw=true fetch-dir/$$NAME && \
+	        mv fetch-dir/$$NAME $$NAME || { \
+	                rm -f fetch-dir/$$NAME ; \
+	                exit 1 ; \
+	        } \
+	done && \
+	rm -r -f fetch-dir
+
 update-local: Makefile
 
 maintainer-check-local: Makefile
