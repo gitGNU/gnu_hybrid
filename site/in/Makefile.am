@@ -123,7 +123,7 @@ maintainer-clean-local:
 ##
 URL_SITE = "http://github.com/salvestrini/build-utils/tree/master/site"
 
-SITE_SRCS_EXTERNAL =					\
+SITE_SRCS_EXTERNAL =				\
 	$(URL_SITE)/footer.sxml			\
 	$(URL_SITE)/header.sxml			\
 	$(URL_SITE)/layout.sxml			\
@@ -143,6 +143,6 @@ update-local-site: Makefile
 	done && \
 	rm -r -f fetch-dir
 
-update-local: Makefile
+update-local: Makefile update-local-site
 
 maintainer-check-local: Makefile
