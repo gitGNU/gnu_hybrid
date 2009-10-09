@@ -67,7 +67,7 @@
 			</entry>
 		</entry>
 		<entry end="1255090971" priority="medium" start="1255090966">
-			Grouped as external some site files and added a target to fetch them
+			Externalize site files and add a Makefile target to fetch them all
 		</entry>
 	</entry>
 	<entry priority="high" start="1233771513">
