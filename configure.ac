@@ -694,52 +694,59 @@ AC_CONFIG_FILES([tools/maint/gittag-to-date],      [chmod +x tools/maint/gittag-
 
 AC_OUTPUT
 
+# Header
 cat <<EOF
 
-   ${PACKAGE_NAME} configuration summary
+  ${PACKAGE_NAME} (${PACKAGE_VERSION}) configuration summary
 
-     Software version : ${PACKAGE_VERSION}
+EOF
 
-     Host CPU         : ${host_cpu} ($host)
-     Build CPU        : ${build_cpu} ($build)
-     Target CPU       : ${target_cpu} ($target)
+# Body
+cat <<EOF
+  Package configuration summary
 
-     Architecture     : ${architecture}
-     Target endianess : ${target_endianess}
+    Host CPU         : ${host_cpu} ($host)
+    Build CPU        : ${build_cpu} ($build)
+    Target CPU       : ${target_cpu} ($target)
 
-     C preprocessor   : ${CPP}
-     C compiler       : ${CC} (version ${CC_VERSION})
-     C++ preprocessor : ${CXXCPP}
-     C++ compiler     : ${CXX} (version ${CXX_VERSION})
-     Assembler        : ${CCAS}
-     Archive handler  : ${RANLIB}
+    Architecture     : ${architecture}
+    Target endianess : ${target_endianess}
 
-     nm               : ${NM}
-     size             : ${SIZE}
-     objdump          : ${OBJDUMP}
-     c++filt          : ${CXXFILT}
+    C preprocessor   : ${CPP}
+    C compiler       : ${CC} (version ${CC_VERSION})
+    C++ preprocessor : ${CXXCPP}
+    C++ compiler     : ${CXX} (version ${CXX_VERSION})
+    Assembler        : ${CCAS}
+    Archive handler  : ${RANLIB}
 
-     Awk              : ${AWK}
-     Grep             : ${GREP}
-     Lex              : ${LEX}
-     Yacc             : ${YACC}
+    nm               : ${NM}
+    size             : ${SIZE}
+    objdump          : ${OBJDUMP}
+    c++filt          : ${CXXFILT}
 
-     Int. tools flags : ${AX_TOOL_FLAGS}
+    Awk              : ${AWK}
+    Grep             : ${GREP}
+    Lex              : ${LEX}
+    Yacc             : ${YACC}
 
-     C pp flags       : ${AX_CONFIG_CPPFLAGS}
-     C flags          : ${AX_CONFIG_CFLAGS}
-     C++ pp flags     : ${AX_CONFIG_CXXCPPFLAGS}
-     C++ flags        : ${AX_CONFIG_CXXFLAGS}
-     Linker flags     : ${AX_CONFIG_LDFLAGS}
+    Int. tools flags : ${AX_TOOL_FLAGS}
 
-   ELKLib configuration summary
+    C pp flags       : ${AX_CONFIG_CPPFLAGS}
+    C flags          : ${AX_CONFIG_CFLAGS}
+    C++ pp flags     : ${AX_CONFIG_CXXCPPFLAGS}
+    C++ flags        : ${AX_CONFIG_CXXFLAGS}
+    Linker flags     : ${AX_CONFIG_LDFLAGS}
+
+  ELKLib configuration summary
 
      C pp flags       : ${ELKLIB_CPPFLAGS}
      C flags          : ${ELKLIB_CFLAGS}
      C++ flags        : ${ELKLIB_CXXFLAGS}
      Linker flags     : ${ELKLIB_LDADD}
+EOF
 
-   ${PACKAGE_NAME} ${PACKAGE_VERSION} configured.
+# Footer
+cat <<EOF
 
    Copyright (C) 2008, 2009 Francesco Salvestrini
    All Rights Reserved.
@@ -755,10 +762,5 @@ cat <<EOF
    GNU General Public License for more details.
 
    Francesco Salvestrini <salvestrini@gmail.com>
-
-Type \`make help' in order to get some extra targets infos
-Type \`make' to build the software. Type \`make install' to install it
-in ${prefix}.
-After installing, please read the accompanied documentation.
 
 EOF
