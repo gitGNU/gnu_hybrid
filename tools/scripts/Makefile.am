@@ -29,8 +29,7 @@ EXTRA_DIST =
 SUBDIRS =					\
 	libs					\
 	usr					\
-	dev					\
-	maint
+	dev
 
 ##
 ## Maintainer related targets

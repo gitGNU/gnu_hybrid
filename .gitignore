@@ -67,6 +67,7 @@ Makefile
 /tools/maint/whitespace-detect
 /tools/maint/gitlog-to-committers
 /tools/maint/gittag-to-date
+/tools/maint/guards-check
 
 /tools/scripts/libs/awk/lib.awk
 /tools/scripts/libs/sh/lib.sh
@@ -99,13 +100,9 @@ Makefile
 
 /tools/scripts/usr/bootcheck
 /tools/scripts/usr/bootcheck.sh
-/tools/scripts/usr/clhandler
-/tools/scripts/usr/clhandler.awk
-/tools/scripts/usr/clhandler.sh
 /tools/scripts/usr/getdefine
 /tools/scripts/usr/getdefine.sh
 /tools/scripts/usr/mergesyms
-/tools/scripts/usr/mergesyms.awk
 /tools/scripts/usr/mergesyms.sh
 /tools/scripts/usr/mkbuild
 /tools/scripts/usr/mkbuild.sh
@@ -113,10 +110,6 @@ Makefile
 /tools/scripts/usr/rules2syms.sh
 /tools/scripts/usr/sh2h
 /tools/scripts/usr/sh2h.sh
-/tools/scripts/usr/flhandler
-/tools/scripts/usr/flhandler.sh
-/tools/scripts/usr/mergesyms_new
-/tools/scripts/usr/mergesyms_new.sh
 /tools/scripts/usr/packrules
 /tools/scripts/usr/packrules.pl
 

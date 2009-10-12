@@ -246,14 +246,10 @@ check-ifdefs: Makefile
 check-stack: Makefile
 	$(STACKCHECK) $(STACKCHECK_FLAGS) -a $(architecture) -s $(STACKSIZE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
-HDRS = `$(FLHANDLER) $(FLHANDLER_FLAGS) -i h -i hxx -- $(SOURCES)`
-check-guards: Makefile
-	$(GUARDSCHECK) $(GUARDSCHECK_FLAGS) -p $(top_srcdir)/src -p $(top_builddir)/src -- $(HDRS) || exit 1
-
 check-sections:
 	$(SECTIONS) $(SECTIONS_FLAGS) -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
-check-local: Makefile check-stack check-sections check-includes check-ifdefs check-guards
+check-local: Makefile check-stack check-sections check-includes check-ifdefs
 
 ##
 ## install target related
@@ -312,4 +308,7 @@ update-local: Makefile
 maintainer-check-whitespaces: Makefile $(SOURCES)
 	$(WHITESPACE_DETECT) $(SOURCES)
 
-maintainer-check-local: Makefile maintainer-check-whitespaces
+maintainer-check-guards: Makefile $(SOURCES)
+	$(GUARDS_CHECK) $(SOURCES)
+
+maintainer-check-local: Makefile maintainer-check-guards maintainer-check-whitespaces

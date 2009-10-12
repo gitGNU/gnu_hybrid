@@ -26,7 +26,6 @@ scripts =					\
 	mergesyms				\
 	rules2syms				\
 	sh2h					\
-	flhandler				\
 	packrules
 
 noinst_SCRIPTS = $(scripts)
@@ -37,7 +36,6 @@ sh_scripts_SRCS =				\
 	rules2syms.sh.in			\
 	sh2h.sh.in				\
 	getdefine.sh.in				\
-	flhandler.sh.in				\
 	mergesyms.sh.in
 
 pl_scripts_SRCS =				\
@@ -65,20 +63,6 @@ mergesyms: Makefile mergesyms.sh
 	$(transform_sh_2_script) ||		\
 	{ rm -f $$OUTFILE ; exit 1 ; }
 CLEANFILES += mergesyms
-
-flhandler.sh: Makefile $(sh_lib_SRC) flhandler.sh.in
-	INFILE=flhandler.sh.in ;		\
-	OUTFILE=flhandler.sh ;			\
-	$(transform_sh_in_2_sh) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += flhandler.sh
-
-flhandler: Makefile flhandler.sh
-	INFILE=flhandler.sh ;			\
-	OUTFILE=flhandler ;			\
-	$(transform_sh_2_script) ||		\
-	{ rm -f $$OUTFILE ; exit 1 ; }
-CLEANFILES += flhandler
 
 getdefine.sh: Makefile $(sh_lib_SRC) getdefine.sh.in
 	INFILE=getdefine.sh.in ;		\
@@ -149,8 +133,6 @@ check_PASS_SCRPTS =				\
 	test-sh2h-2				\
 	test-sh2h-3				\
 	test-sh2h-4				\
-	test-flhandler-1			\
-	test-flhandler-2			\
 	test-mergesyms-1
 
 
@@ -158,7 +140,6 @@ check_FAIL_SCRPTS =				\
 	test-sh2h-5				\
 	test-sh2h-6				\
 	test-getdefine-3			\
-	test-flhandler-3			\
 	test-mergesyms-2			\
 	test-mergesyms-3			\
 	test-mergesyms-4			\
