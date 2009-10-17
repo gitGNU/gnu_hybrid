@@ -112,7 +112,7 @@ sub process ($$$)
 
 trace_prefix_set($PROGRAM_NAME);
 verbose_set(0);
-debug_set(1);
+debug_set(0);
 
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
 
