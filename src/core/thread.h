@@ -30,7 +30,7 @@ public:
         typedef task::id_t id_t;
 
         thread(thread::id_t        id,
-               const ktl::string & name);
+               const std::string & name);
         ~thread();
 
 protected:

@@ -52,7 +52,7 @@ typedef struct timer timer_t;
 }
 #define TIMERS_DUMP(TIMERS) {                                           \
         dprintf("Timers:\n");                                           \
-        ktl::list<timer_t *>::iterator iter;                            \
+        std::list<timer_t *>::iterator iter;                            \
         for (iter = (TIMERS).begin(); iter != (TIMERS).end(); iter++) { \
                 TIMER_DUMP(*iter);                                      \
         }                                                               \

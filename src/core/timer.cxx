@@ -36,12 +36,12 @@
 #define dprintf(F,A...)
 #endif
 
-static ktl::list<timer_t *> timers;
+static std::list<timer_t *> timers;
 static size_t               granularity;
 
 static int timer_enqueue(timer_t * timer)
 {
-        ktl::list<timer_t *>::iterator iter;
+        std::list<timer_t *>::iterator iter;
 
         for (iter = timers.begin(); iter != timers.end(); iter++) {
                 if ((*iter)->expiration > timer->expiration) {
@@ -192,14 +192,14 @@ int timer_remove(timer_t * timer)
                 return 0;
         }
 
-        ktl::list<timer_t *>::iterator iter1;
+        std::list<timer_t *>::iterator iter1;
 
         for (iter1 = timers.begin(); iter1 != timers.end(); iter1++) {
                 dprintf("Walking timer 0x%p\n", (*iter1));
                 if ((*iter1) == timer) {
                         dprintf("Got timer!\n");
 
-                        ktl::list<timer_t *>::iterator iter2;
+                        std::list<timer_t *>::iterator iter2;
 
                         iter2 = iter1;
                         iter2++;
@@ -246,7 +246,7 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
         if (argc == 0) {
                 fprintf(stream, "Timers:\n");
 
-                ktl::list<timer_t *>::iterator iter;
+                std::list<timer_t *>::iterator iter;
                 for (iter = timers.begin(); iter != timers.end(); iter++) {
 #if CONFIG_TIMERS_DEBUG
                         fprintf(stream, "  0x%p 0x%p %d (%d)\n",
@@ -283,7 +283,7 @@ static dbg_result_t command_timers_on_execute(FILE * stream,
                         return DBG_RESULT_OK;
 
                 } else if (!strcmp(argv[0], "remove")) {
-                        ktl::list<timer_t *>::iterator iter;
+                        std::list<timer_t *>::iterator iter;
                         timer_t *                      timer;
 
                         for (iter  = timers.begin();

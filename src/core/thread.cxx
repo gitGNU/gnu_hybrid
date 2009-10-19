@@ -36,7 +36,7 @@
 #endif
 
 thread::thread(thread::id_t        id,
-               const ktl::string & name) :
+               const std::string & name) :
         task(id, name)
 {
         dprintf("Thread %d initialized\n", id_);

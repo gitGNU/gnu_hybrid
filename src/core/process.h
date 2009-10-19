@@ -32,13 +32,13 @@ public:
         typedef task::id_t id_t;
 
         process(process::id_t       id,
-                const ktl::string & name);
+                const std::string & name);
         ~process();
 
 protected:
 
 private:
-        ktl::list<thread *> threads_;
+        std::list<thread *> threads_;
 };
 
 #endif // CORE_PROCESS_H

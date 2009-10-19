@@ -39,7 +39,7 @@ public:
         } state_t;
 
         task(task::id_t          id,
-             const ktl::string & name) :
+             const std::string & name) :
                 id_(id),
                 state_(INITIALIZING),
                 name_(name),
@@ -59,7 +59,7 @@ public:
                 priority_ = p;
         };
 
-        const ktl::string & name() const {
+        const std::string & name() const {
                 return name_;
         }
 
@@ -76,7 +76,7 @@ protected:
 
         task::id_t       id_;
         state_t          state_;
-        ktl::string      name_;
+        std::string      name_;
         task::priority_t priority_;
 
 private:

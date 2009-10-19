@@ -41,13 +41,13 @@ struct dma {
 };
 typedef struct dma dma_t;
 
-ktl::vector<struct dma> channels;
+std::vector<struct dma> channels;
 
 int dma_init(void)
 {
         channels.resize(arch_dma_channels(), dma_t());
 
-        ktl::vector<struct dma>::iterator iter;
+        std::vector<struct dma>::iterator iter;
         uint_t                            index;
         uint_t                            count;
 
@@ -81,7 +81,7 @@ int dma_init(void)
 
 void dma_fini(void)
 {
-        ktl::vector<struct dma>::iterator iter;
+        std::vector<struct dma>::iterator iter;
         for (iter  = channels.begin();
              iter != channels.end();
              iter++) {

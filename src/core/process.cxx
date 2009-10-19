@@ -36,7 +36,7 @@
 /* CONFIG_MAX_THREADS_PER_PROCESS */
 
 process::process(process::id_t       id,
-                 const ktl::string & name) :
+                 const std::string & name) :
         task(id, name)
 {
         threads_.clear();
@@ -46,7 +46,7 @@ process::process(process::id_t       id,
 
 process::~process()
 {
-        ktl::list<thread *>::iterator iter;
+        std::list<thread *>::iterator iter;
         for (iter = threads_.begin(); iter != threads_.end(); iter++) {
                 delete *iter;
         }

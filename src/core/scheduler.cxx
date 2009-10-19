@@ -42,7 +42,7 @@ scheduler::scheduler()
 
 scheduler::~scheduler()
 {
-        ktl::list<process *>::iterator iter;
+        std::list<process *>::iterator iter;
         for (iter = processes_.begin(); iter != processes_.end(); iter++) {
                 delete *iter;
         }
@@ -77,7 +77,7 @@ static dbg_result_t command_processes_on_execute(FILE* stream,
 
         fprintf(stream, "Processes:\n");
 
-        ktl::list<process *>::iterator iter;
+        std::list<process *>::iterator iter;
         for (iter = processes.begin(); iter != processes.end(); iter++) {
                 fprintf(stream, "  0x%p %d\n",
                         (*iter),

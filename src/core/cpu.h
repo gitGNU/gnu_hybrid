@@ -47,7 +47,7 @@ protected:
 
 private:
         static cpus *             instance_;
-        static ktl::vector<cpu *> cpus_;
+        static std::vector<cpu *> cpus_;
 };
 
 #endif // CORE_CPU_H

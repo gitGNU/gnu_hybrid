@@ -38,7 +38,7 @@ static int        nr_locks;
 arch_irqs_state_t state;
 static int        initialized;
 
-ktl::vector<ktl::list<ktl::pair<interrupt_handler_t,
+std::vector<std::list<std::pair<interrupt_handler_t,
                                 void *> > > handlers(MAX_IRQ_VECTORS);
 
 __BEGIN_DECLS
@@ -73,7 +73,7 @@ void interrupts_handler(uint_t vector)
                 return;
         }
 
-        ktl::list<ktl::pair<interrupt_handler_t, void *> >::iterator iter;
+        std::list<std::pair<interrupt_handler_t, void *> >::iterator iter;
 
         dprintf("Executing %d interrupt handler(s) for vector %d\n",
                 handlers[vector].size(), vector);
@@ -170,7 +170,7 @@ int interrupt_attach(uint_t              vector,
 
         interrupts_lock();
 
-        ktl::pair<interrupt_handler_t, void *> temp(handler, opaque);
+        std::pair<interrupt_handler_t, void *> temp(handler, opaque);
         assert(temp.first == handler);
         assert(temp.second == opaque);
 
@@ -201,7 +201,7 @@ int interrupt_detach(uint_t              vector,
 
         retval = false;
 
-        ktl::list<ktl::pair<interrupt_handler_t, void *> >::iterator iter;
+        std::list<std::pair<interrupt_handler_t, void *> >::iterator iter;
         for (iter  = handlers[vector].begin();
              iter != handlers[vector].end();
              iter++) {

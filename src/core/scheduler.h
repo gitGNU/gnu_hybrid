@@ -31,7 +31,7 @@ public:
         void run();
 
 private:
-        ktl::list<process *> processes_;
+        std::list<process *> processes_;
 };
 
 #endif // CORE_SCHEDULER_H
