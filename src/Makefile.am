@@ -311,7 +311,13 @@ update-local: Makefile
 maintainer-check-whitespaces: Makefile $(SOURCES)
 	$(WHITESPACE_DETECT) $(SOURCES)
 
+maintainer-check-wordwraps: Makefile $(SOURCES)
+	$(WORDWRAP_DETECT) --tab-size 8 --columns 80 $(SOURCES)
+
 maintainer-check-guards: Makefile $(SOURCES)
 	$(GUARDS_CHECK) $(SOURCES)
 
-maintainer-check-local: Makefile maintainer-check-guards maintainer-check-whitespaces
+maintainer-check-local: Makefile		\
+	maintainer-check-guards			\
+	maintainer-check-whitespaces		\
+	maintainer-check-wordwraps
