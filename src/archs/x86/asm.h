@@ -35,7 +35,8 @@ __BEGIN_DECLS
 #define X86_FEATURE_DE          (0*32+ 2) /* Debugging Extensions */
 #define X86_FEATURE_PSE         (0*32+ 3) /* Page Size Extensions */
 #define X86_FEATURE_TSC         (0*32+ 4) /* Time Stamp Counter */
-#define X86_FEATURE_MSR         (0*32+ 5) /* Model-Specific Registers, RDMSR, WRMSR */
+/* Model-Specific Registers: RDMSR, WRMSR */
+#define X86_FEATURE_MSR         (0*32+ 5)
 #define X86_FEATURE_PAE         (0*32+ 6) /* Physical Address Extensions */
 #define X86_FEATURE_MCE         (0*32+ 7) /* Machine Check Architecture */
 #define X86_FEATURE_CX8         (0*32+ 8) /* CMPXCHG8 instruction */
@@ -44,16 +45,18 @@ __BEGIN_DECLS
 #define X86_FEATURE_MTRR        (0*32+12) /* Memory Type Range Registers */
 #define X86_FEATURE_PGE         (0*32+13) /* Page Global Enable */
 #define X86_FEATURE_MCA         (0*32+14) /* Machine Check Architecture */
-#define X86_FEATURE_CMOV        (0*32+15) /* CMOV instruction (FCMOVCC and FCOMI too if FPU present) */
+ /* CMOV instruction (FCMOVCC and FCOMI too if FPU present) */
+#define X86_FEATURE_CMOV        (0*32+15)
 #define X86_FEATURE_PAT         (0*32+16) /* Page Attribute Table */
 #define X86_FEATURE_PSE36       (0*32+17) /* 36-bit PSEs */
 #define X86_FEATURE_PN          (0*32+18) /* Processor serial number */
-#define X86_FEATURE_CLFLSH      (0*32+19) /* Supports the CLFLUSH instruction */
+#define X86_FEATURE_CLFLSH      (0*32+19) /* The CLFLUSH instruction */
 #define X86_FEATURE_DTES        (0*32+21) /* Debug Trace Store */
 #define X86_FEATURE_ACPI        (0*32+22) /* ACPI via MSR */
 #define X86_FEATURE_MMX         (0*32+23) /* Multimedia Extensions */
-#define X86_FEATURE_FXSR        (0*32+24) /* FXSAVE and FXRSTOR instructions (fast save and restore */
-                                          /* of FPU context), and CR4.OSFXSR available */
+/* FXSAVE and FXRSTOR instructions (fast save and restore of FPU context) */
+/* and CR4.OSFXSR available */
+#define X86_FEATURE_FXSR        (0*32+24)
 #define X86_FEATURE_XMM         (0*32+25) /* Streaming SIMD Extensions */
 #define X86_FEATURE_XMM2        (0*32+26) /* Streaming SIMD Extensions-2 */
 #define X86_FEATURE_SELFSNOOP   (0*32+27) /* CPU self snoop */
@@ -99,7 +102,7 @@ __BEGIN_DECLS
 #define X86_FEATURE_XTPR        (4*32+14) /* Send Task Priority Messages */
 
 /* VIA/Cyrix/Centaur-defined CPU features, CPUID level 0xC0000001, word 5 */
-#define X86_FEATURE_XSTORE      (5*32+ 2) /* on-CPU RNG present (xstore insn) */
+#define X86_FEATURE_XSTORE      (5*32+ 2) /* on-CPU RNG present (xstore) */
 #define X86_FEATURE_XSTORE_EN   (5*32+ 3) /* on-CPU RNG enabled */
 #define X86_FEATURE_XCRYPT      (5*32+ 6) /* on-CPU crypto (xcrypt insn) */
 #define X86_FEATURE_XCRYPT_EN   (5*32+ 7) /* on-CPU crypto enabled */
