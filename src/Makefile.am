@@ -250,7 +250,7 @@ check-stack: Makefile
 	$(STACKCHECK) $(STACKCHECK_FLAGS) -a $(architecture) -s $(STACKSIZE) -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 check-sections:
-	$(SECTIONS) $(SECTIONS_FLAGS) -z -f -- $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
+	$(BFD_SECTION_STAT) $(BFD_SECTION_STAT_FLAGS) $(KERNEL_OBJ) $(MODULES_OBJS) || exit 1
 
 check-local: Makefile check-stack check-sections check-includes check-ifdefs
 
