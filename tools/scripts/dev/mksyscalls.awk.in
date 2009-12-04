@@ -112,7 +112,7 @@ BEGIN {
 
 	debug("PASS 2: Checking output file ...\n");
 	if (outfile !~ "/dev/stdout" && exist(outfile)) {
-		warning("Outfile " outfile " is present\n");
+		warning("Output file " outfile " is already present\n");
 		if (fatal) {
 			exit(1);
 		}
