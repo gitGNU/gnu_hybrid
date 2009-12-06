@@ -23,8 +23,8 @@
 #include "libc/stddef.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
-#include "drivers/driver.h"
 #include "libc++/string"
+#include "drivers/driver.h"
 
 #define BANNER          "driver: "
 
@@ -34,16 +34,20 @@
 #define dprintf(F,A...)
 #endif
 
-driver::driver(const std::string & name)
+driver::driver(const std::string & name) :
+        name_(name)
 {
-        unused_argument(name);
-
-        dprintf("Driver 0x%x created (name = '%s')\n", this1);
+        dprintf("Driver 0x%x created (name = '%s')\n", this, name_.c_str());
 }
 
 driver::~driver()
 {
         dprintf("Driver 0x%x destroyed\n", this);
+}
+
+std::string driver::name()
+{
+        return name_;
 }
 
 #if CONFIG_DEBUGGER

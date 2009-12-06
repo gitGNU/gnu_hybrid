@@ -27,6 +27,8 @@ class driver {
         driver(const std::string & name);
         ~driver();
 
+        std::string name();
+
  private:
         std::string name_;
 };
