@@ -131,6 +131,7 @@ CHECK_STACK=y
 # Devices
 #
 DEVICE_DEBUG=y
+BUS_DEBUG=y
 
 #
 # Drivers
