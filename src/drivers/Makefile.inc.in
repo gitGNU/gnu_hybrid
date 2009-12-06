@@ -25,3 +25,9 @@ EXTRA_DIST +=					\
 drivers_SRCS =					\
 	@reldir@/driver.h			\
 	@reldir@/driver.cxx
+
+devs_SRCS =					\
+	@reldir@/device.h			\
+	@reldir@/device.cxx			\
+	@reldir@/bus.h				\
+	@reldir@/bus.cxx

@@ -21,7 +21,7 @@
 
 #include "config/config.h"
 #include "libc++/string"
-#include "devs/device.h"
+#include "drivers/device.h"
 
 class bus :
         public device {

@@ -36,7 +36,6 @@ include $(srcdir)/archs/Makefile.inc
 include $(srcdir)/dbg/Makefile.inc
 include $(srcdir)/core/Makefile.inc
 include $(srcdir)/init/Makefile.inc
-include $(srcdir)/devs/Makefile.inc
 include $(srcdir)/drivers/Makefile.inc
 
 EXTRA_DIST +=					\

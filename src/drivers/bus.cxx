@@ -24,7 +24,7 @@
 #include "libs/debug.h"
 #include "dbg/debugger.h"
 #include "libc++/string"
-#include "devs/bus.h"
+#include "drivers/bus.h"
 
 #define BANNER          "bus: "
 

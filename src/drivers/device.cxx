@@ -25,7 +25,7 @@
 #include "dbg/debugger.h"
 #include "libc++/string"
 #include "drivers/driver.h"
-#include "devs/device.h"
+#include "drivers/device.h"
 
 #define BANNER          "device: "
 
