@@ -24,4 +24,6 @@ EXTRA_DIST +=					\
 
 devs_SRCS =					\
 	@reldir@/device.h			\
-	@reldir@/device.cxx
+	@reldir@/device.cxx                     \
+	@reldir@/bus.h                          \
+	@reldir@/bus.cxx
