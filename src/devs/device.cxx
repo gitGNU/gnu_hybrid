@@ -23,8 +23,9 @@
 #include "libc/stddef.h"
 #include "libs/debug.h"
 #include "dbg/debugger.h"
-#include "devs/device.h"
 #include "libc++/string"
+#include "drivers/driver.h"
+#include "devs/device.h"
 
 #define BANNER          "device: "
 
@@ -34,22 +35,44 @@
 #define dprintf(F,A...)
 #endif
 
-device::device(const std::string & name)
+device::device(const std::string & name) :
+        name_(name),
+        driver_(0)
 {
-        unused_argument(name);
-
-        dprintf("Device 0x%x created (name = '%s')\n", this);
+        dprintf("Device 0x%x created (name = '%s')\n", this, name_.c_str());
 }
 
 device::~device()
 {
-        dprintf("Device 0x%x destroyed\n", this);
+        dprintf("Device 0x%x (name = '%s') destroyed\n", this, name_.c_str());
+}
+
+std::string device::name()
+{
+        return name_;
+}
+
+void device::attach(driver * d)
+{
+        assert(d);
+
+        driver_ = d;
+
+        dprintf("Driver 0x%x (name = '%s') attached to device 0x%x\n",
+                driver_, driver_->name().c_str(), this);
+}
+
+void device::detach()
+{
+        driver_ = 0;
+
+        dprintf("Driver detached from device device 0x%x\n", this);
 }
 
 #if CONFIG_DEBUGGER
 static dbg_result_t command_device_on_execute(FILE * stream,
-                                               int    argc,
-                                               char * argv[])
+                                              int    argc,
+                                              char * argv[])
 {
         assert(stream);
         assert(argc >= 0);

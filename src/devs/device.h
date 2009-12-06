@@ -21,14 +21,20 @@
 
 #include "config/config.h"
 #include "libc++/string"
+#include "drivers/driver.h"
 
 class device {
  public:
         device(const std::string & name);
         ~device();
 
+        void        attach(driver * d);
+        void        detach();
+        std::string name();
+
  private:
         std::string name_;
+        driver *    driver_;
 };
 
 #endif // DEVS_DEVICE_H
