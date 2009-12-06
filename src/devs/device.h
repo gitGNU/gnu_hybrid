@@ -24,16 +24,18 @@
 #include "drivers/driver.h"
 
 class device {
- public:
+public:
         device(const std::string & name);
-        ~device();
+        virtual ~device();
 
-        void        attach(driver * d);
-        void        detach();
-        std::string name();
+        virtual void attach(driver * d);
+        virtual void detach();
+        std::string  name();
 
- private:
+protected:
         std::string name_;
+
+private:
         driver *    driver_;
 };
 
