@@ -22,6 +22,6 @@ EXTRA_DIST +=					\
 	@reldir@/Makefile.inc.in		\
 	@reldir@/rules.cfg
 
-devs_SRCS =					\
+drivers_SRCS =					\
 	@reldir@/driver.h			\
 	@reldir@/driver.cxx

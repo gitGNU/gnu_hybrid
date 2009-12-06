@@ -37,6 +37,7 @@ include $(srcdir)/dbg/Makefile.inc
 include $(srcdir)/core/Makefile.inc
 include $(srcdir)/init/Makefile.inc
 include $(srcdir)/devs/Makefile.inc
+include $(srcdir)/drivers/Makefile.inc
 
 EXTRA_DIST +=					\
 	rules.cfg
@@ -171,6 +172,7 @@ kernel_SOURCES      =				\
 	$(dbg_SRCS)				\
 	$(core_SRCS)				\
 	$(devs_SRCS)				\
+	$(drivers_SRCS)				\
 	$(init_SRCS)
 
 kernel_LDADD        = $(MODULES_BUILTIN) $(ELKLIB_LDADD)
