@@ -24,10 +24,9 @@ EXTRA_DIST +=					\
 
 drivers_SRCS =					\
 	@reldir@/driver.h			\
-	@reldir@/driver.cxx
-
-devs_SRCS =					\
+	@reldir@/driver.cxx			\
 	@reldir@/device.h			\
 	@reldir@/device.cxx			\
 	@reldir@/bus.h				\
-	@reldir@/bus.cxx
+	@reldir@/bus.cxx			\
+	$(drivers_pci_SRCS)

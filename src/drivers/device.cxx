@@ -29,7 +29,7 @@
 
 #define BANNER          "device: "
 
-#if CONFIG_DEVICE_DEBUG
+#if CONFIG_DRIVER_DEBUG
 #define dprintf(F,A...) printf(BANNER F,##A)
 #else
 #define dprintf(F,A...)

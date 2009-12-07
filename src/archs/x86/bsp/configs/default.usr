@@ -128,17 +128,17 @@ CHECK_STACK=y
 # REGRESSION is not set
 
 #
-# Devices
+# Init
 #
-DEVICE_DEBUG=y
-BUS_DEBUG=y
+INIT_DEBUG=y
 
 #
 # Drivers
 #
 DRIVER_DEBUG=y
+BUS_DEBUG=y
 
 #
-# Init
+# PCI
 #
-INIT_DEBUG=y
+PCI_DEBUG=y
