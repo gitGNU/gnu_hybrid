@@ -29,7 +29,7 @@
 #include "archs/x86/irq.h"
 #include "archs/x86/i8237.h"
 #include "archs/x86/i8253.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #if CONFIG_ARCH_PC
 

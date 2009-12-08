@@ -23,6 +23,7 @@ EXTRA_DIST +=					\
 	@reldir@/rules.cfg
 
 dbg_SRCS =					\
+	@reldir@/debug.h			\
 	@reldir@/dbg.c				\
 	@reldir@/log.h				\
 	@reldir@/log.c				\

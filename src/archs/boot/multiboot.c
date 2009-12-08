@@ -31,7 +31,7 @@
 #include "archs/linker.h"
 #include "archs/x86/asm.h"
 #include "dbg/panic.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "mem/pmm.h"
 #include "mem/address.h"
 

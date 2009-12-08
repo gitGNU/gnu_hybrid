@@ -21,7 +21,7 @@
 
 #include "config/config.h"
 #include "archs/x86/idt.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #if CONFIG_TRAP_DEBUG
 #define dprintf(F,A...) printf("trap: " F,##A)

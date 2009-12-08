@@ -23,7 +23,7 @@
 #include "libc/stdint.h"
 #include "libc/stddef.h"
 #include "core/timer.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "core/interrupt.h"
 #include "dbg/debugger.h"
 #include "libc++/cstdio"

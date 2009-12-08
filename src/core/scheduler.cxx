@@ -21,7 +21,7 @@
 #include "config/config.h"
 #include "libc++/cstdio"
 #include "libc++/list"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 #include "core/scheduler.h"
 #include "core/process.h"

@@ -22,7 +22,7 @@
 #include "config/config.h"
 #include "archs/arch.h"
 #include "archs/x86/port.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #define CLK_FREQ 1193180L
 #define PIO      0x61

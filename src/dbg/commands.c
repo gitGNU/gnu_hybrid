@@ -23,7 +23,7 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "archs/linker.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_DEBUGGER

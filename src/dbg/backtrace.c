@@ -26,7 +26,7 @@
 #include "libcompiler/compiler.h"
 #include "libcompiler/demangle.h"
 #include "archs/arch.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 static unsigned int backtrace[CONFIG_MAX_STACK_LEVELS];

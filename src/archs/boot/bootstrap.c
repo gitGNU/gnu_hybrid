@@ -30,7 +30,7 @@
 #include "archs/boot/bootinfo.h"
 #include "archs/boot/bootram.h"
 #include "archs/boot/bootstrap.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/panic.h"
 #include "dbg/debugger.h"
 #include "dbg/log.h"

@@ -23,7 +23,7 @@
 #include "libc/stddef.h"
 #include "archs/arch.h"
 #include "core/syscall.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/panic.h"
 #include "dbg/debugger.h"
 

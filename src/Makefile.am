@@ -30,7 +30,6 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 include $(srcdir)/Makefile.def
 include $(srcdir)/config/Makefile.inc
-include $(srcdir)/libs/Makefile.inc
 include $(srcdir)/mem/Makefile.inc
 include $(srcdir)/archs/Makefile.inc
 include $(srcdir)/dbg/Makefile.inc
@@ -167,7 +166,6 @@ kernel_SOURCES      =				\
 	$(arch_SRCS)				\
 	$(boot_SRCS)				\
 	$(mem_SRCS)				\
-	$(libs_SRCS)				\
 	$(dbg_SRCS)				\
 	$(core_SRCS)				\
 	$(devs_SRCS)				\

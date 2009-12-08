@@ -28,7 +28,7 @@
 #include "archs/arch.h"
 #include "archs/linker.h"
 #include "archs/boot/bootinfo.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/panic.h"
 #include "dbg/debugger.h"
 

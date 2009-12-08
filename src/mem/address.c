@@ -25,7 +25,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "libc/stdlib.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 #include "mem/address.h"
 

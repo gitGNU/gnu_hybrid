@@ -27,7 +27,7 @@
 #include "archs/x86/asm.h"
 #include "archs/x86/port.h"
 #include "archs/common/cpu.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #if CONFIG_I8253_DEBUG
 #define dprintf(F,A...) printf("i8253: " F,##A)

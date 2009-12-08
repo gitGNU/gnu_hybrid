@@ -21,7 +21,7 @@
 
 #include "config/config.h"
 #include "archs/arch.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "mem/pmm.h"
 #include "libc/stdint.h"
 #include "libc/stddef.h"

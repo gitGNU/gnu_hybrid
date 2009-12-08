@@ -27,7 +27,7 @@
 #include "archs/x86/gdt.h"
 #include "archs/x86/tss.h"
 #include "archs/x86/asm.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_GDT_DEBUG

@@ -21,7 +21,7 @@
 
 #include "config/config.h"
 #include "libc/stdio.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "archs/arch.h"
 #include "archs/boot/bootram.h"
 #include "archs/x86/asm.h"

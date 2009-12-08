@@ -25,4 +25,5 @@ EXTRA_DIST +=					\
 arch_common_SRCS =				\
 	@reldir@/cpu.c				\
 	@reldir@/cpu.h				\
-	@reldir@/asm.h
+	@reldir@/asm.h                      	\
+	@reldir@/bcd.h

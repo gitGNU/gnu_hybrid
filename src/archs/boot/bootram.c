@@ -24,7 +24,7 @@
 #include "libc/stddef.h"
 #include "libc/stdint.h"
 #include "libc/string.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "archs/boot/bootram.h"
 
 #define BANNER          "bootram: "

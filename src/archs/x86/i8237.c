@@ -26,7 +26,7 @@
 #include "archs/x86/cpu.h"
 #include "archs/x86/port.h"
 #include "archs/common/cpu.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "mem/address.h"
 
 #if CONFIG_I8237_DEBUG

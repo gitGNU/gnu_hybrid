@@ -27,7 +27,7 @@
 #include "libc/ctype.h"
 #include "archs/x86/port.h"
 #include "core/resource.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #if CONFIG_HOSTED_DEBUGGER
 

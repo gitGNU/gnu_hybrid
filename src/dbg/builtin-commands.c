@@ -27,7 +27,7 @@
 #include "libc/ctype.h"
 #include "libbfd/bfd.h"
 #include "archs/boot/option.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/backtrace.h"
 #include "dbg/debugger.h"
 

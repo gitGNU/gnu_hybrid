@@ -22,7 +22,7 @@
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "archs/x86/port.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "core/resource.h"
 
 #if CONFIG_RS232_DEBUGGER

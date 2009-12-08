@@ -27,7 +27,7 @@
 #include "libc++/list"
 #include "libc++/utility"
 #include "core/interrupt.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_INTERRUPTS_DEBUG

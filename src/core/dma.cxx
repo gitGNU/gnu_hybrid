@@ -25,7 +25,7 @@
 #include "libc++/cstdio"
 #include "libc++/vector"
 #include "core/interrupt.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 #include "core/dma.h"
 #include "mem/address.h"

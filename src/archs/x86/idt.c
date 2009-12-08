@@ -28,7 +28,7 @@
 #include "archs/x86/tss.h"
 #include "archs/x86/asm.h"
 #include "archs/x86/i8259.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_IDT_DEBUG

@@ -24,7 +24,7 @@
 #include "libc/stddef.h"
 #include "libc/string.h"
 #include "dbg/debugger.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "core/timer.h"
 #include "core/interrupt.h"
 #include "core/dma.h"

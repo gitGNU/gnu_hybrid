@@ -25,7 +25,7 @@
 #include "libc/string.h"
 #include "libc/stdlib.h"
 #include "libc/stddef.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "mem/pmm.h"
 #include "archs/boot/bootram.h"
 #include "dbg/debugger.h"

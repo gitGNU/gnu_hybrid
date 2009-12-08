@@ -21,7 +21,7 @@
 #include "config/config.h"
 #include "libc/stdio.h"
 #include "libc/stddef.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 #include "core/task.h"
 #include "core/thread.h"

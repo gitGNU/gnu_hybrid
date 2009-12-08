@@ -26,7 +26,7 @@
 #include "archs/x86/i8259.h"
 #include "archs/x86/asm.h"
 #include "archs/arch.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #if CONFIG_ARCH_IRQ_DEBUG
 #define dprintf(F,A...) printf("irq: " F,##A)

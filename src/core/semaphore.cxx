@@ -24,7 +24,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "core/semaphore.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 #define BANNER          "semaphore: "

@@ -26,9 +26,9 @@
 #include "archs/x86/bios.h"
 #include "archs/x86/asm.h"
 #include "archs/x86/port.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
-#include "libs/bcd.h"
+#include "archs/common/bcd.h"
 
 #if CONFIG_BIOS_DEBUG
 #define dprintf(F,A...) printf("bios: " F,##A)

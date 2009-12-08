@@ -22,7 +22,7 @@
 #include "config/config.h"
 #include "libc/stddef.h"
 #include "libc/string.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 #include "dbg/debugger.h"
 
 #if CONFIG_DEBUGGER_HISTORY

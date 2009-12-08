@@ -26,7 +26,7 @@
 #include "libc/stdio.h"
 #include "libc/stddef.h"
 #include "libc/string.h"
-#include "libs/debug.h"
+#include "dbg/debug.h"
 
 #if CONFIG_ARCH_CPU_DEBUG
 #define dprintf(F,A...)   printf("CPU: " F,##A)
