@@ -45,8 +45,6 @@ core_SRCS =					\
 	@reldir@/semaphore.cxx			\
 	@reldir@/mutex.h			\
 	@reldir@/mutex.cxx			\
-	@reldir@/grant.h			\
-	@reldir@/grant.cxx			\
 	@reldir@/interrupt.h			\
 	@reldir@/interrupt.cxx			\
 	@reldir@/cpu.h				\

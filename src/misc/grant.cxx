@@ -19,7 +19,7 @@
 //
 
 #include "config/config.h"
-#include "core/grant.h"
+#include "misc/grant.h"
 
 grant::grant(mutex & m) :
         m_(m)

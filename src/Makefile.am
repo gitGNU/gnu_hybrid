@@ -34,8 +34,9 @@ include $(srcdir)/mem/Makefile.inc
 include $(srcdir)/archs/Makefile.inc
 include $(srcdir)/dbg/Makefile.inc
 include $(srcdir)/core/Makefile.inc
-include $(srcdir)/init/Makefile.inc
+include $(srcdir)/misc/Makefile.inc
 include $(srcdir)/drivers/Makefile.inc
+include $(srcdir)/init/Makefile.inc
 
 EXTRA_DIST +=					\
 	rules.cfg
@@ -168,7 +169,7 @@ kernel_SOURCES      =				\
 	$(mem_SRCS)				\
 	$(dbg_SRCS)				\
 	$(core_SRCS)				\
-	$(devs_SRCS)				\
+	$(misc_SRCS)				\
 	$(drivers_SRCS)				\
 	$(init_SRCS)
 
