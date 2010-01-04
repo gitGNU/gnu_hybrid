@@ -55,16 +55,18 @@ site.as: $(srcdir)/site.as.in Makefile
 CLEANFILES += site.as
 
 news.dump: $(DNT_DB)
-	$(DNT) $(DNT_FLAGS) \
-	       show \
-	       --indent-fill="(ul " \
-	       --unindent-fill=")" \
-	       --line-format="(li \"%t\")" \
-	       --width=0 \
-	       --output=news.dump \
-	       --filter="done" || { \
-		rm -f news.dump ; \
-		exit 1 ; \
+	$(DNT_BIN)				\
+	       --database=$(DNT_DB)		\
+	       --mono				\
+	       show				\
+	       --indent-fill="(ul "		\
+	       --unindent-fill=")"		\
+	       --line-format="(li \"%t\")"	\
+	       --width=0			\
+	       --output=news.dump		\
+	       --filter="done" || {		\
+		rm -f news.dump ;		\
+		exit 1 ;			\
 	}
 CLEANFILES += news.dump
 
@@ -79,16 +81,18 @@ news.sxml: news.dump
 CLEANFILES += news.sxml
 
 todos.dump: $(DNT_DB)
-	$(DNT) $(DNT_FLAGS) \
-	       show \
-	       --indent-fill="(ul " \
-	       --unindent-fill=")" \
-	       --line-format="(li \"%t\")" \
-	       --width=0 \
-	       --output=todos.dump \
-	       --filter="not done" || { \
-		rm -f todos.dump ; \
-		exit 1 ; \
+	$(DNT_BIN)				\
+	       --database=$(DNT_DB)		\
+	       --mono				\
+	       show				\
+	       --indent-fill="(ul "		\
+	       --unindent-fill=")"		\
+	       --line-format="(li \"%t\")"	\
+	       --width=0			\
+	       --output=todos.dump		\
+	       --filter="not done" || {		\
+		rm -f todos.dump ;		\
+		exit 1 ;			\
 	}
 CLEANFILES += todos.dump
 
