@@ -27,6 +27,7 @@
 #include "dbg/debugger.h"
 #include "libc++/string"
 #include "drivers/bus.h"
+#include "drivers/pci/pci.h"
 
 #define BANNER          "pci: "
 
