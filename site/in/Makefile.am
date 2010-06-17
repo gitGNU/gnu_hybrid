@@ -125,7 +125,7 @@ maintainer-clean-local:
 ##
 ## Maintainer related targets
 ##
-URL_SITE = "http://github.com/salvestrini/build-utils/tree/master/site"
+URL_SITE = "http://github.com/salvestrini/build-utils/raw/master/site"
 
 SITE_SRCS_EXTERNAL =				\
 	$(URL_SITE)/footer.sxml			\
