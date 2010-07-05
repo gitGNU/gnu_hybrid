@@ -27,7 +27,7 @@ AC_INIT([Hybrid],
         [http://savannah.nongnu.org/projects/hybrid])
 
 # Check for a recent version of autoconf
-AC_PREREQ([2.64])
+AC_PREREQ([2.65])
 
 # Place/find all autotools related files in the following directories
 AC_CONFIG_AUX_DIR([tools/autotools])
@@ -43,7 +43,7 @@ AC_CANONICAL_TARGET
 # file, AUTOMAKE_OPTIONS variable
 #
 #AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo -Wall nostdinc])
-AM_INIT_AUTOMAKE([1.10 foreign no-installman no-installinfo nostdinc std-options -Wall color-tests])
+AM_INIT_AUTOMAKE([1.11.1 foreign no-installman no-installinfo nostdinc std-options -Wall color-tests])
 
 #
 # Checks for needed programs
